@@ -10,7 +10,7 @@ final authProvider = StreamProvider<User?>((ref) {
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  User? get currentUser => _firebaseAuth.currentUser;
+  User? get user => _firebaseAuth.currentUser;
 
   Future<void> signInWithEmailAndPassword({
     required String email,

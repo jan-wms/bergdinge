@@ -1,6 +1,7 @@
 import 'package:equipment_app/pages/home_page.dart';
 import 'package:equipment_app/pages/login_page.dart';
-import 'package:equipment_app/pages/page2.dart';
+import 'package:equipment_app/pages/equipment_page.dart';
+import 'package:equipment_app/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +15,6 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     navigatorKey: _key,
-    debugLogDiagnostics: true,
     initialLocation: '/',
     routes: [
       GoRoute(
@@ -23,13 +23,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {
-            return Scaffold(
-              body: child,
-              appBar: AppBar(),
-              drawer: const Drawer(
-                child: Menu(),
-              ),
-            );
+            return SplitView(child: child);
           },
           routes: [
             GoRoute(
@@ -38,7 +32,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
             GoRoute(
               path: '/page2',
-              builder: (context, state) => const Page2(),
+              builder: (context, state) => const EquipmentPage(),
             ),
           ]),
     ],

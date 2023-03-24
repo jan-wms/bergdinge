@@ -11,36 +11,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final User? _user = Auth().currentUser;
+  final User? _user = Auth().user;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Home',
-            ),
-            Text(
-              _user?.uid ?? '_user',
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  GoRouter.of(context).go('/page2');
-                },
-                child: const Text('go to page 2')),
-            ElevatedButton(
-                onPressed: () {
-                  Auth().signOut();
-                },
-                child: const Text('sign out')),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Text(
+            'Home',
+          ),
+          Text(
+            _user?.uid ?? 'kein user',
+          ),
+          ElevatedButton(
+              onPressed: () {
+                GoRouter.of(context).go('/page2');
+              },
+              child: const Text('go to page 2')),
+          ElevatedButton(
+              onPressed: () {
+                Auth().signOut();
+              },
+              child: const Text('sign out')),
+        ],
       ),
     );
   }
