@@ -12,6 +12,10 @@ class Auth {
 
   User? get user => _firebaseAuth.currentUser;
 
+  Future<void> signInAnonymously() async {
+    await _firebaseAuth.signInAnonymously();
+  }
+
   Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,

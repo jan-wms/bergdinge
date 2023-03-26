@@ -15,19 +15,15 @@ class Menu extends StatelessWidget {
         ),
         ListTile(
           title: const Text('Packlisten'),
-          onTap: () => GoRouter.of(context).go('/page2'),
+          onTap: () => GoRouter.of(context).go('/equipment'),
         ),
         ListTile(
           title: const Text('Ausrüstung'),
-          onTap: () => GoRouter.of(context).go('/page2'),
+          onTap: () => GoRouter.of(context).go('/equipment'),
         ),
         ListTile(
           title: const Text('Einstellungen'),
-          onTap: () => GoRouter.of(context).go('/page2'),
-        ),
-        ListTile(
-          title: const Text('Logout'),
-          onTap: () => Auth().signOut(),
+          onTap: () => GoRouter.of(context).go('/equipment'),
         ),
       ],
     );

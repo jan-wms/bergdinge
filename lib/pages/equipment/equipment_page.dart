@@ -11,8 +11,11 @@ class EquipmentPage extends StatefulWidget {
 }
 
 class _EquipmentPageState extends State<EquipmentPage> {
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid).collection('equipment').snapshots();
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+      .collection('users')
+      .doc(Auth().user?.uid)
+      .collection('equipment')
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +24,21 @@ class _EquipmentPageState extends State<EquipmentPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Text(
-            'Equipment Page',
+            'Meine Ausrüstung',
           ),
+          ElevatedButton(
+              onPressed: () => context.go('/equipment/add'), child: const Text('Gegenstand hinzufügen')),
           StreamBuilder<QuerySnapshot>(
             stream: _usersStream,
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return  Text(snapshot.error.toString());
+                return Text(snapshot.error.toString());
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text("Loading");
+                return const CircularProgressIndicator.adaptive();
               }
 
               return ListView(
@@ -52,11 +57,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
               );
             },
           ),
-          ElevatedButton(
-              onPressed: () {
-                GoRouter.of(context).go('/');
-              },
-              child: const Text('go to Homepage'))
         ],
       ),
     );

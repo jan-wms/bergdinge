@@ -1,6 +1,7 @@
+import 'package:equipment_app/pages/equipment/add_equipment.dart';
 import 'package:equipment_app/pages/home_page.dart';
 import 'package:equipment_app/pages/login_page.dart';
-import 'package:equipment_app/pages/equipment_page.dart';
+import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,9 +32,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               builder: (context, state) => const HomePage(),
             ),
             GoRoute(
-              path: '/page2',
-              builder: (context, state) => const EquipmentPage(),
-            ),
+                path: '/equipment',
+                builder: (context, state) => const EquipmentPage(),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    builder: (context, state) => const AddEquipment(),
+                  )
+                ]),
           ]),
     ],
     redirect: (context, state) {

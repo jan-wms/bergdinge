@@ -22,6 +22,14 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> signInAnonymously() async {
+    try {
+      await Auth().signInAnonymously();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +49,11 @@ class _LoginPageState extends State<LoginPage> {
                   signInWithEmailAndPassword();
                 },
                 child: const Text('sign in')),
+            ElevatedButton(
+                onPressed: () {
+                  signInAnonymously();
+                },
+                child: const Text('continue without sign in')),
           ],
         )),
       ),

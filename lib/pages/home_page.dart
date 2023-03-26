@@ -27,9 +27,9 @@ class _HomePageState extends State<HomePage> {
           ),
           ElevatedButton(
               onPressed: () {
-                GoRouter.of(context).go('/page2');
+                GoRouter.of(context).go('/equipment');
               },
-              child: const Text('go to page 2')),
+              child: const Text('go to equipment')),
           ElevatedButton(
               onPressed: () {
                 Auth().signOut();
