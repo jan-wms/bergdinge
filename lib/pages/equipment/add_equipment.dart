@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
+
+import '../../firebase/firebase_auth.dart';
 
 class AddEquipment extends StatefulWidget {
   const AddEquipment({super.key});
@@ -24,28 +27,43 @@ class _AddEquipmentState extends State<AddEquipment> {
   late Map<double, String>? runningCosts;
   late Map<int, String>? daysInUse;
 
-  void add() {
+  void add() async {
     Equipment e = Equipment(
       name: _controllerName.text,
-      weight: _controllerWeight.text as double,
+      weight: double.parse(_controllerWeight.text),
       status: _controllerStatus.text,
       brand: _controllerBrand.text,
-      price: _controllerPrice.text as double,
+      price: double.parse(_controllerPrice.text),
       size: _controllerSize.text,
-      uvp: _controllerUvp.text as double,
+      uvp: double.parse(_controllerUvp.text),
       categories: categories,
       sports: sports,
       daysInUse: null,
       purchaseDate: null,
       runningCosts: null,
     );
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(Auth().user?.uid)
+        .collection('equipment')
+        .add(e.toFirestore());
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Gegenstand hinzufügen'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(''),
+            const Text('Gegenstand hinzufügen'),
+            ElevatedButton(
+                onPressed: () => add(), child: const Text('Hinzufügen')),
+          ],
+        ),
         TextField(
           controller: _controllerName,
           decoration: const InputDecoration(hintText: 'Name'),
@@ -94,28 +112,7 @@ class _AddEquipmentState extends State<AddEquipment> {
               },
             )
         ]),
-        Wrap(spacing: 5.0, children: [
-          for (var category in Data().categories)
-            FilterChip(
-              label: Text(category),
-              selected: categories.contains(category),
-              onSelected: (bool value) {
-                setState(() {
-                  if (value) {
-                    if (!categories.contains(category)) {
-                      categories.add(category);
-                    }
-                  } else {
-                    categories.removeWhere((String s) {
-                      return s == category;
-                    });
-                  }
-                });
-              },
-            )
-        ]),
         Text(purchaseDate?.toString() ?? 'not definded'),
-        ElevatedButton(onPressed: () => add(), child: const Text('Hinzufügen')),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
       .collection('users')
       .doc(Auth().user?.uid)
       .collection('equipment')
+      .withConverter(
+        fromFirestore: Equipment.fromFirestore,
+        toFirestore: (Equipment e, _) => e.toFirestore(),
+      )
       .snapshots();
 
   @override
@@ -27,7 +32,8 @@ class _EquipmentPageState extends State<EquipmentPage> {
             'Meine Ausrüstung',
           ),
           ElevatedButton(
-              onPressed: () => context.go('/equipment/add'), child: const Text('Gegenstand hinzufügen')),
+              onPressed: () => context.go('/equipment/add'),
+              child: const Text('Gegenstand hinzufügen')),
           StreamBuilder<QuerySnapshot>(
             stream: _usersStream,
             builder:
@@ -40,16 +46,15 @@ class _EquipmentPageState extends State<EquipmentPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator.adaptive();
               }
-
               return ListView(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 children: snapshot.data!.docs
                     .map((DocumentSnapshot document) {
-                      Map<String, dynamic> data =
-                          document.data()! as Map<String, dynamic>;
+                      Equipment e = document.data() as Equipment;
                       return ListTile(
-                        title: Text(data['type']),
+                        title: Text('${e.brand!} ${e.name}'),
+                        subtitle: Text(e.size ?? ''),
                       );
                     })
                     .toList()
