@@ -1,3 +1,5 @@
+import 'package:equipment_app/data/data.dart';
+import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 
 class AddEquipment extends StatefulWidget {
@@ -15,12 +17,29 @@ class _AddEquipmentState extends State<AddEquipment> {
   final TextEditingController _controllerSize = TextEditingController();
   final TextEditingController _controllerStatus = TextEditingController();
   final TextEditingController _controllerUvp = TextEditingController();
-  late DateTime? purchaseDate;
-  late List<String>? categories;
-  late List<String>? sport;
+  List<String> categories = <String>[];
+  List<String> sports = <String>[];
+
+  DateTime? purchaseDate;
   late Map<double, String>? runningCosts;
   late Map<int, String>? daysInUse;
-  void add() {}
+
+  void add() {
+    Equipment e = Equipment(
+      name: _controllerName.text,
+      weight: _controllerWeight.text as double,
+      status: _controllerStatus.text,
+      brand: _controllerBrand.text,
+      price: _controllerPrice.text as double,
+      size: _controllerSize.text,
+      uvp: _controllerUvp.text as double,
+      categories: categories,
+      sports: sports,
+      daysInUse: null,
+      purchaseDate: null,
+      runningCosts: null,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,27 +74,48 @@ class _AddEquipmentState extends State<AddEquipment> {
           controller: _controllerStatus,
           decoration: const InputDecoration(hintText: 'Status'),
         ),
-        Wrap(
-            spacing: 10,
-            children: const [
-              Chip(
-                label: Text('Working'),
-                avatar: Icon(
-                  Icons.work,
-                  color: Colors.red,
-                ),
-                backgroundColor: Colors.amberAccent,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              ),
-              Chip(
-                label: Text('Music'),
-                avatar: Icon(Icons.headphones),
-                backgroundColor: Colors.lightBlueAccent,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              ),
-            ]),
-        ElevatedButton(
-            onPressed: () => add(), child: const Text('Hinzufügen')),
+        Wrap(spacing: 5.0, children: [
+          for (var sport in Data().sports)
+            FilterChip(
+              label: Text(sport),
+              selected: sports.contains(sport),
+              onSelected: (bool value) {
+                setState(() {
+                  if (value) {
+                    if (!sports.contains(sport)) {
+                      sports.add(sport);
+                    }
+                  } else {
+                    sports.removeWhere((String s) {
+                      return s == sport;
+                    });
+                  }
+                });
+              },
+            )
+        ]),
+        Wrap(spacing: 5.0, children: [
+          for (var category in Data().categories)
+            FilterChip(
+              label: Text(category),
+              selected: categories.contains(category),
+              onSelected: (bool value) {
+                setState(() {
+                  if (value) {
+                    if (!categories.contains(category)) {
+                      categories.add(category);
+                    }
+                  } else {
+                    categories.removeWhere((String s) {
+                      return s == category;
+                    });
+                  }
+                });
+              },
+            )
+        ]),
+        Text(purchaseDate?.toString() ?? 'not definded'),
+        ElevatedButton(onPressed: () => add(), child: const Text('Hinzufügen')),
       ],
     );
   }

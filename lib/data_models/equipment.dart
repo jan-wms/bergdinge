@@ -10,7 +10,7 @@ class Equipment {
   final double? price;
   final DateTime? purchaseDate;
   final List<String>? categories;
-  final List<String>? sport;
+  final List<String>? sports;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
 
@@ -19,7 +19,7 @@ class Equipment {
     required this.weight,
     required this.status,
     this.size,
-    this.sport,
+    this.sports,
     this.brand,
     this.uvp,
     this.price,
@@ -46,7 +46,7 @@ class Equipment {
       categories: data?['categories'] is Iterable
           ? List.from(data?['categories'])
           : null,
-      sport: data?['sport'] is Iterable ? List.from(data?['sport']) : null,
+      sports: data?['sports'] is Iterable ? List.from(data?['sports']) : null,
       daysInUse:
           data?['daysInUse'] is Iterable ? Map.from(data?['daysInUse']) : null,
       runningCosts: data?['runningCosts'] is Iterable
@@ -67,7 +67,7 @@ class Equipment {
       if (daysInUse != null) "daysInUse": daysInUse,
       if (purchaseDate != null) "purchaseDate": purchaseDate,
       if (categories != null) "categories": categories,
-      if (sport != null) "sport": sport,
+      if (sports != null) "sports": sports,
       if (runningCosts != null) "runningCosts": runningCosts,
     };
   }
