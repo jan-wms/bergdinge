@@ -39,7 +39,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
-                print(snapshot.error);
                 return Text(snapshot.error.toString());
               }
 

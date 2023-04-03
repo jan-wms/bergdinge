@@ -9,7 +9,7 @@ class Equipment {
   final double? uvp;
   final double? price;
   final DateTime? purchaseDate;
-  final List<String>? categories;
+  final int category;
   final List<String>? sports;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
@@ -25,7 +25,7 @@ class Equipment {
     this.price,
     this.daysInUse,
     this.purchaseDate,
-    this.categories,
+    required this.category,
     this.runningCosts,
   });
 
@@ -43,9 +43,7 @@ class Equipment {
       price: data?['price'],
       brand: data?['brand'],
       purchaseDate: data?['purchaseDate'],
-      categories: data?['categories'] is Iterable
-          ? List.from(data?['categories'])
-          : null,
+      category: data?['category'],
       sports: data?['sports'] is Iterable ? List.from(data?['sports']) : null,
       daysInUse:
           data?['daysInUse'] is Iterable ? Map.from(data?['daysInUse']) : null,
@@ -66,7 +64,7 @@ class Equipment {
       if (brand != null) "brand": brand,
       if (daysInUse != null) "daysInUse": daysInUse,
       if (purchaseDate != null) "purchaseDate": purchaseDate,
-      if (categories != null) "categories": categories,
+      "categories": category,
       if (sports != null) "sports": sports,
       if (runningCosts != null) "runningCosts": runningCosts,
     };

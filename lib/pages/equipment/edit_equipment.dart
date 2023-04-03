@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/show_custom_modal.dart';
 import 'package:equipment_app/data/data.dart';
+import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _EditEquipmentState extends State<EditEquipment> {
   final TextEditingController _controllerSize = TextEditingController();
   final TextEditingController _controllerStatus = TextEditingController();
   final TextEditingController _controllerUvp = TextEditingController();
-  List<String> categories = <String>[];
+  int category = -1;
   List<String> sports = <String>[];
   DateTime? purchaseDate;
 
@@ -37,7 +38,7 @@ class _EditEquipmentState extends State<EditEquipment> {
       price: double.parse(_controllerPrice.text),
       size: _controllerSize.text,
       uvp: double.parse(_controllerUvp.text),
-      categories: categories,
+      category: category,
       sports: sports,
       daysInUse: null,
       purchaseDate: purchaseDate,
@@ -118,18 +119,27 @@ class _EditEquipmentState extends State<EditEquipment> {
           },
         ),
         ListTile(
-          title: Text(categories.isNotEmpty ? sports.toString() : 'Kategorie'),
+          title: Text('Kategorie: $category'),
           trailing: const Icon(Icons.chevron_right_outlined),
-          onTap: () => selectCategory(context),
+          onTap: () async {
+            final int i = await selectCategory(context, category);
+            setState(() {
+              category = i;
+            });
+          },
         ),
       ],
     );
   }
 }
 
-Future<List<String>> selectSports(BuildContext context, List<String> selected) async {
+Future<List<String>> selectSports(
+    BuildContext context, List<String> selected) async {
   final GlobalKey<_SelectSportsState> k = GlobalKey();
-  final SelectSports selectSports = SelectSports(key: k, selected: selected,);
+  final SelectSports selectSports = SelectSports(
+    key: k,
+    selected: selected,
+  );
   await showCustomModal(
     context,
     selectSports,
@@ -144,6 +154,7 @@ Future<List<String>> selectSports(BuildContext context, List<String> selected) a
 
 class SelectSports extends StatefulWidget {
   final List<String> selected;
+
   const SelectSports({Key? key, required this.selected}) : super(key: key);
 
   @override
@@ -183,32 +194,71 @@ class _SelectSportsState extends State<SelectSports> {
   }
 }
 
-void selectCategory(BuildContext context) {
-  showCustomModal(
+Future<int> selectCategory(BuildContext context, int selected) async {
+  final GlobalKey<_SelectCategoryState> k = GlobalKey();
+  final SelectCategory selectCategory = SelectCategory(
+    key: k,
+    selected: selected,
+  );
+  await showCustomModal(
     context,
-    const SelectCategory(),
+    selectCategory,
     null,
     TextButton(
       child: const Text('Close'),
       onPressed: () => Navigator.of(context).pop(),
     ),
   );
+  return k.currentState!.selected;
 }
 
 class SelectCategory extends StatefulWidget {
-  const SelectCategory({Key? key}) : super(key: key);
+  final int selected;
+
+  const SelectCategory({Key? key, required this.selected}) : super(key: key);
 
   @override
   State<SelectCategory> createState() => _SelectCategoryState();
 }
 
 class _SelectCategoryState extends State<SelectCategory> {
+  final List<Category> data = Data().categories;
+  late int selected = widget.selected;
+
+  List<Widget> createCategories(List<Category> categories) {
+    List<Widget> widgets = <Widget>[];
+    for (var element in categories) {
+      if (element.subCategories == null) {
+        widgets.add(ListTile(
+          title: Text(element.name),
+          onTap: () {
+            setState(() {
+              selected = element.id;
+            });
+          },
+        ));
+      } else {
+        widgets.add(ExpansionTile(
+          title: Text(element.name),
+          children: createCategories(element.subCategories!),
+        ));
+      }
+    }
+    return widgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
-        Text('Kategorie'),
-        TextField(),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Kategorie'),
+        const TextField(),
+        Expanded(
+          child: ListView(
+            children: createCategories(data),
+          ),
+        )
       ],
     );
   }
