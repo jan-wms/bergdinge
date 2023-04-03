@@ -8,243 +8,229 @@ class Data {
     'Sportklettern',
     'Mehrtagestour',
     'Tagestour',
+    'Alpinklettern',
+    'Tradklettern',
+    'Freeride',
+    'Klettersteig',
   ];
 
   final _categories = {
     'Bekleidung': {
-      'Jacken': {
-        'Hardshelljacke': null,
-        'Softshelljacke': null,
-        'Isolationsjacke': null,
-        'Windbreaker': null,
-        'Skijacke': null,
-        'Poncho': null,
-        'Sonstige': null,
+      'Accessories': {
+        'Brillen': {
+          'Sonnenbrillen': null,
+          'Gletscherbrillen': null,
+          'Sicherungsbrillen': null,
+          'Skibrillen': null,
+          'Sonstige': null,
+        },
+        'Gamaschen': null,
+        'Gürtel & Hosenträger': null,
+        'Handschuhe': null,
+        'Kopfbedeckungen': {
+          'Mützen': null,
+          'Stirnbänder': null,
+          'Sturmhauben': null,
+          'Hüte': null,
+          'Caps': null,
+          'Sonstige': null,
+        },
+        'Multifunktionstücher & Schals': null,
+        'Sonstige': null
       },
+      'Baselayer': {
+        'BHs': null,
+        'Hemden': null,
+        'Longsleeves': null,
+        'Tanktops': null,
+        'T-Shirts': null,
+        'Unterhemden': null,
+        'Unterhosen': null,
+        'Lange Unterhosen': null,
+        'Sonstige': null,      },
       'Hosen': {
-        'Skihose': null,
-        'Trekkinghose': null,
-        'Hochtourenhose': null,
-        'Kletterhose': null,
-        'Hardshellhose': null,
-        'Softshellhose': null,
-        'Laufhose': null,
-        'Skitourenhose': null,
-        'Isolationshose': null,
-        'Shorts': null,
-      },
-      'Pullover & Hoodies': {
-        'Fleecejacke': null,
-        'Woll- & Merinojacke': null,
-        'Hoodie': null,
-        'Pullover': null,
+        'Hardshellhosen': null,
+        'Hochtourenhosen': null,
+        'Isolationshosen': null,
+        'Kletterhosen': null,
+        'Laufhosen': null,
+        'Shortsn': null,
+        'Skihosen': null,
+        'Skitourenhosen': null,
+        'Softshellhosen': null,
+        'Trekkinghosen': null,
         'Sonstige': null,
       },
-      'T-Shirts & Longsleeves': {
-        'Longsleeve': null,
-        'T-Shirt': null,
-        'Hemd': null,
-        'Tanktop': null,
+      'Jacken': {
+        'Hardshelljacken': null,
+        'Isolationsjacken': null,
+        'Ponchos': null,
+        'Skijacken': null,
+        'Softshelljacken': null,
+        'Windbreaker': null,
         'Sonstige': null,
       },
-      'Weste': null,
-      'Funktionsunterwäsche': {
-        'Unterhose': null,
-        'Lange Unterhose': null,
-        'Unterhemd': null,
-        'BH': null,
+      'Second Layer': {
+        'Fleece': null,
+        'Hoodies & Pullover': null,
+        'Wolle & Merino': null,
         'Sonstige': null,
       },
+      'Westen': null,
       'Socken': {
+        'Laufsocken': null,
         'Skisocken': null,
         'Wandersocken': null,
-        'Laufsocken': null,
         'Sonstige': null,
       },
-      'Accessories': {
-        'Handschuhe': null,
-        'Multifunktionstücher & Schals': null,
-        'Gürtel & Hosenträger': null,
-        'Gamaschen': null,
-        'Kopfbedeckung': {
-          'Mütze': null,
-          'Stirnband': null,
-          'Sturmhaube': null,
-          'Hut': null,
-          'Cap': null,
-          'Sonstige': null,
-        },
-        'Brillen': {
-          'Sonnenbrille': null,
-          'Gletscherbrille': null,
-          'Sicherungsbrillen': null,
-          'Skibrille': null,
-          'Sonstige': null,
-        },
-        'Sonstige': null
-      }
     },
     'Schuhe': {
-      'Wander- & Bergschuhe': null,
-      'Winterschuhe': null,
-      'Zustiegsschuhe': null,
       'Barfussschuhe': null,
+      'Berg- & Wanderschuhe': null,
       'Hüttenschuhe': null,
       'Kletterschuhe': null,
       'Sandalen': null,
       'Trail- & Laufschuhe': null,
+      'Winterschuhe': null,
+      'Zustiegsschuhe': null,
       'Sonstige': null,
     },
     'Ausrüstung': {
-  'Messer & Werkzeuge': {
-  'Äxte & Beile': null,
-  'Feststehende Messer': null,
-  'Taschenmesser und Multitools': null,
-  'Sonstige': null,
-  },
-  'Orientierung & Technik': {
-  'GPS-Gerät': null,
-  'Kompass': null,
-  'Stirn & Taschenlampe': null,
-  'Batterien & Akkus': null,
-  'Kabel & Stecker': null,
-  'Kamera': null,
-  'Smartphone': null,
-  'Uhr': null,
-  'Bücher & Karten': {
-  'Kletterführer': null,
-  'Trainings- & Lehrbücher': null,
-  'Wanderführer': null,
-  'Kartenmaterial': null,
-},
-  'Sonstige':null,
-  },
-  'Klettern': {
-  'Kletterhelm': null,
-  'Klettergurt': null,
-  'Klettersteigset': null,
-  'Hochtouren- & Eisausrüstung': {
-  'Steigeisen': null
-  'Eispickel': null,
-  'Eisschrauben': null,
-  },
-  'Sicherungs- & Abseilgeräte': null,
-
-
-  'Karabiner
-  Karabiner & Expressen
-  Seile, Schlingen & Reepschnüre
-  Keile, Friends & Haken
-  KARABINER & EXPRESS-SETS
-  Express-Sets
-  HMS-Karabiner
-  Schnappkarabiner
-
-  KLETTERSEILE
-  Einfachseile
-  Halbseile
-  Seilsäcke & Seilzubehör
-
-  'Kletter- & Boulderzubehör': {
-  'Chalkbags': null,
-  'Chalk': null,
-  'Kletter- & Boulderbürsten': null,
-  'Crashpads': null,
-}
-  SCHLINGEN & REEPSCHNUR
-  Rundschlingen
-  Reepschnur
-  Express-Schlingen
-
-  BIGWALL & TRADCLIMBING
-  Klemmgeräte & Friends
-  Klemmkeile
-  Steigklemmen
-  },
-'Schlafen & Liegen': {
-'Zelt': null,
-'Tarp':null,
-'Hängematte': null,
-'Schlafsack': null,
-'Isomatte': null,
-'Decken': null,
-'Kissen':null,
-'Moskitonetze': null,
-'Biwaksack': null,
-},
-  'Outdoor Küche': {
-'Trinkflaschen & Wasserträger': {
-'Trinkflasche': null,
-'Thermoskanne': null,
-'Trinkblase': null,
-},
-'Kocher': null,
-'Töpfe & Pfannen': null,
-'Geschirr & Besteck': null,
-'Behälter': null,
-'Grill & Feuer': null,
-},
-
-
-
-
-  Freerideski
-  Freeridebindungen
-  Freerideskischuhe
-  Langlaufausrüstung
-  Langlaufski
-  Langlaufbindungen
-  Langlaufschuhe
-  Langlaufstöcke
-
-'Wintersportausrüstung': {
-  'Schneeschuhe': null,
-  'Rodel': null,
-  'Grödel & Spikes': null,
-  'Skihelme & Protektoren': null,
-'Skitour': {
-'Skifelle': null,
-'Tourenski': null,
-'Tourenskischuhe': null,
-'Tourenbindungen': null,
-'Harscheisen': null,
-},
-},
-STÖCKE
-  Trekkingstöcke
-  Trailrunning Stöcke
-  Nordic Walking Stöcke
-
-Insekten- & Sonnenschutz
-Hygiene
-Wasseraufbereitung
-Handtücher
-Pflegeprodukte
-  REISEZUBEHÖR & PFLEGEMITTEL
-  Mikrofaserhandtücher
-  Drogerie & Körperpflege
-
-  'Rucksäcke & Taschen': {
-'Rucksäcke': {
-  'Wanderrucksack': null,
-  'Kletterrucksack': null,
-  'Hochtourenrucksack': null,
-  'Lawinenrucksack': null,
-  'Trailrunningweste': null,
-  'Kraxe': null,
-  },
-  'Taschen': null,
-  'Packsäcke': null,
-  'Schutzhülle': null,
-  },
+      'Hygiene': {
+        'Drogerie & Körperpflege': null,
+        'Handtücher': null,
+        'Insekten- & Sonnenschutz': null,
+        'Wasseraufbereitung': null,
+        'Sonstige': null,
+      },
+      'Klettern': {
+        'Kletterhelm': null,
+        'Klettergurt': null,
+        'Klettersteigset': null,
+        'Hochtouren- & Eisausrüstung': {
+          'Steigeisen': null,
+          'Eispickel': null,
+          'Eisschrauben': null,
+        },
+        'Sicherungs- & Abseilgeräte': null,
+        'Kletter- & Boulderzubehör': {
+          'Chalkbags': null,
+          'Chalk': null,
+          'Kletter- & Boulderbürsten': null,
+          'Crashpads': null,
+        },
+        'Karabiner & Expressen': {
+          'HMS-Karabiner': null,
+          'Schnappkarabiner': null,
+          'Express-Schlingen': null,
+          'Sonstige': null,
+        },
+        'Seile, Schlingen & Reepschnüre': {
+          'Bandschlingen': null,
+          'Reepschnur': null,
+          'Kletterseile': null,
+          'Seilsäcke': null,
+        },
+        'Klemmgeräte & Friends': null,
+        'Sonstige': null,
+      },
+      'Messer & Werkzeuge': {
+        'Äxte & Beile': null,
+        'Feststehende Messer': null,
+        'Taschenmesser und Multitools': null,
+        'Sonstige': null,
+      },
       'Notfallausrüstung': {
-        'Erste Hilfe',
+        'Erste Hilfe': null,
         'Lawinenausrüstung': {
-  'LVS-Geräte': null,
-  'Schaufeln': null,
-  'Sonden': null,
-  },
-        'Biwaksack',
+          'LVS-Geräte': null,
+          'Schaufeln': null,
+          'Sonden': null,
+        },
+        'Biwaksack': null,
+        'Sonstige': null,
+      },
+      'Orientierung & Technik': {
+        'GPS-Geräte': null,
+        'Kompasse': null,
+        'Stirn & Taschenlampen': null,
+        'Batterien & Akkus': null,
+        'Kabel & Stecker': null,
+        'Kamera': null,
+        'Smartphone': null,
+        'Uhr': null,
+        'Bücher & Karten': {
+          'Kletterführer': null,
+          'Trainings- & Lehrbücher': null,
+          'Wanderführer': null,
+          'Kartenmaterial': null,
+        },
+        'Sonstige': null,
+      },
+      'Outdoor Küche': {
+        'Trinkflaschen & Wasserträger': {
+          'Trinkflasche': null,
+          'Thermoskanne': null,
+          'Trinkblase': null,
+        },
+        'Kocher': null,
+        'Töpfe & Pfannen': null,
+        'Geschirr & Besteck': null,
+        'Behälter': null,
+        'Grill & Feuer': null,
+        'Sonstige': null,
+      },
+      'Rucksäcke & Taschen': {
+        'Packsäcke': null,
+        'Rucksäcke': {
+          'Hochtourenrucksäcke': null,
+          'Kletterrucksäcke': null,
+          'Kraxen': null,
+          'Ski- & Lawinenrucksäcke': null,
+          'Trailrunning Rucksäcke': null,
+          'Wander- & Trekkingrucksäcke': null,
+          'Sonstige': null,
+        },
+        'Schutzhüllen': null,
+        'Taschen': null,
+        'Sonstige': null,
+      },
+      'Schlafen & Liegen': {
+        'Biwaksack': null,
+        'Decken': null,
+        'Hängematte': null,
+        'Isomatte': null,
+        'Kissen': null,
+        'Moskitonetze': null,
+        'Schlafsack': null,
+        'Tarps': null,
+        'Zelte': null,
+        'Sonstige': null,
+      },
+      'Stöcke': {
+        'Ski Stöcke': null,
+        'Trekkingstöcke': null,
+        'Trailrunning Stöcke': null,
+        'Sonstige': null,
+      },
+      'Wintersportausrüstung': {
+        'Freeride': {
+          'Freeridebindungen': null,
+          'Freerideski': null,
+          'Freerideskischuhe': null,
+        },
+        'Grödel & Spikes': null,
+        'Rodel': null,
+        'Schneeschuhe': null,
+        'Skihelme & Protektoren': null,
+        'Skitour': {
+          'Harscheisen': null,
+          'Skifelle': null,
+          'Tourenski': null,
+          'Tourenskischuhe': null,
+          'Tourenbindungen': null,
+        },
+        'Sonstige': null,
       },
     },
     'Verpflegung': {
@@ -254,5 +240,6 @@ Pflegeprodukte
   };
 
   List<String> get sports => _sports;
-  Map<String, dynamic> get categories => _categories;
+
+  Map<String, Map<String, Map<String, Map<String, Null>?>?>> get categories => _categories;
 }

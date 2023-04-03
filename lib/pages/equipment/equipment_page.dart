@@ -32,7 +32,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
             'Meine Ausrüstung',
           ),
           ElevatedButton(
-              onPressed: () => context.go('/equipment/add'),
+              onPressed: () => context.go('/equipment/edit'),
               child: const Text('Gegenstand hinzufügen')),
           StreamBuilder<QuerySnapshot>(
             stream: _usersStream,

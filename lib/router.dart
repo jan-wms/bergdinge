@@ -1,4 +1,4 @@
-import 'package:equipment_app/pages/equipment/add_equipment.dart';
+import 'package:equipment_app/pages/equipment/edit_equipment.dart';
 import 'package:equipment_app/pages/home_page.dart';
 import 'package:equipment_app/pages/login_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
@@ -36,8 +36,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (context, state) => const EquipmentPage(),
                 routes: [
                   GoRoute(
-                    path: 'add',
-                    builder: (context, state) => const AddEquipment(),
+                    path: 'edit',
+                    builder: (context, state) => const EditEquipment(),
                   )
                 ]),
           ]),

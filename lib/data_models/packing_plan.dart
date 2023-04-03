@@ -1,15 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 
+enum Place {
+  body, backpack,
+}
+
+enum Season {
+  spring,
+  summer,
+  autumn,
+  winter,
+}
+
 class PackingPlan {
   final String name;
   final double weight;
-  final List<Equipment> items;
+  final Map<Equipment, Place> items;
+  final Season? season;
 
   PackingPlan({
     required this.name,
     required this.weight,
     required this.items,
+    this.season,
   });
 
   factory PackingPlan.fromFirestore(
@@ -20,7 +33,7 @@ class PackingPlan {
     return PackingPlan(
       name: data?['name'],
       weight: data?['weight'],
-      items: List.from(data?['items']),
+      items: Map.from(data?['items']),
     );
   }
 
