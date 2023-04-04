@@ -5,24 +5,15 @@ enum Place {
   body, backpack,
 }
 
-enum Season {
-  spring,
-  summer,
-  autumn,
-  winter,
-}
-
 class PackingPlan {
   final String name;
-  final double weight;
   final Map<Equipment, Place> items;
-  final Season? season;
+  final List<String> sports;
 
   PackingPlan({
     required this.name,
-    required this.weight,
     required this.items,
-    this.season,
+    required this.sports,
   });
 
   factory PackingPlan.fromFirestore(
@@ -32,16 +23,16 @@ class PackingPlan {
     final data = snapshot.data();
     return PackingPlan(
       name: data?['name'],
-      weight: data?['weight'],
       items: Map.from(data?['items']),
+      sports: List.from(data?['sports']),
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
       "name": name,
-      "weight": weight,
       "items": items,
+      "sports": sports,
     };
   }
 }

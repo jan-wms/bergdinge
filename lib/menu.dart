@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'firebase/firebase_auth.dart';
 
 class Menu extends StatelessWidget {
   const Menu({Key? key}) : super(key: key);
@@ -15,7 +14,7 @@ class Menu extends StatelessWidget {
         ),
         ListTile(
           title: const Text('Packlisten'),
-          onTap: () => GoRouter.of(context).go('/equipment'),
+          onTap: () => GoRouter.of(context).go('/packing_plan'),
         ),
         ListTile(
           title: const Text('Ausrüstung'),
@@ -23,7 +22,7 @@ class Menu extends StatelessWidget {
         ),
         ListTile(
           title: const Text('Einstellungen'),
-          onTap: () => GoRouter.of(context).go('/equipment'),
+          onTap: () => GoRouter.of(context).go('/settings'),
         ),
       ],
     );

@@ -1,25 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/data_models/equipment.dart';
-import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class EquipmentPage extends StatefulWidget {
-  const EquipmentPage({super.key});
+import '../../data_models/equipment.dart';
+import '../../data_models/packing_plan.dart';
+import '../../firebase/firebase_auth.dart';
+
+class PackingPlanPage extends StatefulWidget {
+  const PackingPlanPage({Key? key}) : super(key: key);
 
   @override
-  State<EquipmentPage> createState() => _EquipmentPageState();
+  State<PackingPlanPage> createState() => _PackingPlanPageState();
 }
 
-class _EquipmentPageState extends State<EquipmentPage> {
+class _PackingPlanPageState extends State<PackingPlanPage> {
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
       .collection('users')
       .doc(Auth().user?.uid)
-      .collection('equipment')
+      .collection('packing_plan')
       .withConverter(
-        fromFirestore: Equipment.fromFirestore,
-        toFirestore: (Equipment e, _) => e.toFirestore(),
-      )
+    fromFirestore: PackingPlan.fromFirestore,
+    toFirestore: (PackingPlan p, _) => p.toFirestore(),
+  )
       .snapshots();
 
   @override
@@ -29,11 +31,11 @@ class _EquipmentPageState extends State<EquipmentPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Text(
-            'Meine Ausrüstung',
+            'Meine Packlisten',
           ),
           ElevatedButton(
-              onPressed: () => context.push('/equipment/edit'),
-              child: const Text('Gegenstand hinzufügen')),
+              onPressed: () => context.push('/packing_plan/edit'),
+              child: const Text('Packliste erstellen')),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _usersStream,
@@ -51,15 +53,12 @@ class _EquipmentPageState extends State<EquipmentPage> {
                   shrinkWrap: true,
                   children: snapshot.data!.docs
                       .map((DocumentSnapshot document) {
-                        Equipment e = document.data() as Equipment;
-                        return ListTile(
-                            title: Text('${e.brand!} ${e.name}'),
-                            subtitle: Text(e.size ?? ''),
-                            onTap: () {
-                              context.push('/equipment/details', extra: e);
-                            },
-                        );
-                      })
+                    PackingPlan p = document.data() as PackingPlan;
+                    return ListTile(
+                      title: Text(p.name),
+                      subtitle: Text(p.sports.toString()),
+                    );
+                  })
                       .toList()
                       .cast(),
                 );

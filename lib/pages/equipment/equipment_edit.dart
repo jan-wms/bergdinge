@@ -5,16 +5,17 @@ import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 
+import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
-class EditEquipment extends StatefulWidget {
-  const EditEquipment({super.key});
+class EquipmentEdit extends StatefulWidget {
+  const EquipmentEdit({super.key});
 
   @override
-  State<EditEquipment> createState() => _EditEquipmentState();
+  State<EquipmentEdit> createState() => _EquipmentEditState();
 }
 
-class _EditEquipmentState extends State<EditEquipment> {
+class _EquipmentEditState extends State<EquipmentEdit> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerBrand = TextEditingController();
   final TextEditingController _controllerWeight = TextEditingController();
@@ -35,9 +36,9 @@ class _EditEquipmentState extends State<EditEquipment> {
       weight: double.parse(_controllerWeight.text),
       status: _controllerStatus.text,
       brand: _controllerBrand.text,
-      price: double.parse(_controllerPrice.text),
+      price: _controllerPrice.text.isNotEmpty ? double.parse(_controllerPrice.text) : null,
       size: _controllerSize.text,
-      uvp: double.parse(_controllerUvp.text),
+      uvp: _controllerUvp.text.isNotEmpty ? double.parse(_controllerUvp.text) : null,
       category: category,
       sports: sports,
       daysInUse: null,
@@ -67,12 +68,12 @@ class _EditEquipmentState extends State<EditEquipment> {
           ],
         ),
         TextField(
-          controller: _controllerName,
-          decoration: const InputDecoration(hintText: 'Name'),
-        ),
-        TextField(
           controller: _controllerBrand,
           decoration: const InputDecoration(hintText: 'Hersteller'),
+        ),
+        TextField(
+          controller: _controllerName,
+          decoration: const InputDecoration(hintText: 'Name'),
         ),
         TextField(
           controller: _controllerWeight,
@@ -133,67 +134,6 @@ class _EditEquipmentState extends State<EditEquipment> {
   }
 }
 
-Future<List<String>> selectSports(
-    BuildContext context, List<String> selected) async {
-  final GlobalKey<_SelectSportsState> k = GlobalKey();
-  final SelectSports selectSports = SelectSports(
-    key: k,
-    selected: selected,
-  );
-  await showCustomModal(
-    context,
-    selectSports,
-    null,
-    IconButton(
-      onPressed: () => Navigator.of(context).pop(),
-      icon: const Icon(Icons.close),
-    ),
-  );
-  return k.currentState!.selected;
-}
-
-class SelectSports extends StatefulWidget {
-  final List<String> selected;
-
-  const SelectSports({Key? key, required this.selected}) : super(key: key);
-
-  @override
-  State<SelectSports> createState() => _SelectSportsState();
-}
-
-class _SelectSportsState extends State<SelectSports> {
-  late List<String> selected = widget.selected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text('Sportarten'),
-        Wrap(spacing: 5.0, children: [
-          for (var sport in Data().sports)
-            FilterChip(
-              label: Text(sport),
-              selected: selected.contains(sport),
-              onSelected: (bool value) {
-                setState(() {
-                  if (value) {
-                    if (!selected.contains(sport)) {
-                      selected.add(sport);
-                    }
-                  } else {
-                    selected.removeWhere((String s) {
-                      return s == sport;
-                    });
-                  }
-                });
-              },
-            )
-        ]),
-      ],
-    );
-  }
-}
-
 Future<int> selectCategory(BuildContext context, int selected) async {
   final GlobalKey<_SelectCategoryState> k = GlobalKey();
   final SelectCategory selectCategory = SelectCategory(
@@ -236,6 +176,7 @@ class _SelectCategoryState extends State<SelectCategory> {
               selected = element.id;
             });
           },
+          trailing: element.id == selected ? const Icon(Icons.check) : null,
         ));
       } else {
         widgets.add(ExpansionTile(

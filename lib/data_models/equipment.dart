@@ -42,7 +42,7 @@ class Equipment {
       uvp: data?['uvp'],
       price: data?['price'],
       brand: data?['brand'],
-      purchaseDate: data?['purchaseDate'],
+      purchaseDate: DateTime.tryParse(data?['purchaseDate'] ?? ''),
       category: data?['category'],
       sports: data?['sports'] is Iterable ? List.from(data?['sports']) : null,
       daysInUse:
@@ -63,8 +63,8 @@ class Equipment {
       if (price != null) "price": price,
       if (brand != null) "brand": brand,
       if (daysInUse != null) "daysInUse": daysInUse,
-      if (purchaseDate != null) "purchaseDate": purchaseDate,
-      "categories": category,
+      if (purchaseDate != null) "purchaseDate": purchaseDate.toString(),
+      "category": category,
       if (sports != null) "sports": sports,
       if (runningCosts != null) "runningCosts": runningCosts,
     };
