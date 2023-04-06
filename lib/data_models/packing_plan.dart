@@ -5,8 +5,10 @@ class PackingPlan {
   String name;
   List<PackingPlanItem> items;
   List<String> sports;
+  String id;
 
   PackingPlan({
+    required this.id,
     required this.name,
     required this.items,
     required this.sports,
@@ -19,6 +21,7 @@ class PackingPlan {
     final data = snapshot.data();
     return PackingPlan(
       name: data?['name'],
+      id: data?['id'],
       items: List.from(List.from(data?['items']).map((e) => PackingPlanItem.fromMap(e))),
       sports: List.from(data?['sports']),
     );
@@ -27,6 +30,7 @@ class PackingPlan {
   Map<String, dynamic> toMap() {
     return {
       "name": name,
+      "id": id,
       "items": items.map((e) => e.toMap()),
       "sports": sports,
     };

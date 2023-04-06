@@ -26,7 +26,10 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
     super.initState();
     packingPlan = widget.packingPlan ??
         PackingPlan(
-            name: 'Fehler', items: <PackingPlanItem>[], sports: <String>[]);
+            id: widget.packingPlan?.id ?? 'Fehler',
+            name: 'Fehler',
+            items: <PackingPlanItem>[],
+            sports: <String>[]);
 
     if (widget.packingPlan != null) _controllerName.text = packingPlan.name;
   }
@@ -34,11 +37,13 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
   void edit() async {
     packingPlan.name = _controllerName.text;
 
-    await FirebaseFirestore.instance
+    DocumentReference ref = FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('packing_plan')
-        .add(packingPlan.toMap());
+        .doc(widget.packingPlan?.id);
+    packingPlan.id = ref.id;
+    await ref.set(packingPlan.toMap());
   }
 
   @override
@@ -92,8 +97,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
               for (var item in packingPlan.items)
                 ListTile(
                   title:
-                      Text((item.equipment.brand ?? '') + item.equipment.name),
-                  subtitle: Text(item.equipment.size ?? 'no size'),
+                      Text(item.equipmentId),
                 ),
             ])),
       ],
@@ -164,27 +168,27 @@ class _SelectEquipmentState extends State<SelectEquipment> {
                   shrinkWrap: true,
                   children: snapshot.data!.docs
                       .map((DocumentSnapshot document) {
-                        Equipment e = document.data() as Equipment;
+                        Equipment equipment = document.data() as Equipment;
                         return ListTile(
-                          title: Text((e.brand ?? '') + e.name),
-                          subtitle: Text(e.sports.toString()),
+                          title: Text((equipment.brand ?? '') + equipment.name),
+                          subtitle: Text(equipment.sports.toString()),
                           trailing: selected
-                                  .where((element) => element.equipment == e)
+                                  .where((element) => element.equipmentId == equipment.id)
                                   .isNotEmpty
                               ? const Icon(Icons.check)
                               : null,
                           onTap: () {
                             if (selected
-                                .where((element) => element.equipment == e)
+                                .where((element) => element.equipmentId == equipment.id)
                                 .isNotEmpty) {
                               setState(() {
                                 selected.removeWhere(
-                                    (element) => element.equipment == e);
+                                    (element) => element.equipmentId == equipment.id);
                               });
                             } else {
                               setState(() {
                                 selected.add(PackingPlanItem(
-                                    equipment: e,
+                                    equipmentId: equipment.id,
                                     place: Data.places['backpack']!,
                                     count: 1));
                               });

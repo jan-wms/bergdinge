@@ -64,35 +64,6 @@ class Equipment {
     );
   }
 
-  factory Equipment.fromMap(
-    Map<String, dynamic> map,
-  ) {
-    return Equipment(
-      /*
-      daysInUse:
-          data?['daysInUse'] is Iterable ? Map.from(data?['daysInUse']) : null,
-      runningCosts: data?['runningCosts'] is Iterable
-          ? Map.from(data?['runningCosts'])
-          : null,*/
-      name: map['name']!,
-      id: map['id'],
-      weight: (map['weight'] as num).toDouble(),
-      size: map['size'],
-      status: EquipmentStatus.fromString(map['status']),
-      uvp: map['uvp'] != null ? (map['uvp'] as num).toDouble() : null,
-      price: map['price'] != null ? (map['price'] as num).toDouble() : null,
-      brand: map['brand'],
-      purchaseDate: DateTime.tryParse(map['purchaseDate'] ?? ''),
-      category: (map['category'] as num).toInt(),
-      count: (map['count'] as num).toInt(),
-      sports: map['sports'] is Iterable
-          ? List.from(map['sports'] as Iterable)
-          : null,
-      daysInUse: null,
-      runningCosts: null,
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return {
       "name": name,

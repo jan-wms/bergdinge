@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../data/providers.dart';
 import '../../data_models/packing_plan.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -17,9 +19,9 @@ class _PackingPlanPageState extends State<PackingPlanPage> {
       .doc(Auth().user?.uid)
       .collection('packing_plan')
       .withConverter(
-    fromFirestore: PackingPlan.fromFirestore,
-    toFirestore: (PackingPlan p, _) => p.toMap(),
-  )
+        fromFirestore: PackingPlan.fromFirestore,
+        toFirestore: (PackingPlan p, _) => p.toMap(),
+      )
       .snapshots();
 
   @override
@@ -37,8 +39,8 @@ class _PackingPlanPageState extends State<PackingPlanPage> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _usersStream,
-              builder:
-                  (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text(snapshot.error.toString());
                 }
@@ -51,15 +53,15 @@ class _PackingPlanPageState extends State<PackingPlanPage> {
                   shrinkWrap: true,
                   children: snapshot.data!.docs
                       .map((DocumentSnapshot document) {
-                    PackingPlan p = document.data() as PackingPlan;
-                    return ListTile(
-                      title: Text(p.name),
-                      subtitle: Text(p.sports.toString()),
-                      onTap: () {
-                        context.push('/packing_plan/details', extra: p);
-                      },
-                    );
-                  })
+                        PackingPlan p = document.data() as PackingPlan;
+                        return ListTile(
+                          title: Text(p.name),
+                          subtitle: Text(p.sports.toString()),
+                          onTap: () {
+                            context.push('/packing_plan/details', extra: p);
+                          },
+                        );
+                      })
                       .toList()
                       .cast(),
                 );
