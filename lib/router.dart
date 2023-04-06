@@ -42,35 +42,34 @@ final routerProvider = Provider<GoRouter>((ref) {
               builder: (context, state) => const Settings(),
             ),
             GoRoute(
-              path: '/packing_plan',
-              builder: (context, state) => const PackingPlanPage(),
-              routes: [
-                GoRoute(
-                  path: 'edit',
-                  builder: (context, state) => const PackingPlanEdit(),
-                ),
-                GoRoute(
-                    path: 'details',
-                    builder: (context, state) {
-                      PackingPlan p =
-                      state.extra as PackingPlan;
-                      return PackingPlanDetails(packingPlan: p);
-                    }),
-              ]
-            ),
+                path: '/packing_plan',
+                builder: (context, state) => const PackingPlanPage(),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => const PackingPlanEdit(),
+                  ),
+                  GoRoute(
+                      path: 'details',
+                      builder: (context, state) {
+                        PackingPlan p = state.extra as PackingPlan;
+                        return PackingPlanDetails(packingPlan: p);
+                      }),
+                ]),
             GoRoute(
                 path: '/equipment',
                 builder: (context, state) => const EquipmentPage(),
                 routes: [
                   GoRoute(
-                    path: 'edit',
-                    builder: (context, state) => const EquipmentEdit(),
-                  ),
+                      path: 'edit',
+                      builder: (context, state) {
+                        Equipment? e = state.extra as Equipment?;
+                        return EquipmentEdit(equipment: e);
+                      }),
                   GoRoute(
                       path: 'details',
                       builder: (context, state) {
-                        Equipment e =
-                            state.extra as Equipment;
+                        Equipment e = state.extra as Equipment;
                         return EquipmentDetails(equipment: e);
                       }),
                 ]),

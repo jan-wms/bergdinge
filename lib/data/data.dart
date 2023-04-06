@@ -1,5 +1,23 @@
 import 'package:equipment_app/data_models/category.dart';
 
+enum EquipmentStatus {
+  active,
+  disabled;
+
+  factory EquipmentStatus.fromString(
+    String s,
+    ) {
+    switch (s) {
+      case 'EquipmentStatus.disabled':
+        return EquipmentStatus.disabled;
+      case 'EquipmentStatus.active':
+        return EquipmentStatus.active;
+      default:
+        return EquipmentStatus.active;
+    }
+  }
+}
+
 class Data {
   static List<String> sports = [
     'Wandern',

@@ -8,55 +8,72 @@ import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
 class EquipmentEdit extends StatefulWidget {
-  const EquipmentEdit({super.key});
+  final Equipment? equipment;
+
+  const EquipmentEdit({super.key, this.equipment});
 
   @override
   State<EquipmentEdit> createState() => _EquipmentEditState();
 }
 
 class _EquipmentEditState extends State<EquipmentEdit> {
+  late Equipment equipment;
+
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerBrand = TextEditingController();
   final TextEditingController _controllerWeight = TextEditingController();
   final TextEditingController _controllerPrice = TextEditingController();
   final TextEditingController _controllerSize = TextEditingController();
-  final TextEditingController _controllerStatus = TextEditingController();
   final TextEditingController _controllerUvp = TextEditingController();
 
-  int count = 1;
-  int category = -1;
-  List<String> sports = <String>[];
-  DateTime? purchaseDate;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    equipment = widget.equipment ??
+        Equipment(
+          name: 'Fehler',
+          weight: 0.0,
+          brand: null,
+          size: null,
+          price: null,
+          purchaseDate: null,
+          uvp: null,
+          status: EquipmentStatus.active,
+          sports: <String>[],
+          category: -1,
+          count: 1,
+          runningCosts: null,
+          daysInUse: null,
+        );
 
-  late Map<double, String>? runningCosts;
-  late Map<int, String>? daysInUse;
+    if (widget.equipment != null) {
+      _controllerName.text = equipment.name;
+      _controllerBrand.text = equipment.brand ?? '';
+      _controllerWeight.text = equipment.weight.toString();
+      _controllerPrice.text = (equipment.price ?? '').toString();
+      _controllerSize.text = equipment.size ?? '';
+      _controllerUvp.text = (equipment.uvp ?? '').toString();
+    }
+  }
 
-  void add() async {
-    Equipment e = Equipment(
-      name: _controllerName.text,
-      weight: double.parse(_controllerWeight.text),
-      status: _controllerStatus.text,
-      brand: _controllerBrand.text,
-      price: _controllerPrice.text.isNotEmpty
-          ? double.parse(_controllerPrice.text)
-          : null,
-      size: _controllerSize.text,
-      uvp: _controllerUvp.text.isNotEmpty
-          ? double.parse(_controllerUvp.text)
-          : null,
-      category: category,
-      sports: sports,
-      daysInUse: null,
-      purchaseDate: purchaseDate,
-      runningCosts: null,
-      count: count,
-    );
+  void edit() async {
+    equipment.name = _controllerName.text;
+    equipment.brand = _controllerBrand.text;
+    equipment.weight = double.parse(_controllerWeight.text);
+    equipment.price = _controllerPrice.text.isNotEmpty
+        ? double.parse(_controllerPrice.text)
+        : null;
+    equipment.size = _controllerSize.text;
+    equipment.uvp = _controllerUvp.text.isNotEmpty
+        ? double.parse(_controllerUvp.text)
+        : null;
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('equipment')
-        .add(e.toMap());
+        .add(equipment.toMap());
   }
 
   @override
@@ -68,9 +85,10 @@ class _EquipmentEditState extends State<EquipmentEdit> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(''),
-            const Text('Gegenstand hinzufügen'),
+            Text('Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
             ElevatedButton(
-                onPressed: () => add(), child: const Text('Hinzufügen')),
+                onPressed: () => edit(), child: Text(widget.equipment != null ? ''
+                'Bearbeiten' : 'Hinzufügen')),
           ],
         ),
         TextField(
@@ -97,23 +115,23 @@ class _EquipmentEditState extends State<EquipmentEdit> {
           controller: _controllerUvp,
           decoration: const InputDecoration(hintText: 'UVP'),
         ),
-        TextField(
-          controller: _controllerStatus,
-          decoration: const InputDecoration(hintText: 'Status'),
-        ),
         Row(
           children: [
-            ElevatedButton(onPressed: () {
-              setState(() {
-                if(count > 1) count--;
-              });
-            }, child: const Text('-')),
-            Text(count.toString()),
-            ElevatedButton(onPressed: () {
-              setState(() {
-                count++;
-              });
-            }, child: const Text('+')),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (equipment.count > 1) equipment.count--;
+                  });
+                },
+                child: const Text('-')),
+            Text(equipment.count.toString()),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    equipment.count++;
+                  });
+                },
+                child: const Text('+')),
           ],
         ),
         ElevatedButton(
@@ -125,28 +143,32 @@ class _EquipmentEditState extends State<EquipmentEdit> {
               lastDate: DateTime.now(),
             );
             setState(() {
-              purchaseDate = d;
+              equipment.purchaseDate = d;
             });
           },
-          child: Text(purchaseDate?.toString() ?? 'date not definded'),
+          child:
+              Text(equipment.purchaseDate?.toString() ?? 'date not definded'),
         ),
         ListTile(
-          title: Text(sports.isNotEmpty ? sports.toString() : 'Sportart'),
+          title: Text(equipment.sports!.isNotEmpty
+              ? equipment.sports.toString()
+              : 'Sportart'),
           trailing: const Icon(Icons.chevron_right_outlined),
           onTap: () async {
-            final List<String> s = await selectSports(context, sports);
+            final List<String> s =
+                await selectSports(context, equipment.sports!);
             setState(() {
-              sports = s;
+              equipment.sports = s;
             });
           },
         ),
         ListTile(
-          title: Text('Kategorie: $category'),
+          title: Text('Kategorie: ${equipment.category}'),
           trailing: const Icon(Icons.chevron_right_outlined),
           onTap: () async {
-            final int i = await selectCategory(context, category);
+            final int i = await selectCategory(context, equipment.category);
             setState(() {
-              category = i;
+              equipment.category = i;
             });
           },
         ),

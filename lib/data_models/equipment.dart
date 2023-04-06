@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../data/data.dart';
+
 class Equipment {
-  final String name;
-  final double weight;
-  final String status;
-  final String? size;
-  final String? brand;
-  final double? uvp;
-  final double? price;
-  final DateTime? purchaseDate;
-  final int category;
-  final int count;
-  final List<String>? sports;
+  String name;
+  double weight;
+  EquipmentStatus status;
+  String? size;
+  String? brand;
+  double? uvp;
+  double? price;
+  DateTime? purchaseDate;
+  int category;
+  int count;
+  List<String>? sports;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
 
@@ -46,7 +48,7 @@ class Equipment {
       name: data?['name'],
       weight: (data?['weight'] as num).toDouble(),
       size: data?['size'],
-      status: data?['status'],
+      status: EquipmentStatus.fromString(data?['status']),
       uvp: data?['uvp'] != null ? (data?['uvp'] as num).toDouble() : null,
       price: data?['price'] != null ? (data?['price'] as num).toDouble() : null,
       brand: data?['brand'],
@@ -72,7 +74,7 @@ class Equipment {
       name: map['name']!,
       weight: (map['weight'] as num).toDouble(),
       size: map['size'],
-      status: map['status']!,
+      status: EquipmentStatus.fromString(map['status']),
       uvp: map['uvp'] != null ? (map['uvp'] as num).toDouble() : null,
       price: map['price'] != null ? (map['price'] as num).toDouble() : null,
       brand: map['brand'],
@@ -91,7 +93,7 @@ class Equipment {
     return {
       "name": name,
       "weight": weight,
-      "status": status,
+      "status": status.toString(),
       if (size != null) "size": size,
       if (uvp != null) "uvp": uvp,
       if (price != null) "price": price,
