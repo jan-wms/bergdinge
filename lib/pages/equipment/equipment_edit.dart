@@ -28,10 +28,10 @@ class _EquipmentEditState extends State<EquipmentEdit> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     equipment = widget.equipment ??
         Equipment(
+          id: widget.equipment?.id ?? 'Fehler',
           name: 'Fehler',
           weight: 0.0,
           brand: null,
@@ -69,11 +69,15 @@ class _EquipmentEditState extends State<EquipmentEdit> {
         ? double.parse(_controllerUvp.text)
         : null;
 
-    await FirebaseFirestore.instance
+    DocumentReference ref = FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('equipment')
-        .add(equipment.toMap());
+        .doc(widget.equipment?.id);
+
+    equipment.id = ref.id;
+
+    await ref.set(equipment.toMap());
   }
 
   @override
@@ -85,10 +89,14 @@ class _EquipmentEditState extends State<EquipmentEdit> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(''),
-            Text('Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
+            Text(
+                'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
             ElevatedButton(
-                onPressed: () => edit(), child: Text(widget.equipment != null ? ''
-                'Bearbeiten' : 'Hinzufügen')),
+                onPressed: () => edit(),
+                child: Text(widget.equipment != null
+                    ? ''
+                        'Bearbeiten'
+                    : 'Hinzufügen')),
           ],
         ),
         TextField(

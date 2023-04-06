@@ -9,26 +9,36 @@ import '../../custom_widgets/show_custom_modal.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanEdit extends StatefulWidget {
-  const PackingPlanEdit({Key? key}) : super(key: key);
+  final PackingPlan? packingPlan;
+
+  const PackingPlanEdit({Key? key, this.packingPlan}) : super(key: key);
 
   @override
   State<PackingPlanEdit> createState() => _PackingPlanEditState();
 }
 
 class _PackingPlanEditState extends State<PackingPlanEdit> {
+  late PackingPlan packingPlan;
   final TextEditingController _controllerName = TextEditingController();
-  List<String> sports = <String>[];
-  List<PackingPlanItem> items = <PackingPlanItem>[];
 
-  void add() async {
-    PackingPlan p =
-    PackingPlan(name: _controllerName.text, sports: sports, items: items);
+  @override
+  void initState() {
+    super.initState();
+    packingPlan = widget.packingPlan ??
+        PackingPlan(
+            name: 'Fehler', items: <PackingPlanItem>[], sports: <String>[]);
+
+    if (widget.packingPlan != null) _controllerName.text = packingPlan.name;
+  }
+
+  void edit() async {
+    packingPlan.name = _controllerName.text;
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('packing_plan')
-        .add(p.toMap());
+        .add(packingPlan.toMap());
   }
 
   @override
@@ -40,9 +50,12 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(''),
-            const Text('Packliste erstellen'),
+            Text(
+                'Packliste ${widget.packingPlan != null ? 'bearbeiten' : 'erstellen'}'),
             ElevatedButton(
-                onPressed: () => add(), child: const Text('Erstellen')),
+                onPressed: () => edit(),
+                child: Text(
+                    widget.packingPlan != null ? 'Bearbeiten' : 'Erstellen')),
           ],
         ),
         TextField(
@@ -50,21 +63,24 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
           decoration: const InputDecoration(hintText: 'Name'),
         ),
         ListTile(
-          title: Text(sports.isNotEmpty ? sports.toString() : 'Sportart'),
+          title: Text(packingPlan.sports.isNotEmpty
+              ? packingPlan.sports.toString()
+              : 'Sportart'),
           trailing: const Icon(Icons.chevron_right_outlined),
           onTap: () async {
-            final List<String> s = await selectSports(context, sports);
+            final List<String> s =
+                await selectSports(context, packingPlan.sports);
             setState(() {
-              sports = s;
+              packingPlan.sports = s;
             });
           },
         ),
         ElevatedButton(
             onPressed: () async {
               final List<PackingPlanItem> i =
-              await selectEquipment(context, items);
+                  await selectEquipment(context, packingPlan.items);
               setState(() {
-                items = i;
+                packingPlan.items = i;
               });
             },
             child: const Text('Add item')),
@@ -73,20 +89,20 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 children: [
-                  for (var item in items)
-                    ListTile(
-                      title:
+              for (var item in packingPlan.items)
+                ListTile(
+                  title:
                       Text((item.equipment.brand ?? '') + item.equipment.name),
-                      subtitle: Text(item.equipment.size ?? 'no size'),
-                    ),
-                ])),
+                  subtitle: Text(item.equipment.size ?? 'no size'),
+                ),
+            ])),
       ],
     );
   }
 }
 
-Future<List<PackingPlanItem>> selectEquipment(BuildContext context,
-    List<PackingPlanItem> selected) async {
+Future<List<PackingPlanItem>> selectEquipment(
+    BuildContext context, List<PackingPlanItem> selected) async {
   final GlobalKey<_SelectEquipmentState> k = GlobalKey();
   final SelectEquipment selectEquipment = SelectEquipment(
     key: k,
@@ -116,15 +132,15 @@ class SelectEquipment extends StatefulWidget {
 class _SelectEquipmentState extends State<SelectEquipment> {
   late List<PackingPlanItem> selected = widget.selected;
   final Future<QuerySnapshot<Equipment>> getEquipmentData =
-  FirebaseFirestore.instance
-      .collection('users')
-      .doc(Auth().user?.uid)
-      .collection('equipment')
-      .withConverter(
-    fromFirestore: Equipment.fromFirestore,
-    toFirestore: (Equipment e, _) => e.toMap(),
-  )
-      .get();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(Auth().user?.uid)
+          .collection('equipment')
+          .withConverter(
+            fromFirestore: Equipment.fromFirestore,
+            toFirestore: (Equipment e, _) => e.toMap(),
+          )
+          .get();
 
   @override
   Widget build(BuildContext context) {
@@ -148,29 +164,34 @@ class _SelectEquipmentState extends State<SelectEquipment> {
                   shrinkWrap: true,
                   children: snapshot.data!.docs
                       .map((DocumentSnapshot document) {
-                    Equipment e = document.data() as Equipment;
-                    return ListTile(
-                      title: Text((e.brand ?? '') + e.name),
-                      subtitle: Text(e.sports.toString()),
-                      trailing: selected.where((element) => element.equipment == e).isNotEmpty
-                          ? const Icon(Icons.check)
-                          : null,
-                      onTap: () {
-                        if (selected.where((element) => element.equipment == e).isNotEmpty) {
-                          setState(() {
-                            selected.removeWhere((element) =>
-                            element.equipment == e);
-                          });
-                        } else {
-                          setState(() {
-                            selected.add(PackingPlanItem(equipment: e,
-                                place: Data.places['backpack']!,
-                                count: 1));
-                          });
-                        }
-                      },
-                    );
-                  })
+                        Equipment e = document.data() as Equipment;
+                        return ListTile(
+                          title: Text((e.brand ?? '') + e.name),
+                          subtitle: Text(e.sports.toString()),
+                          trailing: selected
+                                  .where((element) => element.equipment == e)
+                                  .isNotEmpty
+                              ? const Icon(Icons.check)
+                              : null,
+                          onTap: () {
+                            if (selected
+                                .where((element) => element.equipment == e)
+                                .isNotEmpty) {
+                              setState(() {
+                                selected.removeWhere(
+                                    (element) => element.equipment == e);
+                              });
+                            } else {
+                              setState(() {
+                                selected.add(PackingPlanItem(
+                                    equipment: e,
+                                    place: Data.places['backpack']!,
+                                    count: 1));
+                              });
+                            }
+                          },
+                        );
+                      })
                       .toList()
                       .cast(),
                 );

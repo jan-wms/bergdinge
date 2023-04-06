@@ -14,6 +14,7 @@ class Equipment {
   int category;
   int count;
   List<String>? sports;
+  String id;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
 
@@ -21,6 +22,7 @@ class Equipment {
     required this.name,
     required this.weight,
     required this.status,
+    required this.id,
     this.size,
     this.sports,
     this.brand,
@@ -46,6 +48,7 @@ class Equipment {
           ? Map.from(data?['runningCosts'])
           : null,*/
       name: data?['name'],
+      id: data?['id'],
       weight: (data?['weight'] as num).toDouble(),
       size: data?['size'],
       status: EquipmentStatus.fromString(data?['status']),
@@ -72,6 +75,7 @@ class Equipment {
           ? Map.from(data?['runningCosts'])
           : null,*/
       name: map['name']!,
+      id: map['id'],
       weight: (map['weight'] as num).toDouble(),
       size: map['size'],
       status: EquipmentStatus.fromString(map['status']),
@@ -92,6 +96,7 @@ class Equipment {
   Map<String, dynamic> toMap() {
     return {
       "name": name,
+      "id": id,
       "weight": weight,
       "status": status.toString(),
       if (size != null) "size": size,
@@ -116,12 +121,9 @@ class Equipment {
       return false;
     }
     return other is Equipment &&
-        other.name == name &&
-        other.weight == weight &&
-        other.status == status &&
-        other.category == category;
+        other.id == id;
   }
 
   @override
-  int get hashCode => Object.hash(name, weight, status, category);
+  int get hashCode => Object.hash(id, id);
 }

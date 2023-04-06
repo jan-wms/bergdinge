@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 
 class PackingPlan {
-  final String name;
-  final List<PackingPlanItem> items;
-  final List<String> sports;
+  String name;
+  List<PackingPlanItem> items;
+  List<String> sports;
 
   PackingPlan({
     required this.name,

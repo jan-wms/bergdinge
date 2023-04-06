@@ -8,7 +8,7 @@ import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
-import 'package:equipment_app/pages/settings/settings.dart';
+import 'package:equipment_app/pages/settings/settings_page.dart';
 import 'package:equipment_app/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,16 +39,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
             GoRoute(
               path: '/settings',
-              builder: (context, state) => const Settings(),
+              builder: (context, state) => const SettingsPage(),
             ),
             GoRoute(
                 path: '/packing_plan',
                 builder: (context, state) => const PackingPlanPage(),
                 routes: [
                   GoRoute(
-                    path: 'edit',
-                    builder: (context, state) => const PackingPlanEdit(),
-                  ),
+                      path: 'edit',
+                      builder: (context, state) {
+                        PackingPlan? p = state.extra as PackingPlan?;
+                        return PackingPlanEdit(packingPlan: p);
+                      }),
                   GoRoute(
                       path: 'details',
                       builder: (context, state) {
