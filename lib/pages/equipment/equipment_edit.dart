@@ -4,7 +4,6 @@ import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
-
 import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -23,6 +22,8 @@ class _EquipmentEditState extends State<EquipmentEdit> {
   final TextEditingController _controllerSize = TextEditingController();
   final TextEditingController _controllerStatus = TextEditingController();
   final TextEditingController _controllerUvp = TextEditingController();
+
+  int count = 1;
   int category = -1;
   List<String> sports = <String>[];
   DateTime? purchaseDate;
@@ -36,21 +37,26 @@ class _EquipmentEditState extends State<EquipmentEdit> {
       weight: double.parse(_controllerWeight.text),
       status: _controllerStatus.text,
       brand: _controllerBrand.text,
-      price: _controllerPrice.text.isNotEmpty ? double.parse(_controllerPrice.text) : null,
+      price: _controllerPrice.text.isNotEmpty
+          ? double.parse(_controllerPrice.text)
+          : null,
       size: _controllerSize.text,
-      uvp: _controllerUvp.text.isNotEmpty ? double.parse(_controllerUvp.text) : null,
+      uvp: _controllerUvp.text.isNotEmpty
+          ? double.parse(_controllerUvp.text)
+          : null,
       category: category,
       sports: sports,
       daysInUse: null,
       purchaseDate: purchaseDate,
       runningCosts: null,
+      count: count,
     );
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('equipment')
-        .add(e.toFirestore());
+        .add(e.toMap());
   }
 
   @override
@@ -94,6 +100,21 @@ class _EquipmentEditState extends State<EquipmentEdit> {
         TextField(
           controller: _controllerStatus,
           decoration: const InputDecoration(hintText: 'Status'),
+        ),
+        Row(
+          children: [
+            ElevatedButton(onPressed: () {
+              setState(() {
+                if(count > 1) count--;
+              });
+            }, child: const Text('-')),
+            Text(count.toString()),
+            ElevatedButton(onPressed: () {
+              setState(() {
+                count++;
+              });
+            }, child: const Text('+')),
+          ],
         ),
         ElevatedButton(
           onPressed: () async {
@@ -162,7 +183,7 @@ class SelectCategory extends StatefulWidget {
 }
 
 class _SelectCategoryState extends State<SelectCategory> {
-  final List<Category> data = Data().categories;
+  final List<Category> data = Data.categories;
   late int selected = widget.selected;
 
   List<Widget> createCategories(List<Category> categories) {

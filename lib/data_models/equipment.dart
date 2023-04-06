@@ -10,6 +10,7 @@ class Equipment {
   final double? price;
   final DateTime? purchaseDate;
   final int category;
+  final int count;
   final List<String>? sports;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
@@ -26,6 +27,7 @@ class Equipment {
     this.daysInUse,
     this.purchaseDate,
     required this.category,
+    required this.count,
     this.runningCosts,
   });
 
@@ -35,25 +37,57 @@ class Equipment {
   ) {
     final data = snapshot.data();
     return Equipment(
-      name: data?['name'],
-      weight: data?['weight'],
-      size: data?['size'],
-      status: data?['status'],
-      uvp: data?['uvp'],
-      price: data?['price'],
-      brand: data?['brand'],
-      purchaseDate: DateTime.tryParse(data?['purchaseDate'] ?? ''),
-      category: data?['category'],
-      sports: data?['sports'] is Iterable ? List.from(data?['sports']) : null,
+      /*
       daysInUse:
           data?['daysInUse'] is Iterable ? Map.from(data?['daysInUse']) : null,
       runningCosts: data?['runningCosts'] is Iterable
           ? Map.from(data?['runningCosts'])
-          : null,
+          : null,*/
+      name: data?['name'],
+      weight: (data?['weight'] as num).toDouble(),
+      size: data?['size'],
+      status: data?['status'],
+      uvp: data?['uvp'] != null ? (data?['uvp'] as num).toDouble() : null,
+      price: data?['price'] != null ? (data?['price'] as num).toDouble() : null,
+      brand: data?['brand'],
+      purchaseDate: DateTime.tryParse(data?['purchaseDate'] ?? ''),
+      category: (data?['category'] as num).toInt(),
+      count: (data?['count'] as num).toInt(),
+      sports: data?['sports'] is Iterable ? List.from(data?['sports']) : null,
+      daysInUse: null,
+      runningCosts: null,
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  factory Equipment.fromMap(
+    Map<String, dynamic> map,
+  ) {
+    return Equipment(
+      /*
+      daysInUse:
+          data?['daysInUse'] is Iterable ? Map.from(data?['daysInUse']) : null,
+      runningCosts: data?['runningCosts'] is Iterable
+          ? Map.from(data?['runningCosts'])
+          : null,*/
+      name: map['name']!,
+      weight: (map['weight'] as num).toDouble(),
+      size: map['size'],
+      status: map['status']!,
+      uvp: map['uvp'] != null ? (map['uvp'] as num).toDouble() : null,
+      price: map['price'] != null ? (map['price'] as num).toDouble() : null,
+      brand: map['brand'],
+      purchaseDate: DateTime.tryParse(map['purchaseDate'] ?? ''),
+      category: (map['category'] as num).toInt(),
+      count: (map['count'] as num).toInt(),
+      sports: map['sports'] is Iterable
+          ? List.from(map['sports'] as Iterable)
+          : null,
+      daysInUse: null,
+      runningCosts: null,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       "name": name,
       "weight": weight,
@@ -65,8 +99,27 @@ class Equipment {
       if (daysInUse != null) "daysInUse": daysInUse,
       if (purchaseDate != null) "purchaseDate": purchaseDate.toString(),
       "category": category,
+      "count": count,
       if (sports != null) "sports": sports,
       if (runningCosts != null) "runningCosts": runningCosts,
     };
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (runtimeType != other.runtimeType) {
+      return false;
+    }
+    return other is Equipment &&
+        other.name == name &&
+        other.weight == weight &&
+        other.status == status &&
+        other.category == category;
+  }
+
+  @override
+  int get hashCode => Object.hash(name, weight, status, category);
 }

@@ -1,7 +1,7 @@
 import 'package:equipment_app/data_models/category.dart';
 
 class Data {
-  final List<String> _sports = [
+  static List<String> sports = [
     'Wandern',
     'Klettern',
     'Hochtour',
@@ -16,7 +16,12 @@ class Data {
     'Klettersteig',
   ];
 
-  final List<Category> _categories = [
+  static Map<String, String> places = {
+    'body': 'Am Körper',
+    'backpack': 'Im Rucksack',
+  };
+
+  static List<Category> categories = [
     Category(name: 'Bekleidung', id: 0, subCategories: [
       Category(name: 'Accessories', id: 1, subCategories: [
         Category(name: 'Brillen', id: 2, subCategories: [
@@ -233,7 +238,4 @@ class Data {
     ], id: 71),
     Category(name: 'Verpflegung', subCategories: [Category(name: 'Getränke', id: 183), Category(name: 'Nahrung', id: 184),], id: 182,),
   ];
-
-  List<String> get sports => _sports;
-  List<Category> get categories => _categories;
 }

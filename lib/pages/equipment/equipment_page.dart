@@ -18,7 +18,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
       .collection('equipment')
       .withConverter(
         fromFirestore: Equipment.fromFirestore,
-        toFirestore: (Equipment e, _) => e.toFirestore(),
+        toFirestore: (Equipment e, _) => e.toMap(),
       )
       .snapshots();
 

@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../data_models/equipment.dart';
 import '../../data_models/packing_plan.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -20,7 +18,7 @@ class _PackingPlanPageState extends State<PackingPlanPage> {
       .collection('packing_plan')
       .withConverter(
     fromFirestore: PackingPlan.fromFirestore,
-    toFirestore: (PackingPlan p, _) => p.toFirestore(),
+    toFirestore: (PackingPlan p, _) => p.toMap(),
   )
       .snapshots();
 
@@ -57,6 +55,9 @@ class _PackingPlanPageState extends State<PackingPlanPage> {
                     return ListTile(
                       title: Text(p.name),
                       subtitle: Text(p.sports.toString()),
+                      onTap: () {
+                        context.push('/packing_plan/details', extra: p);
+                      },
                     );
                   })
                       .toList()

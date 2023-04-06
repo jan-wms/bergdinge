@@ -1,9 +1,11 @@
 import 'package:equipment_app/data_models/equipment.dart';
+import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:equipment_app/pages/home_page.dart';
 import 'package:equipment_app/pages/login_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
+import 'package:equipment_app/pages/packing_plan/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
 import 'package:equipment_app/pages/settings/settings.dart';
@@ -47,6 +49,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                   path: 'edit',
                   builder: (context, state) => const PackingPlanEdit(),
                 ),
+                GoRoute(
+                    path: 'details',
+                    builder: (context, state) {
+                      PackingPlan p =
+                      state.extra as PackingPlan;
+                      return PackingPlanDetails(packingPlan: p);
+                    }),
               ]
             ),
             GoRoute(
@@ -61,7 +70,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                       path: 'details',
                       builder: (context, state) {
                         Equipment e =
-                            state.extra as Equipment; // -> casting is important
+                            state.extra as Equipment;
                         return EquipmentDetails(equipment: e);
                       }),
                 ]),

@@ -1,13 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/data_models/equipment.dart';
-
-enum Place {
-  body, backpack,
-}
+import 'package:equipment_app/data_models/packing_plan_item.dart';
 
 class PackingPlan {
   final String name;
-  final Map<Equipment, Place> items;
+  final List<PackingPlanItem> items;
   final List<String> sports;
 
   PackingPlan({
@@ -23,15 +19,15 @@ class PackingPlan {
     final data = snapshot.data();
     return PackingPlan(
       name: data?['name'],
-      items: Map.from(data?['items']),
+      items: List.from(List.from(data?['items']).map((e) => PackingPlanItem.fromMap(e))),
       sports: List.from(data?['sports']),
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toMap() {
     return {
       "name": name,
-      "items": items,
+      "items": items.map((e) => e.toMap()),
       "sports": sports,
     };
   }

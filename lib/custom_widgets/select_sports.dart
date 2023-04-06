@@ -40,7 +40,7 @@ class _SelectSportsState extends State<SelectSports> {
       children: [
         const Text('Sportarten'),
         Wrap(spacing: 5.0, children: [
-          for (var sport in Data().sports)
+          for (var sport in Data.sports)
             FilterChip(
               label: Text(sport),
               selected: selected.contains(sport),
