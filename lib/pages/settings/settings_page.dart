@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../firebase/firebase_auth.dart';
 
@@ -17,7 +18,7 @@ class SettingsPage extends StatelessWidget {
         ),
         if(Auth().user?.isAnonymous ?? true) ElevatedButton(
             onPressed: () {
-              //TODO implement link account
+              context.go('/login');
             },
             child: const Text('Account erstellen')),
         ElevatedButton(

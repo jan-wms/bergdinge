@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,6 +32,19 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+    try {
+      await Auth().signInWithGoogle();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
+  }
+
+  bool getIsMacOS () {
+    if(kIsWeb) return false;
+    return Platform.isMacOS;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,21 +53,23 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(Auth().user != null ? 'Mit Account verknüpfen.' : 'Log in'),
             TextField(
               controller: _controllerEmail,
+              decoration: const InputDecoration(labelText: 'E-Mail'),
             ),
             TextField(
+              decoration: const InputDecoration(labelText: 'Passwort'),
               controller: _controllerPassword,
             ),
             ElevatedButton(
-                onPressed: () {
-                  signInWithEmailAndPassword();
-                },
+                onPressed: () => signInWithEmailAndPassword(),
                 child: const Text('sign in')),
-            ElevatedButton(
-                onPressed: () {
-                  signInAnonymously();
-                },
+            if(!getIsMacOS()) ElevatedButton(
+                onPressed: () => signInWithGoogle(),
+                child: const Text('sign in with google')),
+            if(Auth().user == null) ElevatedButton(
+                onPressed: () => signInAnonymously(),
                 child: const Text('continue without sign in')),
           ],
         )),
