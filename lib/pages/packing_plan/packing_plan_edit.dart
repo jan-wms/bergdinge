@@ -1,9 +1,10 @@
 import 'package:equipment_app/data/data.dart';
+import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/data_models/equipment.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../custom_widgets/select_sports.dart';
 import '../../custom_widgets/show_custom_modal.dart';
 import '../../firebase/firebase_auth.dart';
@@ -96,8 +97,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                 children: [
               for (var item in packingPlan.items)
                 ListTile(
-                  title:
-                      Text(item.equipmentId),
+                  title: Text(item.equipmentId),
                 ),
             ])),
       ],
@@ -124,27 +124,17 @@ Future<List<PackingPlanItem>> selectEquipment(
   return k.currentState!.selected;
 }
 
-class SelectEquipment extends StatefulWidget {
+class SelectEquipment extends ConsumerStatefulWidget {
   final List<PackingPlanItem> selected;
 
   const SelectEquipment({Key? key, required this.selected}) : super(key: key);
 
   @override
-  State<SelectEquipment> createState() => _SelectEquipmentState();
+  ConsumerState<SelectEquipment> createState() => _SelectEquipmentState();
 }
 
-class _SelectEquipmentState extends State<SelectEquipment> {
+class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
   late List<PackingPlanItem> selected = widget.selected;
-  final Future<QuerySnapshot<Equipment>> getEquipmentData =
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(Auth().user?.uid)
-          .collection('equipment')
-          .withConverter(
-            fromFirestore: Equipment.fromFirestore,
-            toFirestore: (Equipment e, _) => e.toMap(),
-          )
-          .get();
 
   @override
   Widget build(BuildContext context) {
@@ -154,52 +144,44 @@ class _SelectEquipmentState extends State<SelectEquipment> {
         const Text('Ausrüstung'),
         const TextField(),
         Expanded(
-          child: FutureBuilder(
-              future: getEquipmentData,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator.adaptive();
-                }
-                return ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: snapshot.data!.docs
-                      .map((DocumentSnapshot document) {
-                        Equipment equipment = document.data() as Equipment;
-                        return ListTile(
-                          title: Text((equipment.brand ?? '') + equipment.name),
-                          subtitle: Text(equipment.sports.toString()),
-                          trailing: selected
-                                  .where((element) => element.equipmentId == equipment.id)
-                                  .isNotEmpty
-                              ? const Icon(Icons.check)
-                              : null,
-                          onTap: () {
-                            if (selected
-                                .where((element) => element.equipmentId == equipment.id)
-                                .isNotEmpty) {
-                              setState(() {
-                                selected.removeWhere(
-                                    (element) => element.equipmentId == equipment.id);
-                              });
-                            } else {
-                              setState(() {
-                                selected.add(PackingPlanItem(
-                                    equipmentId: equipment.id,
-                                    place: Data.places['backpack']!,
-                                    count: 1));
-                              });
-                            }
-                          },
-                        );
-                      })
-                      .toList()
-                      .cast(),
-                );
-              }),
+          child: ref.watch(equipmentStreamProvider).when(
+                error: (error, stackTrace) => Text(error.toString()),
+                loading: () => const CircularProgressIndicator.adaptive(),
+                data: (data) => ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final equipment = data[index];
+                      return ListTile(
+                        title: Text((equipment.brand ?? '') + equipment.name),
+                        subtitle: Text(equipment.sports.toString()),
+                        trailing: selected
+                                .where((element) =>
+                                    element.equipmentId == equipment.id)
+                                .isNotEmpty
+                            ? const Icon(Icons.check)
+                            : null,
+                        onTap: () {
+                          if (selected
+                              .where((element) =>
+                                  element.equipmentId == equipment.id)
+                              .isNotEmpty) {
+                            setState(() {
+                              selected.removeWhere((element) =>
+                                  element.equipmentId == equipment.id);
+                            });
+                          } else {
+                            setState(() {
+                              selected.add(PackingPlanItem(
+                                  equipmentId: equipment.id,
+                                  place: Data.places['backpack']!,
+                                  count: 1));
+                            });
+                          }
+                        },
+                      );
+                    },
+                  )
+              ),
         ),
       ],
     );

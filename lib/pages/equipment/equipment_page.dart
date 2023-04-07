@@ -1,29 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/data_models/equipment.dart';
-import 'package:equipment_app/firebase/firebase_auth.dart';
+import 'package:equipment_app/data/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class EquipmentPage extends StatefulWidget {
+class EquipmentPage extends ConsumerWidget {
   const EquipmentPage({super.key});
 
   @override
-  State<EquipmentPage> createState() => _EquipmentPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final equipmentList = ref.watch(equipmentStreamProvider);
 
-class _EquipmentPageState extends State<EquipmentPage> {
-  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
-      .collection('users')
-      .doc(Auth().user?.uid)
-      .collection('equipment')
-      .withConverter(
-        fromFirestore: Equipment.fromFirestore,
-        toFirestore: (Equipment e, _) => e.toMap(),
-      )
-      .snapshots();
-
-  @override
-  Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -35,37 +21,25 @@ class _EquipmentPageState extends State<EquipmentPage> {
               onPressed: () => context.push('/equipment/edit'),
               child: const Text('Gegenstand hinzufügen')),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _usersStream,
-              builder:
-                  (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator.adaptive();
-                }
-                return ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: snapshot.data!.docs
-                      .map((DocumentSnapshot document) {
-                        Equipment e = document.data() as Equipment;
-                        return ListTile(
-                            title: Text('${e.brand!} ${e.name}'),
-                            subtitle: Text(e.size ?? ''),
-                            onTap: () {
-                              context.push('/equipment/details', extra: e);
-                            },
-                        );
-                      })
-                      .toList()
-                      .cast(),
-                );
-              },
-            ),
-          ),
+              child: equipmentList.when(
+            error: (error, stackTrace) => Text(error.toString()),
+            loading: () => const CircularProgressIndicator.adaptive(),
+            data: (data) {
+              return ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  final equipment = data[index];
+                  return ListTile(
+                    title: Text('${equipment.brand!} ${equipment.name}'),
+                    subtitle: Text(equipment.size ?? ''),
+                    onTap: () {
+                      context.push('/equipment/details', extra: equipment);
+                    },
+                  );
+                },
+              );
+            },
+          ))
         ],
       ),
     );

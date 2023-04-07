@@ -36,10 +36,16 @@ class Equipment {
   });
 
   factory Equipment.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      SnapshotOptions? options,
+      ) {
     final data = snapshot.data();
+    return Equipment.fromMap(data);
+  }
+
+  factory Equipment.fromMap(
+      Map<String, dynamic>? data,
+      ) {
     return Equipment(
       /*
       daysInUse:

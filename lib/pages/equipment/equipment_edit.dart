@@ -4,6 +4,7 @@ import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -17,6 +18,8 @@ class EquipmentEdit extends StatefulWidget {
 }
 
 class _EquipmentEditState extends State<EquipmentEdit> {
+  final _formKey = GlobalKey<FormState>();
+
   late Equipment equipment;
 
   final TextEditingController _controllerName = TextEditingController();
@@ -85,100 +88,134 @@ class _EquipmentEditState extends State<EquipmentEdit> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(''),
-            Text(
-                'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
-            ElevatedButton(
-                onPressed: () => edit(),
-                child: Text(widget.equipment != null
-                    ? ''
-                        'Bearbeiten'
-                    : 'Hinzufügen')),
-          ],
-        ),
-        TextField(
-          controller: _controllerBrand,
-          decoration: const InputDecoration(hintText: 'Hersteller'),
-        ),
-        TextField(
-          controller: _controllerName,
-          decoration: const InputDecoration(hintText: 'Name'),
-        ),
-        TextField(
-          controller: _controllerWeight,
-          decoration: const InputDecoration(hintText: 'Gewicht'),
-        ),
-        TextField(
-          controller: _controllerSize,
-          decoration: const InputDecoration(hintText: 'Größe'),
-        ),
-        TextField(
-          controller: _controllerPrice,
-          decoration: const InputDecoration(hintText: 'Preis'),
-        ),
-        TextField(
-          controller: _controllerUvp,
-          decoration: const InputDecoration(hintText: 'UVP'),
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () {
+        Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(''),
+                  Text(
+                      'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
+                  ElevatedButton(
+                      onPressed: () => {
+                            if (_formKey.currentState!.validate()) {edit()}
+                          },
+                      child: Text(widget.equipment != null
+                          ? ''
+                              'Bearbeiten'
+                          : 'Hinzufügen')),
+                ],
+              ),
+              TextFormField(
+                controller: _controllerBrand,
+                decoration: const InputDecoration(labelText: 'Hersteller'),
+              ),
+              TextFormField(
+                controller: _controllerName,
+                decoration: const InputDecoration(labelText: 'Name'),
+                validator: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Bitte einen Namen eingeben';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                controller: _controllerWeight,
+                decoration: const InputDecoration(labelText: 'Gewicht'),
+              ),
+              TextFormField(
+                controller: _controllerSize,
+                decoration: const InputDecoration(labelText: 'Größe'),
+              ),
+              TextFormField(
+                controller: _controllerPrice,
+                decoration: const InputDecoration(labelText: 'Preis'),
+              ),
+              TextFormField(
+                controller: _controllerUvp,
+                decoration: const InputDecoration(labelText: 'UVP'),
+              ),
+              Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (equipment.count > 1) equipment.count--;
+                        });
+                      },
+                      child: const Text('-')),
+                  Text(equipment.count.toString()),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          equipment.count++;
+                        });
+                      },
+                      child: const Text('+')),
+                ],
+              ),
+              FormField<DateTime>(
+                validator: (dateTime) {
+                  //return "Das Kaufdatum darf nicht in der Zukunft liegen.";
+                  if (dateTime == null) {
+                    return null;
+                  }
+                  if (dateTime.isAfter(DateTime.now())) {
+                    return "Das Kaufdatum darf nicht in der Zukunft liegen.";
+                  }
+                  return null;
+                },
+                builder: (state) => ListTile(
+                  trailing: const Icon(Icons.chevron_right_outlined),
+                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                  onTap: () async {
+                    final DateTime? d = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1950),
+                      //lastDate: DateTime.now(),
+                      lastDate: DateTime(2300),
+                    );
+                    state.setValue(d);
+                    setState(() {
+                      equipment.purchaseDate = d;
+                    });
+                  },
+                  title: Text(equipment.purchaseDate?.toString() ??
+                      'date not definded'),
+                ),
+              ),
+              ListTile(
+                title: Text(equipment.sports!.isNotEmpty
+                    ? equipment.sports.toString()
+                    : 'Sportart'),
+                trailing: const Icon(Icons.chevron_right_outlined),
+                onTap: () async {
+                  final List<String> s =
+                      await selectSports(context, equipment.sports!);
                   setState(() {
-                    if (equipment.count > 1) equipment.count--;
+                    equipment.sports = s;
                   });
                 },
-                child: const Text('-')),
-            Text(equipment.count.toString()),
-            ElevatedButton(
-                onPressed: () {
+              ),
+              ListTile(
+                title: Text('Kategorie: ${equipment.category}'),
+                trailing: const Icon(Icons.chevron_right_outlined),
+                onTap: () async {
+                  final int i =
+                      await selectCategory(context, equipment.category);
                   setState(() {
-                    equipment.count++;
+                    equipment.category = i;
                   });
                 },
-                child: const Text('+')),
-          ],
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            final DateTime? d = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1950),
-              lastDate: DateTime.now(),
-            );
-            setState(() {
-              equipment.purchaseDate = d;
-            });
-          },
-          child:
-              Text(equipment.purchaseDate?.toString() ?? 'date not definded'),
-        ),
-        ListTile(
-          title: Text(equipment.sports!.isNotEmpty
-              ? equipment.sports.toString()
-              : 'Sportart'),
-          trailing: const Icon(Icons.chevron_right_outlined),
-          onTap: () async {
-            final List<String> s =
-                await selectSports(context, equipment.sports!);
-            setState(() {
-              equipment.sports = s;
-            });
-          },
-        ),
-        ListTile(
-          title: Text('Kategorie: ${equipment.category}'),
-          trailing: const Icon(Icons.chevron_right_outlined),
-          onTap: () async {
-            final int i = await selectCategory(context, equipment.category);
-            setState(() {
-              equipment.category = i;
-            });
-          },
+              ),
+            ],
+          ),
         ),
       ],
     );
