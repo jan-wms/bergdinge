@@ -2,6 +2,7 @@ import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
+import 'package:equipment_app/validators/packing_plan_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,32 +20,28 @@ class PackingPlanEdit extends StatefulWidget {
 }
 
 class _PackingPlanEditState extends State<PackingPlanEdit> {
-  late PackingPlan packingPlan;
-  final TextEditingController _controllerName = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _formKeySports = GlobalKey<FormFieldState>();
+  final _formKeyItems = GlobalKey<FormFieldState>();
 
-  @override
-  void initState() {
-    super.initState();
-    packingPlan = widget.packingPlan ??
-        PackingPlan(
-            id: widget.packingPlan?.id ?? 'Fehler',
-            name: 'Fehler',
-            items: <PackingPlanItem>[],
-            sports: <String>[]);
-
-    if (widget.packingPlan != null) _controllerName.text = packingPlan.name;
-  }
+  late final TextEditingController _controllerName =
+      TextEditingController(text: widget.packingPlan?.name ?? '');
 
   void edit() async {
-    packingPlan.name = _controllerName.text;
-
     DocumentReference ref = FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('packing_plan')
         .doc(widget.packingPlan?.id);
-    packingPlan.id = ref.id;
-    await ref.set(packingPlan.toMap());
+
+    PackingPlan p = PackingPlan(
+      id: ref.id,
+      name: _controllerName.text,
+      items: _formKeyItems.currentState!.value,
+      sports: _formKeySports.currentState!.value,
+    );
+
+    await ref.set(p.toMap());
   }
 
   @override
@@ -59,47 +56,72 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
             Text(
                 'Packliste ${widget.packingPlan != null ? 'bearbeiten' : 'erstellen'}'),
             ElevatedButton(
-                onPressed: () => edit(),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) edit();
+                },
                 child: Text(
                     widget.packingPlan != null ? 'Bearbeiten' : 'Erstellen')),
           ],
         ),
-        TextField(
-          controller: _controllerName,
-          decoration: const InputDecoration(hintText: 'Name'),
-        ),
-        ListTile(
-          title: Text(packingPlan.sports.isNotEmpty
-              ? packingPlan.sports.toString()
-              : 'Sportart'),
-          trailing: const Icon(Icons.chevron_right_outlined),
-          onTap: () async {
-            final List<String> s =
-                await selectSports(context, packingPlan.sports);
-            setState(() {
-              packingPlan.sports = s;
-            });
-          },
-        ),
-        ElevatedButton(
-            onPressed: () async {
-              final List<PackingPlanItem> i =
-                  await selectEquipment(context, packingPlan.items);
-              setState(() {
-                packingPlan.items = i;
-              });
-            },
-            child: const Text('Add item')),
-        Expanded(
-            child: ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: [
-              for (var item in packingPlan.items)
-                ListTile(
-                  title: Text(item.equipmentId),
+        Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => PackingPlanValidator.name(value),
+                controller: _controllerName,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              FormField<List<String>>(
+                validator: (value) => PackingPlanValidator.sports(value),
+                autovalidateMode: AutovalidateMode.always,
+                key: _formKeySports,
+                initialValue: widget.packingPlan?.sports ?? <String>[],
+                builder: (state) => ListTile(
+                  title: Text(state.value!.isNotEmpty
+                      ? state.value!.toString()
+                      : 'Sportart'),
+                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                  trailing: const Icon(Icons.chevron_right_outlined),
+                  onTap: () async {
+                    final List<String> s =
+                        await selectSports(context, state.value!);
+                    setState(() {
+                      state.setValue(s);
+                    });
+                  },
                 ),
-            ])),
+              ),
+              FormField<List<PackingPlanItem>>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => PackingPlanValidator.items(value),
+                initialValue: widget.packingPlan?.items ?? <PackingPlanItem>[],
+                builder: (state) => ListTile(
+                  onTap: () async {
+                    final List<PackingPlanItem> i =
+                        await selectEquipment(context, state.value!);
+                    setState(() {
+                      state.setValue(i);
+                    });
+                  },
+                  title: const Text('Add item'),
+                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                ),
+              ),
+              Row(
+                children: [
+                  for (var item in _formKeyItems.currentState?.value ??
+                      <PackingPlanItem>[])
+                    ListTile(
+                      title: Text(item.equipmentId),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -145,9 +167,9 @@ class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
         const TextField(),
         Expanded(
           child: ref.watch(equipmentStreamProvider).when(
-                error: (error, stackTrace) => Text(error.toString()),
-                loading: () => const CircularProgressIndicator.adaptive(),
-                data: (data) => ListView.builder(
+              error: (error, stackTrace) => Text(error.toString()),
+              loading: () => const CircularProgressIndicator.adaptive(),
+              data: (data) => ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, index) {
                       final equipment = data[index];
@@ -180,8 +202,7 @@ class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
                         },
                       );
                     },
-                  )
-              ),
+                  )),
         ),
       ],
     );

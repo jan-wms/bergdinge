@@ -82,8 +82,8 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                   Text(
                       'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
                   ElevatedButton(
-                      onPressed: () => {
-                            if (_formKey.currentState!.validate()) {edit()}
+                      onPressed: () {
+                            if (_formKey.currentState!.validate()) edit();
                           },
                       child: Text(widget.equipment != null
                           ? ''

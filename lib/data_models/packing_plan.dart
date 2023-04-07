@@ -5,7 +5,7 @@ class PackingPlan {
   String name;
   List<PackingPlanItem> items;
   List<String> sports;
-  String id;
+  final String id;
 
   PackingPlan({
     required this.id,
