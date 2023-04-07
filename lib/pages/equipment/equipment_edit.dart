@@ -3,6 +3,7 @@ import 'package:equipment_app/custom_widgets/show_custom_modal.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
+import 'package:equipment_app/validators/equipment_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../custom_widgets/select_sports.dart';
@@ -19,68 +20,50 @@ class EquipmentEdit extends StatefulWidget {
 
 class _EquipmentEditState extends State<EquipmentEdit> {
   final _formKey = GlobalKey<FormState>();
+  final _formKeyCount = GlobalKey<FormFieldState>();
+  final _formKeyDate = GlobalKey<FormFieldState>();
+  final _formKeyCategory = GlobalKey<FormFieldState>();
+  final _formKeySports = GlobalKey<FormFieldState>();
 
-  late Equipment equipment;
+  late final TextEditingController _controllerName = TextEditingController(text: widget.equipment?.name ?? '');
+  late final TextEditingController _controllerBrand = TextEditingController(text: widget.equipment?.brand ?? '');
+  late final TextEditingController _controllerWeight = TextEditingController(text: (widget.equipment?.weight ?? '').toString());
+  late final TextEditingController _controllerPrice = TextEditingController(text: (widget.equipment?.price ?? '').toString());
+  late final TextEditingController _controllerSize = TextEditingController(text: widget.equipment?.size ?? '');
+  late final TextEditingController _controllerUvp = TextEditingController(text: (widget.equipment?.uvp ?? '').toString());
 
-  final TextEditingController _controllerName = TextEditingController();
-  final TextEditingController _controllerBrand = TextEditingController();
-  final TextEditingController _controllerWeight = TextEditingController();
-  final TextEditingController _controllerPrice = TextEditingController();
-  final TextEditingController _controllerSize = TextEditingController();
-  final TextEditingController _controllerUvp = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    equipment = widget.equipment ??
-        Equipment(
-          id: widget.equipment?.id ?? 'Fehler',
-          name: 'Fehler',
-          weight: 0.0,
-          brand: null,
-          size: null,
-          price: null,
-          purchaseDate: null,
-          uvp: null,
-          status: EquipmentStatus.active,
-          sports: <String>[],
-          category: -1,
-          count: 1,
-          runningCosts: null,
-          daysInUse: null,
-        );
-
-    if (widget.equipment != null) {
-      _controllerName.text = equipment.name;
-      _controllerBrand.text = equipment.brand ?? '';
-      _controllerWeight.text = equipment.weight.toString();
-      _controllerPrice.text = (equipment.price ?? '').toString();
-      _controllerSize.text = equipment.size ?? '';
-      _controllerUvp.text = (equipment.uvp ?? '').toString();
-    }
-  }
 
   void edit() async {
-    equipment.name = _controllerName.text;
-    equipment.brand = _controllerBrand.text;
-    equipment.weight = double.parse(_controllerWeight.text);
-    equipment.price = _controllerPrice.text.isNotEmpty
-        ? double.parse(_controllerPrice.text)
-        : null;
-    equipment.size = _controllerSize.text;
-    equipment.uvp = _controllerUvp.text.isNotEmpty
-        ? double.parse(_controllerUvp.text)
-        : null;
-
     DocumentReference ref = FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
         .collection('equipment')
         .doc(widget.equipment?.id);
 
-    equipment.id = ref.id;
+    Equipment e = Equipment(
+      name: _controllerName.text,
+      weight: int.parse(_controllerWeight.text),
+      status: EquipmentStatus.active,
+      category: _formKeyCategory.currentState!.value,
+      count: _formKeyCount.currentState!.value,
+      id: ref.id,
+      sports: _formKeySports.currentState!.value,
+      purchaseDate: _formKeyDate.currentState!.value,
+      uvp: _controllerUvp.text.isNotEmpty
+          ? double.parse(_controllerUvp.text.toString().replaceAll(',', '.'))
+          : null,
+      size: _controllerSize.text,
+      price: _controllerPrice.text.isNotEmpty
+          ? double.parse(_controllerPrice.text.toString().replaceAll(',', '.'))
+          : null,
+      brand: _controllerBrand.text,
 
-    await ref.set(equipment.toMap());
+      daysInUse: null,
+      runningCosts: null,
+    );
+
+    await ref.set(e.toMap());
   }
 
   @override
@@ -110,66 +93,74 @@ class _EquipmentEditState extends State<EquipmentEdit> {
               ),
               TextFormField(
                 controller: _controllerBrand,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: const InputDecoration(labelText: 'Hersteller'),
+                validator: (value) => EquipmentValidator.brand(value),
               ),
               TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: _controllerName,
                 decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Bitte einen Namen eingeben';
-                  }
-                  return null;
-                },
+                validator: (value) => EquipmentValidator.name(value),
               ),
               TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 keyboardType: TextInputType.number,
                 controller: _controllerWeight,
                 decoration: const InputDecoration(labelText: 'Gewicht'),
+                validator: (value) => EquipmentValidator.weight(value),
               ),
               TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => EquipmentValidator.size(value),
                 controller: _controllerSize,
                 decoration: const InputDecoration(labelText: 'Größe'),
               ),
               TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => EquipmentValidator.priceOrUvp(value.toString().replaceAll(',', '.')),
                 controller: _controllerPrice,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: 'Preis'),
               ),
               TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: _controllerUvp,
+                keyboardType: TextInputType.number,
+                validator: (value) => EquipmentValidator.priceOrUvp(value.toString().replaceAll(',', '.')),
                 decoration: const InputDecoration(labelText: 'UVP'),
               ),
-              Row(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          if (equipment.count > 1) equipment.count--;
-                        });
-                      },
-                      child: const Text('-')),
-                  Text(equipment.count.toString()),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          equipment.count++;
-                        });
-                      },
-                      child: const Text('+')),
-                ],
+              FormField<int>(
+                key: _formKeyCount,
+                initialValue: widget.equipment?.count ?? 1,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (value) => EquipmentValidator.categoryOrCount(value),
+                builder: (state) => Row(
+                  children: [
+                    Text(state.value.toString()),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            if (state.value! > 1) state.setValue(state.value! - 1);
+                          });
+                        },
+                        child: const Text('-')),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            state.setValue(state.value! + 1);
+                          });
+                        },
+                        child: const Text('+')),
+                  ],
+                ),
               ),
-              FormField<DateTime>(
-                validator: (dateTime) {
-                  //return "Das Kaufdatum darf nicht in der Zukunft liegen.";
-                  if (dateTime == null) {
-                    return null;
-                  }
-                  if (dateTime.isAfter(DateTime.now())) {
-                    return "Das Kaufdatum darf nicht in der Zukunft liegen.";
-                  }
-                  return null;
-                },
+              FormField<DateTime?>(
+                key: _formKeyDate,
+                autovalidateMode: AutovalidateMode.always,
+                initialValue: widget.equipment?.purchaseDate,
+                validator: (value) => EquipmentValidator.purchaseDate(value),
                 builder: (state) => ListTile(
                   trailing: const Icon(Icons.chevron_right_outlined),
                   subtitle: Text(state.errorText ?? 'Kein Fehler'),
@@ -178,41 +169,52 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(1950),
-                      //lastDate: DateTime.now(),
-                      lastDate: DateTime(2300),
+                      lastDate: DateTime.now(),
                     );
-                    state.setValue(d);
                     setState(() {
-                      equipment.purchaseDate = d;
+                      state.setValue(d);
                     });
                   },
-                  title: Text(equipment.purchaseDate?.toString() ??
+                  title: Text(state.value?.toString() ??
                       'date not definded'),
                 ),
               ),
-              ListTile(
-                title: Text(equipment.sports!.isNotEmpty
-                    ? equipment.sports.toString()
-                    : 'Sportart'),
-                trailing: const Icon(Icons.chevron_right_outlined),
-                onTap: () async {
-                  final List<String> s =
-                      await selectSports(context, equipment.sports!);
-                  setState(() {
-                    equipment.sports = s;
-                  });
-                },
-              ),
-              ListTile(
-                title: Text('Kategorie: ${equipment.category}'),
-                trailing: const Icon(Icons.chevron_right_outlined),
-                onTap: () async {
-                  final int i =
-                      await selectCategory(context, equipment.category);
-                  setState(() {
-                    equipment.category = i;
-                  });
-                },
+              FormField<List<String>>(
+                validator: (value) => EquipmentValidator.sports(value),
+                autovalidateMode: AutovalidateMode.always,
+                key: _formKeySports,
+                initialValue: widget.equipment?.sports ?? <String>[],
+                  builder: (state) => ListTile(
+                    title: Text(state.value!.isNotEmpty
+                        ? state.value!.toString()
+                        : 'Sportart'),
+                    subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                    trailing: const Icon(Icons.chevron_right_outlined),
+                    onTap: () async {
+                      final List<String> s =
+                      await selectSports(context, state.value!);
+                      setState(() {
+                        state.setValue(s);
+                      });
+                    },
+                  ),),
+              FormField<int>(
+                validator: (value) => EquipmentValidator.categoryOrCount(value),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: _formKeyCategory,
+                initialValue: widget.equipment?.category ?? -1,
+                builder: (state) => ListTile(
+                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                  title: Text('Kategorie: ${state.value.toString()}'),
+                  trailing: const Icon(Icons.chevron_right_outlined),
+                  onTap: () async {
+                    final int i =
+                    await selectCategory(context, state.value!);
+                    setState(() {
+                      state.setValue(i);
+                    });
+                  },
+                ),
               ),
             ],
           ),

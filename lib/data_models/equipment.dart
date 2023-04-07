@@ -4,7 +4,7 @@ import '../data/data.dart';
 
 class Equipment {
   String name;
-  double weight;
+  int weight;
   EquipmentStatus status;
   String? size;
   String? brand;
@@ -14,7 +14,7 @@ class Equipment {
   int category;
   int count;
   List<String>? sports;
-  String id;
+  final String id;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
 
@@ -22,6 +22,8 @@ class Equipment {
     required this.name,
     required this.weight,
     required this.status,
+    required this.category,
+    required this.count,
     required this.id,
     this.size,
     this.sports,
@@ -30,8 +32,6 @@ class Equipment {
     this.price,
     this.daysInUse,
     this.purchaseDate,
-    required this.category,
-    required this.count,
     this.runningCosts,
   });
 
@@ -55,7 +55,7 @@ class Equipment {
           : null,*/
       name: data?['name'],
       id: data?['id'],
-      weight: (data?['weight'] as num).toDouble(),
+      weight: (data?['weight'] as num).toInt(),
       size: data?['size'],
       status: EquipmentStatus.fromString(data?['status']),
       uvp: data?['uvp'] != null ? (data?['uvp'] as num).toDouble() : null,
