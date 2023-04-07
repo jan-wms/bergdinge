@@ -56,14 +56,11 @@ class EquipmentValidator {
     return null;
   }
 
-  static String? sports(value) {
+  static String? sports(List<String>? value) {
     if (value == null) {
       return null;
     }
-    if (value.runtimeType != List<String>) {
-      return "Falscher Datentyp: ${value.runtimeType.toString()} ist nicht vom Typ List<String>.";
-    }
-    for (var item in value as List<String>) {
+    for (var item in value) {
       if (!Data.sports.contains(item)) {
         return "Unbekannter Sport.";
       }

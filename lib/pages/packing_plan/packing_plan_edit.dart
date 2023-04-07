@@ -76,7 +76,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
               ),
               FormField<List<String>>(
                 validator: (value) => PackingPlanValidator.sports(value),
-                autovalidateMode: AutovalidateMode.always,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 key: _formKeySports,
                 initialValue: widget.packingPlan?.sports ?? <String>[],
                 builder: (state) => ListTile(
@@ -95,6 +95,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                 ),
               ),
               FormField<List<PackingPlanItem>>(
+                key: _formKeyItems,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => PackingPlanValidator.items(value),
                 initialValue: widget.packingPlan?.items ?? <PackingPlanItem>[],
@@ -102,22 +103,15 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                   onTap: () async {
                     final List<PackingPlanItem> i =
                         await selectEquipment(context, state.value!);
+                    print(i);
                     setState(() {
                       state.setValue(i);
                     });
                   },
+                  trailing: const Icon(Icons.chevron_right_outlined),
                   title: const Text('Add item'),
-                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                  subtitle: Text(state.errorText ?? state.value.toString()),
                 ),
-              ),
-              Row(
-                children: [
-                  for (var item in _formKeyItems.currentState?.value ??
-                      <PackingPlanItem>[])
-                    ListTile(
-                      title: Text(item.equipmentId),
-                    ),
-                ],
               ),
             ],
           ),

@@ -10,14 +10,11 @@ class PackingPlanValidator {
     return null;
   }
 
-  static String? sports(value) {
-    if (value == null) {
-      return null;
+  static String? sports(List<String>? value) {
+    if (value == null || value.isEmpty) {
+      return "Bitte wähle mindestens eine Sportart.";
     }
-    if (value.runtimeType != List<String>) {
-      return "Falscher Datentyp: ${value.runtimeType.toString()} ist nicht vom Typ List<String>.";
-    }
-    for (var item in value as List<String>) {
+    for (var item in value) {
       if (!Data.sports.contains(item)) {
         return "Unbekannter Sport.";
       }
