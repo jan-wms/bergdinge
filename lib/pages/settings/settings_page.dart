@@ -18,7 +18,7 @@ class SettingsPage extends StatelessWidget {
         ),
         if(Auth().user?.isAnonymous ?? true) ElevatedButton(
             onPressed: () {
-              context.go('/login');
+              context.go('/link_accounts');
             },
             child: const Text('Account erstellen')),
         ElevatedButton(

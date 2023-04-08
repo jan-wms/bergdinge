@@ -17,7 +17,9 @@ class Auth {
     await _firebaseAuth.signInAnonymously();
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle({
+    required bool isLinkingAccounts,
+}) async {
     final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
       'email',
     ]);
@@ -34,7 +36,7 @@ class Auth {
         idToken: gAuth.idToken,
       );
 
-      if(_firebaseAuth.currentUser != null && _firebaseAuth.currentUser!.isAnonymous) {
+      if(isLinkingAccounts) {
         await _firebaseAuth.currentUser
             ?.linkWithCredential(credential);
       } else {
@@ -46,8 +48,9 @@ class Auth {
   Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,
+    required bool isLinkingAccounts,
   }) async {
-    if(_firebaseAuth.currentUser != null && _firebaseAuth.currentUser!.isAnonymous) {
+    if(isLinkingAccounts) {
       final credential =
       EmailAuthProvider.credential(email: email, password: password);
       await _firebaseAuth.currentUser
@@ -58,6 +61,12 @@ class Auth {
         password: password,
       );
     }
+  }
+
+  Future<void> sendEmailVerification() async {
+    await FirebaseAuth.instance.setLanguageCode("de");
+    await FirebaseAuth.instance.currentUser
+        ?.sendEmailVerification();
   }
 
   Future<void> signOut() async {

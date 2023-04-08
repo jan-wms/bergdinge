@@ -3,7 +3,7 @@ import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:equipment_app/pages/home_page.dart';
-import 'package:equipment_app/pages/login_page.dart';
+import 'package:equipment_app/pages/authentication/login_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
@@ -26,7 +26,15 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => const LoginPage(isLinkingAccounts: false),
+      ),
+      GoRoute(
+        path: '/link_accounts',
+        builder: (context, state) => const LoginPage(isLinkingAccounts: true),
+      ),
+      GoRoute(
+        path: '/verify_email',
+        builder: (context, state) => const LoginPage(isLinkingAccounts: false),
       ),
       ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {
