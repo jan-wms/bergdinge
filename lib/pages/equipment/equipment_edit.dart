@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/show_custom_modal.dart';
+import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
@@ -82,7 +82,7 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                   Text(
                       'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                             if (_formKey.currentState!.validate()) edit();
                           },
                       child: Text(widget.equipment != null
@@ -230,7 +230,7 @@ Future<int> selectCategory(BuildContext context, int selected) async {
     key: k,
     selected: selected,
   );
-  await showCustomModal(
+  await CustomDialog.showCustomModal(
     context,
     selectCategory,
     null,
@@ -252,7 +252,8 @@ class SelectCategory extends StatefulWidget {
 }
 
 class _SelectCategoryState extends State<SelectCategory> {
-  final List<Category> data = Data.categories;
+  final TextEditingController _textEditingController = TextEditingController();
+  final List<Category> dataCategories = Data.categories;
   late int selected = widget.selected;
 
   List<Widget> createCategories(List<Category> categories) {
@@ -284,10 +285,19 @@ class _SelectCategoryState extends State<SelectCategory> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text('Kategorie'),
-        const TextField(),
+        TextField(
+          controller: _textEditingController,
+          decoration: InputDecoration(
+            labelText: 'Suche',
+            suffix: IconButton(onPressed: () => _textEditingController.clear(), icon: const Icon(Icons.close))
+          ),
+          onChanged: (value) {
+            dataCategories.where((element) => element.name.toLowerCase().contains(value.toLowerCase()));
+          },
+        ),
         Expanded(
           child: ListView(
-            children: createCategories(data),
+            children: createCategories(dataCategories),
           ),
         )
       ],

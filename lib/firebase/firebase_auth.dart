@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+
+
 final authProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
@@ -20,28 +22,30 @@ class Auth {
   Future<void> signInWithGoogle({
     required bool isLinkingAccounts,
 }) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
-      'email',
-    ]);
-    final GoogleSignInAccount? gUser;
-    if (kIsWeb) {
-      gUser = await googleSignIn.signInSilently();
-    } else {
-      gUser = await googleSignIn.signIn();
-    }
-    if (gUser != null) {
-      final GoogleSignInAuthentication gAuth = await gUser.authentication;
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
+        'email',
+      ]);
+      final GoogleSignInAccount? gUser;
+      if (kIsWeb) {
+        gUser = await googleSignIn.signInSilently();
+      } else {
+        gUser = await googleSignIn.signIn();
+      }
+      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: gAuth.accessToken,
         idToken: gAuth.idToken,
       );
 
-      if(isLinkingAccounts) {
+      if (isLinkingAccounts) {
         await _firebaseAuth.currentUser
             ?.linkWithCredential(credential);
       } else {
         await _firebaseAuth.signInWithCredential(credential);
       }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:equipment_app/platform_menu_bar_wrapper.dart';
 import 'package:equipment_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,12 +21,15 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
-    return MaterialApp.router(
+    return PlatformMenuBarWrapper(
+        child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routeInformationParser: router.routeInformationParser,
       routerDelegate: router.routerDelegate,
       routeInformationProvider: router.routeInformationProvider,
       title: 'Equipment App',
+    ),
     );
   }
 }
+

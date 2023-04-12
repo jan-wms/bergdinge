@@ -1,4 +1,4 @@
-import 'package:equipment_app/custom_widgets/show_custom_modal.dart';
+import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../data/data.dart';
@@ -10,7 +10,7 @@ Future<List<String>> selectSports(
     key: k,
     selected: selected,
   );
-  await showCustomModal(
+  await CustomDialog.showCustomModal(
     context,
     selectSports,
     null,

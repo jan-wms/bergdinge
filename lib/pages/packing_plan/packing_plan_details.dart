@@ -3,6 +3,7 @@ import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../custom_widgets/show_custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanDetails extends StatelessWidget {
@@ -18,16 +19,21 @@ class PackingPlanDetails extends StatelessWidget {
         for (var item in packingPlan.items) Text(item.equipmentId),
         ElevatedButton(
             onPressed: () async {
-              await FirebaseFirestore.instance
+
+              bool? confirmDelete = await CustomDialog.showCustomConfirmationDialog(
+                  context: context, description: "Wirklich löschen?");
+              if(confirmDelete ?? false) {
+                await FirebaseFirestore.instance
                   .collection('users')
                   .doc(Auth().user?.uid)
                   .collection('packing_plan')
-                  .doc(packingPlan.id).delete();
+                  .doc(packingPlan.id).delete().then((value) => context.pop());
+              }
             },
             child: const Text('delete')),
         ElevatedButton(
             onPressed: () {
-              context.go('/packing_plan/edit', extra: packingPlan);
+              context.push('/packing_plan/edit', extra: packingPlan);
             },
             child: const Text('edit')),
       ],

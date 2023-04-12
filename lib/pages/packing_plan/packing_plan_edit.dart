@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../custom_widgets/select_sports.dart';
-import '../../custom_widgets/show_custom_modal.dart';
+import '../../custom_widgets/show_custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanEdit extends StatefulWidget {
@@ -103,7 +103,6 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                   onTap: () async {
                     final List<PackingPlanItem> i =
                         await selectEquipment(context, state.value!);
-                    print(i);
                     setState(() {
                       state.setValue(i);
                     });
@@ -128,7 +127,7 @@ Future<List<PackingPlanItem>> selectEquipment(
     key: k,
     selected: selected,
   );
-  await showCustomModal(
+  await CustomDialog.showCustomModal(
     context,
     selectEquipment,
     null,

@@ -1,10 +1,12 @@
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
+import 'package:equipment_app/pages/authentication/verify_email_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:equipment_app/pages/home_page.dart';
 import 'package:equipment_app/pages/authentication/login_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
+import 'package:equipment_app/pages/introduction/introduction_page.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
@@ -15,15 +17,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'firebase/firebase_auth.dart';
 
-final _key = GlobalKey<NavigatorState>();
+final _navigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
 
   return GoRouter(
-    navigatorKey: _key,
-    initialLocation: '/',
+    navigatorKey: _navigatorKey,
+    initialLocation: '/welcome',
     routes: [
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const IntroductionPage(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(isLinkingAccounts: false),
@@ -34,7 +40,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/verify_email',
-        builder: (context, state) => const LoginPage(isLinkingAccounts: false),
+        builder: (context, state) => const VerifyEmailPage(),
       ),
       ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {
@@ -86,13 +92,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           ]),
     ],
     redirect: (context, state) {
-      if (authState.isLoading || authState.hasError) return null;
+      /*if (authState.isLoading || authState.hasError) return null;
 
       final isAuthorized = authState.valueOrNull != null;
       final isLoggingIn = state.location == '/login';
       if (isLoggingIn) return isAuthorized ? '/' : null;
 
-      return isAuthorized ? null : '/login';
+      return isAuthorized ? null : '/login';*/
     },
   );
 });

@@ -33,8 +33,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
     if (isEmailVerified) {
       timer.cancel();
-      await Future.delayed(const Duration(seconds: 2));
-      context.go('/');
+      await Future.delayed(const Duration(seconds: 2)).then((value) => context.go('/'));
     }
   }
 

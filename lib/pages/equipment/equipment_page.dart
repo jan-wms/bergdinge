@@ -10,37 +10,42 @@ class EquipmentPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final equipmentList = ref.watch(equipmentStreamProvider);
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Text(
-            'Meine Ausrüstung',
-          ),
-          ElevatedButton(
-              onPressed: () => context.push('/equipment/edit'),
-              child: const Text('Gegenstand hinzufügen')),
-          Expanded(
-              child: equipmentList.when(
-            error: (error, stackTrace) => Text(error.toString()),
-            loading: () => const CircularProgressIndicator.adaptive(),
-            data: (data) {
-              return ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final equipment = data[index];
-                  return ListTile(
-                    title: Text('${equipment.brand!} ${equipment.name}'),
-                    subtitle: Text(equipment.size ?? ''),
-                    onTap: () {
-                      context.push('/equipment/details', extra: equipment);
-                    },
-                  );
-                },
-              );
-            },
-          ))
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('test'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Meine Ausrüstung',
+            ),
+            ElevatedButton(
+                onPressed: () => context.push('/equipment/edit'),
+                child: const Text('Gegenstand hinzufügen')),
+            Expanded(
+                child: equipmentList.when(
+              error: (error, stackTrace) => Text(error.toString()),
+              loading: () => const CircularProgressIndicator.adaptive(),
+              data: (data) {
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final equipment = data[index];
+                    return ListTile(
+                      title: Text('${equipment.brand!} ${equipment.name}'),
+                      subtitle: Text(equipment.size ?? ''),
+                      onTap: () {
+                        context.push('/equipment/details', extra: equipment);
+                      },
+                    );
+                  },
+                );
+              },
+            ))
+          ],
+        ),
       ),
     );
   }
