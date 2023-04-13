@@ -4,6 +4,8 @@ import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onWaitingStart;
@@ -18,38 +20,30 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = Auth();
   bool isLoading = false;
 
-  Future<void> handleError(Exception exception, BuildContext context) async {
-    String message = 'Ein Fehler ist aufgetreten.';
+  Future<void> handleError(
+      FirebaseAuthException exception, BuildContext context) async {
+    String message = 'Ein Fehler ist aufgetreten.\n[${exception.message}]';
 
-    if (exception.runtimeType == FirebaseAuthException) {
-      message = '$message\n[${(exception as FirebaseAuthException).message}]';
-
-      switch (exception.code) {
-        case 'internal-error':
-          message =
-              'Ein Fehler ist aufgetreten. Bitte überprüfe deine Internetverbindung.';
-          break;
-      }
+    switch (exception.code) {
+      case 'internal-error':
+        message =
+            'Ein Fehler ist aufgetreten. Bitte überprüfe deine Internetverbindung.';
+        break;
+      case 'user-disabled':
+        message =
+            'Dieser Account wurde deaktiviert. Bitte wende dich an den Support';
     }
-
     await CustomDialog.showCustomInformationDialog(
         context: context, description: message);
   }
 
   Future<void> signInAnonymously(BuildContext context) async {
     try {
-      await Auth().signInAnonymously();
+      await _auth.signInAnonymously();
     } on FirebaseAuthException catch (e) {
-      await handleError(e, context);
-    }
-  }
-
-  Future<void> signInWithGoogle(BuildContext context) async {
-    try {
-      await Auth().signInWithGoogle(isLinkingAccounts: false);
-    } on Exception catch (e) {
       await handleError(e, context);
     }
   }
@@ -57,6 +51,22 @@ class _LoginScreenState extends State<LoginScreen> {
   bool getIsMacOS() {
     if (kIsWeb) return false;
     return Platform.isMacOS;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth.gsiOnCurrentUserChanged(isLinkingAccounts: false);
+    if (kIsWeb) {
+      _auth.googleSignInSilently();
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -69,21 +79,12 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const Text('Log in'),
               if (!getIsMacOS())
-                ElevatedButton(
-                    onPressed: () async {
-                      widget.onWaitingStart();
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await signInWithGoogle(context);
-                      setState(() {
-                        isLoading = false;
-                      });
-                      widget.onWaitingEnd();
-                    },
-                    child: const Text('Sign in with Google')),
+                buildSignInButton(
+                  onPressed: () => _auth.signInWithGoogle(),
+                ),
               ElevatedButton(
-                  onPressed: () {}, child: const Text('Sign in with Apple')),
+                  onPressed: () => context.go('/settings'),
+                  child: const Text('Sign in with Apple')),
               ElevatedButton(
                   onPressed: () async {
                     widget.onWaitingStart();

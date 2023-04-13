@@ -4,14 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
-
 final authProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: <String>[
+      'email',
+    ],
+  );
 
   User? get user => _firebaseAuth.currentUser;
 
@@ -19,33 +22,41 @@ class Auth {
     await _firebaseAuth.signInAnonymously();
   }
 
-  Future<void> signInWithGoogle({
-    required bool isLinkingAccounts,
-}) async {
-    try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
-        'email',
-      ]);
-      final GoogleSignInAccount? gUser;
-      if (kIsWeb) {
-        gUser = await googleSignIn.signInSilently();
-      } else {
-        gUser = await googleSignIn.signIn();
-      }
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken,
-      );
+  Future<GoogleSignInAccount?> googleSignInSilently() async {
+    return await _googleSignIn.signInSilently();
+  }
 
-      if (isLinkingAccounts) {
-        await _firebaseAuth.currentUser
-            ?.linkWithCredential(credential);
-      } else {
-        await _firebaseAuth.signInWithCredential(credential);
-      }
+  Object gsiOnCurrentUserChanged({
+    required bool isLinkingAccounts,
+  }) {
+      return _googleSignIn.onCurrentUserChanged
+          .listen((GoogleSignInAccount? account) async {
+        if (account != null) {
+          try {
+            final GoogleSignInAuthentication gAuth =
+                await account.authentication;
+            final credential = GoogleAuthProvider.credential(
+              accessToken: gAuth.accessToken,
+              idToken: gAuth.idToken,
+            );
+
+            if (isLinkingAccounts) {
+              await _firebaseAuth.currentUser?.linkWithCredential(credential);
+            } else {
+              await _firebaseAuth.signInWithCredential(credential);
+            }
+          } on FirebaseAuthException catch (e) {
+            debugPrint(e.toString());
+          }
+        }
+      });
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      await _googleSignIn.signIn();
     } catch (e) {
-      throw Exception(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -54,11 +65,10 @@ class Auth {
     required String password,
     required bool isLinkingAccounts,
   }) async {
-    if(isLinkingAccounts) {
+    if (isLinkingAccounts) {
       final credential =
-      EmailAuthProvider.credential(email: email, password: password);
-      await _firebaseAuth.currentUser
-          ?.linkWithCredential(credential);
+          EmailAuthProvider.credential(email: email, password: password);
+      await _firebaseAuth.currentUser?.linkWithCredential(credential);
     } else {
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
@@ -69,8 +79,7 @@ class Auth {
 
   Future<void> sendEmailVerification() async {
     await FirebaseAuth.instance.setLanguageCode("de");
-    await FirebaseAuth.instance.currentUser
-        ?.sendEmailVerification();
+    await FirebaseAuth.instance.currentUser?.sendEmailVerification();
   }
 
   Future<void> signOut() async {

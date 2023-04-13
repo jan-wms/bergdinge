@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInWithGoogle(bool isLinkingAccounts) async {
     try {
-      await Auth().signInWithGoogle(isLinkingAccounts: isLinkingAccounts);
+      await Auth().signInWithGoogle();
     } on FirebaseAuthException catch (e) {
       print(e);
     }
