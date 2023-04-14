@@ -26,30 +26,38 @@ class Auth {
     return await _googleSignIn.signInSilently();
   }
 
-  Object gsiOnCurrentUserChanged({
+  StreamSubscription gsiOnCurrentUserChanged({
     required bool isLinkingAccounts,
   }) {
-      return _googleSignIn.onCurrentUserChanged
-          .listen((GoogleSignInAccount? account) async {
-        if (account != null) {
-          try {
-            final GoogleSignInAuthentication gAuth =
-                await account.authentication;
-            final credential = GoogleAuthProvider.credential(
-              accessToken: gAuth.accessToken,
-              idToken: gAuth.idToken,
-            );
+    late final StreamSubscription<GoogleSignInAccount?> gsiUserChanged;
+    final StreamController streamController = StreamController(onCancel: () {
+      gsiUserChanged.cancel();
+    });
 
-            if (isLinkingAccounts) {
-              await _firebaseAuth.currentUser?.linkWithCredential(credential);
-            } else {
-              await _firebaseAuth.signInWithCredential(credential);
-            }
-          } on FirebaseAuthException catch (e) {
-            debugPrint(e.toString());
+    gsiUserChanged = _googleSignIn.onCurrentUserChanged
+        .listen((GoogleSignInAccount? account) async {
+      if (account != null) {
+        streamController.add(account);
+        try {
+          final GoogleSignInAuthentication gAuth = await account.authentication;
+          final credential = GoogleAuthProvider.credential(
+            accessToken: gAuth.accessToken,
+            idToken: gAuth.idToken,
+          );
+
+          if (isLinkingAccounts) {
+            await _firebaseAuth.currentUser?.linkWithCredential(credential);
+          } else {
+            await _firebaseAuth.signInWithCredential(credential);
           }
+        } on FirebaseAuthException catch (error) {
+          debugPrint(error.toString());
+          streamController.addError(error);
         }
-      });
+      }
+    });
+
+    return streamController.stream.listen((event) {});
   }
 
   Future<void> signInWithGoogle() async {

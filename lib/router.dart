@@ -7,6 +7,7 @@ import 'package:equipment_app/pages/home_page.dart';
 import 'package:equipment_app/pages/authentication/login_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/introduction/introduction_page.dart';
+import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
@@ -24,11 +25,19 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     navigatorKey: _navigatorKey,
-    initialLocation: '/welcome',
+    initialLocation: '/setup',
     routes: [
+      GoRoute(
+        path: '/launch_screen',
+        builder: (context, state) => const Scaffold(body: Placeholder()),
+      ),
       GoRoute(
         path: '/welcome',
         builder: (context, state) => const IntroductionPage(),
+      ),
+      GoRoute(
+        path: '/setup',
+        builder: (context, state) => const SetupScreen(),
       ),
       GoRoute(
         path: '/login',
@@ -99,6 +108,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (isLoggingIn) return isAuthorized ? '/' : null;
 
       return isAuthorized ? null : '/login';*/
+
+      if (authState.isLoading || authState.hasError) return '/launch_screen';
+      final isAuthorized = authState.valueOrNull != null;
+      final isLoggingIn = state.location == '/welcome';
+      if (isLoggingIn) return isAuthorized ? '/' : null;
+
+      return isAuthorized ? null : '/welcome';
     },
   );
 });

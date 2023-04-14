@@ -9,6 +9,6 @@ import 'stub.dart';
 Widget buildSignInButton({HandleSignInFn? onPressed}) {
   return ElevatedButton(
     onPressed: onPressed,
-    child: const Text('SIGN IN'),
+    child: const Text('Google SIGN IN'),
   );
 }

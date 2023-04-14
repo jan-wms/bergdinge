@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CustomDialog {
-  static Future<T> showCustomModal<T>(BuildContext context, Widget child, Widget? left, Widget right) async {
+  static Future<T> showCustomModal<T>(
+      BuildContext context, Widget child, Widget? left, Widget right) async {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -39,21 +44,18 @@ class CustomDialog {
     );
   }
 
-  static Future<T> showCustomDialog<T>({
-    required BuildContext context, required Widget child
-}) async {
+  static Future<T> showCustomDialog<T>(
+      {required BuildContext context, required Widget child}) async {
     return await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => Dialog(
-      child: child,
-    ));
-}
+              child: child,
+            ));
+  }
 
-  static Future<bool?> showCustomConfirmationDialog<bool>({
-    required BuildContext context,
-    required String description
-  }) async {
+  static Future<bool?> showCustomConfirmationDialog<bool>(
+      {required BuildContext context, required String description}) async {
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -61,23 +63,91 @@ class CustomDialog {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextButton(onPressed: () => context.pop(false), child: const Text('Abbrechen')),
-            ElevatedButton(onPressed: () => context.pop(true), child: const Text('Ok')),
-          ],)
+            TextButton(
+                onPressed: () => context.pop(false),
+                child: const Text('Abbrechen')),
+            ElevatedButton(
+                onPressed: () => context.pop(true), child: const Text('Ok')),
+          ],
+        )
       ],
     );
     return await showCustomDialog<bool>(context: context, child: child);
   }
 
-  static Future<void> showCustomInformationDialog({
-    required BuildContext context,
-    required String description
-  }) async {
+  static Future<void> showCustomInformationDialog(
+      {required BuildContext context, required String description}) async {
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(description),
-            ElevatedButton(onPressed: () => context.pop(), child: const Text('Ok')),
+        ElevatedButton(onPressed: () => context.pop(), child: const Text('Ok')),
+      ],
+    );
+    return await showCustomDialog<void>(context: context, child: child);
+  }
+
+  static Future<void> showRequestPermissionDialog(
+      BuildContext context, Permission permission) async {
+    late final String title;
+    late final String content;
+
+    if(permission == Permission.photos) {
+      title = 'Equipment App hat keinen Zugriff auf deine Fotos';
+      content = 'Tippe auf Einstellungen und aktiviere Fotos.';
+    } else if(permission == Permission.camera) {
+      title = 'Equipment App hat keinen Zugriff auf deine Kamera';
+      content = 'Tippe auf Einstellungen und aktiviere Kamera.';
+    } else if(permission == Permission.microphone) {
+      title = 'Equipment App hat keinen Zugriff auf dein Mikrofon';
+      content = 'Tippe auf Einstellungen und aktiviere Mikrofon.';
+    } else {
+      title = 'Equipment App fehlen Zugriffsberechtigungen';
+      content = 'Tippe auf Einstellungen und aktiviere alle Zugriffsberechtigungen.';
+    }
+
+    if (Platform.isIOS) {
+      return await showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Abbrechen'),
+            ),
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+                openAppSettings();
+              },
+              child: const Text('Einstellungen'),
+            ),
+          ],
+        ),
+      );
+    }
+    final child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(title),
+        Text(content),
+        Row(
+          children: [
+            TextButton(
+                onPressed: () => context.pop(), child: const Text('Abbrechen')),
+            ElevatedButton(
+                onPressed: () {
+                  context.pop();
+                  openAppSettings();
+                },
+                child: const Text('Einstellungen')),
+          ],
+        )
       ],
     );
     return await showCustomDialog<void>(context: context, child: child);

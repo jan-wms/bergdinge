@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
@@ -21,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = Auth();
+  late final StreamSubscription gsiOnUserChanged;
   bool isLoading = false;
 
   Future<void> handleError(
@@ -55,9 +57,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _auth.gsiOnCurrentUserChanged(isLinkingAccounts: false);
+
+    gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(isLinkingAccounts: false);
+    gsiOnUserChanged.onError((e) {
+      handleError(e, context);
+    });
+
     if (kIsWeb) {
       _auth.googleSignInSilently();
     }
@@ -65,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
+    gsiOnUserChanged.cancel();
   }
 
   @override
@@ -83,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () => _auth.signInWithGoogle(),
                 ),
               ElevatedButton(
-                  onPressed: () => context.go('/settings'),
+                  onPressed: () {},
                   child: const Text('Sign in with Apple')),
               ElevatedButton(
                   onPressed: () async {
