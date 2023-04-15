@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
 import 'package:equipment_app/data_models/user_info.dart';
+import 'package:equipment_app/image_crop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   final ImagePicker picker = ImagePicker();
-  late XFile? image = null;
+  late Uint8List? image = null;
 
   void pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -41,16 +42,23 @@ class _SetupScreenState extends State<SetupScreen> {
     );
 
     if (result != null) {
-      File file = File(result.files.single.path!);
+      Uint8List image = result.files.single.bytes!;
     }
   }
 
   void pickImage(ImageSource imageSource) async {
     if (await checkPermissions(imageSource)) {
       final img = await picker.pickImage(source: imageSource);
-      setState(() {
-        if (img != null) image = img;
-      });
+      if (img != null && context.mounted) {
+        final File f = File(img.path);
+        Uint8List? result = await Navigator.of(context).push<Uint8List?>(
+          MaterialPageRoute<Uint8List?>(
+              builder: (context) => ImageCrop(imgFile: f)),
+        );
+        setState(() {
+          if (result != null) image = result;
+        });
+      }
     }
   }
 
@@ -66,12 +74,12 @@ class _SetupScreenState extends State<SetupScreen> {
     } else if (imageSource == ImageSource.camera) {
       bool photosPermission = await Permission.camera.request().isGranted;
       if (!photosPermission) {
-        if (context.mounted)
+        if (context.mounted) {
           CustomDialog.showRequestPermissionDialog(context, Permission.camera);
+        }
         return false;
       }
     }
-
     return true;
   }
 
@@ -117,12 +125,11 @@ class _SetupScreenState extends State<SetupScreen> {
             Center(
               child: Column(
                 children: [
-                  /*ImageNetwork(
-                    image: photoUrl!,
-                    height: 200,
-                    width: 200,
-                  ),*/
-                  if (image != null) Image.file(File(image!.path)),
+                  if (image != null)
+                    CircleAvatar(
+                      radius: 100,
+                      backgroundImage: Image.memory(image!).image,
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -135,11 +142,13 @@ class _SetupScreenState extends State<SetupScreen> {
                             }
                           },
                           child: const Text('image_picker')),
-                      if(isMobile) IconButton(
-                          onPressed: () => pickImage(ImageSource.camera),
-                          icon: const Icon(Icons.camera_alt_rounded)),
+                      if (isMobile)
+                        IconButton(
+                            onPressed: () => pickImage(ImageSource.camera),
+                            icon: const Icon(Icons.camera_alt_rounded)),
                     ],
                   ),
+                  ElevatedButton(onPressed: () => _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut), child: const Text('Los geht\'s'))
                 ],
               ),
             ),
