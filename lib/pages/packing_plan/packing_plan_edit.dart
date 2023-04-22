@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../custom_widgets/select_sports.dart';
-import '../../custom_widgets/show_custom_dialog.dart';
+import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanEdit extends StatefulWidget {

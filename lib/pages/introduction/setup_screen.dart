@@ -1,13 +1,15 @@
 import 'dart:io';
-import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
-import 'package:equipment_app/data_models/user_info.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/image_crop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../firebase/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class SetupScreen extends StatefulWidget {
   const SetupScreen({Key? key}) : super(key: key);
@@ -22,9 +24,8 @@ class _SetupScreenState extends State<SetupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _textFieldController =
       TextEditingController(text: Auth().user!.displayName);
-  var photoUrl = Auth().user!.photoURL;
 
-  late UserInfo userInfo;
+  String selectedName = '';
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   final ImagePicker picker = ImagePicker();
-  late Uint8List? image = null;
+  Uint8List? image = null;
 
   void pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -41,9 +42,9 @@ class _SetupScreenState extends State<SetupScreen> {
       allowedExtensions: ['jpg', 'png', 'jpeg'],
     );
 
-    if (result != null) {
-      Uint8List image = result.files.single.bytes!;
-    }
+    setState(() {
+      if (result != null) image = result.files.single.bytes!;
+    });
   }
 
   void pickImage(ImageSource imageSource) async {
@@ -83,6 +84,30 @@ class _SetupScreenState extends State<SetupScreen> {
     return true;
   }
 
+  Future<void> completeSetup({required bool hasImage}) async {
+    _pageController.nextPage(
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+
+    if (hasImage) {
+      final tempDir = await getTemporaryDirectory();
+      File file = await File('${tempDir.path}/image.png').create();
+      file.writeAsBytesSync(image!);
+
+      final storageRef = FirebaseStorage.instance.ref();
+      final imageRef =
+          storageRef.child("users/${Auth().user!.uid}/profile.jpg");
+      await imageRef.putFile(file);
+    }
+
+    DocumentReference ref =
+        FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid);
+    await ref.set({
+      "name": selectedName,
+      "isSetupCompleted": true,
+      "email": Auth().user?.email
+    }, SetOptions(merge: true));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +128,7 @@ class _SetupScreenState extends State<SetupScreen> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Bitte einen gültigen Namen eingeben.';
+                          return 'Bitte gib deinen Namen ein.';
                         }
                         return null;
                       },
@@ -113,6 +138,9 @@ class _SetupScreenState extends State<SetupScreen> {
                   ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            selectedName = _textFieldController.text;
+                          });
                           _pageController.nextPage(
                               duration: const Duration(milliseconds: 500),
                               curve: Curves.easeInOut);
@@ -125,11 +153,13 @@ class _SetupScreenState extends State<SetupScreen> {
             Center(
               child: Column(
                 children: [
-                  if (image != null)
-                    CircleAvatar(
-                      radius: 100,
-                      backgroundImage: Image.memory(image!).image,
-                    ),
+                  Text(selectedName),
+                  CircleAvatar(
+                    radius: 100,
+                    backgroundImage: (image != null)
+                        ? Image.memory(image!).image
+                        : Image.asset('assets/images/placeholder.jpg').image,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -148,7 +178,20 @@ class _SetupScreenState extends State<SetupScreen> {
                             icon: const Icon(Icons.camera_alt_rounded)),
                     ],
                   ),
-                  ElevatedButton(onPressed: () => _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut), child: const Text('Los geht\'s'))
+                  ElevatedButton(
+                      onPressed: () {
+                        if (image != null) {
+                          completeSetup(hasImage: true);
+                        } else {
+                          CustomDialog.showCustomInformationDialog(
+                              context: context,
+                              description: 'Bitte wähle ein Bild');
+                        }
+                      },
+                      child: const Text('Los geht\'s')),
+                  TextButton(
+                      onPressed: () => completeSetup(hasImage: false),
+                      child: const Text('Überspringen')),
                 ],
               ),
             ),

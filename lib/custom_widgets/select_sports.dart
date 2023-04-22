@@ -1,4 +1,4 @@
-import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
+import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../data/data.dart';

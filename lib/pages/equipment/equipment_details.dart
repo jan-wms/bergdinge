@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
+import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

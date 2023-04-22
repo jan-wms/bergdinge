@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:equipment_app/firebase/firebase_auth.dart';
-import 'package:equipment_app/custom_widgets/show_custom_dialog.dart';
+import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

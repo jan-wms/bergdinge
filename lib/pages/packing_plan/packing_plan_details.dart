@@ -3,7 +3,7 @@ import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../custom_widgets/show_custom_dialog.dart';
+import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanDetails extends StatelessWidget {
