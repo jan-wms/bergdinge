@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/pages/authentication/verify_email_page.dart';
@@ -20,12 +21,13 @@ import 'firebase/firebase_auth.dart';
 
 final _navigatorKey = GlobalKey<NavigatorState>();
 
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  final authState = ref.watch(authProvider2);
 
   return GoRouter(
     navigatorKey: _navigatorKey,
-    initialLocation: '/setup',
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/launch_screen',
@@ -100,21 +102,41 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ]),
           ]),
     ],
-    redirect: (context, state) {
-      /*if (authState.isLoading || authState.hasError) return null;
-
-      final isAuthorized = authState.valueOrNull != null;
-      final isLoggingIn = state.location == '/login';
-      if (isLoggingIn) return isAuthorized ? '/' : null;
-
-      return isAuthorized ? null : '/login';*/
-
+    redirect: (context, state) async {
       if (authState.isLoading || authState.hasError) return '/launch_screen';
-      final isAuthorized = authState.valueOrNull != null;
-      final isLoggingIn = state.location == '/welcome';
-      if (isLoggingIn) return isAuthorized ? '/' : null;
 
-      return isAuthorized ? null : '/welcome';
+      final isAuthorized = authState.valueOrNull != null;
+      late final bool? isSetupCompleted;
+      if (isAuthorized) {
+        isSetupCompleted = await FirebaseFirestore.instance
+            .collection("users").doc(authState.value!.uid).get().then(
+                (DocumentSnapshot doc) {
+              try {
+                final data = doc.data() as Map<String, dynamic>;
+                return data['isSetupCompleted'];
+              } catch (e) {
+                return false;
+              }
+            });
+      }
+      final isWelcome = state.location == '/welcome';
+      final isSetup = state.location == '/setup';
+
+      if (isWelcome) {
+        return isAuthorized
+          ? ((isSetupCompleted ?? false) ? '/' : '/setup')
+          : null;
+      }
+
+      if (isAuthorized) {
+        if (isSetupCompleted ?? false) {
+          return isSetup ? '/' : null;
+        } else {
+          return '/setup';
+        }
+      } else {
+        return '/welcome';
+      }
     },
   );
 });

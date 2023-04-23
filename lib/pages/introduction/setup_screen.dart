@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../firebase/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -56,29 +55,26 @@ class _SetupScreenState extends State<SetupScreen> {
     }
   }
 
-  void pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'png', 'jpeg'],
-    );
-    setState(() {
-      if (result != null) image = result.files.single.bytes!;
-    });
-  }
+  void pickImage({required ImageSource? imageSource}) async {
+    late final Uint8List? selectedImg;
+    if(imageSource == null) {
+      selectedImg = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png', 'jpeg'],
+      ).then((value) => value?.files.single.bytes);
+    } else {
+      if (await checkPermissions(imageSource) == false) return;
+      selectedImg = await picker.pickImage(source: imageSource).then((value) async { return await value?.readAsBytes();});
+    }
 
-  void pickImage(ImageSource imageSource) async {
-    if (await checkPermissions(imageSource)) {
-      final img = await picker.pickImage(source: imageSource);
-      if (img != null && context.mounted) {
-        final File f = File(img.path);
-        Uint8List? result = await Navigator.of(context).push<Uint8List?>(
+    if (selectedImg != null && context.mounted) {
+        Uint8List? cropImg = await Navigator.of(context).push<Uint8List?>(
           MaterialPageRoute<Uint8List?>(
-              builder: (context) => ImageCrop(imgFile: f)),
+              builder: (context) => ImageCrop(image: selectedImg!)),
         );
         setState(() {
-          if (result != null) image = result;
+          if (cropImg != null) image = cropImg;
         });
-      }
     }
   }
 
@@ -103,19 +99,19 @@ class _SetupScreenState extends State<SetupScreen> {
     return true;
   }
 
-  Future<void> completeSetup({required bool hasImage}) async {
-    _pageController.nextPage(
+  Future<void> uploadToFirebase({required bool hasImage}) async {
+    await _pageController.nextPage(
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
 
     if (hasImage) {
-      final tempDir = await getTemporaryDirectory();
-      File file = await File('${tempDir.path}/image.png').create();
-      file.writeAsBytesSync(image);
-
       final storageRef = FirebaseStorage.instance.ref();
       final imageRef =
           storageRef.child("users/${Auth().user!.uid}/profile.jpg");
-      await imageRef.putFile(file);
+      await imageRef.putData(
+          image,
+          SettableMetadata(
+            contentType: "image/jpg",
+          ));
     }
 
     DocumentReference ref =
@@ -125,6 +121,8 @@ class _SetupScreenState extends State<SetupScreen> {
       "isSetupCompleted": true,
       "email": Auth().user?.email
     }, SetOptions(merge: true));
+
+    Auth().user!.reload();
   }
 
   @override
@@ -183,24 +181,18 @@ class _SetupScreenState extends State<SetupScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                          onPressed: () {
-                            if (isMobile) {
-                              pickImage(ImageSource.gallery);
-                            } else {
-                              pickFile();
-                            }
-                          },
+                          onPressed: () => pickImage(imageSource: isMobile ? ImageSource.gallery : null),
                           child: const Text('image_picker')),
                       if (isMobile)
                         IconButton(
-                            onPressed: () => pickImage(ImageSource.camera),
+                            onPressed: () => pickImage(imageSource: ImageSource.camera),
                             icon: const Icon(Icons.camera_alt_rounded)),
                     ],
                   ),
                   ElevatedButton(
                       onPressed: () {
                         if (image.isNotEmpty) {
-                          completeSetup(hasImage: true);
+                          uploadToFirebase(hasImage: true);
                         } else {
                           CustomDialog.showCustomInformationDialog(
                               context: context,
@@ -209,7 +201,7 @@ class _SetupScreenState extends State<SetupScreen> {
                       },
                       child: const Text('Los geht\'s')),
                   TextButton(
-                      onPressed: () => completeSetup(hasImage: false),
+                      onPressed: () => uploadToFirebase(hasImage: false),
                       child: const Text('Überspringen')),
                 ],
               ),

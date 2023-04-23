@@ -8,6 +8,10 @@ final authProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
 
+final authProvider2 = StreamProvider<User?>((ref) {
+  return FirebaseAuth.instance.userChanges();
+});
+
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
