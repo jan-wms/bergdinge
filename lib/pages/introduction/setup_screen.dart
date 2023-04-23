@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/image_crop.dart';
 import 'package:file_picker/file_picker.dart';
@@ -26,22 +27,40 @@ class _SetupScreenState extends State<SetupScreen> {
       TextEditingController(text: Auth().user!.displayName);
 
   String selectedName = '';
+  final ImagePicker picker = ImagePicker();
+  Uint8List image = Uint8List(0);
 
   @override
   void initState() {
-    // TODO: Pre-Load user.photoUrl
     super.initState();
+    preLoadImage();
   }
 
-  final ImagePicker picker = ImagePicker();
-  Uint8List? image = null;
+  Future<void> preLoadImage() async {
+    final photoURL = Auth().user!.photoURL;
+    if (photoURL != null) {
+      var dio = Dio();
+
+      try {
+        Response response = await dio.get(
+          photoURL,
+          options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+          ),
+        );
+        image = response.data;
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
 
   void pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'png', 'jpeg'],
     );
-
     setState(() {
       if (result != null) image = result.files.single.bytes!;
     });
@@ -91,7 +110,7 @@ class _SetupScreenState extends State<SetupScreen> {
     if (hasImage) {
       final tempDir = await getTemporaryDirectory();
       File file = await File('${tempDir.path}/image.png').create();
-      file.writeAsBytesSync(image!);
+      file.writeAsBytesSync(image);
 
       final storageRef = FirebaseStorage.instance.ref();
       final imageRef =
@@ -156,8 +175,8 @@ class _SetupScreenState extends State<SetupScreen> {
                   Text(selectedName),
                   CircleAvatar(
                     radius: 100,
-                    backgroundImage: (image != null)
-                        ? Image.memory(image!).image
+                    backgroundImage: (image.isNotEmpty)
+                        ? Image.memory(image).image
                         : Image.asset('assets/images/placeholder.jpg').image,
                   ),
                   Row(
@@ -180,7 +199,7 @@ class _SetupScreenState extends State<SetupScreen> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        if (image != null) {
+                        if (image.isNotEmpty) {
                           completeSetup(hasImage: true);
                         } else {
                           CustomDialog.showCustomInformationDialog(
