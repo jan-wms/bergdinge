@@ -1,4 +1,3 @@
-import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
@@ -6,6 +5,7 @@ import 'package:equipment_app/validators/packing_plan_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../custom_widgets/select_sports.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
@@ -41,7 +41,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
       sports: _formKeySports.currentState!.value,
     );
 
-    await ref.set(p.toMap());
+    await ref.set(p.toMap()).then((value) => context.pop());
   }
 
   @override
@@ -52,7 +52,13 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(''),
+            BackButton(
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                }
+              },
+            ),
             Text(
                 'Packliste ${widget.packingPlan != null ? 'bearbeiten' : 'erstellen'}'),
             ElevatedButton(
@@ -187,9 +193,7 @@ class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
                           } else {
                             setState(() {
                               selected.add(PackingPlanItem(
-                                  equipmentId: equipment.id,
-                                  place: Data.places['backpack']!,
-                                  count: 1));
+                                  equipmentId: equipment.id, count: 1));
                             });
                           }
                         },

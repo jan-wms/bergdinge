@@ -10,6 +10,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const Text("Einstellungen"),
         Text(
           Auth().user?.uid ?? 'kein user',
         ),

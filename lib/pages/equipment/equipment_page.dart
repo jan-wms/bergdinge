@@ -10,16 +10,17 @@ class EquipmentPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final equipmentList = ref.watch(equipmentStreamProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('test'),
-      ),
-      body: Center(
+    return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
               'Meine Ausrüstung',
+            ),
+            const TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+              ),
             ),
             ElevatedButton(
                 onPressed: () => context.push('/equipment/edit'),
@@ -46,7 +47,6 @@ class EquipmentPage extends ConsumerWidget {
             ))
           ],
         ),
-      ),
     );
   }
 }

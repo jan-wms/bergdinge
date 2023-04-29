@@ -6,6 +6,7 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/validators/equipment_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -63,7 +64,7 @@ class _EquipmentEditState extends State<EquipmentEdit> {
       runningCosts: null,
     );
 
-    await ref.set(e.toMap());
+    await ref.set(e.toMap()).then((value) => context.pop());
   }
 
   @override
@@ -78,7 +79,13 @@ class _EquipmentEditState extends State<EquipmentEdit> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(''),
+                  BackButton(
+                    onPressed: () {
+                      if(context.canPop()) {
+                        context.pop();
+                      }
+                    },
+                  ),
                   Text(
                       'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
                   ElevatedButton(

@@ -14,6 +14,13 @@ class PackingPlanDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        BackButton(
+          onPressed: () {
+            if(context.canPop()) {
+              context.pop();
+            }
+          },
+        ),
         Text(packingPlan.name),
         for (var sport in packingPlan.sports) Text(sport),
         for (var item in packingPlan.items) Text(item.equipmentId),

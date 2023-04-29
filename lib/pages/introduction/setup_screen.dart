@@ -172,7 +172,7 @@ class _SetupScreenState extends State<SetupScreen> {
                 children: [
                   Text(selectedName),
                   CircleAvatar(
-                    radius: 100,
+                    radius: 48,
                     backgroundImage: (image.isNotEmpty)
                         ? Image.memory(image).image
                         : Image.asset('assets/images/placeholder.jpg').image,

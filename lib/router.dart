@@ -23,7 +23,7 @@ final _navigatorKey = GlobalKey<NavigatorState>();
 
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider2);
+  final authState = ref.watch(authProvider);
 
   return GoRouter(
     navigatorKey: _navigatorKey,

@@ -12,10 +12,15 @@ class EquipmentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('test details'),),
-      body: Column(
+    return Column(
         children: [
+          BackButton(
+            onPressed: () {
+              if(context.canPop()) {
+                context.pop();
+              }
+            },
+          ),
           Text(equipment.brand ?? 'no brand'),
           Text(equipment.name),
           Text(equipment.sports.toString()),
@@ -41,7 +46,6 @@ class EquipmentDetails extends StatelessWidget {
               },
               child: const Text('edit')),
         ],
-      ),
     );
   }
 }

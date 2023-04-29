@@ -34,11 +34,6 @@ class Data {
     'Klettersteig',
   ];
 
-  static Map<String, String> places = {
-    'body': 'Am Körper',
-    'backpack': 'Im Rucksack',
-  };
-
   static List<Category> categories = [
     Category(name: 'Bekleidung', id: 0, subCategories: [
       Category(name: 'Accessories', id: 1, subCategories: [
@@ -209,8 +204,7 @@ class Data {
       Category(name: 'Rucksäcke & Taschen', subCategories: [
         Category(name: 'Packsäcke', id: 143),
         Category(name: 'Rucksäcke', subCategories: [
-          Category(name: 'Hochtourenrucksäcke', id: 145),
-          Category(name: 'Kletterrucksäcke', id: 146),
+          Category(name: 'Hochtouren- & Kletterrucksäcke', id: 145),
           Category(name: 'Kraxen', id: 147),
           Category(name: 'Ski- & Lawinenrucksäcke', id: 148),
           Category(name: 'Trailrunning Rucksäcke', id: 149),

@@ -3,10 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PackingPlanItem {
   final String equipmentId;
   final int count;
-  final String place;
 
   PackingPlanItem(
-      {required this.equipmentId, required this.place, required this.count});
+      {required this.equipmentId, required this.count});
 
 
   factory PackingPlanItem.fromFirestore(
@@ -16,7 +15,6 @@ class PackingPlanItem {
     final data = snapshot.data();
     return PackingPlanItem(
       equipmentId: data?['equipmentId'],
-      place: data?['place'],
       count: (data?['count'] as num).toInt(),
     );
   }
@@ -26,7 +24,6 @@ class PackingPlanItem {
       ) {
     return PackingPlanItem(
       equipmentId: map['equipmentId'],
-      place: map['place']!,
       count: (map['count'] as num).toInt(),
     );
   }
@@ -35,7 +32,6 @@ class PackingPlanItem {
     return {
       "equipmentId": equipmentId,
       "count": count,
-      "place": place,
     };
   }
 }
