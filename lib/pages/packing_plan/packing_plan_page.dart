@@ -33,7 +33,7 @@ class PackingPlanPage extends ConsumerWidget {
                       title: Text(packingPlan.name),
                       subtitle: Text(packingPlan.sports.toString()),
                       onTap: () {
-                        context.push('/packing_plan/details', extra: packingPlan);
+                        context.push('/packing_plan/details', extra: packingPlan.id);
                       },
                     );
                   },

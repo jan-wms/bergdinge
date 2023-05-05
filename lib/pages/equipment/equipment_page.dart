@@ -4,55 +4,82 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/data.dart';
+import '../../data_models/equipment.dart';
 
-class EquipmentPage extends ConsumerWidget {
+class EquipmentPage extends ConsumerStatefulWidget {
   const EquipmentPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EquipmentPage> createState() => _EquipmentPageState();
+}
+
+class _EquipmentPageState extends ConsumerState<EquipmentPage> {
+  final controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     final equipmentList = ref.watch(equipmentStreamProvider);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Text(
-            'Meine Ausrüstung',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(),
+              const Text(
+                'Meine Ausrüstung',
+              ),
+              ElevatedButton(
+                  onPressed: () => context.push('/equipment/edit'),
+                  child: const Text('Gegenstand hinzufügen')),
+            ],
           ),
-          const TextField(
-            decoration: InputDecoration(
+          TextField(
+            controller: controller,
+            decoration: const InputDecoration(
               prefixIcon: Icon(Icons.search),
+              hintText: 'Suchen',
             ),
+            onChanged: (value) {
+              setState(() {});
+            },
           ),
-          ElevatedButton(
-              onPressed: () => context.push('/equipment/edit'),
-              child: const Text('Gegenstand hinzufügen')),
-          /*Expanded(
-                child: equipmentList.when(
-                  error: (error, stackTrace) => Text(error.toString()),
-                  loading: () => const CircularProgressIndicator.adaptive(),
-                  data: (data) {
-                    return ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        final equipment = data[index];
-                        return ListTile(
-                          title: Text('${equipment.brand!} ${equipment.name}'),
-                          //subtitle: Text(equipment.size ?? ''),
-                          subtitle: Text(equipment.size ?? ''),
-                          onTap: () {
-                            context.push('/equipment/details', extra: equipment);
-                          },
-                        );
-                      },
-                    );
-                  },
-                )),*/
           Expanded(
               child: equipmentList.when(
             error: (error, stackTrace) => Text(error.toString()),
             loading: () => const CircularProgressIndicator.adaptive(),
             data: (data) {
+              String searchPattern = controller.text.toLowerCase();
+              if (searchPattern.isNotEmpty) {
+                List<Equipment> items = data
+                    .where((element) =>
+                        element.name.toLowerCase().contains(searchPattern))
+                    .toList();
+                items.addAll(data.where((element) =>
+                    !items.contains(element) &&
+                    (element.brand?.toLowerCase().contains(searchPattern) ??
+                        false)));
+                if (items.isEmpty) {
+                  return const Text('Leider konnte nichts gefunden werden.');
+                }
+                return ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title:
+                          Text('${items[index].brand!} ${items[index].name}'),
+                      subtitle: Text(items[index].size ?? ''),
+                      onTap: () {
+                        context.push('/equipment/details',
+                            extra: items[index].id);
+                      },
+                    );
+                  },
+                );
+              }
+
               return ListView(
                 children: [
                   for (var element in Data.categories)
@@ -85,7 +112,7 @@ class EquipmentPage extends ConsumerWidget {
                                     subtitle: Text(equipment.size ?? ''),
                                     onTap: () {
                                       context.push('/equipment/details',
-                                          extra: equipment);
+                                          extra: equipment.id);
                                     },
                                   ),
                                 );

@@ -79,8 +79,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                       path: 'details',
                       builder: (context, state) {
-                        PackingPlan p = state.extra as PackingPlan;
-                        return PackingPlanDetails(packingPlan: p);
+                        String packingPlanID = state.extra as String;
+                        return PackingPlanDetails(packingPlanID: packingPlanID);
                       }),
                 ]),
             GoRoute(
@@ -96,8 +96,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                       path: 'details',
                       builder: (context, state) {
-                        Equipment e = state.extra as Equipment;
-                        return EquipmentDetails(equipment: e);
+                        String equipmentID = state.extra as String;
+                        return EquipmentDetails(equipmentID: equipmentID);
                       }),
                 ]),
           ]),

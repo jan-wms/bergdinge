@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/data.dart';
-import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/validators/equipment_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../custom_widgets/select_category.dart';
 import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -20,6 +19,8 @@ class EquipmentEdit extends StatefulWidget {
 }
 
 class _EquipmentEditState extends State<EquipmentEdit> {
+  bool isLoading = false;
+
   final _formKey = GlobalKey<FormState>();
   final _formKeyCount = GlobalKey<FormFieldState>();
   final _formKeyDate = GlobalKey<FormFieldState>();
@@ -36,6 +37,9 @@ class _EquipmentEditState extends State<EquipmentEdit> {
 
 
   void edit() async {
+    setState(() {
+      isLoading = true;
+    });
     DocumentReference ref = FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
@@ -90,9 +94,9 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                       'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
                   ElevatedButton(
                       onPressed: () async {
-                            if (_formKey.currentState!.validate()) edit();
+                            if (_formKey.currentState!.validate() && !isLoading) edit();
                           },
-                      child: Text(widget.equipment != null
+                      child: isLoading ? const CircularProgressIndicator.adaptive() : Text(widget.equipment != null
                           ? ''
                               'Bearbeiten'
                           : 'Hinzufügen')),
@@ -148,16 +152,12 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                     Text(state.value.toString()),
                     TextButton(
                         onPressed: () {
-                          setState(() {
-                            if (state.value! > 1) state.setValue(state.value! - 1);
-                          });
+                            if (state.value! > 1) state.didChange(state.value! - 1);
                         },
                         child: const Text('-')),
                     TextButton(
                         onPressed: () {
-                          setState(() {
-                            state.setValue(state.value! + 1);
-                          });
+                            state.didChange(state.value! + 1);
                         },
                         child: const Text('+')),
                   ],
@@ -178,9 +178,7 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                       firstDate: DateTime(1950),
                       lastDate: DateTime.now(),
                     );
-                    setState(() {
-                      state.setValue(d);
-                    });
+                      state.didChange(d);
                   },
                   title: Text(state.value?.toString() ??
                       'date not definded'),
@@ -200,9 +198,7 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                     onTap: () async {
                       final List<String> s =
                       await selectSports(context, state.value!);
-                      setState(() {
-                        state.setValue(s);
-                      });
+                      state.didChange(s);
                     },
                   ),),
               FormField<int>(
@@ -217,96 +213,13 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                   onTap: () async {
                     final int i =
                     await selectCategory(context, state.value!);
-                    setState(() {
-                      state.setValue(i);
-                    });
+                      state.didChange(i);
                   },
                 ),
               ),
             ],
           ),
         ),
-      ],
-    );
-  }
-}
-
-Future<int> selectCategory(BuildContext context, int selected) async {
-  final GlobalKey<_SelectCategoryState> k = GlobalKey();
-  final SelectCategory selectCategory = SelectCategory(
-    key: k,
-    selected: selected,
-  );
-  await CustomDialog.showCustomModal(
-    context,
-    selectCategory,
-    null,
-    TextButton(
-      child: const Text('Close'),
-      onPressed: () => Navigator.of(context).pop(),
-    ),
-  );
-  return k.currentState!.selected;
-}
-
-class SelectCategory extends StatefulWidget {
-  final int selected;
-
-  const SelectCategory({Key? key, required this.selected}) : super(key: key);
-
-  @override
-  State<SelectCategory> createState() => _SelectCategoryState();
-}
-
-class _SelectCategoryState extends State<SelectCategory> {
-  final TextEditingController _textEditingController = TextEditingController();
-  final List<Category> dataCategories = Data.categories;
-  late int selected = widget.selected;
-
-  List<Widget> createCategories(List<Category> categories) {
-    List<Widget> widgets = <Widget>[];
-    for (var element in categories) {
-      if (element.subCategories == null) {
-        widgets.add(ListTile(
-          title: Text(element.name),
-          onTap: () {
-            setState(() {
-              selected = element.id;
-            });
-          },
-          trailing: element.id == selected ? const Icon(Icons.check) : null,
-        ));
-      } else {
-        widgets.add(ExpansionTile(
-          title: Text(element.name),
-          children: createCategories(element.subCategories!),
-        ));
-      }
-    }
-    return widgets;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text('Kategorie'),
-        TextField(
-          controller: _textEditingController,
-          decoration: InputDecoration(
-            labelText: 'Suche',
-            suffix: IconButton(onPressed: () => _textEditingController.clear(), icon: const Icon(Icons.close))
-          ),
-          onChanged: (value) {
-            dataCategories.where((element) => element.name.toLowerCase().contains(value.toLowerCase()));
-          },
-        ),
-        Expanded(
-          child: ListView(
-            children: createCategories(dataCategories),
-          ),
-        )
       ],
     );
   }

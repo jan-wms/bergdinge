@@ -1,6 +1,5 @@
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
-
 import '../data/data.dart';
 
 Future<List<String>> selectSports(
@@ -14,9 +13,9 @@ Future<List<String>> selectSports(
     context,
     selectSports,
     null,
-    IconButton(
+    TextButton(
       onPressed: () => Navigator.of(context).pop(),
-      icon: const Icon(Icons.close),
+      child: const Text('Fertig'),
     ),
   );
   return k.currentState!.selected;

@@ -20,6 +20,8 @@ class PackingPlanEdit extends StatefulWidget {
 }
 
 class _PackingPlanEditState extends State<PackingPlanEdit> {
+  bool isLoading = false;
+
   final _formKey = GlobalKey<FormState>();
   final _formKeySports = GlobalKey<FormFieldState>();
   final _formKeyItems = GlobalKey<FormFieldState>();
@@ -28,6 +30,10 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
       TextEditingController(text: widget.packingPlan?.name ?? '');
 
   void edit() async {
+    setState(() {
+      isLoading = true;
+    });
+
     DocumentReference ref = FirebaseFirestore.instance
         .collection('users')
         .doc(Auth().user?.uid)
@@ -63,9 +69,9 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                 'Packliste ${widget.packingPlan != null ? 'bearbeiten' : 'erstellen'}'),
             ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) edit();
+                  if (_formKey.currentState!.validate() && !isLoading) edit();
                 },
-                child: Text(
+                child: isLoading ? const CircularProgressIndicator.adaptive() : Text(
                     widget.packingPlan != null ? 'Bearbeiten' : 'Erstellen')),
           ],
         ),
@@ -94,9 +100,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                   onTap: () async {
                     final List<String> s =
                         await selectSports(context, state.value!);
-                    setState(() {
-                      state.setValue(s);
-                    });
+                      state.didChange(s);
                   },
                 ),
               ),
@@ -109,9 +113,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                   onTap: () async {
                     final List<PackingPlanItem> i =
                         await selectEquipment(context, state.value!);
-                    setState(() {
-                      state.setValue(i);
-                    });
+                      state.didChange(i);
                   },
                   trailing: const Icon(Icons.chevron_right_outlined),
                   title: const Text('Add item'),
