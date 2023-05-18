@@ -15,55 +15,58 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        FutureBuilder(
-            future: FirebaseStorage.instance
-                .ref()
-                .child("users/${Auth().user!.uid}/profile.jpg")
-                .getData(),
-            builder: (context, snapshot) {
-              if(snapshot.hasError || !snapshot.hasData) return Text(snapshot.error.toString());
+    return Container(
+      color: Colors.black12,
+      child: ListView(
+        children: [
+          FutureBuilder(
+              future: FirebaseStorage.instance
+                  .ref()
+                  .child("users/${Auth().user!.uid}/profile.jpg")
+                  .getData(),
+              builder: (context, snapshot) {
+                if(snapshot.hasError || !snapshot.hasData) return Text(snapshot.error.toString());
 
-              return CircleAvatar(
-                radius: 48,
-                backgroundImage: Image.memory(snapshot.data!).image,
-              );
-            }),
-        FutureBuilder(
-            future: FirebaseFirestore.instance
-                .collection("users")
-                .doc(Auth().user!.uid)
-                .get(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError || !snapshot.hasData) {
-                return const CircularProgressIndicator.adaptive();
-              }
-              final DocumentSnapshot<Map<String, dynamic>> data =
-                  snapshot.data!;
-              return Text(data['name']);
-            }),
-        ListTile(
-          title: const Text('Entdecken'),
-          onTap: () => GoRouter.of(context).go('/'),
-        ),
-        ListTile(
-          title: const Text('Packlisten'),
-          onTap: () => GoRouter.of(context).go('/packing_plan'),
-        ),
-        ListTile(
-          title: const Text('Ausrüstung'),
-          onTap: () => GoRouter.of(context).go('/equipment'),
-        ),
-        ListTile(
-          title: const Text('Einstellungen'),
-          onTap: () => GoRouter.of(context).go('/settings'),
-        ),
-        if(kIsWeb) ListTile(
-          title: const Text('Logout'),
-          onTap: () => Auth().signOut(),
-        ),
-      ],
+                return CircleAvatar(
+                  radius: 48,
+                  backgroundImage: Image.memory(snapshot.data!).image,
+                );
+              }),
+          FutureBuilder(
+              future: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(Auth().user!.uid)
+                  .get(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return const CircularProgressIndicator.adaptive();
+                }
+                final DocumentSnapshot<Map<String, dynamic>> data =
+                    snapshot.data!;
+                return Text(data['name']);
+              }),
+          ListTile(
+            title: const Text('Entdecken'),
+            onTap: () => GoRouter.of(context).go('/'),
+          ),
+          ListTile(
+            title: const Text('Packlisten'),
+            onTap: () => GoRouter.of(context).go('/packing_plan'),
+          ),
+          ListTile(
+            title: const Text('Ausrüstung'),
+            onTap: () => GoRouter.of(context).go('/equipment'),
+          ),
+          ListTile(
+            title: const Text('Einstellungen'),
+            onTap: () => GoRouter.of(context).go('/settings'),
+          ),
+          if(kIsWeb) ListTile(
+            title: const Text('Logout'),
+            onTap: () => Auth().signOut(),
+          ),
+        ],
+      ),
     );
   }
 }

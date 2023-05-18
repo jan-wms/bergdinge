@@ -5,7 +5,6 @@ import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {

@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
-import 'package:equipment_app/pages/authentication/verify_email_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:equipment_app/pages/home_page.dart';
-import 'package:equipment_app/pages/authentication/login_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/introduction/introduction_page.dart';
 import 'package:equipment_app/pages/introduction/setup_screen.dart';
@@ -40,18 +38,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/setup',
         builder: (context, state) => const SetupScreen(),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(isLinkingAccounts: false),
-      ),
-      GoRoute(
-        path: '/link_accounts',
-        builder: (context, state) => const LoginPage(isLinkingAccounts: true),
-      ),
-      GoRoute(
-        path: '/verify_email',
-        builder: (context, state) => const VerifyEmailPage(),
       ),
       ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {

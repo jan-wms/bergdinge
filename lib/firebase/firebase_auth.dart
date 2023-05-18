@@ -68,28 +68,6 @@ class Auth {
     }
   }
 
-  Future<void> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-    required bool isLinkingAccounts,
-  }) async {
-    if (isLinkingAccounts) {
-      final credential =
-          EmailAuthProvider.credential(email: email, password: password);
-      await _firebaseAuth.currentUser?.linkWithCredential(credential);
-    } else {
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    }
-  }
-
-  Future<void> sendEmailVerification() async {
-    await FirebaseAuth.instance.setLanguageCode("de");
-    await FirebaseAuth.instance.currentUser?.sendEmailVerification();
-  }
-
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
