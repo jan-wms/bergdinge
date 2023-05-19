@@ -206,10 +206,10 @@ class _SetupScreenState extends State<SetupScreen> {
                 ],
               ),
             ),
-            Center(
+            const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   CircularProgressIndicator.adaptive(),
                   Text('App wird eingerichtet...'),
                 ],

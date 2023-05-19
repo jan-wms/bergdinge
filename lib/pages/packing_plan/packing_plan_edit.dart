@@ -10,16 +10,16 @@ import '../../custom_widgets/select_sports.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 
-class PackingPlanEdit extends StatefulWidget {
+class PackingPlanEdit extends ConsumerStatefulWidget {
   final PackingPlan? packingPlan;
 
   const PackingPlanEdit({Key? key, this.packingPlan}) : super(key: key);
 
   @override
-  State<PackingPlanEdit> createState() => _PackingPlanEditState();
+  ConsumerState<PackingPlanEdit> createState() => _PackingPlanEditState();
 }
 
-class _PackingPlanEditState extends State<PackingPlanEdit> {
+class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
   bool isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
@@ -29,7 +29,7 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
   late final TextEditingController _controllerName =
       TextEditingController(text: widget.packingPlan?.name ?? '');
 
-  void edit() async {
+  void edit({required List<PackingPlan>? packingPlanList}) async {
     setState(() {
       isLoading = true;
     });
@@ -47,7 +47,22 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
       sports: _formKeySports.currentState!.value,
     );
 
-    await ref.set(p.toMap()).then((value) => context.pop());
+    bool continueEdit = true;
+    final int? duplicate = packingPlanList?.indexWhere((element) => element.name.toLowerCase() == p.name.toLowerCase() && element.id != p.id);
+    if(duplicate != null && duplicate != -1) {
+      await CustomDialog.showCustomConfirmationDialog(context: context, description: 'Es existiert bereits ein Gegenstand mit dem Namen "${packingPlanList!.elementAt(duplicate).name}". Trotzdem fortfahren?').then((value) {
+        if(!value) {
+          continueEdit = false;
+          setState(() {
+            isLoading = false;
+          });
+        }
+      });
+    }
+
+    if(continueEdit) {
+      await ref.set(p.toMap()).then((value) => context.pop());
+    }
   }
 
   @override
@@ -69,7 +84,11 @@ class _PackingPlanEditState extends State<PackingPlanEdit> {
                 'Packliste ${widget.packingPlan != null ? 'bearbeiten' : 'erstellen'}'),
             ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate() && !isLoading) edit();
+                  if (_formKey.currentState!.validate() && !isLoading) {
+                    edit(
+                      packingPlanList:
+                      ref.read(packingPlanStreamProvider).value);
+                  }
                 },
                 child: isLoading ? const CircularProgressIndicator.adaptive() : Text(
                     widget.packingPlan != null ? 'Bearbeiten' : 'Erstellen')),
@@ -176,7 +195,7 @@ class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
                       final equipment = data[index];
                       return ListTile(
                         title: Text((equipment.brand ?? '') + equipment.name),
-                        subtitle: Text(equipment.sports.toString()),
+                        subtitle: Text(equipment.size.toString()),
                         trailing: selected
                                 .where((element) =>
                                     element.equipmentId == equipment.id)

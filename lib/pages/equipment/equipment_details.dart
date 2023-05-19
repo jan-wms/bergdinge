@@ -4,6 +4,7 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../custom_widgets/custom_back_button.dart';
 import '../../data_models/category.dart';
 import '../../firebase/firebase_auth.dart';
 import '../../data/data.dart';
@@ -21,13 +22,7 @@ class EquipmentDetails extends ConsumerWidget {
 
     return Column(
       children: [
-        BackButton(
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            }
-          },
-        ),
+        const CustomBackButton(),
         Expanded(
           child: equipmentList.when(
               error: (error, stackTrace) => Text(error.toString()),
@@ -51,7 +46,6 @@ class EquipmentDetails extends ConsumerWidget {
                     Text('weight: ${equipment.weight}'),
                     Text('status: ${equipment.status}'),
                     Text('size: ${equipment.size}'),
-                    Text('sports: ${equipment.sports}'),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -1,42 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/custom_widgets/custom_back_button.dart';
+import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/data.dart';
+import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/validators/equipment_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/select_category.dart';
-import '../../custom_widgets/select_sports.dart';
 import '../../firebase/firebase_auth.dart';
 
-class EquipmentEdit extends StatefulWidget {
+class EquipmentEdit extends ConsumerStatefulWidget {
   final Equipment? equipment;
 
   const EquipmentEdit({super.key, this.equipment});
 
   @override
-  State<EquipmentEdit> createState() => _EquipmentEditState();
+  ConsumerState<EquipmentEdit> createState() => _EquipmentEditState();
 }
 
-class _EquipmentEditState extends State<EquipmentEdit> {
+class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
   bool isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
   final _formKeyCount = GlobalKey<FormFieldState>();
   final _formKeyDate = GlobalKey<FormFieldState>();
   final _formKeyCategory = GlobalKey<FormFieldState>();
-  final _formKeySports = GlobalKey<FormFieldState>();
 
-  late final TextEditingController _controllerName = TextEditingController(text: widget.equipment?.name ?? '');
-  late final TextEditingController _controllerBrand = TextEditingController(text: widget.equipment?.brand ?? '');
-  late final TextEditingController _controllerWeight = TextEditingController(text: (widget.equipment?.weight ?? '').toString());
-  late final TextEditingController _controllerPrice = TextEditingController(text: (widget.equipment?.price ?? '').toString());
-  late final TextEditingController _controllerSize = TextEditingController(text: widget.equipment?.size ?? '');
-  late final TextEditingController _controllerUvp = TextEditingController(text: (widget.equipment?.uvp ?? '').toString());
+  late final TextEditingController _controllerName =
+      TextEditingController(text: widget.equipment?.name ?? '');
+  late final TextEditingController _controllerBrand =
+      TextEditingController(text: widget.equipment?.brand ?? '');
+  late final TextEditingController _controllerWeight =
+      TextEditingController(text: (widget.equipment?.weight ?? '').toString());
+  late final TextEditingController _controllerPrice =
+      TextEditingController(text: (widget.equipment?.price ?? '').toString());
+  late final TextEditingController _controllerSize =
+      TextEditingController(text: widget.equipment?.size ?? '');
+  late final TextEditingController _controllerUvp =
+      TextEditingController(text: (widget.equipment?.uvp ?? '').toString());
 
-
-
-  void edit() async {
+  void edit({required List<Equipment>? equipmentList}) async {
     setState(() {
       isLoading = true;
     });
@@ -53,7 +59,6 @@ class _EquipmentEditState extends State<EquipmentEdit> {
       category: _formKeyCategory.currentState!.value,
       count: _formKeyCount.currentState!.value,
       id: ref.id,
-      sports: _formKeySports.currentState!.value,
       purchaseDate: _formKeyDate.currentState!.value,
       uvp: _controllerUvp.text.isNotEmpty
           ? double.parse(_controllerUvp.text.toString().replaceAll(',', '.'))
@@ -63,12 +68,26 @@ class _EquipmentEditState extends State<EquipmentEdit> {
           ? double.parse(_controllerPrice.text.toString().replaceAll(',', '.'))
           : null,
       brand: _controllerBrand.text,
-
       daysInUse: null,
       runningCosts: null,
     );
 
-    await ref.set(e.toMap()).then((value) => context.pop());
+    bool continueEdit = true;
+    final int? duplicate = equipmentList?.indexWhere((element) => element.name.toLowerCase() == e.name.toLowerCase() && element.id != e.id);
+    if(duplicate != null && duplicate != -1) {
+      await CustomDialog.showCustomConfirmationDialog(context: context, description: 'Es existiert bereits ein Gegenstand mit dem Namen "${equipmentList!.elementAt(duplicate).name}". Trotzdem fortfahren?').then((value) {
+        if(!value) {
+          continueEdit = false;
+          setState(() {
+            isLoading = false;
+          });
+        }
+      });
+    }
+
+    if(continueEdit) {
+      await ref.set(e.toMap()).then((value) => context.pop());
+    }
   }
 
   @override
@@ -83,23 +102,23 @@ class _EquipmentEditState extends State<EquipmentEdit> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BackButton(
-                    onPressed: () {
-                      if(context.canPop()) {
-                        context.pop();
-                      }
-                    },
-                  ),
+                  const CustomBackButton(),
                   Text(
                       'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
                   ElevatedButton(
                       onPressed: () async {
-                            if (_formKey.currentState!.validate() && !isLoading) edit();
-                          },
-                      child: isLoading ? const CircularProgressIndicator.adaptive() : Text(widget.equipment != null
-                          ? ''
-                              'Bearbeiten'
-                          : 'Hinzufügen')),
+                        if (_formKey.currentState!.validate() && !isLoading) {
+                          edit(
+                              equipmentList:
+                                  ref.read(equipmentStreamProvider).value);
+                        }
+                      },
+                      child: isLoading
+                          ? const CircularProgressIndicator.adaptive()
+                          : Text(widget.equipment != null
+                              ? ''
+                                  'Bearbeiten'
+                              : 'Hinzufügen')),
                 ],
               ),
               TextFormField(
@@ -130,7 +149,8 @@ class _EquipmentEditState extends State<EquipmentEdit> {
               ),
               TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => EquipmentValidator.priceOrUvp(value.toString().replaceAll(',', '.')),
+                validator: (value) => EquipmentValidator.priceOrUvp(
+                    value.toString().replaceAll(',', '.')),
                 controller: _controllerPrice,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: 'Preis'),
@@ -139,7 +159,8 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: _controllerUvp,
                 keyboardType: TextInputType.number,
-                validator: (value) => EquipmentValidator.priceOrUvp(value.toString().replaceAll(',', '.')),
+                validator: (value) => EquipmentValidator.priceOrUvp(
+                    value.toString().replaceAll(',', '.')),
                 decoration: const InputDecoration(labelText: 'UVP'),
               ),
               FormField<int>(
@@ -152,12 +173,14 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                     Text(state.value.toString()),
                     TextButton(
                         onPressed: () {
-                            if (state.value! > 1) state.didChange(state.value! - 1);
+                          if (state.value! > 1) {
+                            state.didChange(state.value! - 1);
+                          }
                         },
                         child: const Text('-')),
                     TextButton(
                         onPressed: () {
-                            state.didChange(state.value! + 1);
+                          state.didChange(state.value! + 1);
                         },
                         child: const Text('+')),
                   ],
@@ -178,29 +201,11 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                       firstDate: DateTime(1950),
                       lastDate: DateTime.now(),
                     );
-                      state.didChange(d);
+                    state.didChange(d);
                   },
-                  title: Text(state.value?.toString() ??
-                      'date not definded'),
+                  title: Text(state.value?.toString() ?? 'date not definded'),
                 ),
               ),
-              FormField<List<String>>(
-                validator: (value) => EquipmentValidator.sports(value),
-                autovalidateMode: AutovalidateMode.always,
-                key: _formKeySports,
-                initialValue: widget.equipment?.sports ?? <String>[],
-                  builder: (state) => ListTile(
-                    title: Text(state.value!.isNotEmpty
-                        ? state.value!.toString()
-                        : 'Sportart'),
-                    subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                    trailing: const Icon(Icons.chevron_right_outlined),
-                    onTap: () async {
-                      final List<String> s =
-                      await selectSports(context, state.value!);
-                      state.didChange(s);
-                    },
-                  ),),
               FormField<int>(
                 validator: (value) => EquipmentValidator.categoryOrCount(value),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -211,9 +216,8 @@ class _EquipmentEditState extends State<EquipmentEdit> {
                   title: Text('Kategorie: ${state.value.toString()}'),
                   trailing: const Icon(Icons.chevron_right_outlined),
                   onTap: () async {
-                    final int i =
-                    await selectCategory(context, state.value!);
-                      state.didChange(i);
+                    final int i = await selectCategory(context, state.value!);
+                    state.didChange(i);
                   },
                 ),
               ),

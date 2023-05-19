@@ -1,4 +1,6 @@
 import 'package:equipment_app/data/providers.dart';
+import 'package:equipment_app/data_models/category.dart';
+import 'package:equipment_app/pages/equipment/equipment_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -38,10 +40,14 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
           ),
           TextField(
             controller: controller,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              hintText: 'Suchen',
-            ),
+            decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Suchen',
+                suffix: (controller.text.isNotEmpty) ? IconButton(
+                    onPressed: () => setState(() {
+                          controller.text = '';
+                        }),
+                    icon: const Icon(Icons.clear)) : null),
             onChanged: (value) {
               setState(() {});
             },
@@ -55,30 +61,28 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
               if (searchPattern.isNotEmpty) {
                 List<Equipment> items = data
                     .where((element) =>
-                        element.name.toLowerCase().contains(searchPattern))
+                        element.brand?.toLowerCase().contains(searchPattern) ??
+                        false)
                     .toList();
                 items.addAll(data.where((element) =>
                     !items.contains(element) &&
-                    (element.brand?.toLowerCase().contains(searchPattern) ??
-                        false)));
+                    (element.name.toLowerCase().contains(searchPattern))));
                 if (items.isEmpty) {
                   return const Text('Leider konnte nichts gefunden werden.');
                 }
+
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      title:
-                          Text('${items[index].brand!} ${items[index].name}'),
-                      subtitle: Text(items[index].size ?? ''),
-                      onTap: () {
-                        context.push('/equipment/details',
-                            extra: items[index].id);
-                      },
-                    );
+                    return EquipmentCard(equipment: items[index]);
                   },
                 );
               }
+
+              Map<String, List<String>> categoryStructure = {
+                '': []
+              };
+
 
               return ListView(
                 children: [
@@ -103,19 +107,7 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
                                         .indexWhere(
                                             (e) => e.name == element.name) ==
                                     -1) return Container();
-                                return SizedBox(
-                                  width: 200,
-                                  height: 200,
-                                  child: ListTile(
-                                    title: Text(
-                                        '${equipment.brand!} ${equipment.name}'),
-                                    subtitle: Text(equipment.size ?? ''),
-                                    onTap: () {
-                                      context.push('/equipment/details',
-                                          extra: equipment.id);
-                                    },
-                                  ),
-                                );
+                                return EquipmentCard(equipment: equipment);
                               },
                             ),
                           ),

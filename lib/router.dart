@@ -17,14 +17,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'firebase/firebase_auth.dart';
 
-final _navigatorKey = GlobalKey<NavigatorState>();
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
 
   return GoRouter(
-    navigatorKey: _navigatorKey,
+    navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
     routes: [
       GoRoute(
@@ -40,6 +41,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SetupScreen(),
       ),
       ShellRoute(
+        navigatorKey: _shellNavigatorKey,
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return SplitView(child: child);
           },

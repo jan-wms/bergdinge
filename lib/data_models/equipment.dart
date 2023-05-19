@@ -13,7 +13,6 @@ class Equipment {
   DateTime? purchaseDate;
   int category;
   int count;
-  List<String>? sports;
   final String id;
   final Map<double, String>? runningCosts;
   final Map<int, String>? daysInUse;
@@ -26,7 +25,6 @@ class Equipment {
     required this.count,
     required this.id,
     this.size,
-    this.sports,
     this.brand,
     this.uvp,
     this.price,
@@ -64,7 +62,6 @@ class Equipment {
       purchaseDate: DateTime.tryParse(data?['purchaseDate'] ?? ''),
       category: (data?['category'] as num).toInt(),
       count: (data?['count'] as num).toInt(),
-      sports: data?['sports'] is Iterable ? List.from(data?['sports']) : null,
       daysInUse: null,
       runningCosts: null,
     );
@@ -84,7 +81,6 @@ class Equipment {
       if (purchaseDate != null) "purchaseDate": purchaseDate.toString(),
       "category": category,
       "count": count,
-      if (sports != null) "sports": sports,
       if (runningCosts != null) "runningCosts": runningCosts,
     };
   }

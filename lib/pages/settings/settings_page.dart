@@ -2,12 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../firebase/firebase_auth.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +55,7 @@ class SettingsPage extends StatelessWidget {
                     }
                     final DocumentSnapshot<Map<String, dynamic>> data =
                         snapshot.data!;
-                    return Text(data['name']);
+                    return Text('Hallo, ${data['name']}!');
                   }),
 
               FutureBuilder(
@@ -57,14 +69,17 @@ class SettingsPage extends StatelessWidget {
                     }
                     final DocumentSnapshot<Map<String, dynamic>> data =
                     snapshot.data!;
-                    return Text(data['email']);
+                    return Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                      Text(data['email'] ?? 'keine email'),
+                      IconButton(onPressed: () async {
+                        Clipboard.setData(ClipboardData(text: Auth().user!.uid)).then((_){
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Uid in die Zwischenablage kopiert")));
+                        });
+                    }, icon: const Icon(Icons.copy_rounded))
+                    ],);
                   }),
-              if (Auth().user!.isAnonymous)
-                ElevatedButton(
-                    onPressed: () {
-                      context.go('/link_accounts');
-                    },
-                    child: const Text('Account erstellen')),
               Text(
                 Auth().user!.uid,
               ),
@@ -82,6 +97,18 @@ class SettingsPage extends StatelessWidget {
                     showAboutDialog(context: context);
                   },
                   child: const Text('Über diese App')),
+            ],
+          ),
+        ),
+        if(Auth().user!.isAnonymous) Card(
+          child: Column(
+            children: [
+              const Text('Synchronisierung'),
+              ElevatedButton(
+                  onPressed: () {
+                    //TODO link accounts
+                  },
+                  child: const Text('Account verknüpfen')),
             ],
           ),
         ),
@@ -115,7 +142,7 @@ class SettingsPage extends StatelessWidget {
                     });
                   },
                   child: const Text('Account löschen')),
-              ElevatedButton(
+             if(!Auth().user!.isAnonymous) ElevatedButton(
                   onPressed: () {
                     Auth().signOut();
                   },
