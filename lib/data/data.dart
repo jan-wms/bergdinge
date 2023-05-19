@@ -124,20 +124,6 @@ class Data {
           id: 56),
     ]),
     Category(
-        name: 'Schuhe',
-        subCategories: [
-          Category(name: 'Barfussschuhe', id: 62),
-          Category(name: 'Berg- & Wanderschuhe', id: 63),
-          Category(name: 'Hüttenschuhe', id: 64),
-          Category(name: 'Kletterschuhe', id: 65),
-          Category(name: 'Sandalen', id: 66),
-          Category(name: 'Trail- & Laufschuhe', id: 67),
-          Category(name: 'Winterschuhe', id: 68),
-          Category(name: 'Zustiegsschuhe', id: 69),
-          Category(name: 'Sonstige', id: 70),
-        ],
-        id: 61),
-    Category(
         name: 'Ausrüstung',
         subCategories: [
           Category(
@@ -321,6 +307,20 @@ class Data {
               id: 170),
         ],
         id: 71),
+    Category(
+        name: 'Schuhe',
+        subCategories: [
+          Category(name: 'Barfussschuhe', id: 62),
+          Category(name: 'Berg- & Wanderschuhe', id: 63),
+          Category(name: 'Hüttenschuhe', id: 64),
+          Category(name: 'Kletterschuhe', id: 65),
+          Category(name: 'Sandalen', id: 66),
+          Category(name: 'Trail- & Laufschuhe', id: 67),
+          Category(name: 'Winterschuhe', id: 68),
+          Category(name: 'Zustiegsschuhe', id: 69),
+          Category(name: 'Sonstige', id: 70),
+        ],
+        id: 61),
     Category(
       name: 'Verpflegung',
       subCategories: [

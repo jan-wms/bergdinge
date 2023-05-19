@@ -1,5 +1,4 @@
 import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/data_models/category.dart';
 import 'package:equipment_app/pages/equipment/equipment_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,11 +42,13 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
             decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Suchen',
-                suffix: (controller.text.isNotEmpty) ? IconButton(
-                    onPressed: () => setState(() {
-                          controller.text = '';
-                        }),
-                    icon: const Icon(Icons.clear)) : null),
+                suffix: (controller.text.isNotEmpty)
+                    ? IconButton(
+                        onPressed: () => setState(() {
+                              controller.text = '';
+                            }),
+                        icon: const Icon(Icons.clear))
+                    : null),
             onChanged: (value) {
               setState(() {});
             },
@@ -79,34 +80,36 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
                 );
               }
 
-              Map<String, List<String>> categoryStructure = {
-                '': []
-              };
+              ///
+              Map<String, List<Equipment>> categoryStructure = {};
+              var cats = Data.categories;
 
+              for(var c in cats) {
+               categoryStructure[c.name] = [];
+              }
+
+              for(var e in data) {
+                categoryStructure[Data.getCategoriyListFromID(pList: Data.categories, pResult: [], categoryID: e.category).first.name]!.add(e);
+              }
+              categoryStructure.removeWhere((key, value) => value.isEmpty);
+              ///
 
               return ListView(
                 children: [
-                  for (var element in Data.categories)
+                  for (var key in categoryStructure.keys)
                     SizedBox(
                       height: 300,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(element.name),
+                          Text(key.toString()),
                           SizedBox(
                             height: 200,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: data.length,
+                              itemCount: categoryStructure[key]!.length,
                               itemBuilder: (context, index) {
-                                final equipment = data[index];
-                                if (Data.getCategoriyListFromID(
-                                            pList: Data.categories,
-                                            pResult: [],
-                                            categoryID: equipment.category)
-                                        .indexWhere(
-                                            (e) => e.name == element.name) ==
-                                    -1) return Container();
+                                final equipment = categoryStructure[key]![index];
                                 return EquipmentCard(equipment: equipment);
                               },
                             ),
