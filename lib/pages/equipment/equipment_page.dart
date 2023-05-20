@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/data.dart';
+import '../../data_models/category.dart';
 import '../../data_models/equipment.dart';
 
 class EquipmentPage extends ConsumerStatefulWidget {
@@ -16,6 +17,66 @@ class EquipmentPage extends ConsumerStatefulWidget {
 
 class _EquipmentPageState extends ConsumerState<EquipmentPage> {
   final controller = TextEditingController();
+
+  Map<String, List<Equipment>> getCategoryStructure(
+      {required List<Category> categoryList,
+      required List<Equipment> data,
+      required int depth}) {
+    Map<String, List<Equipment>> categoryStructure = {};
+    for (var c in categoryList) {
+      categoryStructure[c.name] = [];
+    }
+
+    for (var e in data) {
+      categoryStructure[Data.getCategoriyListFromID(
+                  pList: Data.categories,
+                  pResult: [],
+                  categoryID: e.category)[depth]
+              .name]
+          ?.add(e);
+    }
+    categoryStructure.removeWhere((key, value) => value.isEmpty);
+    return categoryStructure;
+  }
+
+  List<Widget> getLol(
+      {required Map<String, List<Equipment>> currentCategoryStructure,
+      required String currentKey,
+      required List<Equipment> data}) {
+    List<Widget> result = [];
+
+    if (currentKey == 'Bekleidung' || currentKey == 'Ausrüstung') {
+      Map<String, List<Equipment>> newCategoryStructure = getCategoryStructure(
+          categoryList: Data.categories
+              .singleWhere((element) => element.name == currentKey)
+              .subCategories!,
+          data: data,
+          depth: 1);
+      newCategoryStructure.forEach((key, value) {
+        result.add(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(key.toString()),
+              Wrap(
+                children: getLol(
+                    currentCategoryStructure: newCategoryStructure,
+                    data: data,
+                    currentKey: key),
+              ),
+            ],
+          ),
+        );
+      });
+    } else {
+      currentCategoryStructure[currentKey]?.forEach((element) {
+        result.add(EquipmentCard(equipment: element));
+      });
+    }
+
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,42 +141,25 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
                 );
               }
 
-              ///
-              Map<String, List<Equipment>> categoryStructure = {};
-              var cats = Data.categories;
-
-              for(var c in cats) {
-               categoryStructure[c.name] = [];
-              }
-
-              for(var e in data) {
-                categoryStructure[Data.getCategoriyListFromID(pList: Data.categories, pResult: [], categoryID: e.category).first.name]!.add(e);
-              }
-              categoryStructure.removeWhere((key, value) => value.isEmpty);
-              ///
+              Map<String, List<Equipment>> categoryStructure =
+                  getCategoryStructure(
+                      categoryList: Data.categories, data: data, depth: 0);
 
               return ListView(
                 children: [
                   for (var key in categoryStructure.keys)
-                    SizedBox(
-                      height: 300,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(key.toString()),
-                          SizedBox(
-                            height: 200,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: categoryStructure[key]!.length,
-                              itemBuilder: (context, index) {
-                                final equipment = categoryStructure[key]![index];
-                                return EquipmentCard(equipment: equipment);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(key.toString()),
+                        Wrap(
+                          children: getLol(
+                              currentCategoryStructure: categoryStructure,
+                              data: data,
+                              currentKey: key),
+                        ),
+                      ],
                     ),
                 ],
               );

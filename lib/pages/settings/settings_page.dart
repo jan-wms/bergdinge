@@ -3,7 +3,6 @@ import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../firebase/firebase_auth.dart';
 
@@ -15,7 +14,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
   @override
   void initState() {
     super.initState();
@@ -27,64 +25,58 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         const Text("Einstellungen"),
         Card(
-          child: Column(
-            children: [
-              FutureBuilder(
-                  future: FirebaseStorage.instance
-                      .ref()
-                      .child("users/${Auth().user!.uid}/profile.jpg")
-                      .getData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError || !snapshot.hasData) {
-                      return Text(snapshot.error.toString());
-                    }
+          child: StreamBuilder<Object>(
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(Auth().user!.uid)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData || snapshot.hasError) {
+                  return const CircularProgressIndicator.adaptive();
+                }
+                var data = snapshot.data;
+                return Column(
+                  children: [
+                    FutureBuilder(
+                        future: FirebaseStorage.instance
+                            .ref()
+                            .child("users/${Auth().user!.uid}/profile.jpg")
+                            .getData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError || !snapshot.hasData) {
+                            return Text(snapshot.error.toString());
+                          }
 
-                    return CircleAvatar(
-                      radius: 48,
-                      backgroundImage: Image.memory(snapshot.data!).image,
-                    );
-                  }),
-              FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(Auth().user!.uid)
-                      .get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError || !snapshot.hasData) {
-                      return const CircularProgressIndicator.adaptive();
-                    }
-                    final DocumentSnapshot<Map<String, dynamic>> data =
-                        snapshot.data!;
-                    return Text('Hallo, ${data['name']}!');
-                  }),
-
-              FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(Auth().user!.uid)
-                      .get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError || !snapshot.hasData) {
-                      return const CircularProgressIndicator.adaptive();
-                    }
-                    final DocumentSnapshot<Map<String, dynamic>> data =
-                    snapshot.data!;
-                    return Row(
+                          return CircleAvatar(
+                            radius: 48,
+                            backgroundImage: Image.memory(snapshot.data!).image,
+                          );
+                        }),
+                    Text('Hallo, ${data['name']}!'),
+                    Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                      Text(data['email'] ?? 'keine email'),
-                      IconButton(onPressed: () async {
-                        Clipboard.setData(ClipboardData(text: Auth().user!.uid)).then((_){
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Uid in die Zwischenablage kopiert")));
-                        });
-                    }, icon: const Icon(Icons.copy_rounded))
-                    ],);
-                  }),
-              Text(
-                Auth().user!.uid,
-              ),
-            ],
-          ),
+                        Text(data['email'] ?? 'keine email'),
+                        IconButton(
+                            onPressed: () async {
+                              Clipboard.setData(
+                                      ClipboardData(text: Auth().user!.uid))
+                                  .then((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "Uid in die Zwischenablage kopiert")));
+                              });
+                            },
+                            icon: const Icon(Icons.copy_rounded))
+                      ],
+                    ),
+                    Text(
+                      Auth().user!.uid,
+                    ),
+                  ],
+                );
+              }),
         ),
         Card(
           child: Column(
@@ -100,15 +92,28 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
         ),
-        if(Auth().user!.isAnonymous) Card(
+        if (Auth().user!.isAnonymous)
+          Card(
+            child: Column(
+              children: [
+                const Text('Synchronisierung'),
+                ElevatedButton(
+                    onPressed: () {
+                      //TODO link accounts
+                    },
+                    child: const Text('Account verknüpfen')),
+              ],
+            ),
+          ),
+        Card(
           child: Column(
             children: [
-              const Text('Synchronisierung'),
+              const Text('Spenden'),
               ElevatedButton(
                   onPressed: () {
-                    //TODO link accounts
+                    //TODO donation
                   },
-                  child: const Text('Account verknüpfen')),
+                  child: const Text('Paypal')),
             ],
           ),
         ),
@@ -142,11 +147,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     });
                   },
                   child: const Text('Account löschen')),
-             if(!Auth().user!.isAnonymous) ElevatedButton(
-                  onPressed: () {
-                    Auth().signOut();
-                  },
-                  child: const Text('sign out')),
+              if (!Auth().user!.isAnonymous)
+                ElevatedButton(
+                    onPressed: () {
+                      Auth().signOut();
+                    },
+                    child: const Text('sign out')),
             ],
           ),
         ),

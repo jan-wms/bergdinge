@@ -10,8 +10,9 @@ class PackingPlan {
   PackingPlan({
     required this.id,
     required this.name,
-    required this.items,
     required this.sports,
+
+    required this.items,
   });
 
   factory PackingPlan.fromFirestore(

@@ -163,7 +163,7 @@ class Data {
                 Category(
                     name: 'Karabiner & Expressen',
                     subCategories: [
-                      Category(name: 'HMS-Karabiner', id: 92),
+                      Category(name: 'Verschlusskarabiner', id: 92),
                       Category(name: 'Schnappkarabiner', id: 93),
                       Category(name: 'Express-Schlingen', id: 94),
                       Category(name: 'Sonstige', id: 95),

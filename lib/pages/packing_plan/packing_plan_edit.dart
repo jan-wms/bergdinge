@@ -1,3 +1,4 @@
+import 'package:equipment_app/custom_widgets/custom_back_button.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
@@ -73,13 +74,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            BackButton(
-              onPressed: () {
-                if (context.canPop()) {
-                  context.pop();
-                }
-              },
-            ),
+            const CustomBackButton(),
             Text(
                 'Packliste ${widget.packingPlan != null ? 'bearbeiten' : 'erstellen'}'),
             ElevatedButton(
@@ -214,7 +209,7 @@ class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
                           } else {
                             setState(() {
                               selected.add(PackingPlanItem(
-                                  equipmentId: equipment.id, count: 1));
+                                  equipmentId: equipment.id, equipmentCount: 1));
                             });
                           }
                         },
