@@ -235,18 +235,18 @@ class _SetupScreenState extends State<SetupScreen> {
                           }
                         },
                         child: const Text('Fertig')),
-                    TextButton(
+                    if(widget.editValue == null)TextButton(
                         onPressed: () => uploadToFirebase(hasImage: false),
                         child: const Text('Überspringen')),
                   ],
                 ),
               ),
-            const Center(
+            Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator.adaptive(),
-                  Text('App wird eingerichtet...'),
+                  Text(widget.editValue == null ? 'App wird eingerichtet...' : 'Daten aktualisieren...'),
                 ],
               ),
             ),
