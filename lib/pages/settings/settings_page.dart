@@ -3,6 +3,7 @@ import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../firebase/firebase_auth.dart';
 
@@ -53,6 +54,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           );
                         }),
                     Text('Hallo, ${data['name']}!'),
+                    ElevatedButton(onPressed: () {
+                      context.pushNamed("setup", queryParameters: {'editValue': 'name'});
+                    }, child: const Text('edit name')),
+                    ElevatedButton(onPressed: () {
+                      context.pushNamed("setup", queryParameters: {'editValue': 'image'});
+                    }, child: const Text('edit image')),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [

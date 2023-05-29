@@ -41,9 +41,7 @@ class _MenuState extends State<Menu> {
                 if (snapshot.hasError || !snapshot.hasData) {
                   return const CircularProgressIndicator.adaptive();
                 }
-                final DocumentSnapshot<Map<String, dynamic>> data =
-                    snapshot.data!;
-                return Text(data['name']);
+                return Text(snapshot.data?['name'] ?? 'error name');
               }),
           ListTile(
             title: const Text('Entdecken'),

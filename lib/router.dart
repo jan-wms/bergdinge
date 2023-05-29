@@ -37,8 +37,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const IntroductionPage(),
       ),
       GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: '/setup',
-        builder: (context, state) => const SetupScreen(),
+        name: 'setup',
+        builder: (context, state) => SetupScreen(editValue: state.queryParameters['editValue']),
       ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
@@ -108,7 +110,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             });
       }
       final isWelcome = state.location == '/welcome';
-      final isSetup = state.location == '/setup';
 
       if (isWelcome) {
         return isAuthorized
@@ -118,7 +119,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (isAuthorized) {
         if (isSetupCompleted ?? false) {
-          return isSetup ? '/' : null;
+          return null;
         } else {
           return '/setup';
         }
