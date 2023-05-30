@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,11 +27,13 @@ class _MenuState extends State<Menu> {
                   .child("users/${Auth().user!.uid}/profile.jpg")
                   .getData(),
               builder: (context, snapshot) {
-                if(snapshot.hasError || !snapshot.hasData) return Text(snapshot.error.toString());
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                }
 
                 return CircleAvatar(
                   radius: 48,
-                  backgroundImage: Image.memory(snapshot.data!).image,
+                  backgroundImage: !snapshot.hasData || snapshot.data.isNull ? Image.asset('assets/images/placeholder.jpg').image : Image.memory(snapshot.data!).image,
                 );
               }),
           FutureBuilder(

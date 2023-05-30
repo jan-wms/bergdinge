@@ -37,16 +37,14 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   Future<void> preLoadName() async {
-    late String name;
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(Auth().user!.uid)
         .get();
-    name = (snapshot.data() as Map<String, dynamic>)['name'] ?? '';
+    String name = (snapshot.data() as Map<String, dynamic>)['name'] ??
+        Auth().user!.displayName ??
+        '';
 
-    if (_textFieldController.text.isEmpty) {
-      name = Auth().user!.displayName ?? '';
-    }
     setState(() {
       _textFieldController.text = name;
     });
@@ -72,10 +70,15 @@ class _SetupScreenState extends State<SetupScreen> {
       }
     }
 
-    Uint8List? storageImage = await FirebaseStorage.instance
-        .ref()
-        .child("users/${Auth().user!.uid}/profile.jpg")
-        .getData();
+    Uint8List? storageImage;
+    try {
+      storageImage = await FirebaseStorage.instance
+          .ref()
+          .child("users/${Auth().user!.uid}/profile.jpg")
+          .getData();
+    } catch (e) {
+      print(e);
+    }
 
     setState(() {
       image = storageImage ?? urlImage ?? Uint8List(0);
@@ -203,12 +206,15 @@ class _SetupScreenState extends State<SetupScreen> {
                 child: Column(
                   children: [
                     Text('hallo ${_textFieldController.text}'),
-                    image == null ? const CircularProgressIndicator.adaptive() : CircleAvatar(
-                      radius: 48,
-                      backgroundImage: (image!.isNotEmpty)
-                          ? Image.memory(image!).image
-                          : Image.asset('assets/images/placeholder.jpg').image,
-                    ),
+                    image == null
+                        ? const CircularProgressIndicator.adaptive()
+                        : CircleAvatar(
+                            radius: 48,
+                            backgroundImage: (image!.isNotEmpty)
+                                ? Image.memory(image!).image
+                                : Image.asset('assets/images/placeholder.jpg')
+                                    .image,
+                          ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -235,9 +241,10 @@ class _SetupScreenState extends State<SetupScreen> {
                           }
                         },
                         child: const Text('Fertig')),
-                    if(widget.editValue == null)TextButton(
-                        onPressed: () => uploadToFirebase(hasImage: false),
-                        child: const Text('Überspringen')),
+                    if (widget.editValue == null)
+                      TextButton(
+                          onPressed: () => uploadToFirebase(hasImage: false),
+                          child: const Text('Überspringen')),
                   ],
                 ),
               ),
@@ -246,7 +253,9 @@ class _SetupScreenState extends State<SetupScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator.adaptive(),
-                  Text(widget.editValue == null ? 'App wird eingerichtet...' : 'Daten aktualisieren...'),
+                  Text(widget.editValue == null
+                      ? 'App wird eingerichtet...'
+                      : 'Daten aktualisieren...'),
                 ],
               ),
             ),

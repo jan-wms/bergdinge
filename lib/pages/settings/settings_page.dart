@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,13 +46,13 @@ class _SettingsPageState extends State<SettingsPage> {
                             .child("users/${Auth().user!.uid}/profile.jpg")
                             .getData(),
                         builder: (context, snapshot) {
-                          if (snapshot.hasError || !snapshot.hasData) {
-                            return Text(snapshot.error.toString());
+                          if (snapshot.hasError) {
+                            print(snapshot.error);
                           }
 
                           return CircleAvatar(
                             radius: 48,
-                            backgroundImage: Image.memory(snapshot.data!).image,
+                            backgroundImage: !snapshot.hasData || snapshot.data.isNull ? Image.asset('assets/images/placeholder.jpg').image : Image.memory(snapshot.data!).image,
                           );
                         }),
                     Text('Hallo, ${data['name']}!'),
@@ -60,6 +62,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     ElevatedButton(onPressed: () {
                       context.pushNamed("setup", queryParameters: {'editValue': 'image'});
                     }, child: const Text('edit image')),
+                    ElevatedButton(onPressed: () async {
+                      await FirebaseStorage.instance
+                          .ref("users/${Auth().user!.uid}")
+                      .child('profile.jpg')
+                      .delete()
+                          .then((value) {
+                        CustomDialog.showCustomInformationDialog(context: context, description: 'Profilbild gelöscht.');
+                      });
+                    }, child: const Text('delete image')),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
