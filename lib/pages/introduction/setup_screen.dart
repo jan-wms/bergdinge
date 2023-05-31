@@ -252,7 +252,7 @@ class _SetupScreenState extends State<SetupScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator.adaptive(),
+                  const CircularProgressIndicator.adaptive(),
                   Text(widget.editValue == null
                       ? 'App wird eingerichtet...'
                       : 'Daten aktualisieren...'),
