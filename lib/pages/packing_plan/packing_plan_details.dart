@@ -21,8 +21,8 @@ class PackingPlanDetails extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
-
-    return Column(
+    return const Placeholder();
+    /*return Column(
       children: [
         const CustomBackButton(),
         Expanded(
@@ -47,7 +47,7 @@ class PackingPlanDetails extends ConsumerWidget {
                   Text(packingPlan.name),
                   Text('total weight: $totalWeight'),
                   for (var sport in packingPlan.sports) Text(sport),
-                  for (var item in packingPlan.items) Text(item.equipmentId),
+                  for (var item in packingPlan.items) Text(item.equipmentId ?? 'no item.equipmentId'),
                   SfCircularChart(
                     series: getDefaultPieSeries(),
                   ),
@@ -79,7 +79,7 @@ class PackingPlanDetails extends ConsumerWidget {
           ),
         ),
       ],
-    );
+    );*/
   }
 }
 
@@ -100,7 +100,7 @@ List<PieSeries<ChartSampleData, String>> getDefaultPieSeries() {
         dataLabelMapper: (ChartSampleData data, _) => data.text,
         startAngle: 90,
         endAngle: 90,
-        dataLabelSettings: const DataLabelSettings(isVisible: true)),
+        dataLabelSettings: const DataLabelSettings(isVisible: true))
   ];
 }
 

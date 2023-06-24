@@ -1,5 +1,4 @@
 import 'dart:js_interop';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -104,7 +103,11 @@ class _SettingsPageState extends State<SettingsPage> {
               const Text('wermeckes.com'),
               ElevatedButton(
                   onPressed: () {
-                    showAboutDialog(context: context);
+                    showAboutDialog(
+                      context: context,
+                    applicationName: 'Equipment App',
+                      applicationVersion: 'Version 1.0.0'
+                    );
                   },
                   child: const Text('Über diese App')),
             ],

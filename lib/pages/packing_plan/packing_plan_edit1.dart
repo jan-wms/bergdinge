@@ -20,18 +20,16 @@ class PackingPlanEdit extends ConsumerStatefulWidget {
 }
 
 class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
-  final PageController _pageController = PageController(initialPage: 0);
-
   bool isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
   final _formKeySports = GlobalKey<FormFieldState>();
-  final _formKeySecondaryPackingPlan = GlobalKey<FormFieldState>();
+  final _formKeyItems = GlobalKey<FormFieldState>();
 
   late final TextEditingController _controllerName =
-      TextEditingController(text: widget.packingPlan?.name ?? '');
+  TextEditingController(text: widget.packingPlan?.name ?? '');
 
-  /*void edit({required List<PackingPlan>? packingPlanList}) async {
+  void edit({required List<PackingPlan>? packingPlanList}) async {
     setState(() {
       isLoading = true;
     });
@@ -70,93 +68,9 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
     if (continueEdit) {
       await ref.set(p.toMap()).then((value) => context.pop());
     }
-  }*/
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate() && !isLoading) {
-                _pageController.nextPage(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut);
-              }
-            },
-            child: const Text('Weiter')),
-        Expanded(
-          child: PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              Center(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => PackingPlanValidator.name(value),
-                        controller: _controllerName,
-                        decoration: const InputDecoration(labelText: 'Name'),
-                      ),
-                      FormField<List<String>>(
-                        validator: (value) =>
-                            PackingPlanValidator.sports(value),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        key: _formKeySports,
-                        initialValue: widget.packingPlan?.sports ?? <String>[],
-                        builder: (state) => ListTile(
-                          title: Text(state.value!.isNotEmpty
-                              ? state.value!.toString()
-                              : 'Sportart'),
-                          subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                          trailing: const Icon(Icons.chevron_right_outlined),
-                          onTap: () async {
-                            final List<String> s =
-                                await selectSports(context, state.value!);
-                            state.didChange(s);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Column(children: [
-                const Text('page2'),
-                Wrap(
-                  children: [
-                    ListTile(
-                      onTap: () async {},
-                      trailing: const Icon(Icons.chevron_right_outlined),
-                      title: const Text('Add item'),
-                    ),
-                    const Card(
-                      child: Text('body'),
-                    ),
-                    Card(
-                      child: IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () async {
-                          //await selectEquipment(context, []);
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              ]),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/* @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -239,6 +153,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
     );
   }
 }
+
 Future<List<PackingPlan>> selectEquipment(BuildContext context,
     List<PackingPlan> selected) async {
   final GlobalKey<_SelectEquipmentState> k = GlobalKey();
@@ -325,4 +240,3 @@ class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
     );
   }
 }
-*/

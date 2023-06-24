@@ -163,27 +163,29 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
                     value.toString().replaceAll(',', '.')),
                 decoration: const InputDecoration(labelText: 'UVP'),
               ),
-              FormField<int>(
-                key: _formKeyCount,
-                initialValue: widget.equipment?.count ?? 1,
-                autovalidateMode: AutovalidateMode.always,
-                validator: (value) => EquipmentValidator.categoryOrCount(value),
-                builder: (state) => Row(
-                  children: [
-                    Text(state.value.toString()),
-                    TextButton(
-                        onPressed: () {
-                          if (state.value! > 1) {
-                            state.didChange(state.value! - 1);
-                          }
-                        },
-                        child: const Text('-')),
-                    TextButton(
-                        onPressed: () {
-                          state.didChange(state.value! + 1);
-                        },
-                        child: const Text('+')),
-                  ],
+              Visibility(
+                child: FormField<int>(
+                  key: _formKeyCount,
+                  initialValue: widget.equipment?.count ?? 1,
+                  autovalidateMode: AutovalidateMode.always,
+                  validator: (value) => EquipmentValidator.categoryOrCount(value),
+                  builder: (state) => Row(
+                    children: [
+                      Text(state.value.toString()),
+                      TextButton(
+                          onPressed: () {
+                            if (state.value! > 1) {
+                              state.didChange(state.value! - 1);
+                            }
+                          },
+                          child: const Text('-')),
+                      TextButton(
+                          onPressed: () {
+                            state.didChange(state.value! + 1);
+                          },
+                          child: const Text('+')),
+                    ],
+                  ),
                 ),
               ),
               FormField<DateTime?>(
@@ -207,20 +209,20 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
                 ),
               ),
               FormField<int>(
-                validator: (value) => EquipmentValidator.categoryOrCount(value),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formKeyCategory,
-                initialValue: widget.equipment?.category ?? -1,
-                builder: (state) => ListTile(
-                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                  title: Text('Kategorie: ${state.value.toString()}'),
-                  trailing: const Icon(Icons.chevron_right_outlined),
-                  onTap: () async {
-                    final int i = await selectCategory(context, state.value!);
-                    state.didChange(i);
-                  },
+                  validator: (value) => EquipmentValidator.categoryOrCount(value),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: _formKeyCategory,
+                  initialValue: widget.equipment?.category ?? -1,
+                  builder: (state) => ListTile(
+                    subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                    title: Text('Kategorie: ${state.value.toString()}'),
+                    trailing: const Icon(Icons.chevron_right_outlined),
+                    onTap: () async {
+                      final int i = await selectCategory(context, state.value!);
+                      state.didChange(i);
+                    },
+                  ),
                 ),
-              ),
             ],
           ),
         ),

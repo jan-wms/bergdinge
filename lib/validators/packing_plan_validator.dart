@@ -1,6 +1,5 @@
-import 'package:equipment_app/data_models/packing_plan_item.dart';
-
 import '../data/data.dart';
+import '../data_models/packing_plan.dart';
 
 class PackingPlanValidator {
   static String? name(value) {
@@ -22,7 +21,7 @@ class PackingPlanValidator {
     return null;
   }
 
-  static String? items(List<PackingPlanItem>? value) {
+  static String? items(List<PackingPlan>? value) {
     if(value == null || value.isEmpty) {
       return "Bitte füge Ausrüstung zu deiner Packliste hinzu.";
     }

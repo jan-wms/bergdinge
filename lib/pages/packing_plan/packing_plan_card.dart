@@ -17,7 +17,7 @@ class PackingPlanCard extends StatelessWidget {
       },
       child: Card(
         child: Column(children: [
-          Text(packingPlan.name),
+          Text(packingPlan.name!),
           Text(packingPlan.sports.toString()),
         ]),
       ),

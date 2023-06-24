@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Equipment App</string>
+	<string>Bergdinge</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -37,6 +37,12 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Aufnahme eines Profilbildes.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Aufnahme eines Profilbildes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Auswahl eines Profilbildes.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -58,11 +64,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Auswahl eines Profilbildes.</string>
-    <key>NSCameraUsageDescription</key>
-   	<string>Aufnahme eines Profilbildes.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Aufnahme eines Profilbildes.</string>
 </dict>
 </plist>
