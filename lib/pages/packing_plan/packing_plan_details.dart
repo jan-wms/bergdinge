@@ -9,7 +9,6 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../custom_widgets/custom_back_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
-import '../../data_models/equipment.dart';
 
 class PackingPlanDetails extends ConsumerWidget {
   final String packingPlanID;
@@ -17,12 +16,23 @@ class PackingPlanDetails extends ConsumerWidget {
   const PackingPlanDetails({Key? key, required this.packingPlanID})
       : super(key: key);
 
+  Widget getStatistics({required PackingPlan packingPlan}) {
+    double weight = 1.0;
+    return Column(
+      children: [
+        Text('total weight: $weight'),
+        SfCircularChart(
+          series: getDefaultPieSeries(),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
-    return const Placeholder();
-    /*return Column(
+    return Column(
       children: [
         const CustomBackButton(),
         Expanded(
@@ -30,27 +40,19 @@ class PackingPlanDetails extends ConsumerWidget {
             error: (error, stackTrace) => Text(error.toString()),
             loading: () => const CircularProgressIndicator.adaptive(),
             data: (data) {
-              final PackingPlan packingPlan = data.singleWhere((element) => element.id == packingPlanID);
-              List<Equipment> items = [];
-              for (var element in packingPlan.items) {
-                items.add(equipmentList!.singleWhere((e) => e.id == element.equipmentId));
-              }
-
-              var totalWeight = 0.0;
-              for (var element in packingPlan.items) {
-                var item = equipmentList?.singleWhere((e) => e.id == element.equipmentId);
-                totalWeight = totalWeight + (element.equipmentCount * item!.weight);
-              }
-
-              return ListView(
+              final PackingPlan packingPlan =
+                  data.singleWhere((element) => element.id == packingPlanID);
+              return Column(
                 children: [
-                  Text(packingPlan.name),
-                  Text('total weight: $totalWeight'),
-                  for (var sport in packingPlan.sports) Text(sport),
-                  for (var item in packingPlan.items) Text(item.equipmentId ?? 'no item.equipmentId'),
-                  SfCircularChart(
-                    series: getDefaultPieSeries(),
-                  ),
+                  Text(packingPlan.name!),
+                  Text(packingPlan.createdAt!.toString()),
+                  Text(packingPlan.updatedAt!.toString()),
+                  for (var sport in packingPlan.sports!) Text(sport),
+                  ElevatedButton(
+                      onPressed: () {
+                        context.push('/packing_plan/edit', extra: packingPlan);
+                      },
+                      child: const Text('edit')),
                   ElevatedButton(
                       onPressed: () async {
                         bool? confirmDelete =
@@ -68,18 +70,22 @@ class PackingPlanDetails extends ConsumerWidget {
                         }
                       },
                       child: const Text('delete')),
-                  ElevatedButton(
-                      onPressed: () {
-                        context.push('/packing_plan/edit', extra: packingPlan);
-                      },
-                      child: const Text('edit')),
+                  DropdownButton(
+                    items: const [
+                      DropdownMenuItem(value: 0, child: Text('total')),
+                      DropdownMenuItem(value: 1, child: Text('body')),
+                      DropdownMenuItem(value: 2, child: Text('backpack')),
+                    ],
+                    onChanged: (value) {},
+                  ),
+                  getStatistics(packingPlan: packingPlan),
                 ],
               );
             },
           ),
         ),
       ],
-    );*/
+    );
   }
 }
 
@@ -111,3 +117,174 @@ class ChartSampleData {
 
   ChartSampleData({required this.x, required this.y, required this.text});
 }
+
+/* @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const CustomBackButton(),
+            Text(
+                'Packliste ${widget.packingPlan != null
+                    ? 'bearbeiten'
+                    : 'erstellen'}'),
+            ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate() && !isLoading) {
+                    edit(
+                        packingPlanList:
+                        ref
+                            .read(packingPlanStreamProvider)
+                            .value);
+                  }
+                },
+                child: isLoading
+                    ? const CircularProgressIndicator.adaptive()
+                    : Text(
+                    widget.packingPlan != null ? 'Bearbeiten' : 'Erstellen')),
+          ],
+        ),
+        Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => PackingPlanValidator.name(value),
+                controller: _controllerName,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              FormField<List<String>>(
+                validator: (value) => PackingPlanValidator.sports(value),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: _formKeySports,
+                initialValue: widget.packingPlan?.sports ?? <String>[],
+                builder: (state) =>
+                    ListTile(
+                      title: Text(state.value!.isNotEmpty
+                          ? state.value!.toString()
+                          : 'Sportart'),
+                      subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                      trailing: const Icon(Icons.chevron_right_outlined),
+                      onTap: () async {
+                        final List<String> s =
+                        await selectSports(context, state.value!);
+                        state.didChange(s);
+                      },
+                    ),
+              ),
+              FormField<List<PackingPlan>>(
+                key: _formKeyItems,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => PackingPlanValidator.items(value),
+                initialValue: widget.packingPlan?.items ?? <PackingPlan>[],
+                builder: (state) =>
+                    ListTile(
+                      onTap: () async {
+                        final List<PackingPlan> i =
+                        await selectEquipment(context, state.value!);
+                        state.didChange(i);
+                      },
+                      trailing: const Icon(Icons.chevron_right_outlined),
+                      title: const Text('Add item'),
+                      subtitle: Text(state.errorText ?? state.value.toString()),
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+Future<List<PackingPlan>> selectEquipment(BuildContext context,
+    List<PackingPlan> selected) async {
+  final GlobalKey<_SelectEquipmentState> k = GlobalKey();
+  final SelectEquipment selectEquipment = SelectEquipment(
+    key: k,
+    selected: selected,
+  );
+  await CustomDialog.showCustomModal(
+    context,
+    selectEquipment,
+    null,
+    TextButton(
+      child: const Text('Close'),
+      onPressed: () => Navigator.of(context).pop(),
+    ),
+  );
+  return k.currentState!.selected;
+}
+
+class SelectEquipment extends ConsumerStatefulWidget {
+  final List<PackingPlan> selected;
+
+  const SelectEquipment({Key? key, required this.selected}) : super(key: key);
+
+  @override
+  ConsumerState<SelectEquipment> createState() => _SelectEquipmentState();
+}
+
+class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
+  late List<PackingPlan> selected = widget.selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Ausrüstung'),
+        const TextField(),
+        Expanded(
+          child: ref.watch(equipmentStreamProvider).when(
+              error: (error, stackTrace) => Text(error.toString()),
+              loading: () => const CircularProgressIndicator.adaptive(),
+              data: (data) =>
+                  ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final equipment = data[index];
+                      return ListTile(
+                        title: Text((equipment.brand ?? '') + equipment.name),
+                        subtitle: Text(equipment.size.toString()),
+                        trailing: selected
+                            .where((element) =>
+                        element.equipmentId == equipment.id)
+                            .isNotEmpty
+                            ? const Icon(Icons.check)
+                            : null,
+                        onTap: () {
+                          if (selected
+                              .where((element) =>
+                          element.equipmentId == equipment.id)
+                              .isNotEmpty) {
+                            setState(() {
+                              selected.removeWhere((element) =>
+                              element.equipmentId == equipment.id);
+                            });
+                          } else {
+                            setState(() {
+                              selected.add(PackingPlan(
+                                  id:,
+                                  items:,
+                                  sports:,
+                                  equipmentId: equipment.id,
+                                  equipmentCount: 1,
+                                  name: null,
+                              ));
+                            });
+                          }
+                        },
+                      );
+                    },
+                  )),
+        ),
+      ],
+    );
+  }
+}
+*/

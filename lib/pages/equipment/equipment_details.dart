@@ -30,8 +30,6 @@ class EquipmentDetails extends ConsumerWidget {
               data: (data) {
                 Equipment equipment = data.singleWhere((element) => element.id == equipmentID);
                 List<Category> categoryList = Data.getCategoriyListFromID(
-                    pList: Data.categories,
-                    pResult: [],
                     categoryID: equipment.category);
 
                 return ListView(

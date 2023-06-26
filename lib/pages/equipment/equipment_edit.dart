@@ -168,7 +168,7 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
                   key: _formKeyCount,
                   initialValue: widget.equipment?.count ?? 1,
                   autovalidateMode: AutovalidateMode.always,
-                  validator: (value) => EquipmentValidator.categoryOrCount(value),
+                  validator: (value) => EquipmentValidator.count(value),
                   builder: (state) => Row(
                     children: [
                       Text(state.value.toString()),
@@ -208,17 +208,17 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
                   title: Text(state.value?.toString() ?? 'date not definded'),
                 ),
               ),
-              FormField<int>(
-                  validator: (value) => EquipmentValidator.categoryOrCount(value),
+              FormField<String>(
+                  validator: (value) => EquipmentValidator.category(value),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   key: _formKeyCategory,
-                  initialValue: widget.equipment?.category ?? -1,
+                  initialValue: widget.equipment?.category ?? '-1',
                   builder: (state) => ListTile(
                     subtitle: Text(state.errorText ?? 'Kein Fehler'),
                     title: Text('Kategorie: ${state.value.toString()}'),
                     trailing: const Icon(Icons.chevron_right_outlined),
                     onTap: () async {
-                      final int i = await selectCategory(context, state.value!);
+                      final String i = await selectCategory(context, state.value!);
                       state.didChange(i);
                     },
                   ),

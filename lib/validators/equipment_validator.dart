@@ -25,8 +25,15 @@ class EquipmentValidator {
     return null;
   }
 
-  static String? categoryOrCount(int? value) {
-    if (value == null || value < 0) {
+  static String? category(String? value) {
+    if (value == null || value == '-1') {
+      return "Ungültiger Wert.";
+    }
+    return null;
+  }
+
+  static String? count(int? value) {
+    if (value == null || value < 1) {
       return "Ungültiger Wert.";
     }
     return null;

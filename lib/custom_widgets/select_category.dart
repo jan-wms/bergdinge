@@ -4,7 +4,7 @@ import '../data/data.dart';
 import '../data_models/category.dart';
 import 'custom_dialog.dart';
 
-Future<int> selectCategory(BuildContext context, int selected) async {
+Future<String> selectCategory(BuildContext context, String selected) async {
   final GlobalKey<_SelectCategoryState> k = GlobalKey();
   final SelectCategory selectCategory = SelectCategory(
     key: k,
@@ -23,7 +23,7 @@ Future<int> selectCategory(BuildContext context, int selected) async {
 }
 
 class SelectCategory extends StatefulWidget {
-  final int selected;
+  final String selected;
 
   const SelectCategory({Key? key, required this.selected}) : super(key: key);
 
@@ -34,7 +34,7 @@ class SelectCategory extends StatefulWidget {
 class _SelectCategoryState extends State<SelectCategory> {
   final TextEditingController _textEditingController = TextEditingController();
   final List<Category> dataCategories = Data.categories;
-  late int selected = widget.selected;
+  late String selected = widget.selected;
 
   List<Widget> createCategories(List<Category> categories) {
     List<Widget> widgets = <Widget>[];

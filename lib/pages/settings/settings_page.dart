@@ -100,12 +100,12 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               const Text('Kontakt'),
               const Text('appentwicklung.jan@gmx.de'),
-              const Text('wermeckes.com'),
+              const Text('bergdinge.de'),
               ElevatedButton(
                   onPressed: () {
                     showAboutDialog(
                       context: context,
-                    applicationName: 'Equipment App',
+                    applicationName: 'Bergdinge',
                       applicationVersion: 'Version 1.0.0'
                     );
                   },

@@ -29,8 +29,6 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
 
     for (var e in data) {
       categoryStructure[Data.getCategoriyListFromID(
-                  pList: Data.categories,
-                  pResult: [],
                   categoryID: e.category)[depth]
               .name]
           ?.add(e);

@@ -1,20 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PackingPlan {
-  String? name;
-  List<PackingPlan>? items;
-  List<String>? sports;
+  final String? name;
+  final List<PackingPlan>? items;
+  final List<String>? sports;
   final String id;
   final String? equipmentId;
   final int equipmentCount;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   PackingPlan({
-    required this.name,
-    required this.items,
-    required this.sports,
+    this.name,
+    this.items,
+    this.sports,
     required this.id,
     this.equipmentId,
     required this.equipmentCount,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory PackingPlan.fromFirestore(
@@ -25,36 +29,26 @@ class PackingPlan {
     return PackingPlan(
       name: data?['name'],
       id: data?['id'],
-      items: List.from(
-          List.from(data?['items']).map((e) => PackingPlan.fromMap(e))),
+      /*items: List.from(
+          List.from(data?['items']).map((e) => PackingPlan.fromFirestore(e))),*/
       sports: List.from(data?['sports']),
       equipmentId: data?['equipmentId'],
       equipmentCount: (data?['equipmentCount'] as num).toInt(),
+      createdAt: DateTime.tryParse(data?['createdAt']),
+      updatedAt: DateTime.tryParse(data?['updatedAt']),
     );
   }
 
-  factory PackingPlan.fromMap(
-    Map<String, dynamic> map,
-  ) {
-    return PackingPlan(
-      name: map['name'],
-      id: map['id'],
-      items:
-          List.from(List.from(map['items']).map((e) => PackingPlan.fromMap(e))),
-      sports: List.from(map['sports']),
-      equipmentId: map['equipmentId'],
-      equipmentCount: (map['equipmentCount'] as num).toInt(),
-    );
-  }
-
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
       if (name != null) "name": name,
       if (id != null) "id": id,
-      if (items != null) "items": items?.map((e) => e.toMap()),
+      //if (items != null) "items": items?.map((e) => e.toFirestore()),
       if (sports != null) "sports": sports,
       if (equipmentId != null) "equipmentId": equipmentId,
       if (equipmentCount != null) "equipmentCount": equipmentCount,
+      if (createdAt != null) "createdAt": createdAt!.toIso8601String(),
+      if (updatedAt != null) "updatedAt": updatedAt!.toIso8601String(),
     };
   }
 }

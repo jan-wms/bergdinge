@@ -50,7 +50,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
 
     bool continueEdit = true;
     final int? duplicate = packingPlanList?.indexWhere((element) =>
-    element.name.toLowerCase() == p.name.toLowerCase() && element.id != p.id);
+    element.name!.toLowerCase() == p.name!.toLowerCase() && element.id != p.id);
     if (duplicate != null && duplicate != -1) {
       await CustomDialog.showCustomConfirmationDialog(context: context,
           description: 'Es existiert bereits ein Gegenstand mit dem Namen "${packingPlanList!
@@ -66,7 +66,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
     }
 
     if (continueEdit) {
-      await ref.set(p.toMap()).then((value) => context.pop());
+      await ref.set(p.toFirestore()).then((value) => context.pop());
     }
   }
 

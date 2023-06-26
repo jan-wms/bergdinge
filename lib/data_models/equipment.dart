@@ -11,7 +11,7 @@ class Equipment {
   double? uvp;
   double? price;
   DateTime? purchaseDate;
-  int category;
+  String category;
   int count;
   final String id;
   final Map<double, String>? runningCosts;
@@ -60,7 +60,7 @@ class Equipment {
       price: data?['price'] != null ? (data?['price'] as num).toDouble() : null,
       brand: data?['brand'],
       purchaseDate: DateTime.tryParse(data?['purchaseDate'] ?? ''),
-      category: (data?['category'] as num).toInt(),
+      category: data?['category'],
       count: (data?['count'] as num).toInt(),
       daysInUse: null,
       runningCosts: null,
