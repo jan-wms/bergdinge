@@ -45,6 +45,11 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       equipmentCount: 0,
       createdAt: widget.packingPlan?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
+      //TODO remove testing equipment
+      items: [
+        PackingPlan(equipmentCount: 1, equipmentId: 'BZD1ZVbSYPBphvpqqpSv'),
+        PackingPlan(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1'),
+      ],
     );
 
     bool continueEdit = true;
@@ -67,7 +72,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
     }
 
     if (continueEdit) {
-      await ref.set(p.toFirestore()).then((value) => context.pop());
+      await ref.set(p.toMap()).then((value) => context.pop());
     }
   }
 

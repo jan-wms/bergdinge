@@ -4,7 +4,7 @@ class PackingPlan {
   final String? name;
   final List<PackingPlan>? items;
   final List<String>? sports;
-  final String id;
+  final String? id;
   final String? equipmentId;
   final int equipmentCount;
   final DateTime? createdAt;
@@ -14,7 +14,7 @@ class PackingPlan {
     this.name,
     this.items,
     this.sports,
-    required this.id,
+    this.id,
     this.equipmentId,
     required this.equipmentCount,
     this.createdAt,
@@ -29,8 +29,7 @@ class PackingPlan {
     return PackingPlan(
       name: data?['name'],
       id: data?['id'],
-      /*items: List.from(
-          List.from(data?['items']).map((e) => PackingPlan.fromFirestore(e))),*/
+      items: data?['items'] != null ? List<PackingPlan>.from(List.from(data?['items']).map((e) => PackingPlan.fromMap(e))) : null,
       sports: List.from(data?['sports']),
       equipmentId: data?['equipmentId'],
       equipmentCount: (data?['equipmentCount'] as num).toInt(),
@@ -39,11 +38,27 @@ class PackingPlan {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  factory PackingPlan.fromMap(
+      Map<String, dynamic> data
+      ) {
+    return PackingPlan(
+      name: data['name'],
+      id: data['id'],
+      items: data['items'] != null ? List.from(
+          List.from(data['items']).map((e) => PackingPlan.fromMap(e))) : null,
+     sports: data['sports'] != null ? List.from(data['sports']) : null,
+      equipmentId: data['equipmentId'],
+      equipmentCount: (data['equipmentCount'] as num).toInt(),
+      createdAt:data['createdAt'] != null ? DateTime.tryParse(data['createdAt']) : null,
+        updatedAt:data['updatedAt'] != null ? DateTime.tryParse(data['updatedAt']) : null,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       if (name != null) "name": name,
       if (id != null) "id": id,
-      //if (items != null) "items": items?.map((e) => e.toFirestore()),
+      if (items != null) "items": items?.map((e) => e.toMap()),
       if (sports != null) "sports": sports,
       if (equipmentId != null) "equipmentId": equipmentId,
       if (equipmentCount != null) "equipmentCount": equipmentCount,

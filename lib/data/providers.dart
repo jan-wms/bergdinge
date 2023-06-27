@@ -25,7 +25,7 @@ final packingPlanStreamProvider = StreamProvider<List<PackingPlan>>((ref) {
       .collection('packing_plan')
       .withConverter(
     fromFirestore: PackingPlan.fromFirestore,
-    toFirestore: (PackingPlan p, _) => p.toFirestore(),
+    toFirestore: (PackingPlan p, _) => p.toMap(),
   )
       .snapshots();
   return stream

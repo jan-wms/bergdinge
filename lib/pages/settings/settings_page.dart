@@ -1,4 +1,3 @@
-import 'dart:js_interop';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -51,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                           return CircleAvatar(
                             radius: 48,
-                            backgroundImage: !snapshot.hasData || snapshot.data.isNull ? Image.asset('assets/images/placeholder.jpg').image : Image.memory(snapshot.data!).image,
+                            backgroundImage: !snapshot.hasData || snapshot.data == null ? Image.asset('assets/images/placeholder.jpg').image : Image.memory(snapshot.data!).image,
                           );
                         }),
                     Text('Hallo, ${data['name']}!'),
