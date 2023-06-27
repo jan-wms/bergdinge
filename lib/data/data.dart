@@ -355,11 +355,5 @@ class Data {
       ],
     ),
   ];
-
-  static List<Category> getCategoriyListFromID({required String categoryID}) {
-    var result = <Category>[];
-    result.add(Data.categories.singleWhere((element) => element.id == categoryID.substring(0, categoryID.indexOf('.'))));
-    result.add(result.last.subCategories!.singleWhere((element) => element.id == categoryID.substring(0, categoryID.indexOf('.'))));
-    return [];
-  }
 }
+

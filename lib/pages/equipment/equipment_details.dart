@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_back_button.dart';
-import '../../data_models/category.dart';
 import '../../firebase/firebase_auth.dart';
-import '../../data/data.dart';
 import 'package:equipment_app/data/providers.dart';
 
 class EquipmentDetails extends ConsumerWidget {
@@ -29,8 +27,6 @@ class EquipmentDetails extends ConsumerWidget {
               loading: () => const CircularProgressIndicator.adaptive(),
               data: (data) {
                 Equipment equipment = data.singleWhere((element) => element.id == equipmentID);
-                List<Category> categoryList = Data.getCategoriyListFromID(
-                    categoryID: equipment.category);
 
                 return ListView(
                   children: [
@@ -44,13 +40,7 @@ class EquipmentDetails extends ConsumerWidget {
                     Text('weight: ${equipment.weight}'),
                     Text('status: ${equipment.status}'),
                     Text('size: ${equipment.size}'),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('category:'),
-                        for (var category in categoryList) Text(category.name),
-                      ],
-                    ),
+                    Text('category: ${equipment.category}'),
                     ElevatedButton(
                         onPressed: () async {
                           bool? confirmDelete =
