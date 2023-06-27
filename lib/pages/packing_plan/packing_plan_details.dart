@@ -18,11 +18,17 @@ class PackingPlanDetails extends ConsumerWidget {
 
   Widget getStatistics({required PackingPlan packingPlan}) {
     double weight = 1.0;
+    List<ChartData> chartData = <ChartData>[
+      ChartData(x: 'Bekleidung', y: 13),
+      ChartData(x: 'Ausrüstung', y: 24),
+      ChartData(x: 'Verpflegung', y: 25),
+      ChartData(x: 'Others', y: 38),
+    ];
     return Column(
       children: [
         Text('total weight: $weight'),
         SfCircularChart(
-          series: getDefaultPieSeries(),
+          series: getPieSeries(chartData: chartData),
         ),
       ],
     );
@@ -89,33 +95,30 @@ class PackingPlanDetails extends ConsumerWidget {
   }
 }
 
-List<PieSeries<ChartSampleData, String>> getDefaultPieSeries() {
-  return <PieSeries<ChartSampleData, String>>[
-    PieSeries<ChartSampleData, String>(
+List<PieSeries<ChartData, String>> getPieSeries({required List<ChartData> chartData}) {
+  return <PieSeries<ChartData, String>>[
+    PieSeries<ChartData, String>(
         explode: true,
         explodeIndex: 0,
         explodeOffset: '10%',
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'David', y: 13, text: 'David \n 13%'),
-          ChartSampleData(x: 'Steve', y: 24, text: 'Steve \n 24%'),
-          ChartSampleData(x: 'Jack', y: 25, text: 'Jack \n 25%'),
-          ChartSampleData(x: 'Others', y: 38, text: 'Others \n 38%'),
-        ],
-        xValueMapper: (ChartSampleData data, _) => data.x,
-        yValueMapper: (ChartSampleData data, _) => data.y,
-        dataLabelMapper: (ChartSampleData data, _) => data.text,
+        dataSource: chartData,
+        xValueMapper: (ChartData data, _) => data.x,
+        yValueMapper: (ChartData data, _) => data.y,
+        dataLabelMapper: (ChartData data, _) => data.text,
         startAngle: 90,
         endAngle: 90,
         dataLabelSettings: const DataLabelSettings(isVisible: true))
   ];
 }
 
-class ChartSampleData {
+class ChartData {
   final String x;
   final double y;
-  final String text;
+  late final String text;
 
-  ChartSampleData({required this.x, required this.y, required this.text});
+  ChartData({required this.x, required this.y}) {
+    text = '$x\n$y%';
+  }
 }
 
 /* @override
