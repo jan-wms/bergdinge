@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
+import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -105,6 +106,19 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                     value: dropdownValue,
                   ),
                   getStatistics(packingPlan: packingPlan),
+                  Card(
+                    child: Column(
+                      children: [
+                        const Text('Gegenstände'),
+                        Row(
+                          children: [
+                            for(PackingPlanItem item in packingPlan.items ?? [])
+                              Card(child: Text(equipmentList!.singleWhere((element) => element.id == item.equipmentId).name),),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               );
             },
