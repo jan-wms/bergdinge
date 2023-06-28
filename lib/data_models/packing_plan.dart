@@ -1,24 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/data_models/packing_plan_item.dart';
 
 class PackingPlan {
-  final String? name;
-  final List<PackingPlan>? items;
-  final List<String>? sports;
-  final String? id;
-  final String? equipmentId;
-  final int equipmentCount;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  final String name;
+  final List<PackingPlanItem>? items;
+  final List<String> sports;
+  final String id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String? notes;
 
   PackingPlan({
-    this.name,
+    required this.name,
     this.items,
-    this.sports,
-    this.id,
-    this.equipmentId,
-    required this.equipmentCount,
-    this.createdAt,
-    this.updatedAt,
+    required this.sports,
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    this.notes,
   });
 
   factory PackingPlan.fromFirestore(
@@ -29,12 +28,11 @@ class PackingPlan {
     return PackingPlan(
       name: data?['name'],
       id: data?['id'],
-      items: data?['items'] != null ? List<PackingPlan>.from(List.from(data?['items']).map((e) => PackingPlan.fromMap(e))) : null,
+      items: data?['items'] != null ? List<PackingPlanItem>.from(List.from(data?['items']).map((e) => PackingPlanItem.fromMap(e))) : null,
       sports: List.from(data?['sports']),
-      equipmentId: data?['equipmentId'],
-      equipmentCount: (data?['equipmentCount'] as num).toInt(),
-      createdAt: DateTime.tryParse(data?['createdAt']),
-      updatedAt: DateTime.tryParse(data?['updatedAt']),
+      createdAt: DateTime.parse(data?['createdAt']),
+      updatedAt: DateTime.parse(data?['updatedAt']),
+      notes: data?['notes'],
     );
   }
 
@@ -45,25 +43,23 @@ class PackingPlan {
       name: data['name'],
       id: data['id'],
       items: data['items'] != null ? List.from(
-          List.from(data['items']).map((e) => PackingPlan.fromMap(e))) : null,
-     sports: data['sports'] != null ? List.from(data['sports']) : null,
-      equipmentId: data['equipmentId'],
-      equipmentCount: (data['equipmentCount'] as num).toInt(),
-      createdAt:data['createdAt'] != null ? DateTime.tryParse(data['createdAt']) : null,
-        updatedAt:data['updatedAt'] != null ? DateTime.tryParse(data['updatedAt']) : null,
+          List.from(data['items']).map((e) => PackingPlanItem.fromMap(e))) : null,
+      sports: List.from(data['sports']),
+      createdAt: DateTime.parse(data['createdAt']),
+      updatedAt: DateTime.parse(data['updatedAt']),
+      notes: data['notes'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      if (name != null) "name": name,
-      if (id != null) "id": id,
+      "name": name,
+      "id": id,
       if (items != null) "items": items?.map((e) => e.toMap()),
-      if (sports != null) "sports": sports,
-      if (equipmentId != null) "equipmentId": equipmentId,
-      if (equipmentCount != null) "equipmentCount": equipmentCount,
-      if (createdAt != null) "createdAt": createdAt!.toIso8601String(),
-      if (updatedAt != null) "updatedAt": updatedAt!.toIso8601String(),
+      "sports": sports,
+      "createdAt": createdAt.toIso8601String(),
+      "updatedAt": updatedAt.toIso8601String(),
+      if(notes != null) "notes": notes,
     };
   }
 }

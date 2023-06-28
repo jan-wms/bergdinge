@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../custom_widgets/select_sports.dart';
 import '../../custom_widgets/custom_dialog.dart';
+import '../../data/data.dart';
 import '../../data/providers.dart';
+import '../../data_models/packing_plan_item.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanEdit extends ConsumerStatefulWidget {
@@ -42,19 +43,18 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       id: ref.id,
       name: _controllerName.text,
       sports: _formKeySports.currentState!.value,
-      equipmentCount: 0,
       createdAt: widget.packingPlan?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
       //TODO remove testing equipment
       items: [
-        PackingPlan(equipmentCount: 1, equipmentId: 'BZD1ZVbSYPBphvpqqpSv'),
-        PackingPlan(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1'),
+        PackingPlanItem(equipmentCount: 1, equipmentId: 'BZD1ZVbSYPBphvpqqpSv'),
+        PackingPlanItem(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1'),
       ],
     );
 
     bool continueEdit = true;
     final int? duplicate = packingPlanList?.indexWhere((element) =>
-        element.name!.toLowerCase() == p.name!.toLowerCase() &&
+        element.name.toLowerCase() == p.name.toLowerCase() &&
         element.id != p.id);
     if (duplicate != null && duplicate != -1) {
       await CustomDialog.showCustomConfirmationDialog(
@@ -110,23 +110,36 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                 decoration: const InputDecoration(labelText: 'Name'),
               ),
               FormField<List<String>>(
-                validator: (value) => PackingPlanValidator.sports(value),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formKeySports,
-                initialValue: widget.packingPlan?.sports ?? <String>[],
-                builder: (state) => ListTile(
-                  title: Text(state.value!.isNotEmpty
-                      ? state.value!.toString()
-                      : 'Sportart'),
-                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                  trailing: const Icon(Icons.chevron_right_outlined),
-                  onTap: () async {
-                    final List<String> s =
-                        await selectSports(context, state.value!);
-                    state.didChange(s);
-                  },
-                ),
-              ),
+                  validator: (value) => PackingPlanValidator.sports(value),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: _formKeySports,
+                  initialValue: widget.packingPlan?.sports ?? <String>[],
+                  builder: (state) => Column(
+                        children: [
+                          const Text('Sportart'),
+                          Wrap(spacing: 5.0, children: [
+                            for (var sport in Data.sports)
+                              FilterChip(
+                                label: Text(sport),
+                                selected: state.value?.contains(sport) ?? false,
+                                onSelected: (bool value) {
+                                    var oldList = state.value!.toList();
+                                    if (value) {
+                                      if (!state.value!.contains(sport)) {
+                                        oldList.add(sport);
+                                      }
+                                    } else {
+                                      oldList.removeWhere((String s) {
+                                        return s == sport;
+                                      });
+                                    }
+                                    state.didChange(oldList);
+                                },
+                              )
+                          ]),
+                          Text(state.errorText ?? 'Kein Fehler'),
+                        ],
+                      )),
             ],
           ),
         ),

@@ -10,11 +10,17 @@ import '../../custom_widgets/custom_back_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 
-class PackingPlanDetails extends ConsumerWidget {
+class PackingPlanDetails extends ConsumerStatefulWidget {
   final String packingPlanID;
 
-  const PackingPlanDetails({Key? key, required this.packingPlanID})
-      : super(key: key);
+  const PackingPlanDetails({Key? key, required this.packingPlanID}) : super(key: key);
+
+  @override
+  ConsumerState<PackingPlanDetails> createState() => _PackingPlanDetailsState();
+}
+
+class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
+  int dropdownValue = 0;
 
   Widget getStatistics({required PackingPlan packingPlan}) {
     double weight = 1.0;
@@ -24,20 +30,21 @@ class PackingPlanDetails extends ConsumerWidget {
       ChartData(x: 'Verpflegung', y: 25),
       ChartData(x: 'Others', y: 38),
     ];
-    return Column(
+    return Card(child: Column(
       children: [
         Text('total weight: $weight'),
         SfCircularChart(
           series: getPieSeries(chartData: chartData),
         ),
       ],
-    );
+    ),);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
+
     return Column(
       children: [
         const CustomBackButton(),
@@ -47,42 +54,55 @@ class PackingPlanDetails extends ConsumerWidget {
             loading: () => const CircularProgressIndicator.adaptive(),
             data: (data) {
               final PackingPlan packingPlan =
-                  data.singleWhere((element) => element.id == packingPlanID);
+                  data.singleWhere((element) => element.id == widget.packingPlanID);
               return Column(
                 children: [
-                  Text(packingPlan.name!),
-                  Text(packingPlan.createdAt!.toString()),
-                  Text(packingPlan.updatedAt!.toString()),
-                  for (var sport in packingPlan.sports!) Text(sport),
-                  ElevatedButton(
-                      onPressed: () {
-                        context.push('/packing_plan/edit', extra: packingPlan);
-                      },
-                      child: const Text('edit')),
-                  ElevatedButton(
-                      onPressed: () async {
-                        bool? confirmDelete =
-                            await CustomDialog.showCustomConfirmationDialog(
-                                context: context,
-                                description: "Wirklich löschen?");
-                        if (confirmDelete ?? false) {
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(Auth().user?.uid)
-                              .collection('packing_plan')
-                              .doc(packingPlan.id)
-                              .delete()
-                              .then((value) => context.pop());
-                        }
-                      },
-                      child: const Text('delete')),
+                  Card(
+                    child: Column(
+                      children: [
+                        Text(packingPlan.name),
+                        Text(packingPlan.createdAt.toString()),
+                        Text(packingPlan.updatedAt.toString()),
+                        Text('notes: ${packingPlan.notes}'),
+                        for (var sport in packingPlan.sports) Text(sport),
+                        ElevatedButton(
+                            onPressed: () {
+                              context.push('/packing_plan/edit',
+                                  extra: packingPlan);
+                            },
+                            child: const Text('edit')),
+                        ElevatedButton(
+                            onPressed: () async {
+                              bool? confirmDelete = await CustomDialog
+                                  .showCustomConfirmationDialog(
+                                      context: context,
+                                      description: "Wirklich löschen?");
+                              if (confirmDelete ?? false) {
+                                await FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(Auth().user?.uid)
+                                    .collection('packing_plan')
+                                    .doc(packingPlan.id)
+                                    .delete()
+                                    .then((value) => context.pop());
+                              }
+                            },
+                            child: const Text('delete')),
+                      ],
+                    ),
+                  ),
                   DropdownButton(
                     items: const [
                       DropdownMenuItem(value: 0, child: Text('total')),
                       DropdownMenuItem(value: 1, child: Text('body')),
                       DropdownMenuItem(value: 2, child: Text('backpack')),
                     ],
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue = value ?? dropdownValue;
+                      });
+                    },
+                    value: dropdownValue,
                   ),
                   getStatistics(packingPlan: packingPlan),
                 ],
@@ -95,7 +115,8 @@ class PackingPlanDetails extends ConsumerWidget {
   }
 }
 
-List<PieSeries<ChartData, String>> getPieSeries({required List<ChartData> chartData}) {
+List<PieSeries<ChartData, String>> getPieSeries(
+    {required List<ChartData> chartData}) {
   return <PieSeries<ChartData, String>>[
     PieSeries<ChartData, String>(
         explode: true,
@@ -107,6 +128,7 @@ List<PieSeries<ChartData, String>> getPieSeries({required List<ChartData> chartD
         dataLabelMapper: (ChartData data, _) => data.text,
         startAngle: 90,
         endAngle: 90,
+        radius: '150',
         dataLabelSettings: const DataLabelSettings(isVisible: true))
   ];
 }

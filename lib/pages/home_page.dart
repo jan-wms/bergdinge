@@ -11,15 +11,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
+    return const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Home',
+            'Entdecken',
           ),
+          Expanded(child: Center(
+            child: Text('home'),
+          ))
         ],
-      ),
     );
   }
 }
