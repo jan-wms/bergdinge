@@ -1,98 +1,84 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
+import 'package:equipment_app/data/providers.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../firebase/firebase_auth.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+class SettingsPage extends ConsumerWidget {
+  const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userData = ref.watch(userDataStreamProvider).value;
     return Column(
       children: [
         const Text("Einstellungen"),
         Card(
-          child: StreamBuilder<Object>(
-              stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(Auth().user!.uid)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData || snapshot.hasError) {
-                  return const CircularProgressIndicator.adaptive();
-                }
-                var data = snapshot.data;
-                return Column(
-                  children: [
-                    FutureBuilder(
-                        future: FirebaseStorage.instance
-                            .ref()
-                            .child("users/${Auth().user!.uid}/profile.jpg")
-                            .getData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            print(snapshot.error);
-                          }
-
-                          return CircleAvatar(
-                            radius: 48,
-                            backgroundImage: !snapshot.hasData || snapshot.data == null ? Image.asset('assets/images/placeholder.jpg').image : Image.memory(snapshot.data!).image,
-                          );
-                        }),
-                    Text('Hallo, ${data['name']}!'),
-                    ElevatedButton(onPressed: () {
-                      context.pushNamed("setup", queryParameters: {'editValue': 'name'});
-                    }, child: const Text('edit name')),
-                    ElevatedButton(onPressed: () {
-                      context.pushNamed("setup", queryParameters: {'editValue': 'image'});
-                    }, child: const Text('edit image')),
-                    ElevatedButton(onPressed: () async {
-                      await FirebaseStorage.instance
-                          .ref("users/${Auth().user!.uid}")
-                      .child('profile.jpg')
-                      .delete()
-                          .then((value) {
-                        CustomDialog.showCustomInformationDialog(context: context, description: 'Profilbild gelöscht.');
-                      });
-                    }, child: const Text('delete image')),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(data['email'] ?? 'keine email'),
-                        IconButton(
-                            onPressed: () async {
-                              Clipboard.setData(
-                                      ClipboardData(text: Auth().user!.uid))
-                                  .then((_) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            "Uid in die Zwischenablage kopiert")));
-                              });
-                            },
-                            icon: const Icon(Icons.copy_rounded))
-                      ],
-                    ),
-                    Text(
-                      Auth().user!.uid,
-                    ),
-                  ],
-                );
-              }),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 48,
+                backgroundImage: ref.watch(profilePictureStreamProvider).value,
+              ),
+              Text('Hallo, ${userData?['name']}!'),
+              ElevatedButton(
+                  onPressed: () {
+                    context.pushNamed("setup",
+                        queryParameters: {'editValue': 'name'});
+                  },
+                  child: const Text('edit name')),
+              ElevatedButton(
+                  onPressed: () {
+                    context.pushNamed("setup",
+                        queryParameters: {'editValue': 'image'});
+                  },
+                  child: const Text('edit image')),
+              ElevatedButton(
+                  onPressed: () async {
+                    await FirebaseStorage.instance
+                        .ref("users/${Auth().user!.uid}")
+                        .child('profile.jpg')
+                        .delete()
+                        .then(
+                          (value) => FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(Auth().user?.uid)
+                              .update({
+                            "profilePicture": FieldValue.delete(),
+                          }).then((value) =>
+                                  CustomDialog.showCustomInformationDialog(
+                                      context: context,
+                                      description: 'Profilbild gelöscht.')),
+                        );
+                  },
+                  child: const Text('delete image')),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(userData?['email'] ?? 'keine email'),
+                  IconButton(
+                      onPressed: () async {
+                        Clipboard.setData(ClipboardData(text: Auth().user!.uid))
+                            .then((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      "Uid in die Zwischenablage kopiert")));
+                        });
+                      },
+                      icon: const Icon(Icons.copy_rounded))
+                ],
+              ),
+              Text(
+                Auth().user!.uid,
+              ),
+            ],
+          ),
         ),
         Card(
           child: Column(
@@ -103,10 +89,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ElevatedButton(
                   onPressed: () {
                     showAboutDialog(
-                      context: context,
-                    applicationName: 'Bergdinge',
-                      applicationVersion: 'Version 1.0.0'
-                    );
+                        context: context,
+                        applicationName: 'Bergdinge',
+                        applicationVersion: 'Version 1.0.0');
                   },
                   child: const Text('Über diese App')),
             ],

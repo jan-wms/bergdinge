@@ -34,7 +34,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/welcome',
-        builder: (context, state) => const IntroductionPage(),
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const IntroductionPage(),
+            transitionDuration: Duration.zero,
+            transitionsBuilder: (_, __, ___, Widget child) => child,
+          );
+        },
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
@@ -50,15 +57,36 @@ final routerProvider = Provider<GoRouter>((ref) {
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, state) => const HomePage(),
+              pageBuilder: (context, state) {
+                return CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const HomePage(),
+                  transitionDuration: Duration.zero,
+                  transitionsBuilder: (_, __, ___, Widget child) => child,
+                );
+              },
             ),
             GoRoute(
               path: '/settings',
-              builder: (context, state) => const SettingsPage(),
+              pageBuilder: (context, state) {
+                return CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const SettingsPage(),
+                  transitionDuration: Duration.zero,
+                  transitionsBuilder: (_, __, ___, Widget child) => child,
+                );
+              },
             ),
             GoRoute(
                 path: '/packing_plan',
-                builder: (context, state) => const PackingPlanPage(),
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const PackingPlanPage(),
+                    transitionDuration: Duration.zero,
+                    transitionsBuilder: (_, __, ___, Widget child) => child,
+                  );
+                },
                 routes: [
                   GoRoute(
                       path: 'edit',
@@ -75,7 +103,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ]),
             GoRoute(
                 path: '/equipment',
-                builder: (context, state) => const EquipmentPage(),
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const EquipmentPage(),
+                    transitionDuration: Duration.zero,
+                    transitionsBuilder: (_, __, ___, Widget child) => child,
+                  );
+                },
                 routes: [
                   GoRoute(
                       path: 'edit',

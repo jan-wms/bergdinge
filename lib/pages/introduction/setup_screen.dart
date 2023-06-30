@@ -23,6 +23,7 @@ class SetupScreen extends StatefulWidget {
 class _SetupScreenState extends State<SetupScreen> {
   late final bool isMobile = kIsWeb || Platform.isMacOS ? false : true;
   final _pageController = PageController(initialPage: 0);
+
   final _formKey = GlobalKey<FormState>();
   final _textFieldController = TextEditingController();
 

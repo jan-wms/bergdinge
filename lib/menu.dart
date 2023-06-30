@@ -1,50 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class Menu extends StatefulWidget {
-  const Menu({Key? key}) : super(key: key);
+class Menu extends ConsumerWidget {
+  const Menu({super.key});
 
   @override
-  State<Menu> createState() => _MenuState();
-}
-
-class _MenuState extends State<Menu> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: Colors.black12,
       child: ListView(
         children: [
-          FutureBuilder(
-              future: FirebaseStorage.instance
-                  .ref()
-                  .child("users/${Auth().user!.uid}/profile.jpg")
-                  .getData(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  print(snapshot.error);
-                }
-
-                return CircleAvatar(
+          CircleAvatar(
                   radius: 48,
-                  backgroundImage: !snapshot.hasData || snapshot.data == null ? Image.asset('assets/images/placeholder.jpg').image : Image.memory(snapshot.data!).image,
-                );
-              }),
-          FutureBuilder(
-              future: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(Auth().user!.uid)
-                  .get(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError || !snapshot.hasData) {
-                  return const CircularProgressIndicator.adaptive();
-                }
-                return Text(snapshot.data?['name'] ?? 'error name');
-              }),
+                  backgroundImage: ref.watch(profilePictureStreamProvider).value,
+          ),
+          Text('Hallo ${ref.watch(userDataStreamProvider).value?['name']}!'),
           ListTile(
             title: const Text('Entdecken'),
             onTap: () => GoRouter.of(context).go('/'),
@@ -62,7 +36,7 @@ class _MenuState extends State<Menu> {
             onTap: () => GoRouter.of(context).go('/settings'),
           ),
           if(kIsWeb) ListTile(
-            title: const Text('Logout'),
+            title: const Text('Sign out'),
             onTap: () => Auth().signOut(),
           ),
         ],
