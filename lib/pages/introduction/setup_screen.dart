@@ -141,11 +141,18 @@ class _SetupScreenState extends State<SetupScreen> {
       final storageRef = FirebaseStorage.instance.ref();
       final imageRef =
           storageRef.child("users/${Auth().user!.uid}/profile.jpg");
-      await imageRef.putData(
-          image!,
-          SettableMetadata(
-            contentType: "image/jpg",
-          ));
+      await imageRef
+          .putData(
+              image!,
+              SettableMetadata(
+                contentType: "image/jpg",
+              ))
+          .then((p0) => FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(Auth().user?.uid)
+                  .set({
+                "profilePicture": DateTime.now().toIso8601String(),
+              }));
     }
 
     DocumentReference ref =

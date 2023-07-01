@@ -14,9 +14,9 @@ final equipmentStreamProvider = StreamProvider<List<Equipment>>((ref) {
       .doc(Auth().user?.uid)
       .collection('equipment')
       .withConverter(
-    fromFirestore: Equipment.fromFirestore,
-    toFirestore: (Equipment e, _) => e.toMap(),
-  )
+        fromFirestore: Equipment.fromFirestore,
+        toFirestore: (Equipment e, _) => e.toMap(),
+      )
       .snapshots();
   return stream
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
@@ -28,9 +28,9 @@ final packingPlanStreamProvider = StreamProvider<List<PackingPlan>>((ref) {
       .doc(Auth().user?.uid)
       .collection('packing_plan')
       .withConverter(
-    fromFirestore: PackingPlan.fromFirestore,
-    toFirestore: (PackingPlan p, _) => p.toMap(),
-  )
+        fromFirestore: PackingPlan.fromFirestore,
+        toFirestore: (PackingPlan p, _) => p.toMap(),
+      )
       .snapshots();
   return stream
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
@@ -45,7 +45,8 @@ final userDataStreamProvider = StreamProvider<Map<String, dynamic>>((ref) {
   return firestoreStream.map((event) => event.data() ?? {});
 });
 
-final profilePictureStreamProvider = StreamProvider<ImageProvider<Object>>((ref) {
+final profilePictureStreamProvider =
+    StreamProvider<ImageProvider<Object>>((ref) {
   final streamController = StreamController<ImageProvider<Object>>.broadcast();
   final firestoreStream = FirebaseFirestore.instance
       .collection('users')
@@ -55,13 +56,14 @@ final profilePictureStreamProvider = StreamProvider<ImageProvider<Object>>((ref)
   firestoreStream.listen((event) async {
     String? imageValue = event.data()?['profilePicture'];
     ImageProvider<Object> newImage;
-    if(imageValue == null) {
+    if (imageValue == null) {
       newImage = Image.asset('assets/images/placeholder.jpg').image;
-    }
-    else {
+    } else {
       newImage = Image.memory((await FirebaseStorage.instance
-          .ref()
-          .child("users/${Auth().user!.uid}/profile.jpg").getData())!).image;
+              .ref()
+              .child("users/${Auth().user!.uid}/profile.jpg")
+              .getData())!)
+          .image;
     }
     streamController.add(newImage);
   });
