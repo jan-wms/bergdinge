@@ -42,25 +42,26 @@ class SettingsPage extends ConsumerWidget {
                         queryParameters: {'editValue': 'image'});
                   },
                   child: const Text('edit image')),
-              ElevatedButton(
-                  onPressed: () async {
-                    await FirebaseStorage.instance
-                        .ref("users/${Auth().user!.uid}")
-                        .child('profile.jpg')
-                        .delete()
-                        .then(
-                          (value) => FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(Auth().user?.uid)
-                              .update({
-                            "profilePicture": FieldValue.delete(),
-                          }).then((value) =>
-                                  CustomDialog.showCustomInformationDialog(
-                                      context: context,
-                                      description: 'Profilbild gelöscht.')),
-                        );
-                  },
-                  child: const Text('delete image')),
+              if (userData?['profilePicture'] != null)
+                ElevatedButton(
+                    onPressed: () async {
+                      await FirebaseStorage.instance
+                          .ref("users/${Auth().user!.uid}")
+                          .child('profile.jpg')
+                          .delete()
+                          .then(
+                            (value) => FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(Auth().user?.uid)
+                                .update({
+                              "profilePicture": FieldValue.delete(),
+                            }).then((value) =>
+                                    CustomDialog.showCustomInformationDialog(
+                                        context: context,
+                                        description: 'Profilbild gelöscht.')),
+                          );
+                    },
+                    child: const Text('delete image')),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -149,31 +150,55 @@ class SettingsPage extends ConsumerWidget {
                         context,
                         LoginScreen(
                             onComplete: () {
-                                context.pop();
-                                CustomDialog.showCustomConfirmationDialog(
-                                        context: context,
-                                        description:
-                                            'Account wirklich löschen?')
-                                    .then((result) async {
-                                  if (result) {
-                                    //TODO test delete account, reauthenticate, delete collections
-                                    await FirebaseStorage.instance
-                                        .ref("users/${Auth().user!.uid}")
-                                        .listAll()
-                                        .then((value) {
-                                      for (var element in value.items) {
-                                        FirebaseStorage.instance
-                                            .ref(element.fullPath)
-                                            .delete();
+                              context.pop();
+                              CustomDialog.showCustomConfirmationDialog(
+                                      context: context,
+                                      description: 'Account wirklich löschen?')
+                                  .then((result) async {
+                                CustomDialog.showCustomDialog(
+                                    context: context,
+                                    child: const CircularProgressIndicator
+                                        .adaptive());
+                                if (result) {
+                                  ///FirebaseStorage (e.g. profile picture)
+                                  await FirebaseStorage.instance
+                                      .ref("users/${Auth().user!.uid}")
+                                      .listAll()
+                                      .then((value) {
+                                    for (var element in value.items) {
+                                      FirebaseStorage.instance
+                                          .ref(element.fullPath)
+                                          .delete();
+                                    }
+                                  });
+
+                                  ///Firestore
+                                  DocumentReference userDoc = FirebaseFirestore
+                                      .instance
+                                      .collection('users')
+                                      .doc(Auth().user?.uid);
+
+                                  //user collections ==> timeout??
+                                  List<CollectionReference> collectionsToDelete = [
+                                      userDoc.collection('packing_plan'),
+                                      userDoc.collection('equipment'),
+                                  ];
+
+                                  for(var collection in collectionsToDelete) {
+                                    collection.get().then((snapshot) {
+                                      for (var doc in snapshot.docs) {
+                                        doc.reference.delete();
                                       }
                                     });
-                                    await FirebaseFirestore.instance
-                                        .collection("users")
-                                        .doc(Auth().user?.uid)
-                                        .delete();
-                                    await Auth().user?.delete();
                                   }
-                                }); },
+
+                                  //user document
+                                  await userDoc.delete();
+                                  ///FirebaseAuth
+                                  await Auth().user?.delete();
+                                }
+                              });
+                            },
                             authenticationAction:
                                 AuthenticationAction.reauthenticate),
                         Container(),
