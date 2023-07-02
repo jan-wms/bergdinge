@@ -17,6 +17,8 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataStreamProvider).value;
+    final firebaseUser = ref.watch(userChangesProvider).value;
+
     return Column(
       children: [
         const Text("Einstellungen"),
@@ -62,7 +64,7 @@ class SettingsPage extends ConsumerWidget {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(Auth().user!.email ?? 'keine email'),
+                  Text(firebaseUser?.email ?? 'keine email'),
                   IconButton(
                       onPressed: () async {
                         Clipboard.setData(ClipboardData(text: Auth().user!.uid))
@@ -111,14 +113,13 @@ class SettingsPage extends ConsumerWidget {
             ],
           ),
         ),
-        if (Auth().user!.isAnonymous)
+        if (firebaseUser!.isAnonymous)
           Card(
             child: Column(
               children: [
                 const Text('Synchronisierung'),
                 ElevatedButton(
                     onPressed: () async {
-                      //TODO link accounts
                       CustomDialog.showCustomModal(
                           context,
                           LoginScreen(
@@ -181,7 +182,7 @@ class SettingsPage extends ConsumerWidget {
                             icon: const Icon(Icons.close)));
                   },
                   child: const Text('Account löschen')),
-              if (!Auth().user!.isAnonymous)
+              if (!firebaseUser.isAnonymous)
                 ElevatedButton(
                     onPressed: () {
                       Auth().signOut();

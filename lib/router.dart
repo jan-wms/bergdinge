@@ -22,7 +22,7 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  final authState = ref.watch(authStateChangesProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,

@@ -4,8 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final authProvider = StreamProvider<User?>((ref) {
+final authStateChangesProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
+});
+
+final userChangesProvider = StreamProvider<User?>((ref) {
+  return FirebaseAuth.instance.userChanges();
 });
 
 enum AuthenticationAction {
@@ -43,7 +47,6 @@ class Auth {
     gsiUserChanged = _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
       if (account != null) {
-        //streamController.add(account);
         try {
           final GoogleSignInAuthentication gAuth = await account.authentication;
           final credential = GoogleAuthProvider.credential(

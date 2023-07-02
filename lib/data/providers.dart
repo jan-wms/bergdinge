@@ -9,9 +9,11 @@ import '../data_models/equipment.dart';
 import '../firebase/firebase_auth.dart';
 
 final equipmentStreamProvider = StreamProvider<List<Equipment>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+
   final stream = FirebaseFirestore.instance
       .collection('users')
-      .doc(Auth().user?.uid)
+      .doc(user?.uid)
       .collection('equipment')
       .withConverter(
         fromFirestore: Equipment.fromFirestore,
@@ -23,9 +25,11 @@ final equipmentStreamProvider = StreamProvider<List<Equipment>>((ref) {
 });
 
 final packingPlanStreamProvider = StreamProvider<List<PackingPlan>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+
   final stream = FirebaseFirestore.instance
       .collection('users')
-      .doc(Auth().user?.uid)
+      .doc(user?.uid)
       .collection('packing_plan')
       .withConverter(
         fromFirestore: PackingPlan.fromFirestore,
@@ -37,9 +41,11 @@ final packingPlanStreamProvider = StreamProvider<List<PackingPlan>>((ref) {
 });
 
 final userDataStreamProvider = StreamProvider<Map<String, dynamic>>((ref) {
+  final user = ref.watch(authStateChangesProvider).value;
+
   final firestoreStream = FirebaseFirestore.instance
       .collection('users')
-      .doc(Auth().user?.uid)
+      .doc(user?.uid)
       .snapshots();
 
   return firestoreStream.map((event) => event.data() ?? {});
@@ -48,9 +54,10 @@ final userDataStreamProvider = StreamProvider<Map<String, dynamic>>((ref) {
 final profilePictureStreamProvider =
 StreamProvider<ImageProvider<Object>>((ref) {
   final streamController = StreamController<ImageProvider<Object>>.broadcast();
+  final user = ref.watch(authStateChangesProvider).value;
   final firestoreStream = FirebaseFirestore.instance
       .collection('users')
-      .doc(Auth().user?.uid)
+      .doc(user?.uid)
       .snapshots();
 
   firestoreStream.listen((event) async {
@@ -61,7 +68,7 @@ StreamProvider<ImageProvider<Object>>((ref) {
     } else {
       newImage = Image.memory((await FirebaseStorage.instance
           .ref()
-          .child("users/${Auth().user!.uid}/profile.jpg")
+          .child("users/${user!.uid}/profile.jpg")
           .getData())!)
           .image;
     }

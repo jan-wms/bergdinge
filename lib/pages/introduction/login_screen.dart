@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:equipment_app/firebase/firebase_auth.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +12,8 @@ class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
   final VoidCallback onComplete;
 
-  const LoginScreen( {Key? key, required this.authenticationAction, required this.onComplete})
+  const LoginScreen(
+      {Key? key, required this.authenticationAction, required this.onComplete})
       : super(key: key);
 
   @override
@@ -24,6 +25,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   late final StreamSubscription gsiOnUserChanged;
 
   final isLoadingProvider = StateProvider.autoDispose<bool>((ref) => false);
+  final errorMessageProvider = StateProvider.autoDispose<String>((ref) => '');
 
   Future<void> handleError(
       FirebaseAuthException exception, BuildContext context) async {
@@ -37,9 +39,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       case 'user-disabled':
         message =
             'Dieser Account wurde deaktiviert. Bitte wende dich an den Support';
+        break;
     }
-    await CustomDialog.showCustomInformationDialog(
-        context: context, description: message);
+    ref.read(errorMessageProvider.notifier).state = message;
   }
 
   Future<void> signInAnonymously(BuildContext context) async {
@@ -66,14 +68,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     gsiOnUserChanged.onData((data) {
-      print(data);
       widget.onComplete();
     });
 
     if (kIsWeb) {
       _auth.googleSignInSilently();
     }
-
   }
 
   @override
@@ -92,8 +92,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             children: [
               Text(widget.authenticationAction ==
                       AuthenticationAction.linkAccounts
-                  ? 'Mit account verknüpfen'
-                  : 'Log in'),
+                  ? 'Mit Account verknüpfen'
+                  : widget.authenticationAction ==
+                          AuthenticationAction.reauthenticate
+                      ? 'Bitte melden Sie sich erneut an.'
+                      : 'Anmelden'),
               if (!getIsMacOS() &&
                   (widget.authenticationAction !=
                           AuthenticationAction.reauthenticate ||
@@ -120,6 +123,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ref.read(isLoadingProvider.notifier).state = false;
                     },
                     child: const Text('Continue without sign in')),
+              Text(
+                ref.watch(errorMessageProvider),
+                style: const TextStyle(
+                  color: CupertinoColors.destructiveRed,
+                ),
+              ),
             ],
           ),
         ),

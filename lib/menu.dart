@@ -35,9 +35,9 @@ class Menu extends ConsumerWidget {
             title: const Text('Einstellungen'),
             onTap: () => GoRouter.of(context).go('/settings'),
           ),
-          if (kIsWeb)
+          if (kIsWeb && !ref.watch(userChangesProvider).value!.isAnonymous)
             ElevatedButton(
-              child: const Text('Sign out'),
+              child: const Text('Abmelden'),
               onPressed: () => Auth().signOut(),
             ),
         ],
