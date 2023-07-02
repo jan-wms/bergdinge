@@ -120,18 +120,20 @@ class SettingsPage extends ConsumerWidget {
                     onPressed: () async {
                       //TODO link accounts
                       CustomDialog.showCustomModal(
-                              context,
-                              const LoginScreen(
-                                  authenticationAction:
-                                      AuthenticationAction.linkAccounts),
-                              Container(),
-                              IconButton(
-                                  onPressed: () => context.pop(),
-                                  icon: const Icon(Icons.close)))
-                          .then((value) {
-                        CustomDialog.showCustomInformationDialog(
-                            context: context, description: 'acc verlinkt');
-                      });
+                          context,
+                          LoginScreen(
+                              onComplete: () {
+                                context.pop();
+                                CustomDialog.showCustomInformationDialog(
+                                    context: context,
+                                    description: 'acc verlinkt');
+                              },
+                              authenticationAction:
+                                  AuthenticationAction.linkAccounts),
+                          Container(),
+                          IconButton(
+                              onPressed: () => context.pop(),
+                              icon: const Icon(Icons.close)));
                     },
                     child: const Text('Account verknüpfen')),
               ],
@@ -144,36 +146,39 @@ class SettingsPage extends ConsumerWidget {
                   onPressed: () async {
                     await CustomDialog.showCustomModal(
                         context,
-                        const LoginScreen(
+                        LoginScreen(
+                            onComplete: () {
+                                context.pop();
+                                CustomDialog.showCustomConfirmationDialog(
+                                        context: context,
+                                        description:
+                                            'Account wirklich löschen?')
+                                    .then((result) async {
+                                  if (result) {
+                                    //TODO test delete account, reauthenticate, delete collections
+                                    await FirebaseStorage.instance
+                                        .ref("users/${Auth().user!.uid}")
+                                        .listAll()
+                                        .then((value) {
+                                      for (var element in value.items) {
+                                        FirebaseStorage.instance
+                                            .ref(element.fullPath)
+                                            .delete();
+                                      }
+                                    });
+                                    await FirebaseFirestore.instance
+                                        .collection("users")
+                                        .doc(Auth().user?.uid)
+                                        .delete();
+                                    await Auth().user?.delete();
+                                  }
+                                }); },
                             authenticationAction:
-                            AuthenticationAction.reauthenticate),
+                                AuthenticationAction.reauthenticate),
                         Container(),
                         IconButton(
                             onPressed: () => context.pop(),
                             icon: const Icon(Icons.close)));
-                    CustomDialog.showCustomConfirmationDialog(
-                            context: context,
-                            description: 'Account wirklich löschen?')
-                        .then((result) async {
-                      if (result) {
-                        //TODO test delete account, reauthenticate, delete collections
-                        await FirebaseStorage.instance
-                            .ref("users/${Auth().user!.uid}")
-                            .listAll()
-                            .then((value) {
-                          for (var element in value.items) {
-                            FirebaseStorage.instance
-                                .ref(element.fullPath)
-                                .delete();
-                          }
-                        });
-                        await FirebaseFirestore.instance
-                            .collection("users")
-                            .doc(Auth().user?.uid)
-                            .delete();
-                        await Auth().user?.delete();
-                      }
-                    });
                   },
                   child: const Text('Account löschen')),
               if (!Auth().user!.isAnonymous)

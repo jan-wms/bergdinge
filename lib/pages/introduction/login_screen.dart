@@ -10,8 +10,9 @@ import 'sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
+  final VoidCallback onComplete;
 
-  const LoginScreen({Key? key, required this.authenticationAction})
+  const LoginScreen( {Key? key, required this.authenticationAction, required this.onComplete})
       : super(key: key);
 
   @override
@@ -64,9 +65,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       handleError(e, context);
     });
 
+    gsiOnUserChanged.onData((data) {
+      print(data);
+      widget.onComplete();
+    });
+
     if (kIsWeb) {
       _auth.googleSignInSilently();
     }
+
   }
 
   @override

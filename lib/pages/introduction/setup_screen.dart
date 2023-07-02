@@ -141,8 +141,6 @@ class _SetupScreenState extends State<SetupScreen> {
       "name": _textFieldController.text,
       "isSetupCompleted": true,
     }, SetOptions(merge: true)).then((value) => context.go('/'));
-
-    //Auth().user!.reload();
   }
 
   @override

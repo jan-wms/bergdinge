@@ -37,7 +37,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
             ],
           ),
         ),
-        const LoginScreen(authenticationAction: AuthenticationAction.signIn,),
+        LoginScreen(authenticationAction: AuthenticationAction.signIn, onComplete: () {},),
       ],
     ));
   }

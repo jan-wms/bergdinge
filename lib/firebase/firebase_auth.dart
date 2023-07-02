@@ -43,7 +43,7 @@ class Auth {
     gsiUserChanged = _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
       if (account != null) {
-        streamController.add(account);
+        //streamController.add(account);
         try {
           final GoogleSignInAuthentication gAuth = await account.authentication;
           final credential = GoogleAuthProvider.credential(
@@ -52,15 +52,13 @@ class Auth {
           );
 
           if (authenticationAction == AuthenticationAction.linkAccounts) {
-            print('link acc');
             await _firebaseAuth.currentUser?.linkWithCredential(credential);
           } else if (authenticationAction == AuthenticationAction.reauthenticate) {
-            print('reauthenticate');
             await _firebaseAuth.currentUser?.reauthenticateWithCredential(credential);
           } else {
-            print('new acc');
             await _firebaseAuth.signInWithCredential(credential);
           }
+          streamController.add(credential);
         } on FirebaseAuthException catch (error) {
           debugPrint(error.toString());
           streamController.addError(error);
