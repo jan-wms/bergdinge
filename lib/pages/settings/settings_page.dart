@@ -121,15 +121,17 @@ class SettingsPage extends ConsumerWidget {
                       //TODO link accounts
                       CustomDialog.showCustomModal(
                               context,
-                              const LoginScreen(authenticationAction: AuthenticationAction.linkAccounts),
+                              const LoginScreen(
+                                  authenticationAction:
+                                      AuthenticationAction.linkAccounts),
                               Container(),
                               IconButton(
                                   onPressed: () => context.pop(),
                                   icon: const Icon(Icons.close)))
-                          .then((value) =>
-                              CustomDialog.showCustomInformationDialog(
-                                  context: context,
-                                  description: 'acc verlinkt'));
+                          .then((value) {
+                        CustomDialog.showCustomInformationDialog(
+                            context: context, description: 'acc verlinkt');
+                      });
                     },
                     child: const Text('Account verknüpfen')),
               ],
@@ -139,7 +141,16 @@ class SettingsPage extends ConsumerWidget {
           child: Column(
             children: [
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await CustomDialog.showCustomModal(
+                        context,
+                        const LoginScreen(
+                            authenticationAction:
+                            AuthenticationAction.reauthenticate),
+                        Container(),
+                        IconButton(
+                            onPressed: () => context.pop(),
+                            icon: const Icon(Icons.close)));
                     CustomDialog.showCustomConfirmationDialog(
                             context: context,
                             description: 'Account wirklich löschen?')
@@ -156,7 +167,7 @@ class SettingsPage extends ConsumerWidget {
                                 .delete();
                           }
                         });
-                        FirebaseFirestore.instance
+                        await FirebaseFirestore.instance
                             .collection("users")
                             .doc(Auth().user?.uid)
                             .delete();

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final authProvider = StreamProvider<User?>((ref) {
-  return FirebaseAuth.instance.userChanges();
+  return FirebaseAuth.instance.authStateChanges();
 });
 
 enum AuthenticationAction {

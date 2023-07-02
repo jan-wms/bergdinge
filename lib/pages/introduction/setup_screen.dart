@@ -5,7 +5,7 @@ import 'package:equipment_app/image_crop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../firebase/firebase_auth.dart';
@@ -140,9 +140,9 @@ class _SetupScreenState extends State<SetupScreen> {
     await ref.set({
       "name": _textFieldController.text,
       "isSetupCompleted": true,
-    }, SetOptions(merge: true));
+    }, SetOptions(merge: true)).then((value) => context.go('/'));
 
-    Auth().user!.reload();
+    //Auth().user!.reload();
   }
 
   @override

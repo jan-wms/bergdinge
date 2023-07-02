@@ -11,8 +11,7 @@ import 'sign_in_button/sign_in_button.dart';
 class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
 
-  const LoginScreen(
-      {Key? key, required this.authenticationAction })
+  const LoginScreen({Key? key, required this.authenticationAction})
       : super(key: key);
 
   @override
@@ -59,7 +58,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void initState() {
     super.initState();
 
-    gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(authenticationAction: widget.authenticationAction);
+    gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(
+        authenticationAction: widget.authenticationAction);
     gsiOnUserChanged.onError((e) {
       handleError(e, context);
     });
@@ -83,22 +83,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(widget.authenticationAction == AuthenticationAction.linkAccounts ? 'Mit account verknüpfen' : 'Log in'),
-              if (!getIsMacOS())
+              Text(widget.authenticationAction ==
+                      AuthenticationAction.linkAccounts
+                  ? 'Mit account verknüpfen'
+                  : 'Log in'),
+              if (!getIsMacOS() &&
+                  (widget.authenticationAction !=
+                          AuthenticationAction.reauthenticate ||
+                      (widget.authenticationAction ==
+                              AuthenticationAction.reauthenticate &&
+                          Auth().user?.providerData.single.providerId ==
+                              'google.com')))
                 buildSignInButton(
                   onPressed: () => _auth.signInWithGoogle(),
                 ),
-              ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Sign in with Apple')),
-              if(widget.authenticationAction == AuthenticationAction.signIn)
-              ElevatedButton(
-                  onPressed: () async {
-                    ref.read(isLoadingProvider.notifier).state = true;
-                    await signInAnonymously(context);
-                    ref.read(isLoadingProvider.notifier).state = false;
-                  },
-                  child: const Text('Continue without sign in')),
+              if (widget.authenticationAction !=
+                      AuthenticationAction.reauthenticate ||
+                  (widget.authenticationAction ==
+                          AuthenticationAction.reauthenticate &&
+                      Auth().user?.providerData.single.providerId ==
+                          'apple.com'))
+                ElevatedButton(
+                    onPressed: () {}, child: const Text('Sign in with Apple')),
+              if (widget.authenticationAction == AuthenticationAction.signIn)
+                ElevatedButton(
+                    onPressed: () async {
+                      ref.read(isLoadingProvider.notifier).state = true;
+                      await signInAnonymously(context);
+                      ref.read(isLoadingProvider.notifier).state = false;
+                    },
+                    child: const Text('Continue without sign in')),
             ],
           ),
         ),
