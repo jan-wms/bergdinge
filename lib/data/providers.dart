@@ -46,7 +46,7 @@ final userDataStreamProvider = StreamProvider<Map<String, dynamic>>((ref) {
 });
 
 final profilePictureStreamProvider =
-    StreamProvider<ImageProvider<Object>>((ref) {
+StreamProvider<ImageProvider<Object>>((ref) {
   final streamController = StreamController<ImageProvider<Object>>.broadcast();
   final firestoreStream = FirebaseFirestore.instance
       .collection('users')
@@ -60,9 +60,9 @@ final profilePictureStreamProvider =
       newImage = Image.asset('assets/images/placeholder.jpg').image;
     } else {
       newImage = Image.memory((await FirebaseStorage.instance
-              .ref()
-              .child("users/${Auth().user!.uid}/profile.jpg")
-              .getData())!)
+          .ref()
+          .child("users/${Auth().user!.uid}/profile.jpg")
+          .getData())!)
           .image;
     }
     streamController.add(newImage);

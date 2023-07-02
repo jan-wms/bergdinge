@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/image_crop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../firebase/firebase_auth.dart';
@@ -37,6 +37,21 @@ class _SetupScreenState extends State<SetupScreen> {
     preLoadImage();
   }
 
+  Future<void> preLoadImage() async {
+    try {
+      Uint8List? storageImage = await FirebaseStorage.instance
+          .ref()
+          .child("users/${Auth().user!.uid}/profile.jpg")
+          .getData();
+
+      setState(() {
+        image = storageImage ?? Uint8List(0);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> preLoadName() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -48,41 +63,6 @@ class _SetupScreenState extends State<SetupScreen> {
 
     setState(() {
       _textFieldController.text = name;
-    });
-  }
-
-  Future<void> preLoadImage() async {
-    final photoURL = Auth().user!.photoURL;
-    late Uint8List? urlImage;
-    if (photoURL != null) {
-      var dio = Dio();
-
-      try {
-        Response response = await dio.get(
-          photoURL,
-          options: Options(
-            responseType: ResponseType.bytes,
-            followRedirects: false,
-          ),
-        );
-        urlImage = response.data;
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    Uint8List? storageImage;
-    try {
-      storageImage = await FirebaseStorage.instance
-          .ref()
-          .child("users/${Auth().user!.uid}/profile.jpg")
-          .getData();
-    } catch (e) {
-      print(e);
-    }
-
-    setState(() {
-      image = storageImage ?? urlImage ?? Uint8List(0);
     });
   }
 
@@ -160,7 +140,6 @@ class _SetupScreenState extends State<SetupScreen> {
     await ref.set({
       "name": _textFieldController.text,
       "isSetupCompleted": true,
-      "email": Auth().user?.email
     }, SetOptions(merge: true));
 
     Auth().user!.reload();

@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
+import 'package:equipment_app/pages/introduction/login_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:yaml/yaml.dart';
 
 import '../../firebase/firebase_auth.dart';
 
@@ -60,7 +62,7 @@ class SettingsPage extends ConsumerWidget {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(userData?['email'] ?? 'keine email'),
+                  Text(Auth().user!.email ?? 'keine email'),
                   IconButton(
                       onPressed: () async {
                         Clipboard.setData(ClipboardData(text: Auth().user!.uid))
@@ -86,6 +88,18 @@ class SettingsPage extends ConsumerWidget {
               const Text('Kontakt'),
               const Text('appentwicklung.jan@gmx.de'),
               const Text('bergdinge.de'),
+              FutureBuilder(
+                  future: rootBundle.loadString("pubspec.yaml"),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    String version = "0.0.0";
+
+                    if (snapshot.hasData) {
+                      Map yamlData = loadYaml(snapshot.data);
+                      version = yamlData["version"];
+                    }
+                    return Text('Version: $version');
+                  }),
               ElevatedButton(
                   onPressed: () {
                     showAboutDialog(
@@ -103,25 +117,24 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 const Text('Synchronisierung'),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       //TODO link accounts
+                      CustomDialog.showCustomModal(
+                              context,
+                              const LoginScreen(authenticationAction: AuthenticationAction.linkAccounts),
+                              Container(),
+                              IconButton(
+                                  onPressed: () => context.pop(),
+                                  icon: const Icon(Icons.close)))
+                          .then((value) =>
+                              CustomDialog.showCustomInformationDialog(
+                                  context: context,
+                                  description: 'acc verlinkt'));
                     },
                     child: const Text('Account verknüpfen')),
               ],
             ),
           ),
-        Card(
-          child: Column(
-            children: [
-              const Text('Spenden'),
-              ElevatedButton(
-                  onPressed: () {
-                    //TODO donation
-                  },
-                  child: const Text('Paypal')),
-            ],
-          ),
-        ),
         Card(
           child: Column(
             children: [
@@ -132,7 +145,7 @@ class SettingsPage extends ConsumerWidget {
                             description: 'Account wirklich löschen?')
                         .then((result) async {
                       if (result) {
-                        //TODO test delete account, reauthenticate
+                        //TODO test delete account, reauthenticate, delete collections
                         await FirebaseStorage.instance
                             .ref("users/${Auth().user!.uid}")
                             .listAll()

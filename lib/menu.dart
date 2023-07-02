@@ -15,8 +15,8 @@ class Menu extends ConsumerWidget {
       child: ListView(
         children: [
           CircleAvatar(
-                  radius: 48,
-                  backgroundImage: ref.watch(profilePictureStreamProvider).value,
+            radius: 48,
+            backgroundImage: ref.watch(profilePictureStreamProvider).value,
           ),
           Text('Hallo ${ref.watch(userDataStreamProvider).value?['name']}!'),
           ListTile(
@@ -35,10 +35,11 @@ class Menu extends ConsumerWidget {
             title: const Text('Einstellungen'),
             onTap: () => GoRouter.of(context).go('/settings'),
           ),
-          if(kIsWeb) ListTile(
-            title: const Text('Sign out'),
-            onTap: () => Auth().signOut(),
-          ),
+          if (kIsWeb)
+            ElevatedButton(
+              child: const Text('Sign out'),
+              onPressed: () => Auth().signOut(),
+            ),
         ],
       ),
     );

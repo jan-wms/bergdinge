@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../firebase/firebase_auth.dart';
 import 'login_screen.dart';
 
 class IntroductionPage extends StatefulWidget {
@@ -10,29 +11,33 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage> {
   final _pageController = PageController(initialPage: 0);
-  ScrollPhysics _scrollPhysics = const PageScrollPhysics();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: PageView(
-      physics: _scrollPhysics,
+      physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,
       children: [
         Container(
           color: Colors.black12,
-          child: const Center(
-            child: Text('Herzlich willkommen!'),
+          child: Stack(
+            children: [
+              const Center(
+                child: Text('Herzlich willkommen!'),
+              ),
+              Positioned(
+                bottom: 20,
+                  right: 20,
+                  child: ElevatedButton(
+                      onPressed: () => _pageController.nextPage(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut),
+                      child: const Text('Weiter')))
+            ],
           ),
         ),
-        LoginScreen(
-          onWaitingEnd: () => setState(() {
-            _scrollPhysics = const PageScrollPhysics();
-          }),
-          onWaitingStart: () => setState(() {
-            _scrollPhysics = const NeverScrollableScrollPhysics();
-          }),
-        ),
+        const LoginScreen(authenticationAction: AuthenticationAction.signIn,),
       ],
     ));
   }

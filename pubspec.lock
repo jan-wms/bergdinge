@@ -281,14 +281,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  dio:
-    dependency: "direct main"
-    description:
-      name: dio
-      sha256: a9d76e72985d7087eb7c5e7903224ae52b337131518d127c554b9405936752b8
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.2.1+1"
   fake_async:
     dependency: transitive
     description:
@@ -524,10 +516,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: f58a17ac07d783d000786a6c313fa4a0d2ee599a346d69b24fc48fb378d5d150
+      sha256: "258864d68b68f2b2846c10283b7afb95f26ff3307c410a2841a010d034b65439"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.16"
+    version: "6.1.17"
   google_sign_in_ios:
     dependency: transitive
     description:
@@ -764,10 +756,10 @@ packages:
     dependency: "direct main"
     description:
       name: permission_handler
-      sha256: "2fd3a61adf28e0f7774fa40c469a740eca42ef4f10c9b91559f66ff45f28876c"
+      sha256: "37fcc3c3182ac0bf8856f3e973e11c7bef5556d69f1a0d8fb908f51019c2912d"
       url: "https://pub.dev"
     source: hosted
-    version: "10.4.0"
+    version: "10.4.1"
   permission_handler_android:
     dependency: transitive
     description:
@@ -780,10 +772,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_apple
-      sha256: "9aab0712fab020b90f5a49ea504bb347a2eae21da16f94c74bc70d0031a46c96"
+      sha256: "0d1f8007b17573ff1fbeae0f04b6c8e83e1d2f6c4fe8e8226d4d2456aa8ecffe"
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.1"
+    version: "9.1.2"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -1086,7 +1078,7 @@ packages:
     source: hosted
     version: "6.3.0"
   yaml:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: yaml
       sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"

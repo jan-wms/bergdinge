@@ -8,6 +8,12 @@ final authProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.userChanges();
 });
 
+enum AuthenticationAction {
+  signIn,
+  linkAccounts,
+  reauthenticate,
+}
+
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -27,7 +33,7 @@ class Auth {
   }
 
   StreamSubscription gsiOnCurrentUserChanged({
-    required bool isLinkingAccounts,
+    required AuthenticationAction authenticationAction,
   }) {
     late final StreamSubscription<GoogleSignInAccount?> gsiUserChanged;
     final StreamController streamController = StreamController(onCancel: () {
@@ -45,9 +51,14 @@ class Auth {
             idToken: gAuth.idToken,
           );
 
-          if (isLinkingAccounts) {
+          if (authenticationAction == AuthenticationAction.linkAccounts) {
+            print('link acc');
             await _firebaseAuth.currentUser?.linkWithCredential(credential);
+          } else if (authenticationAction == AuthenticationAction.reauthenticate) {
+            print('reauthenticate');
+            await _firebaseAuth.currentUser?.reauthenticateWithCredential(credential);
           } else {
+            print('new acc');
             await _firebaseAuth.signInWithCredential(credential);
           }
         } on FirebaseAuthException catch (error) {

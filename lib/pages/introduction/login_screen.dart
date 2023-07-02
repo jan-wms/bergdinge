@@ -5,24 +5,25 @@ import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'sign_in_button/sign_in_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  final VoidCallback onWaitingStart;
-  final VoidCallback onWaitingEnd;
+class LoginScreen extends ConsumerStatefulWidget {
+  final AuthenticationAction authenticationAction;
 
   const LoginScreen(
-      {Key? key, required this.onWaitingStart, required this.onWaitingEnd})
+      {Key? key, required this.authenticationAction })
       : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _auth = Auth();
   late final StreamSubscription gsiOnUserChanged;
-  bool isLoading = false;
+
+  final isLoadingProvider = StateProvider.autoDispose<bool>((ref) => false);
 
   Future<void> handleError(
       FirebaseAuthException exception, BuildContext context) async {
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(isLinkingAccounts: false);
+    gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(authenticationAction: widget.authenticationAction);
     gsiOnUserChanged.onError((e) {
       handleError(e, context);
     });
@@ -82,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Log in'),
+              Text(widget.authenticationAction == AuthenticationAction.linkAccounts ? 'Mit account verknüpfen' : 'Log in'),
               if (!getIsMacOS())
                 buildSignInButton(
                   onPressed: () => _auth.signInWithGoogle(),
@@ -90,23 +91,18 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                   onPressed: () {},
                   child: const Text('Sign in with Apple')),
+              if(widget.authenticationAction == AuthenticationAction.signIn)
               ElevatedButton(
                   onPressed: () async {
-                    widget.onWaitingStart();
-                    setState(() {
-                      isLoading = true;
-                    });
+                    ref.read(isLoadingProvider.notifier).state = true;
                     await signInAnonymously(context);
-                    setState(() {
-                      isLoading = false;
-                    });
-                    widget.onWaitingEnd();
+                    ref.read(isLoadingProvider.notifier).state = false;
                   },
                   child: const Text('Continue without sign in')),
             ],
           ),
         ),
-        if (isLoading)
+        if (ref.watch(isLoadingProvider))
           Container(
             color: Colors.black12,
             child: const Center(
