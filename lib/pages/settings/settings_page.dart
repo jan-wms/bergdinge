@@ -45,21 +45,21 @@ class SettingsPage extends ConsumerWidget {
               if (userData?['profilePicture'] != null)
                 ElevatedButton(
                     onPressed: () async {
-                      await FirebaseStorage.instance
-                          .ref("users/${Auth().user!.uid}")
-                          .child('profile.jpg')
-                          .delete()
-                          .then(
-                            (value) => FirebaseFirestore.instance
+                      CustomDialog.showCustomConfirmationDialog(context: context, description: 'Profilbild löschen?').then((value) {
+                        if(value) {
+                          FirebaseStorage.instance
+                              .ref("users/${Auth().user!.uid}")
+                              .child('profile.jpg')
+                              .delete()
+                              .then(
+                                (value) => FirebaseFirestore.instance
                                 .collection("users")
                                 .doc(Auth().user?.uid)
                                 .update({
                               "profilePicture": FieldValue.delete(),
-                            }).then((value) =>
-                                    CustomDialog.showCustomInformationDialog(
-                                        context: context,
-                                        description: 'Profilbild gelöscht.')),
-                          );
+                            }));
+                        }
+                      });
                     },
                     child: const Text('delete image')),
               Row(

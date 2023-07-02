@@ -38,7 +38,6 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   Future<void> preLoadImage() async {
-    try {
       Uint8List? storageImage = await FirebaseStorage.instance
           .ref()
           .child("users/${Auth().user!.uid}/profile.jpg")
@@ -47,9 +46,6 @@ class _SetupScreenState extends State<SetupScreen> {
       setState(() {
         image = storageImage ?? Uint8List(0);
       });
-    } catch (e) {
-      print(e);
-    }
   }
 
   Future<void> preLoadName() async {
