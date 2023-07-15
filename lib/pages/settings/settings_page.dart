@@ -45,19 +45,21 @@ class SettingsPage extends ConsumerWidget {
               if (userData?['profilePicture'] != null)
                 ElevatedButton(
                     onPressed: () async {
-                      CustomDialog.showCustomConfirmationDialog(context: context, description: 'Profilbild löschen?').then((value) {
-                        if(value) {
+                      CustomDialog.showCustomConfirmationDialog(
+                              context: context,
+                              description: 'Profilbild löschen?')
+                          .then((value) {
+                        if (value) {
                           FirebaseStorage.instance
                               .ref("users/${Auth().user!.uid}")
                               .child('profile.jpg')
                               .delete()
-                              .then(
-                                (value) => FirebaseFirestore.instance
-                                .collection("users")
-                                .doc(Auth().user?.uid)
-                                .update({
-                              "profilePicture": FieldValue.delete(),
-                            }));
+                              .then((value) => FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc(Auth().user?.uid)
+                                      .update({
+                                    "profilePicture": FieldValue.delete(),
+                                  }));
                         }
                       });
                     },
@@ -85,35 +87,34 @@ class SettingsPage extends ConsumerWidget {
             ],
           ),
         ),
-        Card(
-          child: Column(
-            children: [
-              const Text('Kontakt'),
-              const Text('appentwicklung.jan@gmx.de'),
-              const Text('bergdinge.de'),
-              FutureBuilder(
-                  future: rootBundle.loadString("pubspec.yaml"),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    String version = "0.0.0";
+        FutureBuilder(
+            future: rootBundle.loadString("pubspec.yaml"),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              String version = "0.0.0";
 
-                    if (snapshot.hasData) {
-                      Map yamlData = loadYaml(snapshot.data);
-                      version = yamlData["version"];
-                    }
-                    return Text('Version: $version');
-                  }),
-              ElevatedButton(
-                  onPressed: () {
-                    showAboutDialog(
-                        context: context,
-                        applicationName: 'Bergdinge',
-                        applicationVersion: 'Version 1.0.0');
-                  },
-                  child: const Text('Über diese App')),
-            ],
-          ),
-        ),
+              if (snapshot.hasData) {
+                Map yamlData = loadYaml(snapshot.data);
+                version = yamlData["version"];
+              }
+              return Card(
+                child: Column(
+                  children: [
+                    const Text('Kontakt'),
+                    const Text('appentwicklung.jan@gmx.de'),
+                    const Text('bergdinge.de'),
+                    Text('Version: $version'),
+                    ElevatedButton(
+                        onPressed: () {
+                          showAboutDialog(
+                              context: context,
+                              applicationName: 'Bergdinge',
+                              applicationVersion: 'Version $version');
+                        },
+                        child: const Text('Über diese App')),
+                  ],
+                ),
+              );
+            }),
         if (firebaseUser!.isAnonymous)
           Card(
             child: Column(
@@ -141,6 +142,18 @@ class SettingsPage extends ConsumerWidget {
               ],
             ),
           ),
+        if (!firebaseUser.isAnonymous)
+          const Card(
+            child: Column(
+              children: [
+                Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: Colors.green,
+                ),
+                Text('Synchronisierung aktiviert'),
+              ],
+            ),
+          ),
         Card(
           child: Column(
             children: [
@@ -155,11 +168,11 @@ class SettingsPage extends ConsumerWidget {
                                       context: context,
                                       description: 'Account wirklich löschen?')
                                   .then((result) async {
-                                CustomDialog.showCustomDialog(
-                                    context: context,
-                                    child: const CircularProgressIndicator
-                                        .adaptive());
                                 if (result) {
+                                  CustomDialog.showCustomDialog(
+                                      context: context,
+                                      child: const CircularProgressIndicator
+                                          .adaptive());
                                   ///FirebaseStorage (e.g. profile picture)
                                   await FirebaseStorage.instance
                                       .ref("users/${Auth().user!.uid}")
@@ -179,12 +192,13 @@ class SettingsPage extends ConsumerWidget {
                                       .doc(Auth().user?.uid);
 
                                   //user collections ==> timeout??
-                                  List<CollectionReference> collectionsToDelete = [
-                                      userDoc.collection('packing_plan'),
-                                      userDoc.collection('equipment'),
+                                  List<CollectionReference>
+                                      collectionsToDelete = [
+                                    userDoc.collection('packing_plan'),
+                                    userDoc.collection('equipment'),
                                   ];
 
-                                  for(var collection in collectionsToDelete) {
+                                  for (var collection in collectionsToDelete) {
                                     collection.get().then((snapshot) {
                                       for (var doc in snapshot.docs) {
                                         doc.reference.delete();
@@ -194,6 +208,7 @@ class SettingsPage extends ConsumerWidget {
 
                                   //user document
                                   await userDoc.delete();
+
                                   ///FirebaseAuth
                                   await Auth().user?.delete();
                                 }
@@ -212,7 +227,7 @@ class SettingsPage extends ConsumerWidget {
                     onPressed: () {
                       Auth().signOut();
                     },
-                    child: const Text('sign out')),
+                    child: const Text('Abmelden')),
             ],
           ),
         ),

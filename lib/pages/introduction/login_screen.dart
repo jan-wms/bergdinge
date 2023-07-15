@@ -97,22 +97,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           AuthenticationAction.reauthenticate
                       ? 'Bitte melden Sie sich erneut an.'
                       : 'Anmelden'),
-              if (!getIsMacOS() &&
+
+
+
+              /*if (!getIsMacOS() &&
                   (widget.authenticationAction !=
                           AuthenticationAction.reauthenticate ||
                       (widget.authenticationAction ==
                               AuthenticationAction.reauthenticate &&
                           Auth().user?.providerData.single.providerId ==
-                              'google.com')))
-                buildSignInButton(
-                  onPressed: () => _auth.signInWithGoogle(),
-                ),
-              if (widget.authenticationAction !=
+                              'google.com')))*/
+              buildSignInButton(
+                onPressed: () => _auth.signInWithGoogle(),
+              ),
+              /*if (widget.authenticationAction !=
                       AuthenticationAction.reauthenticate ||
                   (widget.authenticationAction ==
                           AuthenticationAction.reauthenticate &&
-                      Auth().user?.providerData.single.providerId ==
-                          'apple.com'))
+                      Auth().user!.providerData.indexWhere(
+                              (element) => element.providerId == 'apple.com') >
+                          -1))*/
                 ElevatedButton(
                     onPressed: () {}, child: const Text('Sign in with Apple')),
               if (widget.authenticationAction == AuthenticationAction.signIn)
