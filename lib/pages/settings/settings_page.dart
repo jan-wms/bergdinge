@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/pages/introduction/login_screen.dart';
+import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,53 @@ import '../../firebase/firebase_auth.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
+
+  void deleteAccount(BuildContext context) {
+    CustomDialog.showCustomConfirmationDialog(
+            context: context, description: 'Account wirklich löschen?')
+        .then((result) async {
+      if (result) {
+        CustomDialog.showCustomDialog(
+            context: context,
+            child: const CircularProgressIndicator.adaptive());
+
+        ///FirebaseStorage (e.g. profile picture)
+        await FirebaseStorage.instance
+            .ref("users/${Auth().user!.uid}")
+            .listAll()
+            .then((value) {
+          for (var element in value.items) {
+            FirebaseStorage.instance.ref(element.fullPath).delete();
+          }
+        });
+
+        ///Firestore
+        DocumentReference userDoc = FirebaseFirestore.instance
+            .collection('users')
+            .doc(Auth().user?.uid);
+
+        //user collections ==> timeout??
+        List<CollectionReference> collectionsToDelete = [
+          userDoc.collection('packing_plan'),
+          userDoc.collection('equipment'),
+        ];
+
+        for (var collection in collectionsToDelete) {
+          collection.get().then((snapshot) {
+            for (var doc in snapshot.docs) {
+              doc.reference.delete();
+            }
+          });
+        }
+
+        //user document
+        await userDoc.delete();
+
+        ///FirebaseAuth
+        await Auth().user?.delete();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,11 +77,16 @@ class SettingsPage extends ConsumerWidget {
                 radius: 48,
                 backgroundImage: ref.watch(profilePictureStreamProvider).value,
               ),
-              Text('Hallo, ${userData?['name']}!'),
+              Text('Hallo ${userData?['name']}!'),
               ElevatedButton(
                   onPressed: () {
-                    context.pushNamed("setup",
-                        queryParameters: {'editValue': 'name'});
+                    CustomDialog.showCustomModal(
+                        context,
+                        const SetupScreen(editValue: 'name'),
+                        Container(),
+                        IconButton(
+                            onPressed: () => context.pop(),
+                            icon: const Icon(Icons.close)));
                   },
                   child: const Text('edit name')),
               ElevatedButton(
@@ -47,7 +100,8 @@ class SettingsPage extends ConsumerWidget {
                     onPressed: () async {
                       CustomDialog.showCustomConfirmationDialog(
                               context: context,
-                              description: 'Profilbild löschen?')
+                              description:
+                                  'Möchtest du dein Profilbild wirklich löschen?')
                           .then((value) {
                         if (value) {
                           FirebaseStorage.instance
@@ -159,67 +213,23 @@ class SettingsPage extends ConsumerWidget {
             children: [
               ElevatedButton(
                   onPressed: () async {
-                    await CustomDialog.showCustomModal(
-                        context,
-                        LoginScreen(
-                            onComplete: () {
-                              context.pop();
-                              CustomDialog.showCustomConfirmationDialog(
-                                      context: context,
-                                      description: 'Account wirklich löschen?')
-                                  .then((result) async {
-                                if (result) {
-                                  CustomDialog.showCustomDialog(
-                                      context: context,
-                                      child: const CircularProgressIndicator
-                                          .adaptive());
-                                  ///FirebaseStorage (e.g. profile picture)
-                                  await FirebaseStorage.instance
-                                      .ref("users/${Auth().user!.uid}")
-                                      .listAll()
-                                      .then((value) {
-                                    for (var element in value.items) {
-                                      FirebaseStorage.instance
-                                          .ref(element.fullPath)
-                                          .delete();
-                                    }
-                                  });
-
-                                  ///Firestore
-                                  DocumentReference userDoc = FirebaseFirestore
-                                      .instance
-                                      .collection('users')
-                                      .doc(Auth().user?.uid);
-
-                                  //user collections ==> timeout??
-                                  List<CollectionReference>
-                                      collectionsToDelete = [
-                                    userDoc.collection('packing_plan'),
-                                    userDoc.collection('equipment'),
-                                  ];
-
-                                  for (var collection in collectionsToDelete) {
-                                    collection.get().then((snapshot) {
-                                      for (var doc in snapshot.docs) {
-                                        doc.reference.delete();
-                                      }
-                                    });
-                                  }
-
-                                  //user document
-                                  await userDoc.delete();
-
-                                  ///FirebaseAuth
-                                  await Auth().user?.delete();
-                                }
-                              });
-                            },
-                            authenticationAction:
-                                AuthenticationAction.reauthenticate),
-                        Container(),
-                        IconButton(
-                            onPressed: () => context.pop(),
-                            icon: const Icon(Icons.close)));
+                    if (Auth().user!.isAnonymous) {
+                      deleteAccount(context);
+                    } else {
+                      await CustomDialog.showCustomModal(
+                          context,
+                          LoginScreen(
+                              onComplete: () {
+                                context.pop();
+                                deleteAccount(context);
+                              },
+                              authenticationAction:
+                                  AuthenticationAction.reauthenticate),
+                          Container(),
+                          IconButton(
+                              onPressed: () => context.pop(),
+                              icon: const Icon(Icons.close)));
+                    }
                   },
                   child: const Text('Account löschen')),
               if (!firebaseUser.isAnonymous)

@@ -31,16 +31,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       FirebaseAuthException exception, BuildContext context) async {
     String message = 'Ein Fehler ist aufgetreten.\n[${exception.message}]';
 
-    switch (exception.code) {
-      case 'internal-error':
-        message =
-            'Ein Fehler ist aufgetreten. Bitte überprüfe deine Internetverbindung.';
-        break;
-      case 'user-disabled':
-        message =
-            'Dieser Account wurde deaktiviert. Bitte wende dich an den Support';
-        break;
+    if (exception.code == 'internal-error') {
+      message =
+          'Ein Fehler ist aufgetreten. Bitte überprüfe deine Internetverbindung.';
     }
+    if (exception.code == 'user-disabled') {
+      message =
+          'Dieser Account wurde deaktiviert. Bitte wende dich an den Support';
+    }
+    if (exception.message?.contains('user-mismatch') ?? false) {
+      message = 'Bitte melde dich mit deinem Account email@mail.de erneut an.';
+    }
+
     ref.read(errorMessageProvider.notifier).state = message;
   }
 
@@ -98,8 +100,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ? 'Bitte melden Sie sich erneut an.'
                       : 'Anmelden'),
 
-
-
               /*if (!getIsMacOS() &&
                   (widget.authenticationAction !=
                           AuthenticationAction.reauthenticate ||
@@ -117,8 +117,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Auth().user!.providerData.indexWhere(
                               (element) => element.providerId == 'apple.com') >
                           -1))*/
-                ElevatedButton(
-                    onPressed: () {}, child: const Text('Sign in with Apple')),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text('Sign in with Apple')),
               if (widget.authenticationAction == AuthenticationAction.signIn)
                 ElevatedButton(
                     onPressed: () async {
