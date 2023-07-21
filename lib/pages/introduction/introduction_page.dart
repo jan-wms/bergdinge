@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../firebase/firebase_auth.dart';
-import 'login_screen.dart';
+import '../login/login_screen.dart';
 
 class IntroductionPage extends StatefulWidget {
   const IntroductionPage({Key? key}) : super(key: key);

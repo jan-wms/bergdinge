@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/pages/introduction/login_screen.dart';
-import 'package:equipment_app/pages/introduction/setup_screen.dart';
+import 'package:equipment_app/pages/login/login_screen.dart';
+import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +17,7 @@ class SettingsPage extends ConsumerWidget {
 
   void deleteAccount(BuildContext context) {
     CustomDialog.showCustomConfirmationDialog(
-            context: context, description: 'Account wirklich löschen?')
+        context: context, description: 'Account wirklich löschen?')
         .then((result) async {
       if (result) {
         CustomDialog.showCustomDialog(
@@ -64,8 +64,12 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataStreamProvider).value;
-    final firebaseUser = ref.watch(userChangesProvider).value;
+    final userData = ref
+        .watch(userDataStreamProvider)
+        .value;
+    final firebaseUser = ref
+        .watch(userChangesProvider)
+        .value;
 
     return Column(
       children: [
@@ -75,14 +79,19 @@ class SettingsPage extends ConsumerWidget {
             children: [
               CircleAvatar(
                 radius: 48,
-                backgroundImage: ref.watch(profilePictureStreamProvider).value,
+                backgroundImage: ref
+                    .watch(profilePictureStreamProvider)
+                    .value,
               ),
               Text('Hallo ${userData?['name']}!'),
               ElevatedButton(
                   onPressed: () {
                     CustomDialog.showCustomModal(
                         context,
-                        const SetupScreen(editValue: 'name'),
+                        SetName(
+                          buttonText: ButtonText.doneText,
+                          onComplete: () {},
+                        ),
                         Container(),
                         IconButton(
                             onPressed: () => context.pop(),
@@ -91,29 +100,29 @@ class SettingsPage extends ConsumerWidget {
                   child: const Text('edit name')),
               ElevatedButton(
                   onPressed: () {
-                    context.pushNamed("setup",
-                        queryParameters: {'editValue': 'image'});
+                    context.pushNamed("setup");
                   },
                   child: const Text('edit image')),
               if (userData?['profilePicture'] != null)
                 ElevatedButton(
                     onPressed: () async {
                       CustomDialog.showCustomConfirmationDialog(
-                              context: context,
-                              description:
-                                  'Möchtest du dein Profilbild wirklich löschen?')
+                          context: context,
+                          description:
+                          'Möchtest du dein Profilbild wirklich löschen?')
                           .then((value) {
                         if (value) {
                           FirebaseStorage.instance
                               .ref("users/${Auth().user!.uid}")
                               .child('profile.jpg')
                               .delete()
-                              .then((value) => FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(Auth().user?.uid)
-                                      .update({
-                                    "profilePicture": FieldValue.delete(),
-                                  }));
+                              .then((value) =>
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(Auth().user?.uid)
+                                  .update({
+                                "profilePicture": FieldValue.delete(),
+                              }));
                         }
                       });
                     },
@@ -154,9 +163,12 @@ class SettingsPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     const Text('Kontakt'),
-                    const Text('appentwicklung.jan@gmx.de'),
-                    const Text('bergdinge.de'),
-                    Text('Version: $version'),
+                    TextButton(
+                        onPressed: () {},
+                        child: const Text('appentwicklung.jan@gmx.de')),
+                    TextButton(
+                        onPressed: () {},
+                        child: const Text('bergdinge.de')),
                     ElevatedButton(
                         onPressed: () {
                           showAboutDialog(
@@ -186,7 +198,7 @@ class SettingsPage extends ConsumerWidget {
                                     description: 'acc verlinkt');
                               },
                               authenticationAction:
-                                  AuthenticationAction.linkAccounts),
+                              AuthenticationAction.linkAccounts),
                           Container(),
                           IconButton(
                               onPressed: () => context.pop(),
@@ -224,7 +236,7 @@ class SettingsPage extends ConsumerWidget {
                                 deleteAccount(context);
                               },
                               authenticationAction:
-                                  AuthenticationAction.reauthenticate),
+                              AuthenticationAction.reauthenticate),
                           Container(),
                           IconButton(
                               onPressed: () => context.pop(),

@@ -1,242 +1,75 @@
-import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
-import 'package:equipment_app/image_crop.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
+import 'package:equipment_app/pages/setup/set_image.dart';
+import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../firebase/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class SetupScreen extends StatefulWidget {
-  final String? editValue;
 
-  const SetupScreen({Key? key, this.editValue}) : super(key: key);
-
-  @override
-  State<SetupScreen> createState() => _SetupScreenState();
-}
-
-class _SetupScreenState extends State<SetupScreen> {
-  late final bool isMobile = kIsWeb || Platform.isMacOS ? false : true;
-  final _pageController = PageController(initialPage: 0);
-
-  final _formKey = GlobalKey<FormState>();
-  final _textFieldController = TextEditingController();
-
-  final ImagePicker picker = ImagePicker();
-  Uint8List? image;
+class SetupScreen extends ConsumerWidget {
+  const SetupScreen({Key? key}) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    preLoadName();
-    preLoadImage();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageController = PageController(initialPage: 0);
 
-  Future<void> preLoadImage() async {
-      Uint8List? storageImage = await FirebaseStorage.instance
-          .ref()
-          .child("users/${Auth().user!.uid}/profile.jpg")
-          .getData();
+    Future<void> uploadToFirebase() async {
+      String name = ref.read(newNameProvider);
+      Uint8List? image = ref.read(newImageProvider);
 
-      setState(() {
-        image = storageImage ?? Uint8List(0);
-      });
-  }
+      ref.invalidate(newNameProvider);
+      ref.invalidate(newImageProvider);
 
-  Future<void> preLoadName() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(Auth().user!.uid)
-        .get();
-    String name = (snapshot.data() as Map<String, dynamic>)['name'] ??
-        Auth().user!.displayName ??
-        '';
-
-    setState(() {
-      _textFieldController.text = name;
-    });
-  }
-
-  void pickImage({required ImageSource? imageSource}) async {
-    late final Uint8List? selectedImg;
-    if (imageSource == null) {
-      selectedImg = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'png', 'jpeg'],
-      ).then((value) => value?.files.single.bytes);
-    } else {
-      if (await checkPermissions(imageSource) == false) return;
-      selectedImg =
-          await picker.pickImage(source: imageSource).then((value) async {
-        return await value?.readAsBytes();
-      });
-    }
-
-    if (selectedImg != null && context.mounted) {
-      Uint8List? cropImg = await Navigator.of(context).push<Uint8List?>(
-        MaterialPageRoute<Uint8List?>(
-            builder: (context) => ImageCrop(image: selectedImg!)),
-      );
-      setState(() {
-        if (cropImg != null) image = cropImg;
-      });
-    }
-  }
-
-  Future<bool> checkPermissions(ImageSource imageSource) async {
-    if (imageSource == ImageSource.gallery && Platform.isIOS) {
-      bool photosPermission = await Permission.photos.request().isGranted;
-      if (!photosPermission) {
-        if (context.mounted) {
-          CustomDialog.showRequestPermissionDialog(context, Permission.photos);
-        }
-        return false;
+      if (image != null) {
+        final storageRef = FirebaseStorage.instance.ref();
+        final imageRef =
+        storageRef.child("users/${Auth().user!.uid}/profile.jpg");
+        await imageRef
+            .putData(
+            image,
+            SettableMetadata(
+              contentType: "image/jpg",
+            ))
+            .then((p0) => FirebaseFirestore.instance
+            .collection("users")
+            .doc(Auth().user?.uid)
+            .set({
+          "profilePicture": DateTime.now().toIso8601String(),
+        }));
       }
-    } else if (imageSource == ImageSource.camera) {
-      bool photosPermission = await Permission.camera.request().isGranted;
-      if (!photosPermission) {
-        if (context.mounted) {
-          CustomDialog.showRequestPermissionDialog(context, Permission.camera);
-        }
-        return false;
-      }
-    }
-    return true;
-  }
 
-  Future<void> uploadToFirebase({required bool hasImage}) async {
-    await _pageController.nextPage(
-        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-
-    if (hasImage) {
-      final storageRef = FirebaseStorage.instance.ref();
-      final imageRef =
-          storageRef.child("users/${Auth().user!.uid}/profile.jpg");
-      await imageRef
-          .putData(
-              image!,
-              SettableMetadata(
-                contentType: "image/jpg",
-              ))
-          .then((p0) => FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(Auth().user?.uid)
-                  .set({
-                "profilePicture": DateTime.now().toIso8601String(),
-              }));
+      DocumentReference docRef =
+      FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid);
+      await docRef.set({
+        "name": name,
+        "isSetupCompleted": true,
+      }, SetOptions(merge: true)).then((value) => context.go('/'));
     }
 
-    DocumentReference ref =
-        FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid);
-    await ref.set({
-      "name": _textFieldController.text,
-      "isSetupCompleted": true,
-    }, SetOptions(merge: true)).then((value) => context.go('/'));
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: PageView(
           physics: const NeverScrollableScrollPhysics(),
-          controller: _pageController,
+          controller: pageController,
           children: [
-            if (widget.editValue == null || widget.editValue == 'name')
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Wie heißt du?'),
-                    Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Bitte gib deinen Namen ein.';
-                          }
-                          return null;
-                        },
-                        controller: _textFieldController,
-                      ),
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            widget.editValue == 'name'
-                                ? uploadToFirebase(hasImage: false)
-                                : _pageController.nextPage(
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut);
-                          }
-                        },
-                        child: Text(
-                            widget.editValue == 'name' ? 'Fertig' : 'Weiter'))
-                  ],
-                ),
-              ),
-            if (widget.editValue == null || widget.editValue == 'image')
-              Center(
-                child: Column(
-                  children: [
-                    Text('hallo ${_textFieldController.text}'),
-                    image == null
-                        ? const CircularProgressIndicator.adaptive()
-                        : CircleAvatar(
-                            radius: 48,
-                            backgroundImage: (image!.isNotEmpty)
-                                ? Image.memory(image!).image
-                                : Image.asset('assets/images/placeholder.jpg')
-                                    .image,
-                          ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                            onPressed: () => pickImage(
-                                imageSource:
-                                    isMobile ? ImageSource.gallery : null),
-                            child: const Text('image_picker')),
-                        if (isMobile)
-                          IconButton(
-                              onPressed: () =>
-                                  pickImage(imageSource: ImageSource.camera),
-                              icon: const Icon(Icons.camera_alt_rounded)),
-                      ],
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          if (image != null && image!.isNotEmpty) {
-                            uploadToFirebase(hasImage: true);
-                          } else {
-                            CustomDialog.showCustomInformationDialog(
-                                context: context,
-                                description: 'Bitte wähle ein Bild');
-                          }
-                        },
-                        child: const Text('Fertig')),
-                    if (widget.editValue == null)
-                      TextButton(
-                          onPressed: () => uploadToFirebase(hasImage: false),
-                          child: const Text('Überspringen')),
-                  ],
-                ),
-              ),
-            Center(
+              SetName(buttonText: ButtonText.continueText, onComplete: () {
+                pageController.nextPage(
+                    duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+              }),
+              SetImage(onComplete: () {
+                pageController.nextPage(
+                    duration: const Duration(milliseconds: 300), curve: Curves.easeInOut).then((value) => uploadToFirebase());
+              }),
+            const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircularProgressIndicator.adaptive(),
-                  Text(widget.editValue == null
-                      ? 'App wird eingerichtet...'
-                      : 'Daten aktualisieren...'),
+                  CircularProgressIndicator.adaptive(),
+                  Text('App wird eingerichtet...'),
                 ],
               ),
             ),

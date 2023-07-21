@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'sign_in_button/sign_in_button.dart';
+import './sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
