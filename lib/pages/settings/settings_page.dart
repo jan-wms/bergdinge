@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
+import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
-import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -86,36 +86,9 @@ class SettingsPage extends ConsumerWidget {
               Text('Hallo ${userData?['name']}!'),
               ElevatedButton(
                   onPressed: () {
-                    final pageController = PageController(initialPage: 0);
                     CustomDialog.showCustomModal(
                         context,
-                      PageView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: pageController,
-                        children: [
-                          SetName(
-                            buttonText: ButtonText.doneText,
-                            onComplete: (newName) {
-                              pageController.nextPage(
-                                  duration: const Duration(milliseconds: 300), curve: Curves.easeInOut).then((value) {
-                                  DocumentReference docRef =
-                                  FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid);
-                                  docRef.set({
-                                    "name": newName,
-                                  }, SetOptions(merge: true)).then((value) => context.pop());
-                              });
-                            },
-                          ),
-                          const Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CircularProgressIndicator.adaptive(),
-                                Text('App wird eingerichtet...'),
-                              ],
-                            ),
-                          ),
-                        ]),
+                      SetupScreen(editValue: EditValue.name),
                     );
                   },
                   child: const Text('edit name')),

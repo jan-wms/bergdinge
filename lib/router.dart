@@ -47,7 +47,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         path: '/setup',
         name: 'setup',
-        builder: (context, state) => SetupScreen(),
+        builder: (context, state) => SetupScreen(editValue: EditValue.setUp),
       ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
