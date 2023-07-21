@@ -13,11 +13,6 @@ Future<String> selectCategory(BuildContext context, String selected) async {
   await CustomDialog.showCustomModal(
     context,
     selectCategory,
-    null,
-    TextButton(
-      child: const Text('Close'),
-      onPressed: () => Navigator.of(context).pop(),
-    ),
   );
   return k.currentState!.selected;
 }
@@ -65,6 +60,10 @@ class _SelectCategoryState extends State<SelectCategory> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text('Kategorie'),
+        TextButton(
+          child: const Text('Close'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         TextField(
           controller: _textEditingController,
           decoration: InputDecoration(

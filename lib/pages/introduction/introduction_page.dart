@@ -27,7 +27,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 child: Text('Herzlich willkommen!'),
               ),
               Positioned(
-                bottom: 20,
+                  bottom: 20,
                   right: 20,
                   child: ElevatedButton(
                       onPressed: () => _pageController.nextPage(
@@ -37,7 +37,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
             ],
           ),
         ),
-        LoginScreen(authenticationAction: AuthenticationAction.signIn, onComplete: () {},),
+        LoginScreen(
+          authenticationAction: AuthenticationAction.signIn,
+          onComplete: () {},
+        ),
       ],
     ));
   }

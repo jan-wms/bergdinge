@@ -11,7 +11,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 
 class SetupScreen extends ConsumerWidget {
-  const SetupScreen({Key? key}) : super(key: key);
+  SetupScreen({Key? key}) : super(key: key);
+  final newNameProvider = StateProvider.autoDispose<String>((ref) => '');
+  final newImageProvider = StateProvider.autoDispose<Uint8List?>((ref) => null);
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,9 +23,6 @@ class SetupScreen extends ConsumerWidget {
     Future<void> uploadToFirebase() async {
       String name = ref.read(newNameProvider);
       Uint8List? image = ref.read(newImageProvider);
-
-      ref.invalidate(newNameProvider);
-      ref.invalidate(newImageProvider);
 
       if (image != null) {
         final storageRef = FirebaseStorage.instance.ref();
@@ -56,11 +56,13 @@ class SetupScreen extends ConsumerWidget {
           physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
           children: [
-              SetName(buttonText: ButtonText.continueText, onComplete: () {
+              SetName(buttonText: ButtonText.continueText, onComplete: (value) {
+                ref.read(newNameProvider.notifier).state = value;
                 pageController.nextPage(
                     duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
               }),
-              SetImage(onComplete: () {
+              SetImage(onComplete: (value) {
+                ref.read(newImageProvider.notifier).state = value;
                 pageController.nextPage(
                     duration: const Duration(milliseconds: 300), curve: Curves.easeInOut).then((value) => uploadToFirebase());
               }),

@@ -6,14 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import './sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
   final VoidCallback onComplete;
 
-  const LoginScreen(
-      {Key? key, required this.authenticationAction, required this.onComplete})
+  const LoginScreen({Key? key, required this.authenticationAction, required this.onComplete})
       : super(key: key);
 
   @override
@@ -133,6 +133,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   color: CupertinoColors.destructiveRed,
                 ),
               ),
+              if(context.canPop())
+                TextButton(onPressed: () => context.pop(), child: const Text('Abbrechen')),
             ],
           ),
         ),

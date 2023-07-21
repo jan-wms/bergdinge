@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 enum ButtonText {
@@ -9,11 +8,9 @@ enum ButtonText {
   doneText
 }
 
-late final Provider<String> newNameProvider;
-
 class SetName extends StatefulWidget {
   final ButtonText buttonText;
-  final VoidCallback onComplete;
+  final ValueSetter<String> onComplete;
   const SetName({super.key, required this.buttonText, required this.onComplete});
 
   @override
@@ -45,6 +42,12 @@ class _SetNameState extends State<SetName> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _textEditingController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
@@ -68,13 +71,11 @@ class _SetNameState extends State<SetName> {
           ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  //TODO handle data
-                  newNameProvider = Provider<String>((ref) => _textEditingController.text);
-
-                  widget.onComplete();
+                  widget.onComplete(_textEditingController.text);
                 }
               },
               child: Text(widget.buttonText == ButtonText.doneText ? 'Fertig' : 'Weiter')),
+          if(context.canPop())
           TextButton(onPressed: () => context.pop(), child: const Text('Abbrechen')),
         ],
       ),

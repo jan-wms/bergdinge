@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -12,10 +11,9 @@ import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 import '../../image_crop.dart';
 
-late final Provider<Uint8List?> newImageProvider;
 
 class SetImage extends StatefulWidget {
-  final VoidCallback onComplete;
+  final ValueSetter<Uint8List?> onComplete;
   const SetImage({super.key, required this.onComplete});
 
   @override

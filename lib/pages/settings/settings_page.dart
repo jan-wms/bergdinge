@@ -86,16 +86,37 @@ class SettingsPage extends ConsumerWidget {
               Text('Hallo ${userData?['name']}!'),
               ElevatedButton(
                   onPressed: () {
+                    final pageController = PageController(initialPage: 0);
                     CustomDialog.showCustomModal(
                         context,
-                        SetName(
-                          buttonText: ButtonText.doneText,
-                          onComplete: () {},
-                        ),
-                        Container(),
-                        IconButton(
-                            onPressed: () => context.pop(),
-                            icon: const Icon(Icons.close)));
+                      PageView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: pageController,
+                        children: [
+                          SetName(
+                            buttonText: ButtonText.doneText,
+                            onComplete: (newName) {
+                              pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300), curve: Curves.easeInOut).then((value) {
+                                  DocumentReference docRef =
+                                  FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid);
+                                  docRef.set({
+                                    "name": newName,
+                                  }, SetOptions(merge: true)).then((value) => context.pop());
+                              });
+                            },
+                          ),
+                          const Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator.adaptive(),
+                                Text('App wird eingerichtet...'),
+                              ],
+                            ),
+                          ),
+                        ]),
+                    );
                   },
                   child: const Text('edit name')),
               ElevatedButton(
@@ -199,10 +220,7 @@ class SettingsPage extends ConsumerWidget {
                               },
                               authenticationAction:
                               AuthenticationAction.linkAccounts),
-                          Container(),
-                          IconButton(
-                              onPressed: () => context.pop(),
-                              icon: const Icon(Icons.close)));
+                          );
                     },
                     child: const Text('Account verknüpfen')),
               ],
@@ -237,10 +255,7 @@ class SettingsPage extends ConsumerWidget {
                               },
                               authenticationAction:
                               AuthenticationAction.reauthenticate),
-                          Container(),
-                          IconButton(
-                              onPressed: () => context.pop(),
-                              icon: const Icon(Icons.close)));
+                          );
                     }
                   },
                   child: const Text('Account löschen')),

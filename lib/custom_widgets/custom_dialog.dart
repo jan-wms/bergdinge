@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class CustomDialog {
   static Future<T> showCustomModal<T>(
-      BuildContext context, Widget child, Widget? left, Widget right) async {
+      BuildContext context, Widget child) async {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -23,19 +23,8 @@ class CustomDialog {
           minChildSize: 0.9,
           expand: false,
           builder: (context, scrollController) {
-            return Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    left ?? Container(),
-                    right,
-                  ],
-                ),
-                Expanded(
+            return Expanded(
                   child: child,
-                ),
-              ],
             );
           },
         );
