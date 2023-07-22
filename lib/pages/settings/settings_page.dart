@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
@@ -5,6 +7,7 @@ import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
 import 'package:equipment_app/pages/setup/image_selector.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,11 +97,13 @@ class SettingsPage extends ConsumerWidget {
                 tooltip: '',
                 icon: const Icon(Icons.edit),
                 onSelected: (ImageAction action) {
-                  if(action == ImageAction.camera) {
-                    ImageSelector().pickImage(context: context, imageSource: ImageSource.camera);
+                  if (action == ImageAction.camera) {
+                    ImageSelector().pickImage(
+                        context: context, imageSource: ImageSource.camera);
                   }
-                  if(action == ImageAction.gallery) {
-                    ImageSelector().pickImage(context: context, imageSource: ImageSource.gallery);
+                  if (action == ImageAction.gallery) {
+                    ImageSelector().pickImage(
+                        context: context, imageSource: ImageSource.gallery);
                   }
                   if (action == ImageAction.delete) {
                     CustomDialog.showCustomConfirmationDialog(
@@ -123,10 +128,11 @@ class SettingsPage extends ConsumerWidget {
                 },
                 itemBuilder: (BuildContext context) =>
                     <PopupMenuEntry<ImageAction>>[
-                  const PopupMenuItem<ImageAction>(
-                    value: ImageAction.camera,
-                    child: Text('Foto aufnehmen'),
-                  ),
+                  if (kIsWeb || Platform.isMacOS ? false : true)
+                    const PopupMenuItem<ImageAction>(
+                      value: ImageAction.camera,
+                      child: Text('Foto aufnehmen'),
+                    ),
                   const PopupMenuItem<ImageAction>(
                     value: ImageAction.gallery,
                     child: Text('Aus Mediathek wählen'),

@@ -21,17 +21,15 @@ class SetImage extends StatefulWidget {
 class _SetImageState extends State<SetImage> {
   Uint8List? image;
 
-  late final bool isMobile = kIsWeb || Platform.isMacOS ? false : true;
-
   Future<void> preLoadImage() async {
-      Uint8List? storageImage = await FirebaseStorage.instance
-          .ref()
-          .child("users/${Auth().user!.uid}/profile.jpg")
-          .getData();
+    Uint8List? storageImage = await FirebaseStorage.instance
+        .ref()
+        .child("users/${Auth().user!.uid}/profile.jpg")
+        .getData();
 
-      setState(() {
-        image = storageImage ?? Uint8List(0);
-      });
+    setState(() {
+      image = storageImage ?? Uint8List(0);
+    });
   }
 
   @override
@@ -53,12 +51,12 @@ class _SetImageState extends State<SetImage> {
             children: [
               ElevatedButton(
                   onPressed: () => ImageSelector().pickImage(
-                    context: context,
-                      imageSource: ImageSource.gallery),
+                      context: context, imageSource: ImageSource.gallery),
                   child: const Text('image_picker')),
-              if (isMobile)
+              if (kIsWeb || Platform.isMacOS ? false : true)
                 IconButton(
-                    onPressed: () => ImageSelector().pickImage(context: context, imageSource: ImageSource.camera),
+                    onPressed: () => ImageSelector().pickImage(
+                        context: context, imageSource: ImageSource.camera),
                     icon: const Icon(Icons.camera_alt_rounded)),
             ],
           ),
