@@ -39,7 +39,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       message =
           'Dieser Account wurde deaktiviert. Bitte wende dich an den Support';
     }
-    if (exception.message?.contains('user-mismatch') ?? false) {
+    if (exception.code == 'user-mismatch' || (exception.message?.contains('user-mismatch') ?? false)) {
       message = 'Bitte melde dich mit deinem Account email@mail.de erneut an.';
     }
 

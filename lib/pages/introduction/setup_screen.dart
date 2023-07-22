@@ -12,14 +12,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 enum EditValue {
   name,
-  image,
   setUp,
 }
 
 class SetupScreen extends ConsumerWidget {
   SetupScreen({Key? key, required this.editValue}) : super(key: key);
 
-  final newNameProvider = StateProvider.autoDispose<String>((ref) => '');
+  final newNameProvider = StateProvider<String>((ref) => '');
   final newImageProvider = StateProvider.autoDispose<Uint8List?>((ref) => null);
   final EditValue editValue;
 
@@ -27,41 +26,42 @@ class SetupScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageController = PageController(initialPage: 0);
 
-    Future<void> uploadToFirebase() async {
-
-      if(editValue == EditValue.setUp || editValue == EditValue.image) {
+    void uploadToFirebase() async {
+      if (editValue == EditValue.setUp) {
         Uint8List? image = ref.read(newImageProvider);
+        ref.invalidate(newImageProvider);
         if (image != null) {
           final storageRef = FirebaseStorage.instance.ref();
           final imageRef =
-          storageRef.child("users/${Auth().user!.uid}/profile.jpg");
+              storageRef.child("users/${Auth().user!.uid}/profile.jpg");
           await imageRef
               .putData(
-              image,
-              SettableMetadata(
-                contentType: "image/jpg",
-              ))
+                  image,
+                  SettableMetadata(
+                    contentType: "image/jpg",
+                  ))
               .then((p0) => FirebaseFirestore.instance
-              .collection("users")
-              .doc(Auth().user?.uid)
-              .set({
-            "profilePicture": DateTime.now().toIso8601String(),
-          }));
+                      .collection("users")
+                      .doc(Auth().user?.uid)
+                      .set({
+                    "profilePicture": DateTime.now().toIso8601String(),
+                  }));
         }
       }
 
-
-      if(editValue == EditValue.setUp || editValue == EditValue.name) {
+      if (editValue == EditValue.setUp || editValue == EditValue.name) {
         String name = ref.read(newNameProvider);
-        DocumentReference docRef =
-        FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid);
+        ref.invalidate(newNameProvider);
+        DocumentReference docRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(Auth().user?.uid);
         await docRef.set({
           "name": name,
           "isSetupCompleted": true,
         }, SetOptions(merge: true));
       }
 
-      if(context.mounted) {
+      if (context.mounted) {
         editValue == EditValue.setUp ? context.go('/') : context.pop();
       }
     }
@@ -77,15 +77,23 @@ class SetupScreen extends ConsumerWidget {
           physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
           children: [
-          if(editValue == EditValue.setUp || editValue == EditValue.name) SetName(buttonText: (editValue == EditValue.name) ? ButtonText.doneText : ButtonText.continueText, onComplete: (value) {
-                ref.read(newNameProvider.notifier).state = value;
+            if (editValue == EditValue.setUp || editValue == EditValue.name)
+              SetName(
+                  buttonText: (editValue == EditValue.name)
+                      ? ButtonText.doneText
+                      : ButtonText.continueText,
+                  onComplete: (newName) {
+                    ref.read(newNameProvider.notifier).state = newName;
+                    nextPage();
+                  }),
+            if (editValue == EditValue.setUp)
+              SetImage(onComplete: (newImage) {
+                ref.read(newImageProvider.notifier).state = newImage;
                 nextPage();
               }),
-            if(editValue == EditValue.setUp || editValue == EditValue.image) SetImage(onComplete: (value) {
-                ref.read(newImageProvider.notifier).state = value;
-                nextPage();
-              }),
-            LoadingPage(onInit: () => uploadToFirebase(),),
+            LoadingPage(
+              onInit: () => uploadToFirebase(),
+            ),
           ],
         ),
       ),

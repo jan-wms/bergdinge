@@ -22,14 +22,13 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return PlatformMenuBarWrapper(
-        child: MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
-      title: 'Equipment App',
-    ),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routeInformationParser: router.routeInformationParser,
+        routerDelegate: router.routerDelegate,
+        routeInformationProvider: router.routeInformationProvider,
+        title: 'Equipment App',
+      ),
     );
   }
 }
-

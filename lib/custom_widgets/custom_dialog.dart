@@ -23,8 +23,8 @@ class CustomDialog {
           minChildSize: 0.9,
           expand: false,
           builder: (context, scrollController) {
-            return Expanded(
-                  child: child,
+            return Center(
+                    child: child,
             );
           },
         );
