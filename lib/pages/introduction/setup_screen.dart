@@ -27,7 +27,7 @@ class SetupScreen extends ConsumerWidget {
     final pageController = PageController(initialPage: 0);
 
     void uploadToFirebase() async {
-      if (editValue == EditValue.setUp) {
+      /*if (editValue == EditValue.setUp) {
         Uint8List? image = ref.read(newImageProvider);
         ref.invalidate(newImageProvider);
         if (image != null) {
@@ -47,7 +47,7 @@ class SetupScreen extends ConsumerWidget {
                     "profilePicture": DateTime.now().toIso8601String(),
                   }));
         }
-      }
+      }*/
 
       if (editValue == EditValue.setUp || editValue == EditValue.name) {
         String name = ref.read(newNameProvider);
@@ -86,11 +86,11 @@ class SetupScreen extends ConsumerWidget {
                     ref.read(newNameProvider.notifier).state = newName;
                     nextPage();
                   }),
-            if (editValue == EditValue.setUp)
+            /*if (editValue == EditValue.setUp)
               SetImage(onComplete: (newImage) {
                 ref.read(newImageProvider.notifier).state = newImage;
                 nextPage();
-              }),
+              }),*/
             LoadingPage(
               onInit: () => uploadToFirebase(),
             ),

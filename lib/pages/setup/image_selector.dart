@@ -9,10 +9,12 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../image_crop.dart';
 
+
 class ImageSelector {
   final ImagePicker picker = ImagePicker();
 
   Future<Uint8List?> pickImage({required BuildContext context, required ImageSource imageSource}) async {
+    CustomDialog.showCustomModal(context, const Placeholder());
     late final Uint8List? selectedImg;
     if (kIsWeb || Platform.isMacOS) {
       selectedImg = await FilePicker.platform.pickFiles(

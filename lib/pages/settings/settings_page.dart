@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:yaml/yaml.dart';
 
+import '../../data/data.dart';
 import '../../firebase/firebase_auth.dart';
 
 enum ImageAction { camera, gallery, delete }
@@ -66,6 +67,15 @@ class SettingsPage extends ConsumerWidget {
         ///FirebaseAuth
         await Auth().user?.delete();
       }
+    });
+  }
+
+  void copyToClipboard(
+      {required BuildContext context,
+      required String value}) async {
+    Clipboard.setData(ClipboardData(text: value)).then((_) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("In die Zwischenablage kopiert")));
     });
   }
 
@@ -149,14 +159,8 @@ class SettingsPage extends ConsumerWidget {
                 children: [
                   Text(firebaseUser?.email ?? 'keine email'),
                   IconButton(
-                      onPressed: () async {
-                        Clipboard.setData(ClipboardData(text: Auth().user!.uid))
-                            .then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Uid in die Zwischenablage kopiert")));
-                        });
+                      onPressed: () {
+                        copyToClipboard(context: context, value: Auth().user!.uid);
                       },
                       icon: const Icon(Icons.copy_rounded))
                 ],
@@ -181,10 +185,40 @@ class SettingsPage extends ConsumerWidget {
                   children: [
                     const Text('Kontakt'),
                     TextButton(
-                        onPressed: () {},
-                        child: const Text('appentwicklung.jan@gmx.de')),
+                        onPressed: () async {
+                          String? encodeQueryParameters(
+                              Map<String, String> params) {
+                            return params.entries
+                                .map((MapEntry<String, String> e) =>
+                                    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                                .join('&');
+                          }
+
+                          final Uri uri = Uri(
+                            scheme: 'mailto',
+                            path: Data.supportMail,
+                            query: encodeQueryParameters(<String, String>{
+                              'subject': 'Bergdinge',
+                            }),
+                          );
+
+                          launchUrl(uri).then((didLaunch) {
+                            if(didLaunch == false) {
+                              copyToClipboard(context: context, value: Data.supportMail);
+                            }
+                          });
+                        },
+                        child: Text(Data.supportMail)),
                     TextButton(
-                        onPressed: () {}, child: const Text('bergdinge.de')),
+                        onPressed: () async {
+                          final Uri url = Uri.parse(Data.websiteUrl);
+                          launchUrl(url).then((didLaunch) {
+                            if(didLaunch == false) {
+                              copyToClipboard(context: context, value: Data.websiteUrl);
+                            }
+                          });
+                        },
+                        child: Text(Data.websiteUrlShort)),
                     ElevatedButton(
                         onPressed: () {
                           showAboutDialog(

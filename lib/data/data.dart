@@ -19,6 +19,11 @@ enum EquipmentStatus {
 }
 
 class Data {
+  static String websiteUrl = 'https://bergdinge.de/';
+  static String websiteUrlShort = 'bergdinge.de';
+  static String supportMail = 'appentwicklung.jan@gmx.de';
+  
+  
   static List<String> sports = [
     'Wandern',
     'Klettern',
