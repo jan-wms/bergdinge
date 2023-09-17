@@ -18,7 +18,7 @@ class Menu extends ConsumerWidget {
             radius: 48,
             backgroundImage: ref.watch(profilePictureStreamProvider).value,
           ),
-          Text('Hallo ${ref.watch(userDataStreamProvider).value?['name']}!'),
+          Text('Hallo ${ref.watch(userDataStreamProvider).value?['name'] ?? ''}!'),
           ListTile(
             title: const Text('Entdecken'),
             onTap: () => GoRouter.of(context).go('/'),
@@ -35,7 +35,7 @@ class Menu extends ConsumerWidget {
             title: const Text('Einstellungen'),
             onTap: () => GoRouter.of(context).go('/settings'),
           ),
-          if (kIsWeb && !ref.watch(userChangesProvider).value!.isAnonymous)
+          if (kIsWeb && !(ref.watch(userChangesProvider).value?.isAnonymous ?? true))
             ElevatedButton(
               child: const Text('Abmelden'),
               onPressed: () => Auth().signOut(),

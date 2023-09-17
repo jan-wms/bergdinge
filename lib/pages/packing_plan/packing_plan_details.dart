@@ -1,5 +1,8 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
+import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:flutter/material.dart';
@@ -47,36 +50,49 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
     Widget getStatistics({required List<PackingPlanItem>? items}) {
       double weight = getWeight(items);
-      List<ChartData> chartData = <ChartData>[
-        ChartData(x: 'Bekleidung', y: 13),
-        ChartData(x: 'Ausrüstung', y: 24),
-        ChartData(x: 'Verpflegung', y: 25),
-        ChartData(x: 'Sonstiges', y: 38),
-      ];
+
+      Map<String, List<PackingPlanItem>>? categoryPackingPlanItemMap = {};
+      for (PackingPlanItem i in items ?? []) {
+        Equipment e = equipmentList!
+            .singleWhere((element) => element.id == i.equipmentId);
+        String key = e.category.substring(0, e.category.indexOf('.'));
+        categoryPackingPlanItemMap.containsKey(key) ? categoryPackingPlanItemMap[key]!.add(i) : categoryPackingPlanItemMap[key] = [i];
+      }
+
+      List<ChartData> chartData = categoryPackingPlanItemMap.entries.map( (entry) => ChartData(x: Data.categories.singleWhere((element) => element.id == entry.key).name, y: getWeight(entry.value) / weight)).toList();
+
       return Card(
         child: Column(
           children: [
             Text('total weight: $weight'),
-            SfCircularChart(
-              series: getPieSeries(chartData: chartData),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(50.0),
+                  child: SfCircularChart(
+                    series: getPieSeries(chartData: chartData),
+                  ),
+                ),
+                Column(
+                  children: [
+                    const Text('Gegenstände total'),
+                    for (MapEntry<String, List<PackingPlanItem>> entry
+                        in categoryPackingPlanItemMap.entries)
+                      Column(
+                        children: [
+                          Text(entry.key),
+                          for (PackingPlanItem item in entry.value)
+                            Card(
+                              child: Text(
+                                  '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
+              ],
             ),
-            Column(
-                children: [
-                  const Text('Gegenstände'),
-                  Row(
-                    children: [
-                      for (PackingPlanItem item
-                      in items ?? [])
-                        Card(
-                          child: Text(equipmentList!
-                              .singleWhere((element) =>
-                          element.id == item.equipmentId)
-                              .name),
-                        ),
-                    ],
-                  )
-                ],
-              ),
           ],
         ),
       );
@@ -142,6 +158,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                         maxLines: 6,
                         keyboardType: TextInputType.multiline,
                         onTapOutside: (value) {
+                          FocusScope.of(context).unfocus();
                           if (_formKey.currentState!.validate()) {
                             DocumentReference ref = FirebaseFirestore.instance
                                 .collection('users')
