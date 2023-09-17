@@ -13,7 +13,8 @@ class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
   final VoidCallback onComplete;
 
-  const LoginScreen({Key? key, required this.authenticationAction, required this.onComplete})
+  const LoginScreen(
+      {Key? key, required this.authenticationAction, required this.onComplete})
       : super(key: key);
 
   @override
@@ -39,8 +40,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       message =
           'Dieser Account wurde deaktiviert. Bitte wende dich an den Support';
     }
-    if (exception.code == 'user-mismatch' || (exception.message?.contains('user-mismatch') ?? false)) {
+    if (exception.code == 'user-mismatch' ||
+        (exception.message?.contains('user-mismatch') ?? false)) {
       message = 'Bitte melde dich mit deinem Account email@mail.de erneut an.';
+    }
+    if (exception.message?.contains(
+            'This credential is already associated with a different user account.') ??
+        false) {
+      message = 'Dieser Account wird bereits verwendet.';
     }
 
     ref.read(errorMessageProvider.notifier).state = message;
@@ -54,7 +61,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  bool getIsMacOS() {
+  bool kIsMacOS() {
     if (kIsWeb) return false;
     return Platform.isMacOS;
   }
@@ -99,24 +106,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           AuthenticationAction.reauthenticate
                       ? 'Bitte melden Sie sich erneut an.'
                       : 'Anmelden'),
-
-              /*if (!getIsMacOS() &&
+/*
+              if (!kIsMacOS() &&
                   (widget.authenticationAction !=
                           AuthenticationAction.reauthenticate ||
                       (widget.authenticationAction ==
                               AuthenticationAction.reauthenticate &&
-                          Auth().user?.providerData.single.providerId ==
+                          Auth().user?.providerData.first.providerId ==
                               'google.com')))*/
               buildSignInButton(
                 onPressed: () => _auth.signInWithGoogle(),
               ),
-              /*if (widget.authenticationAction !=
+              /*
+              if (widget.authenticationAction !=
                       AuthenticationAction.reauthenticate ||
                   (widget.authenticationAction ==
                           AuthenticationAction.reauthenticate &&
-                      Auth().user!.providerData.indexWhere(
-                              (element) => element.providerId == 'apple.com') >
-                          -1))*/
+                      Auth().user?.providerData.first.providerId ==
+                          'apple.com'))
+              */
               ElevatedButton(
                   onPressed: () {}, child: const Text('Sign in with Apple')),
               if (widget.authenticationAction == AuthenticationAction.signIn)
@@ -133,8 +141,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   color: CupertinoColors.destructiveRed,
                 ),
               ),
-              if(context.canPop())
-                TextButton(onPressed: () => context.pop(), child: const Text('Abbrechen')),
+              if (context.canPop())
+                TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Abbrechen')),
             ],
           ),
         ),

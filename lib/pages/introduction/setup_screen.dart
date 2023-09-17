@@ -2,13 +2,11 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/pages/setup/loading_page.dart';
-import 'package:equipment_app/pages/setup/set_image.dart';
 import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../firebase/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 enum EditValue {
   name,

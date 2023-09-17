@@ -47,7 +47,14 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       updatedAt: DateTime.now(),
       //TODO remove testing equipment
       items: [
-        PackingPlanItem(equipmentCount: 1, equipmentId: 'BZD1ZVbSYPBphvpqqpSv'),
+        PackingPlanItem(
+          equipmentCount: 1,
+          equipmentId: 'BZD1ZVbSYPBphvpqqpSv',
+          items: [
+            PackingPlanItem(
+                equipmentCount: 5, equipmentId: 'BZD1ZVbSYPBphvpqqpSv'),
+          ],
+        ),
         PackingPlanItem(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1'),
       ],
     );
@@ -123,17 +130,17 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                                 label: Text(sport),
                                 selected: state.value?.contains(sport) ?? false,
                                 onSelected: (bool value) {
-                                    var oldList = state.value!.toList();
-                                    if (value) {
-                                      if (!state.value!.contains(sport)) {
-                                        oldList.add(sport);
-                                      }
-                                    } else {
-                                      oldList.removeWhere((String s) {
-                                        return s == sport;
-                                      });
+                                  var oldList = state.value!.toList();
+                                  if (value) {
+                                    if (!state.value!.contains(sport)) {
+                                      oldList.add(sport);
                                     }
-                                    state.didChange(oldList);
+                                  } else {
+                                    oldList.removeWhere((String s) {
+                                      return s == sport;
+                                    });
+                                  }
+                                  state.didChange(oldList);
                                 },
                               )
                           ]),

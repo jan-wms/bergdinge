@@ -117,7 +117,7 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
                           ? const CircularProgressIndicator.adaptive()
                           : Text(widget.equipment != null
                               ? ''
-                                  'Bearbeiten'
+                                  'Aktualisieren'
                               : 'Hinzufügen')),
                 ],
               ),

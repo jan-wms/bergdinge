@@ -9,6 +9,10 @@ class PackingPlanValidator {
     return null;
   }
 
+  static String? notes(value) {
+    return null;
+  }
+
   static String? sports(List<String>? value) {
     if (value == null || value.isEmpty) {
       return "Bitte wähle mindestens eine Sportart.";

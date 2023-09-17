@@ -23,16 +23,20 @@ class _SetNameState extends State<SetName> {
   final _auth = Auth();
 
   Future<void> preLoadName() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(_auth.user!.uid)
-        .get();
-    String name = (snapshot.data() as Map<String, dynamic>)['name'] ??
-        _auth.user!.displayName ?? '';
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(_auth.user!.uid)
+          .get();
+      String name = (snapshot.data() as Map<String, dynamic>)['name'] ??
+          _auth.user!.displayName ?? '';
 
-    setState(() {
-      _textEditingController.text = name;
-    });
+      setState(() {
+        _textEditingController.text = name;
+      });
+    } catch (e) {
+      //could not preload name
+    }
   }
 
   @override

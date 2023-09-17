@@ -10,41 +10,77 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../custom_widgets/custom_back_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
+import '../../validators/packing_plan_validator.dart';
 
 class PackingPlanDetails extends ConsumerStatefulWidget {
   final String packingPlanID;
 
-  const PackingPlanDetails({Key? key, required this.packingPlanID}) : super(key: key);
+  const PackingPlanDetails({Key? key, required this.packingPlanID})
+      : super(key: key);
 
   @override
   ConsumerState<PackingPlanDetails> createState() => _PackingPlanDetailsState();
 }
 
 class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
-  int dropdownValue = 0;
-
-  Widget getStatistics({required PackingPlan packingPlan}) {
-    double weight = 1.0;
-    List<ChartData> chartData = <ChartData>[
-      ChartData(x: 'Bekleidung', y: 13),
-      ChartData(x: 'Ausrüstung', y: 24),
-      ChartData(x: 'Verpflegung', y: 25),
-      ChartData(x: 'Others', y: 38),
-    ];
-    return Card(child: Column(
-      children: [
-        Text('total weight: $weight'),
-        SfCircularChart(
-          series: getPieSeries(chartData: chartData),
-        ),
-      ],
-    ),);
-  }
+  final dropdownValueProvider = StateProvider<int>((ref) => 0);
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
+
+    double getWeight(List<PackingPlanItem>? items) {
+      if (items == null) return 0.0;
+      var result = 0.0;
+      for (PackingPlanItem item in items) {
+        result = result +
+            (item.equipmentCount *
+                equipmentList!
+                    .singleWhere((element) => element.id == item.equipmentId)
+                    .weight);
+        result = result + getWeight(item.items);
+      }
+      return result;
+    }
+
+    Widget getStatistics({required List<PackingPlanItem>? items}) {
+      double weight = getWeight(items);
+      List<ChartData> chartData = <ChartData>[
+        ChartData(x: 'Bekleidung', y: 13),
+        ChartData(x: 'Ausrüstung', y: 24),
+        ChartData(x: 'Verpflegung', y: 25),
+        ChartData(x: 'Sonstiges', y: 38),
+      ];
+      return Card(
+        child: Column(
+          children: [
+            Text('total weight: $weight'),
+            SfCircularChart(
+              series: getPieSeries(chartData: chartData),
+            ),
+            Column(
+                children: [
+                  const Text('Gegenstände'),
+                  Row(
+                    children: [
+                      for (PackingPlanItem item
+                      in items ?? [])
+                        Card(
+                          child: Text(equipmentList!
+                              .singleWhere((element) =>
+                          element.id == item.equipmentId)
+                              .name),
+                        ),
+                    ],
+                  )
+                ],
+              ),
+          ],
+        ),
+      );
+    }
 
     return Column(
       children: [
@@ -54,9 +90,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
             error: (error, stackTrace) => Text(error.toString()),
             loading: () => const CircularProgressIndicator.adaptive(),
             data: (data) {
-              final PackingPlan packingPlan =
-                  data.singleWhere((element) => element.id == widget.packingPlanID);
-              return Column(
+              final PackingPlan packingPlan = data
+                  .singleWhere((element) => element.id == widget.packingPlanID);
+              final TextEditingController controllerNotes =
+                  TextEditingController(text: packingPlan.notes ?? '');
+
+              return ListView(
                 children: [
                   Card(
                     child: Column(
@@ -92,6 +131,30 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                       ],
                     ),
                   ),
+                  Card(
+                    child: Form(
+                      key: _formKey,
+                      child: TextFormField(
+                        validator: (value) => PackingPlanValidator.notes(value),
+                        controller: controllerNotes,
+                        decoration: const InputDecoration(labelText: 'Notizen'),
+                        minLines: 6,
+                        maxLines: 6,
+                        keyboardType: TextInputType.multiline,
+                        onTapOutside: (value) {
+                          if (_formKey.currentState!.validate()) {
+                            DocumentReference ref = FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(Auth().user?.uid)
+                                .collection('packing_plan')
+                                .doc(packingPlan.id);
+
+                            ref.update({"notes": controllerNotes.text});
+                          }
+                        },
+                      ),
+                    ),
+                  ),
                   DropdownButton(
                     items: const [
                       DropdownMenuItem(value: 0, child: Text('total')),
@@ -100,25 +163,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                     ],
                     onChanged: (value) {
                       setState(() {
-                        dropdownValue = value ?? dropdownValue;
+                        ref.read(dropdownValueProvider.notifier).state =
+                            value ?? 0;
                       });
                     },
-                    value: dropdownValue,
+                    value: ref.watch(dropdownValueProvider),
                   ),
-                  getStatistics(packingPlan: packingPlan),
-                  Card(
-                    child: Column(
-                      children: [
-                        const Text('Gegenstände'),
-                        Row(
-                          children: [
-                            for(PackingPlanItem item in packingPlan.items ?? [])
-                              Card(child: Text(equipmentList!.singleWhere((element) => element.id == item.equipmentId).name),),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
+                  getStatistics(items: packingPlan.items),
                 ],
               );
             },
@@ -156,174 +207,3 @@ class ChartData {
     text = '$x\n$y%';
   }
 }
-
-/* @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const CustomBackButton(),
-            Text(
-                'Packliste ${widget.packingPlan != null
-                    ? 'bearbeiten'
-                    : 'erstellen'}'),
-            ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate() && !isLoading) {
-                    edit(
-                        packingPlanList:
-                        ref
-                            .read(packingPlanStreamProvider)
-                            .value);
-                  }
-                },
-                child: isLoading
-                    ? const CircularProgressIndicator.adaptive()
-                    : Text(
-                    widget.packingPlan != null ? 'Bearbeiten' : 'Erstellen')),
-          ],
-        ),
-        Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => PackingPlanValidator.name(value),
-                controller: _controllerName,
-                decoration: const InputDecoration(labelText: 'Name'),
-              ),
-              FormField<List<String>>(
-                validator: (value) => PackingPlanValidator.sports(value),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formKeySports,
-                initialValue: widget.packingPlan?.sports ?? <String>[],
-                builder: (state) =>
-                    ListTile(
-                      title: Text(state.value!.isNotEmpty
-                          ? state.value!.toString()
-                          : 'Sportart'),
-                      subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                      trailing: const Icon(Icons.chevron_right_outlined),
-                      onTap: () async {
-                        final List<String> s =
-                        await selectSports(context, state.value!);
-                        state.didChange(s);
-                      },
-                    ),
-              ),
-              FormField<List<PackingPlan>>(
-                key: _formKeyItems,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => PackingPlanValidator.items(value),
-                initialValue: widget.packingPlan?.items ?? <PackingPlan>[],
-                builder: (state) =>
-                    ListTile(
-                      onTap: () async {
-                        final List<PackingPlan> i =
-                        await selectEquipment(context, state.value!);
-                        state.didChange(i);
-                      },
-                      trailing: const Icon(Icons.chevron_right_outlined),
-                      title: const Text('Add item'),
-                      subtitle: Text(state.errorText ?? state.value.toString()),
-                    ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-Future<List<PackingPlan>> selectEquipment(BuildContext context,
-    List<PackingPlan> selected) async {
-  final GlobalKey<_SelectEquipmentState> k = GlobalKey();
-  final SelectEquipment selectEquipment = SelectEquipment(
-    key: k,
-    selected: selected,
-  );
-  await CustomDialog.showCustomModal(
-    context,
-    selectEquipment,
-    null,
-    TextButton(
-      child: const Text('Close'),
-      onPressed: () => Navigator.of(context).pop(),
-    ),
-  );
-  return k.currentState!.selected;
-}
-
-class SelectEquipment extends ConsumerStatefulWidget {
-  final List<PackingPlan> selected;
-
-  const SelectEquipment({Key? key, required this.selected}) : super(key: key);
-
-  @override
-  ConsumerState<SelectEquipment> createState() => _SelectEquipmentState();
-}
-
-class _SelectEquipmentState extends ConsumerState<SelectEquipment> {
-  late List<PackingPlan> selected = widget.selected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text('Ausrüstung'),
-        const TextField(),
-        Expanded(
-          child: ref.watch(equipmentStreamProvider).when(
-              error: (error, stackTrace) => Text(error.toString()),
-              loading: () => const CircularProgressIndicator.adaptive(),
-              data: (data) =>
-                  ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final equipment = data[index];
-                      return ListTile(
-                        title: Text((equipment.brand ?? '') + equipment.name),
-                        subtitle: Text(equipment.size.toString()),
-                        trailing: selected
-                            .where((element) =>
-                        element.equipmentId == equipment.id)
-                            .isNotEmpty
-                            ? const Icon(Icons.check)
-                            : null,
-                        onTap: () {
-                          if (selected
-                              .where((element) =>
-                          element.equipmentId == equipment.id)
-                              .isNotEmpty) {
-                            setState(() {
-                              selected.removeWhere((element) =>
-                              element.equipmentId == equipment.id);
-                            });
-                          } else {
-                            setState(() {
-                              selected.add(PackingPlan(
-                                  id:,
-                                  items:,
-                                  sports:,
-                                  equipmentId: equipment.id,
-                                  equipmentCount: 1,
-                                  name: null,
-                              ));
-                            });
-                          }
-                        },
-                      );
-                    },
-                  )),
-        ),
-      ],
-    );
-  }
-}
-*/

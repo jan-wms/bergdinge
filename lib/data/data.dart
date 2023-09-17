@@ -37,6 +37,7 @@ class Data {
     'Tradklettern',
     'Freeride',
     'Klettersteig',
+    'Sonstige',
   ];
 
   static List<Category> categories = [

@@ -3,7 +3,7 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
-import 'package:equipment_app/pages/home_page.dart';
+import 'package:equipment_app/pages/home/home_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/introduction/introduction_page.dart';
 import 'package:equipment_app/pages/introduction/setup_screen.dart';
@@ -143,7 +143,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               }
             });
       }
-      final isWelcome = state.location == '/welcome';
+      final isWelcome = state.uri.toString() == '/welcome';
 
       if (isWelcome) {
         return isAuthorized
