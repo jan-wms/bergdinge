@@ -361,5 +361,19 @@ class Data {
       ],
     ),
   ];
-}
 
+static List<String> getCategoryNames (String pCategoryId) {
+    String categoryId = '$pCategoryId.';
+    List<String> result = [];
+    List<Category>? tempCategoryList = categories;
+    List<Match> matches = RegExp('[.]').allMatches(categoryId).toList();
+
+    for(int i = 0; i < (matches.length); i++) {
+      Category tempCategory = tempCategoryList!.singleWhere((element) => element.id == categoryId.substring(0, matches[i].start));
+      result.add(tempCategory.name);
+      tempCategoryList = tempCategory.subCategories;
+    }
+
+    return result;
+  }
+}

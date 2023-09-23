@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_back_button.dart';
+import '../../data/data.dart';
 import '../../firebase/firebase_auth.dart';
 import 'package:equipment_app/data/providers.dart';
 
@@ -41,6 +42,7 @@ class EquipmentDetails extends ConsumerWidget {
                     Text('status: ${equipment.status}'),
                     Text('size: ${equipment.size}'),
                     Text('category: ${equipment.category}'),
+                    Text('category: ${Data.getCategoryNames(equipment.category)}'),
                     ElevatedButton(
                         onPressed: () async {
                           bool? confirmDelete =
