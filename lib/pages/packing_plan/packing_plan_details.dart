@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
@@ -8,8 +7,7 @@ import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-
+import 'package:fl_chart/fl_chart.dart';
 import '../../custom_widgets/custom_back_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
@@ -51,15 +49,22 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
     Widget getStatistics({required List<PackingPlanItem>? items}) {
       double weight = getWeight(items);
 
-      Map<String, List<PackingPlanItem>>? categoryPackingPlanItemMap = {};
+      Map<String, List<PackingPlanItem>>? categoryPackingPlanItemsMap = {};
       for (PackingPlanItem i in items ?? []) {
         Equipment e = equipmentList!
             .singleWhere((element) => element.id == i.equipmentId);
         String key = e.category.substring(0, e.category.indexOf('.'));
-        categoryPackingPlanItemMap.containsKey(key) ? categoryPackingPlanItemMap[key]!.add(i) : categoryPackingPlanItemMap[key] = [i];
+        categoryPackingPlanItemsMap.containsKey(key)
+            ? categoryPackingPlanItemsMap[key]!.add(i)
+            : categoryPackingPlanItemsMap[key] = [i];
       }
 
-      List<ChartData> chartData = categoryPackingPlanItemMap.entries.map( (entry) => ChartData(x: Data.categories.singleWhere((element) => element.id == entry.key).name, y: getWeight(entry.value) / weight)).toList();
+      List<ChartData> chartData = categoryPackingPlanItemsMap.entries
+          .map((entry) => ChartData(
+              x: Data.getCategoryNames(entry.key).last,
+              y: getWeight(entry.value) / weight))
+          .toList();
+
 
       return Card(
         child: Column(
@@ -68,20 +73,24 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(50.0),
-                  child: SfCircularChart(
-                    series: getPieSeries(chartData: chartData),
-                  ),
+                SizedBox(
+                  height: 500,
+                  width: 500,
+                    child: PieChart(
+                      getPieChartData(chartData: chartData),
+                      swapAnimationDuration: const Duration(milliseconds: 150),
+                      // Optional
+                      swapAnimationCurve: Curves.linear, // Optional
+                    ),
                 ),
                 Column(
                   children: [
-                    const Text('Gegenstände total'),
+                    const Text('Gegenstände total', style: TextStyle(fontWeight: FontWeight.bold),),
                     for (MapEntry<String, List<PackingPlanItem>> entry
-                        in categoryPackingPlanItemMap.entries)
+                        in categoryPackingPlanItemsMap.entries)
                       Column(
                         children: [
-                          Text(entry.key),
+                          Text(Data.getCategoryNames(entry.key).last),
                           for (PackingPlanItem item in entry.value)
                             Card(
                               child: Text(
@@ -197,22 +206,45 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   }
 }
 
-List<PieSeries<ChartData, String>> getPieSeries(
-    {required List<ChartData> chartData}) {
-  return <PieSeries<ChartData, String>>[
-    PieSeries<ChartData, String>(
-        explode: true,
-        explodeIndex: 0,
-        explodeOffset: '10%',
-        dataSource: chartData,
-        xValueMapper: (ChartData data, _) => data.x,
-        yValueMapper: (ChartData data, _) => data.y,
-        dataLabelMapper: (ChartData data, _) => data.text,
-        startAngle: 90,
-        endAngle: 90,
-        radius: '150',
-        dataLabelSettings: const DataLabelSettings(isVisible: true))
-  ];
+PieChartData getPieChartData({required List<ChartData> chartData}) {
+  final isTouched = false;//i == touchedIndex;
+  final fontSize = isTouched ? 20.0 : 16.0;
+  final radius = isTouched ? 110.0 : 100.0;
+  final widgetSize = isTouched ? 55.0 : 40.0;
+  final titleStyle = TextStyle(
+    fontSize: fontSize,
+    fontWeight: FontWeight.bold,
+  );
+  List<Color> sectionColor = [Colors.blueAccent,Colors.lightBlueAccent,Colors.blueGrey,Colors.lightBlue,Colors.blue,];
+  List<Color> textColor = [Colors.white,Colors.white,Colors.white,Colors.white,Colors.white,];
+
+  List<PieChartSectionData> sectionData = chartData.asMap().entries.map((e) {
+    return PieChartSectionData(
+      color: sectionColor[e.key],
+      value: e.value.y,
+      title: e.value.text,
+      radius: radius,
+      titleStyle: titleStyle.copyWith(color: textColor[e.key]),
+    );
+  }).toList();
+
+  int touchedIndex = -1;
+  return PieChartData(
+    sections: sectionData,
+    centerSpaceRadius: 0,
+    sectionsSpace: 0,
+    pieTouchData: PieTouchData(
+      touchCallback: (FlTouchEvent event, pieTouchResponse) {
+          if (!event.isInterestedForInteractions ||
+              pieTouchResponse == null ||
+              pieTouchResponse.touchedSection == null) {
+            print('-1');
+            return;
+          }
+         print(pieTouchResponse.touchedSection!.touchedSectionIndex);
+      },
+    ),
+  );
 }
 
 class ChartData {

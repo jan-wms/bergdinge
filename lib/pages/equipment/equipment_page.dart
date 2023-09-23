@@ -71,7 +71,6 @@ class _EquipmentPageState extends ConsumerState<EquipmentPage> {
                 if (items.isEmpty) {
                   return const Text('Leider konnte nichts gefunden werden.');
                 }
-
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
