@@ -46,6 +46,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       createdAt: widget.packingPlan?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
       //TODO remove testing equipment
+      //items: widget.packingPlan.items,
       items: [
         PackingPlanItem(
           equipmentCount: 1,
@@ -57,6 +58,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
         ),
         PackingPlanItem(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1'),
       ],
+      notes: widget.packingPlan?.notes,
     );
 
     bool continueEdit = true;
