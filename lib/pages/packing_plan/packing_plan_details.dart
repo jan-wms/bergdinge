@@ -12,6 +12,7 @@ import '../../custom_widgets/custom_back_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
 import '../../validators/packing_plan_validator.dart';
+import 'custom_pie_chart.dart';
 
 class PackingPlanDetails extends ConsumerStatefulWidget {
   final String packingPlanID;
@@ -171,22 +172,50 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
       return SizedBox(
         height: 550,
         width: double.infinity,
-        child: Stack(children: [
-          PageView(
-            controller: pageController,
-            children: [
-              getStatistics(items: items),
-              Container(
-                color: Colors.green,
-              ),
-              Container(
-                color: Colors.orange,
-              ),
-            ],
-          ),
-          ///dot indicator
-          Positioned(bottom: 20, left: 0,child: Container(height: 30, width: 30, color: Colors.blue,),),
-        ]),
+        child: Row(
+          children: [
+            Expanded(
+              child: Stack(children: [
+                PageView(
+                  controller: pageController,
+                  children: [
+                    getStatistics(items: items),
+                    Container(
+                      color: Colors.green,
+                    ),
+                    Container(
+                      color: Colors.orange,
+                    ),
+                  ],
+                ),
+                //TODO dot indicator
+                Positioned(bottom: 20, left: 0,child: Container(height: 30, width: 30, color: Colors.blue,),),
+              ]),
+            ),
+            Container(
+             color: Colors.black12,
+             width: 400,
+             child: const Column(
+               children: [
+                 Text(
+                   'Gegenstände total',
+                   style: TextStyle(fontWeight: FontWeight.bold),
+                 ),
+                 /*for (MapEntry<String, List<PackingPlanItem>> entry
+                 in categoryPackingPlanItemsMap.entries)
+                   Column(
+                     children: [
+                       Text(Data.getCategoryNames(entry.key).last),
+                       for (PackingPlanItem item in entry.value)
+                         Card(
+                           child: Text(
+                               '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
+                         ),*/
+                     ],
+             ),
+           )
+          ],
+        ),
       );
     }
 
@@ -311,15 +340,5 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
         ),
       ],
     );
-  }
-}
-
-class ChartData {
-  final String x;
-  final double y;
-  late final String text;
-
-  ChartData({required this.x, required this.y}) {
-    text = '$x\n$y%';
   }
 }
