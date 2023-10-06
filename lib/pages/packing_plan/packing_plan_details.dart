@@ -26,134 +26,12 @@ class PackingPlanDetails extends ConsumerStatefulWidget {
 class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final dropdownIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
   final _formKey = GlobalKey<FormState>();
-  final displayedItemsProvider =
-      StateProvider<Map<String, List<PackingPlanItem>>>((ref) => {});
+  final pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
-
-    double getWeight(List<PackingPlanItem>? items) {
-      if (items == null) return 0.0;
-      var result = 0.0;
-      for (PackingPlanItem item in items) {
-        result = result +
-            (item.equipmentCount *
-                equipmentList!
-                    .singleWhere((element) => element.id == item.equipmentId)
-                    .weight);
-        result = result + getWeight(item.items);
-      }
-      return result;
-    }
-
-    Widget getStatistics({required List<PackingPlanItem>? items}) {
-      Map<String, List<PackingPlanItem>> categoryPackingPlanItemsMap = {};
-      for (PackingPlanItem i in items ?? []) {
-        Equipment e = equipmentList!
-            .singleWhere((element) => element.id == i.equipmentId);
-        String key = e.category.substring(0, e.category.indexOf('.'));
-        categoryPackingPlanItemsMap.containsKey(key)
-            ? categoryPackingPlanItemsMap[key]!.add(i)
-            : categoryPackingPlanItemsMap[key] = [i];
-      }
-
-      double weight = getWeight(items);
-      List<ChartData> chartData = categoryPackingPlanItemsMap.entries
-          .map((entry) => ChartData(
-              x: Data.getCategoryNames(entry.key).last,
-              y: getWeight(entry.value) / weight))
-          .toList();
-
-      Future.delayed(const Duration(seconds: 1)).then((value) => ref
-          .read(displayedItemsProvider.notifier)
-          .state = categoryPackingPlanItemsMap);
-
-      return Column(
-        children: [
-          Text('total weight: $weight'),
-          SizedBox(
-            height: 500,
-            width: 500,
-            child: CustomPieChart(
-              chartData: chartData,
-              onTouchedIndexChanged: (value) {
-                print('new value$value');
-              },
-            ),
-          ),
-        ],
-      );
-    }
-
-    Widget getStatisticsPageView({required List<PackingPlanItem>? items}) {
-      final pageController = PageController(initialPage: 0);
-
-      List<Statistic> statistics = [];
-
-      do {
-
-
-        statistics.add(Statistic(title: title, weight: weight, categoryPackingPlanItemsMap: categoryPackingPlanItemsMap));
-      } while ()
-
-      return SizedBox(
-        height: 550,
-        width: double.infinity,
-        child: Row(
-          children: [
-            Expanded(
-              child: Stack(children: [
-                PageView(
-                  controller: pageController,
-                  children: [
-                    getStatistics(items: items),
-                    Container(
-                      color: Colors.orange,
-                    ),
-                  ],
-                ),
-                //TODO dot indicator
-                Positioned(
-                  bottom: 20,
-                  left: 0,
-                  child: Container(
-                    height: 30,
-                    width: 30,
-                    color: Colors.blue,
-                  ),
-                ),
-              ]),
-            ),
-            Container(
-              color: Colors.black12,
-              width: 400,
-              child: Column(
-                children: [
-                  const Text(
-                    'Gegenstände total',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  for (MapEntry<String, List<PackingPlanItem>> entry
-                      in ref.watch(displayedItemsProvider).entries)
-                    Column(
-                      children: [
-                        Text(Data.getCategoryNames(entry.key).last),
-                        for (PackingPlanItem item in entry.value)
-                          Card(
-                            child: Text(
-                                '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
-                          ),
-                      ],
-                    ),
-                ],
-              ),
-            )
-          ],
-        ),
-      );
-    }
 
     return Column(
       children: [
@@ -167,6 +45,40 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                   .singleWhere((element) => element.id == widget.packingPlanID);
               final TextEditingController controllerNotes =
                   TextEditingController(text: packingPlan.notes ?? '');
+
+              Statistic statisticFromItems(
+                  MapEntry<String, List<PackingPlanItem>?> entry) {
+                Map<String, List<PackingPlanItem>> categoryPackingPlanItemsMap =
+                    {};
+                for (PackingPlanItem i in entry.value ?? []) {
+                  Equipment e = equipmentList!
+                      .singleWhere((element) => element.id == i.equipmentId);
+                  String topCategory = e.category.substring(entry.key.length);
+                  topCategory = entry.key +
+                      ((topCategory.contains('.', 1))
+                          ? topCategory.substring(
+                              0, topCategory.indexOf('.', 1))
+                          : topCategory);
+
+                  categoryPackingPlanItemsMap.containsKey(topCategory)
+                      ? categoryPackingPlanItemsMap[topCategory]!.add(i)
+                      : categoryPackingPlanItemsMap[topCategory] = [i];
+                }
+
+                return Statistic(
+                    topCategory: entry.key,
+                    categoryPackingPlanItemsMap: categoryPackingPlanItemsMap,
+                    ref: ref);
+              }
+
+              List<Statistic> statistics = [
+                statisticFromItems(MapEntry('', packingPlan.items)),
+              ];
+
+              for (MapEntry<String, List<PackingPlanItem>> entry
+                  in statistics.first.categoryPackingPlanItemsMap.entries) {
+                statistics.add(statisticFromItems(entry));
+              }
 
               return Stack(children: [
                 ListView(
@@ -206,6 +118,102 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                       ),
                     ),
                     Card(
+                      child: Column(
+                        children: [
+                          DropdownButton(
+                            items: const [
+                              DropdownMenuItem(value: 0, child: Text('total')),
+                              DropdownMenuItem(value: 1, child: Text('body')),
+                              DropdownMenuItem(
+                                  value: 2, child: Text('backpack')),
+                            ],
+                            onChanged: (value) {
+                              ref.read(dropdownIndexProvider.notifier).state =
+                                  value ?? 0;
+                            },
+                            value: ref.watch(dropdownIndexProvider),
+                          ),
+                          SizedBox(
+                            height: 550,
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Stack(children: [
+                                    PageView.builder(
+                                      itemBuilder: (context, index) {
+                                        Statistic statistic = statistics[index];
+                                        return Column(
+                                          children: [
+                                            Text(
+                                                '${statistic.title}: ${statistic.weight}'),
+                                            SizedBox(
+                                              height: 500,
+                                              width: 500,
+                                              child: CustomPieChart(
+                                                chartData: statistic.chartData,
+                                                onTouchedIndexChanged: (value) {
+                                                  print('new value$value');
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                      itemCount: statistics.length,
+                                      controller: pageController,
+                                    ),
+                                    //TODO dot indicator
+                                    Positioned(
+                                      bottom: 20,
+                                      left: 0,
+                                      child: Container(
+                                        height: 30,
+                                        width: 30,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                                Container(
+                                  color: Colors.black12,
+                                  width: 400,
+                                  child: Column(
+                                    children: [
+                                      const Text(
+                                        'Gegenstände total',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      for (MapEntry<String,
+                                              List<PackingPlanItem>> entry
+                                          in statistics
+                                              .first
+                                              .categoryPackingPlanItemsMap
+                                              .entries)
+                                        Column(
+                                          children: [
+                                            Text(
+                                                Data.getCategoryNames(entry.key)
+                                                    .last),
+                                            for (PackingPlanItem item
+                                                in entry.value)
+                                              Card(
+                                                child: Text(
+                                                    '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
+                                              ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Card(
                       child: Form(
                         key: _formKey,
                         child: TextFormField(
@@ -213,7 +221,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               PackingPlanValidator.notes(value),
                           controller: controllerNotes,
                           decoration:
-                              const InputDecoration(labelText: 'Notizen'),
+                          const InputDecoration(labelText: 'Notizen'),
                           minLines: 6,
                           maxLines: 6,
                           keyboardType: TextInputType.multiline,
@@ -230,26 +238,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             }
                           },
                         ),
-                      ),
-                    ),
-                    Card(
-                      child: Column(
-                        children: [
-                          DropdownButton(
-                            items: const [
-                              DropdownMenuItem(value: 0, child: Text('total')),
-                              DropdownMenuItem(value: 1, child: Text('body')),
-                              DropdownMenuItem(
-                                  value: 2, child: Text('backpack')),
-                            ],
-                            onChanged: (value) {
-                              ref.read(dropdownIndexProvider.notifier).state =
-                                  value ?? 0;
-                            },
-                            value: ref.watch(dropdownIndexProvider),
-                          ),
-                          getStatisticsPageView(items: packingPlan.items),
-                        ],
                       ),
                     ),
                   ],
@@ -280,16 +268,43 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 }
 
 class Statistic {
-  final String title;
-  final double weight;
+  final String topCategory;
   final Map<String, List<PackingPlanItem>> categoryPackingPlanItemsMap;
+  final WidgetRef ref;
 
   const Statistic(
-      {required this.title,
-      required this.weight,
-      required this.categoryPackingPlanItemsMap});
+      {required this.topCategory,
+      required this.categoryPackingPlanItemsMap,
+      required this.ref});
 
-  get chartData => categoryPackingPlanItemsMap.entries
+  String get title => topCategory.isEmpty ? 'total weight' : 'weight ${Data.getCategoryNames(topCategory).last}';
+
+  double getWeight(List<PackingPlanItem>? items) {
+    if (items == null) return 0.0;
+    var result = 0.0;
+    for (PackingPlanItem item in items) {
+      result = result +
+          (item.equipmentCount *
+              ref
+                  .read(equipmentStreamProvider)
+                  .value!
+                  .singleWhere((element) => element.id == item.equipmentId)
+                  .weight);
+      result = result + getWeight(item.items);
+    }
+    return result;
+  }
+
+  double get weight {
+    List<PackingPlanItem> allItemsList = [];
+    categoryPackingPlanItemsMap.forEach((key, value) {
+      allItemsList.addAll(value);
+    });
+
+    return getWeight(allItemsList);
+  }
+
+  List<ChartData> get chartData => categoryPackingPlanItemsMap.entries
       .map((entry) => ChartData(
           x: Data.getCategoryNames(entry.key).last,
           y: getWeight(entry.value) / weight))
