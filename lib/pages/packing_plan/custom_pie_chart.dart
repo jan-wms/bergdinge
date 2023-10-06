@@ -1,64 +1,65 @@
+import 'package:equipment_app/data/design.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class CustomPieChart extends StatelessWidget {
+class CustomPieChart extends StatefulWidget {
   final List<ChartData> chartData;
-  final ValueGetter<int> onTouchedIndexChanged;
-  const CustomPieChart({super.key, required this.chartData, required this.onTouchedIndexChanged});
+  final ValueSetter<int> onTouchedIndexChanged;
 
-  final List<Color> sectionColor = [
-    Colors.blueAccent,
-    Colors.lightBlueAccent,
-    Colors.blueGrey,
-    Colors.lightBlue,
-    Colors.blue,
-  ];
-  final List<Color> textColor = [
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-  ];
+  const CustomPieChart(
+      {super.key,
+      required this.chartData,
+      required this.onTouchedIndexChanged});
 
-  final List<PieChartSectionData> sectionData =
-  chartData.asMap().entries.map((e) {
-  final isTouched = e.key == ref.watch(touchedPieChartIndex);
-  return PieChartSectionData(
-  color: sectionColor[e.key],
-  value: e.value.y,
-  title: e.value.text,
-  radius: isTouched ? 110.0 : 100.0,
-  titleStyle: TextStyle(color: textColor[e.key]),
-  );
-  }).toList();
+  @override
+  State<CustomPieChart> createState() => _CustomPieChartState();
+}
+
+class _CustomPieChartState extends State<CustomPieChart> {
+  int touchedPieChartIndex = -1;
 
 
   @override
   Widget build(BuildContext context) {
+    final List<PieChartSectionData> sectionData =
+        widget.chartData.asMap().entries.map((e) {
+      final isTouched = e.key == touchedPieChartIndex;
+      return PieChartSectionData(
+        color: Design.sectionColor[e.key],
+        value: e.value.y,
+        title: e.value.text,
+        radius: isTouched ? 110.0 : 100.0,
+        titleStyle: TextStyle(color: Design.textColor[e.key]),
+      );
+    }).toList();
+
     return PieChart(
-    PieChartData(
-    sections: sectionData,
-    centerSpaceRadius: 0,
-  sectionsSpace: 0,
-  pieTouchData: PieTouchData(
-  longPressDuration: const Duration(seconds: 2),
-  touchCallback: (FlTouchEvent event, pieTouchResponse) {
-  if (!event.isInterestedForInteractions ||
-  pieTouchResponse == null ||
-  pieTouchResponse.touchedSection == null ||
-  event.runtimeType != FlTapDownEvent) {
-  return;
-  }
-  final touchedIndex =
-  pieTouchResponse.touchedSection!.touchedSectionIndex;
-  ref.read(touchedPieChartIndex.notifier).state =
-  (ref.read(touchedPieChartIndex) == touchedIndex)
-  ? -1
-      : touchedIndex;
-  },
-  ),
-  ),
+      PieChartData(
+        sections: sectionData,
+        centerSpaceRadius: 0,
+        sectionsSpace: 0,
+        pieTouchData: PieTouchData(
+          longPressDuration: const Duration(seconds: 2),
+          touchCallback: (FlTouchEvent event, pieTouchResponse) {
+            if (!event.isInterestedForInteractions ||
+                pieTouchResponse == null ||
+                pieTouchResponse.touchedSection == null ||
+                event.runtimeType != FlTapDownEvent) {
+              return;
+            }
+            final newIndex =
+                pieTouchResponse.touchedSection!.touchedSectionIndex;
+            if(newIndex == -1 && touchedPieChartIndex == -1) return;
+            setState(() {
+              touchedPieChartIndex =
+              (touchedPieChartIndex == newIndex)
+                  ? -1
+                  : newIndex;
+            });
+            widget.onTouchedIndexChanged(touchedPieChartIndex);
+          },
+        ),
+      ),
       swapAnimationDuration: const Duration(milliseconds: 150),
       // Optional
       swapAnimationCurve: Curves.linear, // Optional
@@ -75,4 +76,3 @@ class ChartData {
     text = '$x\n$y%';
   }
 }
-

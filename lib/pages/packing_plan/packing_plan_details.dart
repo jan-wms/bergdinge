@@ -7,7 +7,6 @@ import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fl_chart/fl_chart.dart';
 import '../../custom_widgets/custom_back_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../firebase/firebase_auth.dart';
@@ -27,7 +26,8 @@ class PackingPlanDetails extends ConsumerStatefulWidget {
 class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final dropdownIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
   final _formKey = GlobalKey<FormState>();
-  final touchedPieChartIndex = StateProvider.autoDispose<int>((ref) => -1);
+  final displayedItemsProvider =
+      StateProvider<Map<String, List<PackingPlanItem>>>((ref) => {});
 
   @override
   Widget build(BuildContext context) {
@@ -48,64 +48,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
       return result;
     }
 
-    PieChartData getPieChartData({required List<ChartData> chartData}) {
-      double radius(bool isTouched) => isTouched ? 110.0 : 100.0;
-      List<Color> sectionColor = [
-        Colors.blueAccent,
-        Colors.lightBlueAccent,
-        Colors.blueGrey,
-        Colors.lightBlue,
-        Colors.blue,
-      ];
-      List<Color> textColor = [
-        Colors.white,
-        Colors.white,
-        Colors.white,
-        Colors.white,
-        Colors.white,
-      ];
-
-      List<PieChartSectionData> sectionData =
-          chartData.asMap().entries.map((e) {
-        final isTouched = e.key == ref.watch(touchedPieChartIndex);
-
-        return PieChartSectionData(
-          color: sectionColor[e.key],
-          value: e.value.y,
-          title: e.value.text,
-          radius: radius(isTouched),
-          titleStyle: TextStyle(color: textColor[e.key]),
-        );
-      }).toList();
-
-      return PieChartData(
-        sections: sectionData,
-        centerSpaceRadius: 0,
-        sectionsSpace: 0,
-        pieTouchData: PieTouchData(
-          longPressDuration: const Duration(seconds: 2),
-          touchCallback: (FlTouchEvent event, pieTouchResponse) {
-            if (!event.isInterestedForInteractions ||
-                pieTouchResponse == null ||
-                pieTouchResponse.touchedSection == null ||
-                event.runtimeType != FlTapDownEvent) {
-              return;
-            }
-            final touchedIndex =
-                pieTouchResponse.touchedSection!.touchedSectionIndex;
-            ref.read(touchedPieChartIndex.notifier).state =
-                (ref.read(touchedPieChartIndex) == touchedIndex)
-                    ? -1
-                    : touchedIndex;
-          },
-        ),
-      );
-    }
-
     Widget getStatistics({required List<PackingPlanItem>? items}) {
-      double weight = getWeight(items);
-
-      Map<String, List<PackingPlanItem>>? categoryPackingPlanItemsMap = {};
+      Map<String, List<PackingPlanItem>> categoryPackingPlanItemsMap = {};
       for (PackingPlanItem i in items ?? []) {
         Equipment e = equipmentList!
             .singleWhere((element) => element.id == i.equipmentId);
@@ -115,59 +59,44 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
             : categoryPackingPlanItemsMap[key] = [i];
       }
 
-
-
+      double weight = getWeight(items);
       List<ChartData> chartData = categoryPackingPlanItemsMap.entries
           .map((entry) => ChartData(
               x: Data.getCategoryNames(entry.key).last,
               y: getWeight(entry.value) / weight))
           .toList();
 
+      Future.delayed(const Duration(seconds: 1)).then((value) => ref
+          .read(displayedItemsProvider.notifier)
+          .state = categoryPackingPlanItemsMap);
+
       return Column(
-          children: [
-            Text('touchedIndex: ${ref.watch(touchedPieChartIndex)}'),
-            Text('total weight: $weight'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  height: 500,
-                  width: 500,
-                  child: PieChart(
-                    getPieChartData(chartData: chartData),
-                    swapAnimationDuration: const Duration(milliseconds: 150),
-                    // Optional
-                    swapAnimationCurve: Curves.linear, // Optional
-                  ),
-                ),
-                Column(
-                  children: [
-                    const Text(
-                      'Gegenstände total',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    for (MapEntry<String, List<PackingPlanItem>> entry
-                        in categoryPackingPlanItemsMap.entries)
-                      Column(
-                        children: [
-                          Text(Data.getCategoryNames(entry.key).last),
-                          for (PackingPlanItem item in entry.value)
-                            Card(
-                              child: Text(
-                                  '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
-                            ),
-                        ],
-                      ),
-                  ],
-                ),
-              ],
+        children: [
+          Text('total weight: $weight'),
+          SizedBox(
+            height: 500,
+            width: 500,
+            child: CustomPieChart(
+              chartData: chartData,
+              onTouchedIndexChanged: (value) {
+                print('new value$value');
+              },
             ),
-          ],
+          ),
+        ],
       );
     }
 
-    Widget getStatisticsPageView ({required List<PackingPlanItem>? items}) {
+    Widget getStatisticsPageView({required List<PackingPlanItem>? items}) {
       final pageController = PageController(initialPage: 0);
+
+      List<Statistic> statistics = [];
+
+      do {
+
+
+        statistics.add(Statistic(title: title, weight: weight, categoryPackingPlanItemsMap: categoryPackingPlanItemsMap));
+      } while ()
 
       return SizedBox(
         height: 550,
@@ -181,39 +110,46 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                   children: [
                     getStatistics(items: items),
                     Container(
-                      color: Colors.green,
-                    ),
-                    Container(
                       color: Colors.orange,
                     ),
                   ],
                 ),
                 //TODO dot indicator
-                Positioned(bottom: 20, left: 0,child: Container(height: 30, width: 30, color: Colors.blue,),),
+                Positioned(
+                  bottom: 20,
+                  left: 0,
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    color: Colors.blue,
+                  ),
+                ),
               ]),
             ),
             Container(
-             color: Colors.black12,
-             width: 400,
-             child: const Column(
-               children: [
-                 Text(
-                   'Gegenstände total',
-                   style: TextStyle(fontWeight: FontWeight.bold),
-                 ),
-                 /*for (MapEntry<String, List<PackingPlanItem>> entry
-                 in categoryPackingPlanItemsMap.entries)
-                   Column(
-                     children: [
-                       Text(Data.getCategoryNames(entry.key).last),
-                       for (PackingPlanItem item in entry.value)
-                         Card(
-                           child: Text(
-                               '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
-                         ),*/
-                     ],
-             ),
-           )
+              color: Colors.black12,
+              width: 400,
+              child: Column(
+                children: [
+                  const Text(
+                    'Gegenstände total',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  for (MapEntry<String, List<PackingPlanItem>> entry
+                      in ref.watch(displayedItemsProvider).entries)
+                    Column(
+                      children: [
+                        Text(Data.getCategoryNames(entry.key).last),
+                        for (PackingPlanItem item in entry.value)
+                          Card(
+                            child: Text(
+                                '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
+                          ),
+                      ],
+                    ),
+                ],
+              ),
+            )
           ],
         ),
       );
@@ -341,4 +277,21 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
       ],
     );
   }
+}
+
+class Statistic {
+  final String title;
+  final double weight;
+  final Map<String, List<PackingPlanItem>> categoryPackingPlanItemsMap;
+
+  const Statistic(
+      {required this.title,
+      required this.weight,
+      required this.categoryPackingPlanItemsMap});
+
+  get chartData => categoryPackingPlanItemsMap.entries
+      .map((entry) => ChartData(
+          x: Data.getCategoryNames(entry.key).last,
+          y: getWeight(entry.value) / weight))
+      .toList();
 }
