@@ -1,24 +1,18 @@
-import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
-import 'package:equipment_app/pages/setup/image_selector.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:yaml/yaml.dart';
 
 import '../../data/data.dart';
 import '../../firebase/firebase_auth.dart';
-
-enum ImageAction { camera, gallery, delete }
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -90,10 +84,6 @@ class SettingsPage extends ConsumerWidget {
         Card(
           child: Column(
             children: [
-              CircleAvatar(
-                radius: 48,
-                backgroundImage: ref.watch(profilePictureStreamProvider).value,
-              ),
               Text('Hallo ${userData?['name']}!'),
               ElevatedButton(
                   onPressed: () {
@@ -103,57 +93,6 @@ class SettingsPage extends ConsumerWidget {
                     );
                   },
                   child: const Text('edit name')),
-              PopupMenuButton<ImageAction>(
-                tooltip: '',
-                icon: const Icon(Icons.edit),
-                onSelected: (ImageAction action) {
-                  if (action == ImageAction.camera) {
-                    ImageSelector().pickImage(
-                        context: context, imageSource: ImageSource.camera);
-                  }
-                  if (action == ImageAction.gallery) {
-                    ImageSelector().pickImage(
-                        context: context, imageSource: ImageSource.gallery);
-                  }
-                  if (action == ImageAction.delete) {
-                    CustomDialog.showCustomConfirmationDialog(
-                            context: context,
-                            description:
-                                'Möchtest du dein Profilbild wirklich löschen?')
-                        .then((value) {
-                      if (value) {
-                        FirebaseStorage.instance
-                            .ref("users/${Auth().user!.uid}")
-                            .child('profile.jpg')
-                            .delete()
-                            .then((value) => FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(Auth().user?.uid)
-                                    .update({
-                                  "profilePicture": FieldValue.delete(),
-                                }));
-                      }
-                    });
-                  }
-                },
-                itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<ImageAction>>[
-                  if (kIsWeb || Platform.isMacOS ? false : true)
-                    const PopupMenuItem<ImageAction>(
-                      value: ImageAction.camera,
-                      child: Text('Foto aufnehmen'),
-                    ),
-                  const PopupMenuItem<ImageAction>(
-                    value: ImageAction.gallery,
-                    child: Text('Aus Mediathek wählen'),
-                  ),
-                  if (userData?['profilePicture'] != null)
-                    const PopupMenuItem<ImageAction>(
-                      value: ImageAction.delete,
-                      child: Text('Foto löschen'),
-                    ),
-                ],
-              ),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [

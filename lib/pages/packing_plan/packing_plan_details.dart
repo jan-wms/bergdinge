@@ -33,6 +33,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
 
+
     return Column(
       children: [
         const CustomBackButton(),
@@ -78,6 +79,48 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
               for (MapEntry<String, List<PackingPlanItem>> entry
                   in statistics.first.categoryPackingPlanItemsMap.entries) {
                 statistics.add(statisticFromItems(entry));
+              }
+
+              List<PackingPlanItem> getPlainItemList (List<PackingPlanItem> list) {
+                List<PackingPlanItem> result = list;
+                for(var element in list) {
+                  if(element.items != null) {
+                    result.addAll(getPlainItemList(element.items!));
+                  }
+                }
+                return result;
+              }
+
+              List<Column> getRightSection(Map<String, List<PackingPlanItem>> map) {
+                var result = <Column>[];
+                List<PackingPlanItem> plainItemList = [];
+                for (var element in map.values) {
+                  plainItemList.addAll(element);
+                }
+                plainItemList = getPlainItemList(plainItemList);
+
+                Statistic s = statisticFromItems(MapEntry('', plainItemList));
+
+                for (MapEntry<String,
+                    List<PackingPlanItem>> entry
+                in s.categoryPackingPlanItemsMap.entries) {
+                  result.add(
+                      Column(
+                        children: [
+                          Text(
+                              Data.getCategoryNames(entry.key)
+                                  .last),
+                          for (PackingPlanItem item
+                          in entry.value)
+                            Card(
+                              child: Text(
+                                  '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
+                            ),
+                        ],
+                      ));
+                }
+
+                return result;
               }
 
               return Stack(children: [
@@ -224,25 +267,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      for (MapEntry<String,
-                                              List<PackingPlanItem>> entry
-                                          in statistics
-                                              .first
-                                              .categoryPackingPlanItemsMap
-                                              .entries)
-                                        Column(
-                                          children: [
-                                            Text(
-                                                Data.getCategoryNames(entry.key)
-                                                    .last),
-                                            for (PackingPlanItem item
-                                                in entry.value)
-                                              Card(
-                                                child: Text(
-                                                    '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
-                                              ),
-                                          ],
-                                        ),
+                                      ...getRightSection(statistics.first.categoryPackingPlanItemsMap),
                                     ],
                                   ),
                                 )
@@ -284,17 +309,31 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                 Positioned(
                   bottom: 10,
                   right: 10,
-                  child: ElevatedButton(
-                    child: const Row(
-                      children: [
-                        Icon(Icons.add),
-                        Text('item'),
-                      ],
-                    ),
-                    onPressed: () {
-                      const dialogContent = Text('add item to plan');
-                      CustomDialog.showCustomModal(context, dialogContent);
-                    },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: ElevatedButton(
+                          child: const Icon(Icons.lightbulb_rounded),
+                          onPressed: () {
+                            const dialogContent = Text('tipps');
+                            CustomDialog.showCustomModal(context, dialogContent);
+                          },
+                        ),
+                      ),
+                      ElevatedButton(
+                        child: const Row(
+                          children: [
+                            Icon(Icons.add),
+                            Text('item'),
+                          ],
+                        ),
+                        onPressed: () {
+                          const dialogContent = Text('add item to plan');
+                          CustomDialog.showCustomModal(context, dialogContent);
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ]);

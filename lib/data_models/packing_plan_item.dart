@@ -4,11 +4,13 @@ class PackingPlanItem {
   final List<PackingPlanItem>? items;
   final String equipmentId;
   final int equipmentCount;
+  final bool isChecked;
 
   PackingPlanItem({
     this.items,
     required this.equipmentCount,
     required this.equipmentId,
+    required this.isChecked,
   });
 
   factory PackingPlanItem.fromFirestore(
@@ -23,6 +25,7 @@ class PackingPlanItem {
           : null,
       equipmentId: data?['equipmentId'],
       equipmentCount: (data?['equipmentCount'] as num).toInt(),
+      isChecked: data?['isChecked'],
     );
   }
 
@@ -34,6 +37,7 @@ class PackingPlanItem {
           : null,
       equipmentId: data['equipmentId'],
       equipmentCount: (data['equipmentCount'] as num).toInt(),
+      isChecked: data['isChecked'],
     );
   }
 
@@ -42,6 +46,7 @@ class PackingPlanItem {
       if (items != null) "items": items?.map((e) => e.toMap()),
       "equipmentId": equipmentId,
       "equipmentCount": equipmentCount,
+      "isChecked": isChecked,
     };
   }
 }

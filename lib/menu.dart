@@ -14,10 +14,6 @@ class Menu extends ConsumerWidget {
       color: Colors.black12,
       child: ListView(
         children: [
-          CircleAvatar(
-            radius: 48,
-            backgroundImage: ref.watch(profilePictureStreamProvider).value,
-          ),
           Text(
               'Hallo ${ref.watch(userDataStreamProvider).value?['name'] ?? ''}!'),
           ListTile(
