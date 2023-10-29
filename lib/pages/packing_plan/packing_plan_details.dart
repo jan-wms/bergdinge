@@ -153,7 +153,23 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               child: CustomPieChart(
                                                 chartData: statistic.chartData,
                                                 onTouchedIndexChanged: (value) {
-                                                  print('new value$value');
+                                                  if (index == 0) {
+                                                    Future.delayed(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500))
+                                                        .then(
+                                                      (result) => pageController
+                                                          .animateToPage(
+                                                          (value + 1),
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                              curve:
+                                                                  Curves.ease),
+                                                    );
+                                                  }
                                                 },
                                               ),
                                             ),
@@ -167,10 +183,33 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                     Positioned(
                                       bottom: 20,
                                       left: 0,
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        color: Colors.blue,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          for (var i = 0;
+                                              i < statistics.length;
+                                              i++)
+                                            Container(
+                                              width: 15,
+                                              height: 15,
+                                              margin: const EdgeInsets.only(
+                                                  left: 5, right: 5),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.black12,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: GestureDetector(
+                                                onTap: () => pageController
+                                                    .animateToPage(i,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500),
+                                                        curve: Curves.ease),
+                                              ),
+                                            )
+                                        ],
                                       ),
                                     ),
                                   ]),
@@ -221,7 +260,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               PackingPlanValidator.notes(value),
                           controller: controllerNotes,
                           decoration:
-                          const InputDecoration(labelText: 'Notizen'),
+                              const InputDecoration(labelText: 'Notizen'),
                           minLines: 6,
                           maxLines: 6,
                           keyboardType: TextInputType.multiline,
@@ -277,7 +316,9 @@ class Statistic {
       required this.categoryPackingPlanItemsMap,
       required this.ref});
 
-  String get title => topCategory.isEmpty ? 'total weight' : 'weight ${Data.getCategoryNames(topCategory).last}';
+  String get title => topCategory.isEmpty
+      ? 'total weight'
+      : 'weight ${Data.getCategoryNames(topCategory).last}';
 
   double getWeight(List<PackingPlanItem>? items) {
     if (items == null) return 0.0;

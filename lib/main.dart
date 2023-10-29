@@ -27,7 +27,10 @@ class MyApp extends ConsumerWidget {
         routeInformationParser: router.routeInformationParser,
         routerDelegate: router.routerDelegate,
         routeInformationProvider: router.routeInformationProvider,
-        title: 'Equipment App',
+        title: 'Bergdinge',
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
       ),
     );
   }
