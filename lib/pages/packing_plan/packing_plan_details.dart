@@ -32,17 +32,22 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   @override
   Widget build(BuildContext context) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
-    final equipmentList = ref.watch(equipmentStreamProvider).value;
+    final equipmentList = ref.watch(equipmentStreamProvider);
 
     return Column(
       children: [
         const CustomBackButton(),
         Expanded(
-          child: packingPlanList.when(
+          child: equipmentList.when(
             error: (error, stackTrace) => Text(error.toString()),
             loading: () => const CircularProgressIndicator.adaptive(),
-            data: (data) {
-              final PackingPlan packingPlan = data
+            data: (equipmentData) {
+              return packingPlanList.when(
+                  error: (error, stackTrace) => Text(error.toString()),
+                loading: () => const CircularProgressIndicator.adaptive(),
+                data: (packingPlanData) {
+
+              final PackingPlan packingPlan = packingPlanData
                   .singleWhere((element) => element.id == widget.packingPlanID);
               final TextEditingController controllerNotes =
                   TextEditingController(text: packingPlan.notes ?? '');
@@ -52,7 +57,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                 Map<String, List<PackingPlanItem>> categoryPackingPlanItemsMap =
                     {};
                 for (PackingPlanItem i in entry.value ?? []) {
-                  Equipment e = equipmentList!
+                  Equipment e = equipmentData
                       .singleWhere((element) => element.id == i.equipmentId);
                   String topCategory = e.category.substring(entry.key.length);
                   topCategory = entry.key +
@@ -92,16 +97,21 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                 return result;
               }
 
-              List<Column> getRightSection(
-                  Map<String, List<PackingPlanItem>> map) {
-                var result = <Column>[];
+              List<Widget> getRightSection(Statistic statistic) {
+                var result = <Widget>[
+                  Text((statistic.topCategory.isNotEmpty) ? Data.getCategoryNames(statistic.topCategory).last : 'total',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ];
                 List<PackingPlanItem> plainItemList = [];
-                for (var element in map.values) {
+                for (var element in statistic.categoryPackingPlanItemsMap.values) {
                   plainItemList.addAll(element);
                 }
                 plainItemList = getPlainItemList(plainItemList);
 
-                Statistic s = statisticFromItems(MapEntry('', plainItemList));
+                Statistic s = statisticFromItems(MapEntry(statistic.topCategory, plainItemList));
+                ///ohne verschachtelung:
+                ///s = statistic;
 
                 for (MapEntry<String, List<PackingPlanItem>> entry
                     in s.categoryPackingPlanItemsMap.entries) {
@@ -111,12 +121,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                       for (PackingPlanItem item in entry.value)
                         Card(
                           child: Text(
-                              '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
+                              '${equipmentData.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
                         ),
                     ],
                   ));
                 }
-
                 return result;
               }
 
@@ -267,7 +276,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                   width: 400,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: getRightSection(statistics[ref.watch(pageIndexProvider)].categoryPackingPlanItemsMap),
+                                    children: getRightSection(statistics[ref.watch(pageIndexProvider)]),
                                   ),
                                 )
                               ],
@@ -337,6 +346,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                   ),
                 ),
               ]);
+                },
+              );
             },
           ),
         ),
