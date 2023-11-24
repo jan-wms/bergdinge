@@ -410,6 +410,6 @@ class Statistic {
   List<ChartData> get chartData => categoryPackingPlanItemsMap.entries
       .map((entry) => ChartData(
           x: Data.getCategoryNames(entry.key).last,
-          y: getWeight(entry.value) / weight))
+          y: ((getWeight(entry.value) / weight) * 100).roundToDouble()))
       .toList();
 }
