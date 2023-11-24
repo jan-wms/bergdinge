@@ -15,4 +15,6 @@ class Design {
     Colors.white,
     Colors.white,
   ];
+
+  static const double breakpoint = 600.0;
 }

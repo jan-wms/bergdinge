@@ -57,6 +57,8 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
           ],
           isChecked: false,
         ),
+        PackingPlanItem(equipmentCount: 1, equipmentId: 'XbvwbMgcctoAFbV4ayTz', isChecked: false),
+        PackingPlanItem(equipmentCount: 2, equipmentId: 'r1p7nA6Q5TkyML1NpTFN', isChecked: false),
         PackingPlanItem(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1', isChecked: false),
       ],
       notes: widget.packingPlan?.notes,

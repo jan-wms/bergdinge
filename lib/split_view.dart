@@ -1,3 +1,4 @@
+import 'package:equipment_app/data/design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,7 +19,7 @@ class _SplitViewState extends State<SplitView> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth > 600) {
+    if (screenWidth > Design.breakpoint) {
       return Scaffold(
         body: Row(
           children: [

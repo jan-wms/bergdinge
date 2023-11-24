@@ -27,12 +27,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final dropdownIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
   final _formKey = GlobalKey<FormState>();
   final pageController = PageController(initialPage: 0);
+  final pageIndexProvider = StateProvider<int>((ref) => 0);
 
   @override
   Widget build(BuildContext context) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
     final equipmentList = ref.watch(equipmentStreamProvider).value;
-
 
     return Column(
       children: [
@@ -81,17 +81,19 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                 statistics.add(statisticFromItems(entry));
               }
 
-              List<PackingPlanItem> getPlainItemList (List<PackingPlanItem> list) {
+              List<PackingPlanItem> getPlainItemList(
+                  List<PackingPlanItem> list) {
                 List<PackingPlanItem> result = list;
-                for(var element in list) {
-                  if(element.items != null) {
+                for (var element in list) {
+                  if (element.items != null) {
                     result.addAll(getPlainItemList(element.items!));
                   }
                 }
                 return result;
               }
 
-              List<Column> getRightSection(Map<String, List<PackingPlanItem>> map) {
+              List<Column> getRightSection(
+                  Map<String, List<PackingPlanItem>> map) {
                 var result = <Column>[];
                 List<PackingPlanItem> plainItemList = [];
                 for (var element in map.values) {
@@ -101,23 +103,18 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                 Statistic s = statisticFromItems(MapEntry('', plainItemList));
 
-                for (MapEntry<String,
-                    List<PackingPlanItem>> entry
-                in s.categoryPackingPlanItemsMap.entries) {
-                  result.add(
-                      Column(
-                        children: [
-                          Text(
-                              Data.getCategoryNames(entry.key)
-                                  .last),
-                          for (PackingPlanItem item
-                          in entry.value)
-                            Card(
-                              child: Text(
-                                  '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
-                            ),
-                        ],
-                      ));
+                for (MapEntry<String, List<PackingPlanItem>> entry
+                    in s.categoryPackingPlanItemsMap.entries) {
+                  result.add(Column(
+                    children: [
+                      Text(Data.getCategoryNames(entry.key).last),
+                      for (PackingPlanItem item in entry.value)
+                        Card(
+                          child: Text(
+                              '${equipmentList!.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
+                        ),
+                    ],
+                  ));
                 }
 
                 return result;
@@ -204,7 +201,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                         .then(
                                                       (result) => pageController
                                                           .animateToPage(
-                                                          (value + 1),
+                                                              (value + 1),
                                                               duration:
                                                                   const Duration(
                                                                       milliseconds:
@@ -221,8 +218,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       },
                                       itemCount: statistics.length,
                                       controller: pageController,
+                                      onPageChanged: (newPage) {
+                                        ref
+                                            .read(pageIndexProvider.notifier)
+                                            .state = newPage;
+                                      },
                                     ),
-                                    //TODO dot indicator
                                     Positioned(
                                       bottom: 20,
                                       left: 0,
@@ -238,8 +239,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               height: 15,
                                               margin: const EdgeInsets.only(
                                                   left: 5, right: 5),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.black12,
+                                              decoration: BoxDecoration(
+                                                color: (i ==
+                                                        ref.watch(
+                                                            pageIndexProvider))
+                                                    ? Colors.blue
+                                                    : Colors.black12,
                                                 shape: BoxShape.circle,
                                               ),
                                               child: GestureDetector(
@@ -261,14 +266,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                   color: Colors.black12,
                                   width: 400,
                                   child: Column(
-                                    children: [
-                                      const Text(
-                                        'Gegenstände total',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      ...getRightSection(statistics.first.categoryPackingPlanItemsMap),
-                                    ],
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: getRightSection(statistics[ref.watch(pageIndexProvider)].categoryPackingPlanItemsMap),
                                   ),
                                 )
                               ],
@@ -317,7 +316,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                           child: const Icon(Icons.lightbulb_rounded),
                           onPressed: () {
                             const dialogContent = Text('tipps');
-                            CustomDialog.showCustomModal(context, dialogContent);
+                            CustomDialog.showCustomModal(
+                                context, dialogContent);
                           },
                         ),
                       ),

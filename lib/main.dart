@@ -28,9 +28,6 @@ class MyApp extends ConsumerWidget {
         routerDelegate: router.routerDelegate,
         routeInformationProvider: router.routeInformationProvider,
         title: 'Bergdinge',
-        theme: ThemeData(
-          useMaterial3: true,
-        ),
       ),
     );
   }
