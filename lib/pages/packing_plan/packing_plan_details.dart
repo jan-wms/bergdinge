@@ -107,7 +107,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                     List<PackingPlanItem> result = list;
                     for (var element in list) {
                       if (element.items != null) {
-                        result.addAll(getPlainItemList(element.items!));
+                        getPlainItemList(element.items!).forEach((elementToInsert) {
+                          int temp = result.indexWhere((e) => e.equipmentId == elementToInsert.equipmentId);
+                          if(temp == -1) {
+                            result.add(elementToInsert);
+                          } else {
+                            result[temp] = PackingPlanItem(equipmentCount: result.elementAt(temp).equipmentCount + elementToInsert.equipmentCount, items: [...?result.elementAt(temp).items, ...?elementToInsert.items], equipmentId: elementToInsert.equipmentId, isChecked: false);
+                          }
+                        });
                       }
                     }
                     return result;
@@ -141,7 +148,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                           for (PackingPlanItem item in entry.value)
                             Card(
                               child: Text(
-                                  '${equipmentData.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentData.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
+                                  '${equipmentData.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentData.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}'),
                             ),
                         ],
                       ));
