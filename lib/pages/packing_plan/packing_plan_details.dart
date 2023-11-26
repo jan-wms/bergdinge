@@ -141,7 +141,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                           for (PackingPlanItem item in entry.value)
                             Card(
                               child: Text(
-                                  '${equipmentData.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
+                                  '${equipmentData.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentData.singleWhere((element) => element.id == item.equipmentId).name}@${item.equipmentCount}-${item.isChecked}'),
                             ),
                         ],
                       ));
@@ -240,7 +240,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                   Curves.ease),
                                                     );
                                                   } else {
-                                                      ref.read(pageIndexProvider.notifier).state = [index, value];
+                                                    ref
+                                                        .read(pageIndexProvider
+                                                            .notifier)
+                                                        .state = [index, value];
                                                   }
                                                 },
                                               ),
@@ -272,8 +275,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       left: 5, right: 5),
                                                   decoration: BoxDecoration(
                                                     color: (i ==
-                                                            ref.watch(
-                                                                pageIndexProvider).first)
+                                                            ref
+                                                                .watch(
+                                                                    pageIndexProvider)
+                                                                .first)
                                                         ? Colors.blue
                                                         : Colors.black12,
                                                     shape: BoxShape.circle,
@@ -301,11 +306,36 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                          children: getRightSection(
-                                              (ref.watch(pageIndexProvider).last != -1 && statistics[ref.watch(pageIndexProvider).first].categoryPackingPlanItemsMap.entries.length > 1)
-                                                  ? statisticFromItems(MapEntry(statistics[ref.read(pageIndexProvider).first].categoryPackingPlanItemsMap.entries.elementAt(ref.watch(pageIndexProvider).last).key, statistics[ref.read(pageIndexProvider).first].categoryPackingPlanItemsMap.entries.elementAt(ref.watch(pageIndexProvider).last).value))
-                                                  : statistics[ref.read(pageIndexProvider).first]
-                                          ),
+                                          children: getRightSection((ref
+                                                          .watch(
+                                                              pageIndexProvider)
+                                                          .last !=
+                                                      -1 &&
+                                                  statistics[ref.watch(pageIndexProvider).first]
+                                                          .categoryPackingPlanItemsMap
+                                                          .entries
+                                                          .length >
+                                                      1)
+                                              ? statisticFromItems(MapEntry(
+                                                  statistics[ref.read(pageIndexProvider).first]
+                                                      .categoryPackingPlanItemsMap
+                                                      .entries
+                                                      .elementAt(ref
+                                                          .watch(
+                                                              pageIndexProvider)
+                                                          .last)
+                                                      .key,
+                                                  statistics[ref.read(pageIndexProvider).first]
+                                                      .categoryPackingPlanItemsMap
+                                                      .entries
+                                                      .elementAt(ref
+                                                          .watch(
+                                                              pageIndexProvider)
+                                                          .last)
+                                                      .value))
+                                              : statistics[ref
+                                                  .read(pageIndexProvider)
+                                                  .first]),
                                         ),
                                       ),
                                     )
