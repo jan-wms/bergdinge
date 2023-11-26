@@ -93,6 +93,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                         ref: ref);
                   }
 
+                  //TODO: 'total' 'body' 'backpack'
                   List<Statistic> statistics = [
                     statisticFromItems(MapEntry('', packingPlan.items)),
                   ];
