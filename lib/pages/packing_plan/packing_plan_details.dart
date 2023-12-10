@@ -157,8 +157,19 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                 ),
                               ];
 
+                              Map<String, List<PackingPlanItem>> summarizedItems = {};
                               for (MapEntry<String, List<PackingPlanItem>> entry
-                                  in statistic.categoryPackingPlanItemsMap.entries) {
+                              in statistic.categoryPackingPlanItemsMap.entries) {
+                                Map<String, int> sumMap = {};
+                                for (PackingPlanItem p in entry.value) {
+                                  sumMap[p.equipmentId] = (sumMap[p.equipmentId] ?? 0) + p.equipmentCount;
+                                }
+                                summarizedItems[entry.key] = sumMap.keys.map((e) => PackingPlanItem(location: 0,equipmentCount: sumMap[e] ?? 0,equipmentId: e,isChecked: false)).toList();
+                              }
+
+
+                              for (MapEntry<String, List<PackingPlanItem>> entry
+                                  in summarizedItems.entries) {
                                 result.add(Column(
                                   children: [
                                     Text(Data.getCategoryNames(entry.key).last),
