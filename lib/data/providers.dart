@@ -57,6 +57,7 @@ StreamProvider.autoDispose.family<List<PackingPlanItem>, String>((ref, packingPl
       .doc(user?.uid)
       .collection('packing_plan')
       .doc(packingPlanId)
+      //TODO change to 'items'
       .collection('body')
       .withConverter(
     fromFirestore: PackingPlanItem.fromFirestore,

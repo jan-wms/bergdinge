@@ -56,6 +56,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             TextEditingController(text: packingPlan.notes ?? '');
 
                             Widget getCheckItems() {
+                              //TODO update displayed checkboxes
                               return Column(
                                 children: [
                                   IconButton(
@@ -71,7 +72,18 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               '${item.equipmentId}x${item.equipmentCount}@${item.location}'),
                                           Checkbox(
                                               value: item.isChecked,
-                                              onChanged: (value) {}),
+                                              onChanged: (value) {
+                                                DocumentReference ref = FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(Auth().user?.uid)
+                                                    .collection('packing_plan')
+                                                    .doc(packingPlan.id)
+                                                    //TODO change to 'items'
+                                                    .collection('body')
+                                                    .doc(item.equipmentId);
+
+                                                    ref.update({'isChecked': value});
+                                              }),
                                         ],
                                       )
                                   ]))
@@ -125,10 +137,9 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                   ref: ref);
                             }
 
-                            //TODO: locations 'total' 'body' 'backpack'
                             List<Statistic> statistics = [
                               statisticFromItems(
-                                  MapEntry('', items)),
+                                  MapEntry('', items.where((element) => ref.watch(dropdownIndexProvider) == 0 ? true : element.location == ref.read(dropdownIndexProvider)).toList())),
                             ];
 
                             for (MapEntry<String, List<PackingPlanItem>> entry

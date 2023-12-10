@@ -4,7 +4,7 @@ class PackingPlanItem {
   final String equipmentId;
   final int equipmentCount;
   final bool isChecked;
-  final String location;
+  final int location;
 
   PackingPlanItem({
     required this.equipmentCount,
