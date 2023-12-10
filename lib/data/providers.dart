@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data_models/equipment.dart';
+import '../data_models/packing_plan_item.dart';
 import '../firebase/firebase_auth.dart';
 
 final equipmentStreamProvider = StreamProvider<List<Equipment>>((ref) {
@@ -45,4 +46,24 @@ final userDataStreamProvider = StreamProvider<Map<String, dynamic>>((ref) {
       .snapshots();
 
   return firestoreStream.map((event) => event.data() ?? {});
+});
+
+final packingPlanItemStreamProvider =
+StreamProvider.autoDispose.family<List<PackingPlanItem>, String>((ref, packingPlanId) {
+  final user = ref.watch(authStateChangesProvider).value;
+
+  final stream = FirebaseFirestore.instance
+      .collection('users')
+      .doc(user?.uid)
+      .collection('packing_plan')
+      .doc(packingPlanId)
+      .collection('body')
+      .withConverter(
+    fromFirestore: PackingPlanItem.fromFirestore,
+    toFirestore: (PackingPlanItem p, _) => p.toMap(),
+  )
+      .snapshots();
+
+  return stream.map((snapshot) =>
+      snapshot.docs.map((doc) => doc.data()).toList());
 });

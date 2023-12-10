@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../data/data.dart';
 import '../../data/providers.dart';
-import '../../data_models/packing_plan_item.dart';
 import '../../firebase/firebase_auth.dart';
 
 class PackingPlanEdit extends ConsumerStatefulWidget {
@@ -45,25 +44,6 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       sports: _formKeySports.currentState!.value,
       createdAt: widget.packingPlan?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
-      //TODO remove testing equipment
-      //items: widget.packingPlan.items,
-      items: [
-
-        PackingPlanItem(equipmentCount: 1, equipmentId: 'gX2Vk6pFDn3V8gUz49wf', isChecked: false),
-        PackingPlanItem(equipmentCount: 1, equipmentId: 'XbvwbMgcctoAFbV4ayTz', isChecked: false),
-        PackingPlanItem(equipmentCount: 2, equipmentId: 'r1p7nA6Q5TkyML1NpTFN', isChecked: false),
-        PackingPlanItem(equipmentCount: 2, equipmentId: 'cFLbZylLoqw0VeQ09CO1', isChecked: false),
-        PackingPlanItem(
-          equipmentCount: 1,
-          equipmentId: 'BZD1ZVbSYPBphvpqqpSv',
-          items: [
-            PackingPlanItem(
-                equipmentCount: 5, equipmentId: 'BZD1ZVbSYPBphvpqqpSv', isChecked: false),
-          ],
-          isChecked: false,
-        ),
-
-      ],
       notes: widget.packingPlan?.notes,
     );
 
