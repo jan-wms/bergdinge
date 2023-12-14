@@ -88,8 +88,8 @@ class SettingsPage extends ConsumerWidget {
               ElevatedButton(
                   onPressed: () {
                     CustomDialog.showCustomModal(
-                      context,
-                      SetupScreen(editValue: EditValue.name),
+                      context: context,
+                      child: SetupScreen(editValue: EditValue.name),
                     );
                   },
                   child: const Text('edit name')),
@@ -178,8 +178,8 @@ class SettingsPage extends ConsumerWidget {
                 ElevatedButton(
                     onPressed: () async {
                       CustomDialog.showCustomModal(
-                        context,
-                        LoginScreen(
+                        context: context,
+                        child: LoginScreen(
                             onComplete: () {
                               context.pop();
                               CustomDialog.showCustomInformationDialog(
@@ -215,8 +215,8 @@ class SettingsPage extends ConsumerWidget {
                       deleteAccount(context);
                     } else {
                       await CustomDialog.showCustomModal(
-                        context,
-                        LoginScreen(
+                        context: context,
+                        child: LoginScreen(
                             onComplete: () {
                               context.pop();
                               deleteAccount(context);

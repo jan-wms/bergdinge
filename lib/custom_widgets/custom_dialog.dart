@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomDialog {
-  static Future<T> showCustomModal<T>(
-      BuildContext context, Widget child) async {
+  static Future<T> showCustomModal<T>({
+      required BuildContext context, required Widget child}) async {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,

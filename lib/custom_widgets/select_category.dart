@@ -11,8 +11,8 @@ Future<String> selectCategory(BuildContext context, String selected) async {
     selected: selected,
   );
   await CustomDialog.showCustomModal(
-    context,
-    selectCategory,
+    context: context,
+    child: selectCategory,
   );
   return k.currentState!.selected;
 }
