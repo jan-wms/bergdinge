@@ -4,6 +4,7 @@ import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
+import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -59,9 +60,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               //TODO update displayed checkboxes
                               return Column(
                                 children: [
-                                  IconButton(
-                                      onPressed: () => context.pop(),
-                                      icon: const Icon(Icons.close)),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: IconButton(
+                                        onPressed: () => context.pop(),
+                                        icon: const Icon(Icons.close)),
+                                  ),
                                   Expanded(
                                       child: ListView(children: [
                                     for (PackingPlanItem item
@@ -474,8 +478,20 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         ],
                                       ),
                                       onPressed: () {
-                                        const dialogContent =
-                                            Text('add item to plan');
+                                        Widget dialogContent =
+                                            Column(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.centerRight,
+                                                  child: IconButton(
+                                                      onPressed: () => context.pop(),
+                                                      icon: const Icon(Icons.close)),
+                                                ),
+                                                const Text('add item to plan'),
+                                                const Expanded(child: EquipmentList(action: EquipmentListAction.select)
+                                                ),
+                                              ],
+                                            );
                                         CustomDialog.showCustomModal(
                                             context, dialogContent);
                                       },

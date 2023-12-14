@@ -1,11 +1,13 @@
 import 'package:equipment_app/data_models/equipment.dart';
+import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class EquipmentCard extends StatelessWidget {
   final Equipment equipment;
+  final EquipmentListAction action;
 
-  const EquipmentCard({Key? key, required this.equipment}) : super(key: key);
+  const EquipmentCard({Key? key, required this.action, required this.equipment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,20 @@ class EquipmentCard extends StatelessWidget {
           child: Text('${equipment.brand!} ${equipment.name}'),
         ),
         onTap: () {
-          context.push('/equipment/details', extra: equipment.id);
+          if(action == EquipmentListAction.show) {
+          }
+
+
+          switch(action) {
+            case EquipmentListAction.select:
+              // TODO: Handle this case.
+              break;
+
+            case EquipmentListAction.show:
+            default:
+              context.push('/equipment/details', extra: equipment.id);
+            break;
+          }
         },
       ),
     );
