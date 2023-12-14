@@ -45,6 +45,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       createdAt: widget.packingPlan?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
       notes: widget.packingPlan?.notes,
+        locations: ['Gesamt', 'Anzug', 'Rucksack'],
     );
 
     bool continueEdit = true;

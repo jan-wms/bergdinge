@@ -232,17 +232,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             DropdownButton(
-                                              items: const [
-                                                DropdownMenuItem(
-                                                    value: 0,
-                                                    child: Text('total')),
-                                                DropdownMenuItem(
-                                                    value: 1,
-                                                    child: Text('body')),
-                                                DropdownMenuItem(
-                                                    value: 2,
-                                                    child: Text('backpack')),
+                                              items: [
+                                                for (String location in packingPlan.locations)
+                                                  DropdownMenuItem(
+                                                      value: packingPlan.locations.indexOf(location),
+                                                      child: Text(location)),
                                               ],
+                                            
                                               onChanged: (value) {
                                                 ref
                                                     .read(dropdownIndexProvider
