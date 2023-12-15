@@ -61,49 +61,26 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                     TextEditingController(
                                         text: packingPlan.notes ?? '');
 
-                                Widget getCheckItems() {
-                                  //TODO update displayed checkboxes
-                                  return Column(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: IconButton(
-                                            onPressed: () => context.pop(),
-                                            icon: const Icon(Icons.close)),
-                                      ),
-                                      Expanded(
-                                          child: ListView(children: [
-                                        for (PackingPlanItem item in items)
-                                          Row(
-                                            children: [
-                                              Text(
-                                                  '${item.equipmentId}x${item.equipmentCount}@${item.location}'),
-                                              Checkbox(
-                                                  value: item.isChecked,
-                                                  onChanged: (value) {
-                                                    DocumentReference ref =
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection('users')
-                                                            .doc(Auth()
-                                                                .user
-                                                                ?.uid)
-                                                            .collection(
-                                                                'packing_plan')
-                                                            .doc(packingPlan.id)
-                                                            //TODO change to 'items'
-                                                            .collection('body')
-                                                            .doc(item
-                                                                .equipmentId);
+                                Future<void> addItem(
+                                    {required String equipmentId,
+                                    required int count,
+                                    required int location}) async {
+                                  PackingPlanItem p = PackingPlanItem(
+                                      equipmentCount: count,
+                                      equipmentId: equipmentId,
+                                      isChecked: false,
+                                      location: location);
 
-                                                    ref.update(
-                                                        {'isChecked': value});
-                                                  }),
-                                            ],
-                                          )
-                                      ]))
-                                    ],
-                                  );
+                                  DocumentReference docRef =
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(Auth().user?.uid)
+                                          .collection('packing_plan')
+                                          .doc(widget.packingPlanID)
+                                          //TODO change to 'items'
+                                          .collection('body')
+                                          .doc('$equipmentId$location');
+                                  docRef.set(p.toMap());
                                 }
 
                                 Statistic statisticFromItems(
@@ -305,11 +282,104 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       dropdownIndexProvider),
                                                 ),
                                                 IconButton(
-                                                    onPressed: () => CustomDialog
-                                                        .showCustomModal(
-                                                            context: context,
-                                                            child:
-                                                                getCheckItems()),
+                                                    onPressed: () {
+                                                      CustomDialog
+                                                          .showCustomModal(
+                                                        context: context,
+                                                        child:
+                                                            //TODO update displayed checkboxes
+                                                            Column(
+                                                          children: [
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              child: IconButton(
+                                                                  onPressed: () =>
+                                                                      context
+                                                                          .pop(),
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .close)),
+                                                            ),
+                                                            Expanded(
+                                                                child: ListView(
+                                                                    children: [
+                                                                  for (PackingPlanItem item
+                                                                      in items)
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            '${item.equipmentId}x${item.equipmentCount}@${item.location}'),
+                                                                        Checkbox(
+                                                                            value:
+                                                                                item.isChecked,
+                                                                            onChanged: (value) {
+                                                                              DocumentReference docRef = FirebaseFirestore.instance
+                                                                                  .collection('users')
+                                                                                  .doc(Auth().user?.uid)
+                                                                                  .collection('packing_plan')
+                                                                                  .doc(packingPlan.id)
+                                                                                  //TODO change to 'items'
+                                                                                  .collection('body')
+                                                                                  .doc('${item.equipmentId}${item.location}');
+
+                                                                              docRef.update({
+                                                                                'isChecked': value
+                                                                              });
+                                                                            }),
+                                                                        IconButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              DocumentReference docRef = FirebaseFirestore.instance
+                                                                                  .collection('users')
+                                                                                  .doc(Auth().user?.uid)
+                                                                                  .collection('packing_plan')
+                                                                                  .doc(packingPlan.id)
+                                                                                  //TODO change to 'items'
+                                                                                  .collection('body')
+                                                                                  .doc('${item.equipmentId}${item.location}');
+
+                                                                              CustomDialog.showCustomDialog(
+                                                                                  context: context,
+                                                                                  child: Column(
+                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                    children: [
+                                                                                      Row(
+                                                                                        mainAxisSize: MainAxisSize.min,
+                                                                                        children: [
+                                                                                          ElevatedButton(
+                                                                                            onPressed: () => docRef.update({
+                                                                                              'equipmentCount': item.equipmentCount - 1
+                                                                                            }),
+                                                                                            child: const Icon(Icons.chevron_left),
+                                                                                          ),
+                                                                                          Text('${item.equipmentCount}'),
+                                                                                          ElevatedButton(onPressed: () => docRef.update({'equipmentCount': item.equipmentCount + 1}), child: const Icon(Icons.chevron_right)),
+                                                                                        ],
+                                                                                      ),
+                                                                                      ElevatedButton(
+                                                                                        onPressed: () => docRef.delete().then((value) => context.pop()),
+                                                                                        child: const Row(
+                                                                                          mainAxisSize: MainAxisSize.min,
+                                                                                          children: [
+                                                                                            Text('Löschen'),
+                                                                                            Icon(Icons.delete_rounded)
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      TextButton(onPressed: () => context.pop(), child: const Text('Abbrechen')),
+                                                                                    ],
+                                                                                  ));
+                                                                            },
+                                                                            icon:
+                                                                                const Icon(Icons.more_vert_rounded)),
+                                                                      ],
+                                                                    )
+                                                                ]))
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
                                                     icon: const Icon(Icons
                                                         .library_add_check_outlined)),
                                               ],
