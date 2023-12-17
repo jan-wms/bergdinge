@@ -25,13 +25,22 @@ class EditItem extends ConsumerStatefulWidget {
 }
 
 class _EditItemState extends ConsumerState<EditItem> {
-  final count = StateProvider<int>((ref) => 1);
   late final StateProvider<int> location;
+  late final StateProviderFamily<PackingPlanItem?, List<PackingPlanItem>> itemProviderFamily;
+
+  final countProviderFamily = StateProvider.family<int, PackingPlanItem?>((ref, p) => p?.equipmentCount ?? 1);
 
   @override
   void initState() {
     super.initState();
     location = StateProvider<int>((ref) => widget.location ?? 1);
+
+    itemProviderFamily = StateProvider.family<PackingPlanItem?, List<PackingPlanItem>>((ref, items) {
+      return items.singleWhereOrNull(
+              (element) =>
+          element.equipmentId == widget.equipmentId &&
+              element.location == ref.watch(location));
+    });
   }
 
   @override
@@ -41,13 +50,18 @@ class _EditItemState extends ConsumerState<EditItem> {
         loading: () => const CircularProgressIndicator.adaptive(),
         data: (items) {
 
-         PackingPlanItem? packingPlanItem = items.singleWhereOrNull(
-                    (element) =>
-                element.equipmentId == widget.equipmentId &&
-                    element.location == ref.watch(location));
+          StateProvider<PackingPlanItem?> packingPlanProvider = itemProviderFamily(items);
+          PackingPlanItem? packingPlanItem = ref.watch(packingPlanProvider);
+          StateProvider<int> count = countProviderFamily(ref.watch(packingPlanProvider));
 
+          DocumentReference docRef = FirebaseFirestore.instance
+              .collection('users')
+              .doc(Auth().user?.uid)
+              .collection('packing_plan')
+              .doc(widget.packingPlan.id)
+              .collection('items')
+              .doc('${widget.equipmentId}${ref.watch(location)}');
 
-         ref.read(count.notifier).state = packingPlanItem?.equipmentCount ?? 1;
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -90,37 +104,19 @@ class _EditItemState extends ConsumerState<EditItem> {
                       child: const Icon(Icons.chevron_right)),
                 ],
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    PackingPlanItem p = PackingPlanItem(
-                        equipmentCount: ref.read(count),
-                        equipmentId: widget.equipmentId,
-                        isChecked: packingPlanItem?.isChecked ?? false,
-                        location: ref.read(location));
-
-                    DocumentReference docRef = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(Auth().user?.uid)
-                        .collection('packing_plan')
-                        .doc(widget.packingPlan.id)
-                        .collection('items')
-                        .doc('${widget.equipmentId}${ref.read(location)}');
-
-                    if (packingPlanItem != null) {
-                      docRef.delete().then((value) => context.pop());
-                    } else {
-                      docRef.set(p.toMap()).then((value) => context.pop());
-                    }
-                  },
-                  child: (packingPlanItem != null)
-                      ? const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Löschen'),
-                            Icon(Icons.delete_rounded)
-                          ],
-                        )
-                      : const Text('add to plan')),
+              if (packingPlanItem != null) ElevatedButton(onPressed: () => docRef.delete().then((value) => context.pop()), child: const Row(mainAxisSize: MainAxisSize.min, children: [Text('Löschen'), Icon(Icons.delete_rounded)],)),
+              if (packingPlanItem == null) ElevatedButton(onPressed: () {
+                PackingPlanItem p = PackingPlanItem(
+                    equipmentCount: ref.read(count),
+                    equipmentId: widget.equipmentId,
+                    isChecked: packingPlanItem?.isChecked ?? false,
+                    location: ref.read(location));
+                
+                docRef.set(p.toMap()).then((value) => context.pop());
+              }, child: const Row(mainAxisSize: MainAxisSize.min, children: [Text('add to plan'), Icon(Icons.add)],)),
+              if (packingPlanItem != null) ElevatedButton(onPressed: () => docRef.update(
+                  {'equipmentCount': ref.read(count)}).then((value) => context.pop()), child: const Row(mainAxisSize: MainAxisSize.min, children: [Text('update'), Icon(Icons.check)],)),
+              
               TextButton(
                   onPressed: () => context.pop(),
                   child: const Text('Abbrechen')),
