@@ -5,6 +5,7 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
+import 'package:equipment_app/pages/packing_plan/editItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -63,88 +64,17 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                                 Future<void> editItem(
                                     {required String equipmentId,
-                                    required int location}) async {
-                                  PackingPlanItem item = items.singleWhere(
-                                      (element) =>
-                                          (element.equipmentId == equipmentId &&
-                                              element.location == location));
-                                  DocumentReference docRef = FirebaseFirestore
-                                      .instance
-                                      .collection('users')
-                                      .doc(Auth().user?.uid)
-                                      .collection('packing_plan')
-                                      .doc(packingPlan.id)
-                                      .collection('items')
-                                      .doc(
-                                          '${item.equipmentId}${item.location}');
+                                     int? location}) async {
 
                                   CustomDialog.showCustomDialog(
-                                      context: context,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () => docRef.update({
-                                                  'equipmentCount':
-                                                      item.equipmentCount - 1
-                                                }),
-                                                child: const Icon(
-                                                    Icons.chevron_left),
-                                              ),
-                                              Text('${item.equipmentCount}'),
-                                              ElevatedButton(
-                                                  onPressed: () => docRef
-                                                          .update({
-                                                        'equipmentCount':
-                                                            item.equipmentCount +
-                                                                1
-                                                      }),
-                                                  child: const Icon(
-                                                      Icons.chevron_right)),
-                                            ],
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () => docRef
-                                                .delete()
-                                                .then((value) => context.pop()),
-                                            child: const Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text('Löschen'),
-                                                Icon(Icons.delete_rounded)
-                                              ],
-                                            ),
-                                          ),
-                                          TextButton(
-                                              onPressed: () => context.pop(),
-                                              child: const Text('Abbrechen')),
-                                        ],
-                                      ));
+                                    context: context,
+                                    child: EditItem(
+                                        location: location,
+                                        equipmentId: equipmentId,
+                                        packingPlan: packingPlan),
+                                  );
                                 }
 
-                                Future<void> addItem(
-                                    {required String equipmentId,
-                                    required int count,
-                                    required int location}) async {
-                                  PackingPlanItem p = PackingPlanItem(
-                                      equipmentCount: count,
-                                      equipmentId: equipmentId,
-                                      isChecked: false,
-                                      location: location);
-
-                                  DocumentReference docRef =
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(Auth().user?.uid)
-                                          .collection('packing_plan')
-                                          .doc(widget.packingPlanID)
-                                          .collection('items')
-                                          .doc('$equipmentId$location');
-                                  docRef.set(p.toMap());
-                                }
 
                                 Statistic statisticFromItems(
                                     MapEntry<String, List<PackingPlanItem>?>
@@ -323,6 +253,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               children: [
                                                 DropdownButton(
                                                   items: [
+                                                    const DropdownMenuItem(
+                                                        value: 0,
+                                                        child:
+                                                        Text('Gesamt')),
+
                                                     for (String location
                                                         in packingPlan
                                                             .locations)
@@ -330,7 +265,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                           value: packingPlan
                                                               .locations
                                                               .indexOf(
-                                                                  location),
+                                                                  location) + 1,
                                                           child:
                                                               Text(location)),
                                                   ],
@@ -372,17 +307,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                       Row(
                                                                         children: [
                                                                           Text(
-                                                                              '${item.equipmentId}x${item.equipmentCount}@${item.location}'),
+                                                                              '${item.equipmentId}x${item.location}@${item.equipmentCount}'),
                                                                           Checkbox(
                                                                               value: item.isChecked,
                                                                               onChanged: (value) {
-                                                                                DocumentReference docRef = FirebaseFirestore.instance
-                                                                                    .collection('users')
-                                                                                    .doc(Auth().user?.uid)
-                                                                                    .collection('packing_plan')
-                                                                                    .doc(packingPlan.id)
-                                                                                    .collection('items')
-                                                                                    .doc('${item.equipmentId}${item.location}');
+                                                                                DocumentReference docRef = FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid).collection('packing_plan').doc(packingPlan.id).collection('items').doc('${item.equipmentId}${item.location}');
 
                                                                                 docRef.update({
                                                                                   'isChecked': value
@@ -642,11 +571,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                           Icons.close)),
                                                 ),
                                                 const Text('add item to plan'),
-                                                const Expanded(
-                                                    child: EquipmentList(
-                                                        action:
-                                                            EquipmentListAction
-                                                                .select)),
+                                                Expanded(child: EquipmentList(
+                                                  onItemClick: (equipmentId) => editItem(
+                                                          equipmentId:
+                                                              equipmentId),
+                                                )),
                                               ],
                                             );
                                             CustomDialog.showCustomModal(

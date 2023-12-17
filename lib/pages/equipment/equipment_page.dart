@@ -25,7 +25,7 @@ class EquipmentPage extends StatelessWidget {
                   child: const Text('Gegenstand hinzufügen')),
             ],
           ),
-          const Expanded(child: EquipmentList(action: EquipmentListAction.show)),
+          Expanded(child: EquipmentList(onItemClick: (equipmentId) => context.push('/equipment/details', extra: equipmentId),)),
         ],
       ),
     );

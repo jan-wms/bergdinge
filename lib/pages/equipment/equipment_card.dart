@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 
 class EquipmentCard extends StatelessWidget {
   final Equipment equipment;
-  final EquipmentListAction action;
+  final ValueSetter<String> onClick;
 
-  const EquipmentCard({Key? key, required this.action, required this.equipment}) : super(key: key);
+  const EquipmentCard({Key? key, required this.onClick, required this.equipment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,26 +15,16 @@ class EquipmentCard extends StatelessWidget {
       width: 200,
       height: 200,
       child: InkWell(
-        child: Card(
-          child: Text('${equipment.brand!} ${equipment.name}'),
-        ),
-        onTap: () {
-          if(action == EquipmentListAction.show) {
-          }
-
-
-          switch(action) {
-            case EquipmentListAction.select:
-              // TODO: Handle this case.
-              break;
-
-            case EquipmentListAction.show:
-            default:
-              context.push('/equipment/details', extra: equipment.id);
-            break;
-          }
-        },
-      ),
+            child: Stack(
+              children: [
+                Card(
+                  child: Text('${equipment.brand!} ${equipment.name}'),
+                ),
+                const Icon(Icons.check_circle_outline_outlined),
+              ],
+            ),
+            onTap: () => onClick(equipment.id),
+          ),
     );
   }
 }

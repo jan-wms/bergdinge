@@ -6,15 +6,9 @@ import '../../data/data.dart';
 import '../../data_models/equipment.dart';
 import 'equipment_card.dart';
 
-enum EquipmentListAction {
-  show,
-  select,
-}
-
 class EquipmentList extends ConsumerStatefulWidget {
-  const EquipmentList({required this.action, super.key});
-  final EquipmentListAction action;
-
+  const EquipmentList({required this.onItemClick, super.key});
+  final ValueSetter<String> onItemClick;
   @override
   ConsumerState<EquipmentList> createState() => _EquipmentListState();
 }
@@ -65,7 +59,7 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      return EquipmentCard(equipment: items[index], action: widget.action,);
+                      return EquipmentCard(equipment: items[index], onClick: (equipmentId) => widget.onItemClick(equipmentId),);
                     },
                   );
                 }
@@ -92,14 +86,14 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                                             Wrap(
                                                 children: [
                                                   for(var element in data.where((element) => element.category.startsWith('${subCategory.id}.')))
-                                                    EquipmentCard(equipment: element, action: widget.action,)
+                                                    EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId),)
                                                 ]
                                             ),
                                           ],
                                         ),
                                   if (category.name == 'Schuhe' || category.name == 'Verpflegung')
                                     for(var element in data.where((element) => element.category.startsWith('${category.id}.')))
-                                      EquipmentCard(equipment: element, action: widget.action,)
+                                      EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId),)
                                 ]
                             ),
                           ],
