@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/providers.dart';
-import '../../data_models/packing_plan.dart';
-import '../../data_models/packing_plan_item.dart';
-import '../../firebase/firebase_auth.dart';
+import '../../../data/providers.dart';
+import '../../../data_models/packing_plan.dart';
+import '../../../data_models/packing_plan_item.dart';
+import '../../../firebase/firebase_auth.dart';
 
 class EditItem extends ConsumerStatefulWidget {
   const EditItem(

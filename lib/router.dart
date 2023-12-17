@@ -7,7 +7,7 @@ import 'package:equipment_app/pages/home/home_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/introduction/introduction_page.dart';
 import 'package:equipment_app/pages/introduction/setup_screen.dart';
-import 'package:equipment_app/pages/packing_plan/packing_plan_details.dart';
+import 'package:equipment_app/pages/packing_plan/details/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
 import 'package:equipment_app/pages/settings/settings_page.dart';

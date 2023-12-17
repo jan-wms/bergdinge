@@ -7,8 +7,9 @@ import '../../data_models/equipment.dart';
 import 'equipment_card.dart';
 
 class EquipmentList extends ConsumerStatefulWidget {
-  const EquipmentList({required this.onItemClick, super.key});
+  const EquipmentList({required this.onItemClick, this.packingPlanId, super.key});
   final ValueSetter<String> onItemClick;
+  final String? packingPlanId;
   @override
   ConsumerState<EquipmentList> createState() => _EquipmentListState();
 }
@@ -43,6 +44,7 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
               error: (error, stackTrace) => Text(error.toString()),
               loading: () => const CircularProgressIndicator.adaptive(),
               data: (data) {
+
                 String searchPattern = controller.text.toLowerCase();
                 if (searchPattern.isNotEmpty) {
                   List<Equipment> items = data
@@ -59,7 +61,7 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      return EquipmentCard(equipment: items[index], onClick: (equipmentId) => widget.onItemClick(equipmentId),);
+                      return EquipmentCard(equipment: items[index], onClick: (equipmentId) => widget.onItemClick(equipmentId), packingPlanId: widget.packingPlanId,);
                     },
                   );
                 }
@@ -86,14 +88,14 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                                             Wrap(
                                                 children: [
                                                   for(var element in data.where((element) => element.category.startsWith('${subCategory.id}.')))
-                                                    EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId),)
+                                                    EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId), packingPlanId: widget.packingPlanId)
                                                 ]
                                             ),
                                           ],
                                         ),
                                   if (category.name == 'Schuhe' || category.name == 'Verpflegung')
                                     for(var element in data.where((element) => element.category.startsWith('${category.id}.')))
-                                      EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId),)
+                                      EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId), packingPlanId: widget.packingPlanId)
                                 ]
                             ),
                           ],

@@ -5,14 +5,15 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
-import 'package:equipment_app/pages/packing_plan/editItem.dart';
+import 'package:equipment_app/pages/packing_plan/details/editItem.dart';
+import 'package:equipment_app/pages/packing_plan/details/itemList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../custom_widgets/custom_back_button.dart';
-import '../../custom_widgets/custom_dialog.dart';
-import '../../firebase/firebase_auth.dart';
-import '../../validators/packing_plan_validator.dart';
+import '../../../custom_widgets/custom_back_button.dart';
+import '../../../custom_widgets/custom_dialog.dart';
+import '../../../firebase/firebase_auth.dart';
+import '../../../validators/packing_plan_validator.dart';
 import 'custom_pie_chart.dart';
 
 class PackingPlanDetails extends ConsumerStatefulWidget {
@@ -284,47 +285,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                         CustomDialog
                                                             .showCustomModal(
                                                           context: context,
-                                                          child:
-                                                              //TODO update displayed checkboxes
-                                                              Column(
-                                                            children: [
-                                                              Align(
-                                                                alignment: Alignment
-                                                                    .centerRight,
-                                                                child: IconButton(
-                                                                    onPressed: () =>
-                                                                        context
-                                                                            .pop(),
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .close)),
-                                                              ),
-                                                              Expanded(
-                                                                  child: ListView(
-                                                                      children: [
-                                                                    for (PackingPlanItem item
-                                                                        in items)
-                                                                      Row(
-                                                                        children: [
-                                                                          Text(
-                                                                              '${item.equipmentId}x${item.location}@${item.equipmentCount}'),
-                                                                          Checkbox(
-                                                                              value: item.isChecked,
-                                                                              onChanged: (value) {
-                                                                                DocumentReference docRef = FirebaseFirestore.instance.collection('users').doc(Auth().user?.uid).collection('packing_plan').doc(packingPlan.id).collection('items').doc('${item.equipmentId}${item.location}');
-
-                                                                                docRef.update({
-                                                                                  'isChecked': value
-                                                                                });
-                                                                              }),
-                                                                          IconButton(
-                                                                              onPressed: () => editItem(equipmentId: item.equipmentId, location: item.location),
-                                                                              icon: const Icon(Icons.more_vert_rounded)),
-                                                                        ],
-                                                                      )
-                                                                  ]))
-                                                            ],
-                                                          ),
+                                                          child: ItemList(packingPlanId: packingPlan.id, onEdit: (equipmentId, location) => editItem(equipmentId: equipmentId, location: location),),
                                                         ),
                                                     icon: const Icon(Icons
                                                         .library_add_check_outlined)),
@@ -572,6 +533,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 ),
                                                 const Text('add item to plan'),
                                                 Expanded(child: EquipmentList(
+                                                  packingPlanId: packingPlan.id,
                                                   onItemClick: (equipmentId) => editItem(
                                                           equipmentId:
                                                               equipmentId),
