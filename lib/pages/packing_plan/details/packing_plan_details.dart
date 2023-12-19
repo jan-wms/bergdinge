@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/equipment.dart';
@@ -64,12 +65,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         text: packingPlan.notes ?? '');
 
                                 Future<void> editItem(
-                                    {required String equipmentId,
+                                    {required String equipmentId, required bool allowSelectLocation,
                                      int? location}) async {
 
                                   CustomDialog.showCustomDialog(
                                     context: context,
                                     child: EditItem(
+                                      allowSelectLocation: allowSelectLocation,
                                         location: location,
                                         equipmentId: equipmentId,
                                         packingPlan: packingPlan),
@@ -285,7 +287,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                         CustomDialog
                                                             .showCustomModal(
                                                           context: context,
-                                                          child: ItemList(packingPlanId: packingPlan.id, onEdit: (equipmentId, location) => editItem(equipmentId: equipmentId, location: location),),
+                                                          child: ItemList(packingPlanId: packingPlan.id, onEdit: (equipmentId, location) => editItem(equipmentId: equipmentId, location: location, allowSelectLocation: false),),
                                                         ),
                                                     icon: const Icon(Icons
                                                         .library_add_check_outlined)),
@@ -534,9 +536,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 const Text('add item to plan'),
                                                 Expanded(child: EquipmentList(
                                                   packingPlanId: packingPlan.id,
-                                                  onItemClick: (equipmentId) => editItem(
-                                                          equipmentId:
-                                                              equipmentId),
+                                                  onItemClick: (equipmentId)
+                                                  {
+                                                    int? loc = items.where((element) => element.equipmentId == equipmentId).sorted((a, b) => a.location.compareTo(b.location)) .firstOrNull?.location;
+                                                    editItem(equipmentId: equipmentId, location: loc, allowSelectLocation: true);
+                                                  },
                                                 )),
                                               ],
                                             );

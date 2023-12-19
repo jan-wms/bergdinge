@@ -14,11 +14,13 @@ class EditItem extends ConsumerStatefulWidget {
       {super.key,
       required this.equipmentId,
       required this.packingPlan,
+      required this.allowSelectLocation,
       this.location});
 
   final String equipmentId;
   final PackingPlan packingPlan;
   final int? location;
+  final bool allowSelectLocation;
 
   @override
   ConsumerState<EditItem> createState() => _EditItemState();
@@ -26,20 +28,23 @@ class EditItem extends ConsumerStatefulWidget {
 
 class _EditItemState extends ConsumerState<EditItem> {
   late final StateProvider<int> location;
-  late final StateProviderFamily<PackingPlanItem?, List<PackingPlanItem>> itemProviderFamily;
+  late final StateProviderFamily<PackingPlanItem?, List<PackingPlanItem>>
+      itemProviderFamily;
 
-  final countProviderFamily = StateProvider.family<int, PackingPlanItem?>((ref, p) => p?.equipmentCount ?? 1);
+  final countProviderFamily = StateProvider.family<int, PackingPlanItem?>(
+      (ref, p) => p?.equipmentCount ?? 1);
 
   @override
   void initState() {
     super.initState();
     location = StateProvider<int>((ref) => widget.location ?? 1);
 
-    itemProviderFamily = StateProvider.family<PackingPlanItem?, List<PackingPlanItem>>((ref, items) {
-      return items.singleWhereOrNull(
-              (element) =>
+    itemProviderFamily =
+        StateProvider.family<PackingPlanItem?, List<PackingPlanItem>>(
+            (ref, items) {
+      return items.singleWhereOrNull((element) =>
           element.equipmentId == widget.equipmentId &&
-              element.location == ref.watch(location));
+          element.location == ref.watch(location));
     });
   }
 
@@ -49,10 +54,11 @@ class _EditItemState extends ConsumerState<EditItem> {
         error: (error, stackTrace) => Text(error.toString()),
         loading: () => const CircularProgressIndicator.adaptive(),
         data: (items) {
-
-          StateProvider<PackingPlanItem?> packingPlanProvider = itemProviderFamily(items);
+          StateProvider<PackingPlanItem?> packingPlanProvider =
+              itemProviderFamily(items);
           PackingPlanItem? packingPlanItem = ref.watch(packingPlanProvider);
-          StateProvider<int> count = countProviderFamily(ref.watch(packingPlanProvider));
+          StateProvider<int> count =
+              countProviderFamily(ref.watch(packingPlanProvider));
 
           DocumentReference docRef = FirebaseFirestore.instance
               .collection('users')
@@ -62,11 +68,10 @@ class _EditItemState extends ConsumerState<EditItem> {
               .collection('items')
               .doc('${widget.equipmentId}${ref.watch(location)}');
 
-
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.location == null)
+              if (widget.location == null || widget.allowSelectLocation)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -104,19 +109,38 @@ class _EditItemState extends ConsumerState<EditItem> {
                       child: const Icon(Icons.chevron_right)),
                 ],
               ),
-              if (packingPlanItem != null) ElevatedButton(onPressed: () => docRef.delete().then((value) => context.pop()), child: const Row(mainAxisSize: MainAxisSize.min, children: [Text('Löschen'), Icon(Icons.delete_rounded)],)),
-              if (packingPlanItem == null) ElevatedButton(onPressed: () {
-                PackingPlanItem p = PackingPlanItem(
-                    equipmentCount: ref.read(count),
-                    equipmentId: widget.equipmentId,
-                    isChecked: packingPlanItem?.isChecked ?? false,
-                    location: ref.read(location));
-                
-                docRef.set(p.toMap()).then((value) => context.pop());
-              }, child: const Row(mainAxisSize: MainAxisSize.min, children: [Text('add to plan'), Icon(Icons.add)],)),
-              if (packingPlanItem != null) ElevatedButton(onPressed: () => docRef.update(
-                  {'equipmentCount': ref.read(count)}).then((value) => context.pop()), child: const Row(mainAxisSize: MainAxisSize.min, children: [Text('update'), Icon(Icons.check)],)),
-              
+              if (packingPlanItem != null)
+                ElevatedButton(
+                    onPressed: () =>
+                        docRef.delete().then((value) => context.pop()),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text('Löschen'), Icon(Icons.delete_rounded)],
+                    )),
+              if (packingPlanItem == null)
+                ElevatedButton(
+                    onPressed: () {
+                      PackingPlanItem p = PackingPlanItem(
+                          equipmentCount: ref.read(count),
+                          equipmentId: widget.equipmentId,
+                          isChecked: packingPlanItem?.isChecked ?? false,
+                          location: ref.read(location));
+
+                      docRef.set(p.toMap()).then((value) => context.pop());
+                    },
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text('add to plan'), Icon(Icons.add)],
+                    )),
+              if (packingPlanItem != null)
+                ElevatedButton(
+                    onPressed: () => docRef
+                        .update({'equipmentCount': ref.read(count)}).then(
+                            (value) => context.pop()),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text('update'), Icon(Icons.check)],
+                    )),
               TextButton(
                   onPressed: () => context.pop(),
                   child: const Text('Abbrechen')),
