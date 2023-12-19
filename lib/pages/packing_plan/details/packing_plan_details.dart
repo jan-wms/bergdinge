@@ -65,19 +65,19 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         text: packingPlan.notes ?? '');
 
                                 Future<void> editItem(
-                                    {required String equipmentId, required bool allowSelectLocation,
-                                     int? location}) async {
-
+                                    {required String equipmentId,
+                                    required bool allowSelectLocation,
+                                    int? location}) async {
                                   CustomDialog.showCustomDialog(
                                     context: context,
                                     child: EditItem(
-                                      allowSelectLocation: allowSelectLocation,
+                                        allowSelectLocation:
+                                            allowSelectLocation,
                                         location: location,
                                         equipmentId: equipmentId,
                                         packingPlan: packingPlan),
                                   );
                                 }
-
 
                                 Statistic statisticFromItems(
                                     MapEntry<String, List<PackingPlanItem>?>
@@ -258,17 +258,16 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   items: [
                                                     const DropdownMenuItem(
                                                         value: 0,
-                                                        child:
-                                                        Text('Gesamt')),
-
+                                                        child: Text('Gesamt')),
                                                     for (String location
                                                         in packingPlan
                                                             .locations)
                                                       DropdownMenuItem(
                                                           value: packingPlan
-                                                              .locations
-                                                              .indexOf(
-                                                                  location) + 1,
+                                                                  .locations
+                                                                  .indexOf(
+                                                                      location) +
+                                                              1,
                                                           child:
                                                               Text(location)),
                                                   ],
@@ -287,7 +286,19 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                         CustomDialog
                                                             .showCustomModal(
                                                           context: context,
-                                                          child: ItemList(packingPlanId: packingPlan.id, onEdit: (equipmentId, location) => editItem(equipmentId: equipmentId, location: location, allowSelectLocation: false),),
+                                                          child: ItemList(
+                                                            packingPlanId:
+                                                                packingPlan.id,
+                                                            onEdit: (equipmentId,
+                                                                    location) =>
+                                                                editItem(
+                                                                    equipmentId:
+                                                                        equipmentId,
+                                                                    location:
+                                                                        location,
+                                                                    allowSelectLocation:
+                                                                        false),
+                                                          ),
                                                         ),
                                                     icon: const Icon(Icons
                                                         .library_add_check_outlined)),
@@ -534,12 +545,27 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                           Icons.close)),
                                                 ),
                                                 const Text('add item to plan'),
-                                                Expanded(child: EquipmentList(
+                                                Expanded(
+                                                    child: EquipmentList(
                                                   packingPlanId: packingPlan.id,
-                                                  onItemClick: (equipmentId)
-                                                  {
-                                                    int? loc = items.where((element) => element.equipmentId == equipmentId).sorted((a, b) => a.location.compareTo(b.location)) .firstOrNull?.location;
-                                                    editItem(equipmentId: equipmentId, location: loc, allowSelectLocation: true);
+                                                  onItemClick: (equipmentId) {
+                                                    int? loc = items
+                                                        .where((element) =>
+                                                            element
+                                                                .equipmentId ==
+                                                            equipmentId)
+                                                        .sorted((a, b) => a
+                                                            .location
+                                                            .compareTo(
+                                                                b.location))
+                                                        .firstOrNull
+                                                        ?.location;
+                                                    editItem(
+                                                        equipmentId:
+                                                            equipmentId,
+                                                        location: loc,
+                                                        allowSelectLocation:
+                                                            true);
                                                   },
                                                 )),
                                               ],
