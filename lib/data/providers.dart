@@ -5,6 +5,8 @@ import '../data_models/equipment.dart';
 import '../data_models/packing_plan_item.dart';
 import '../firebase/firebase_auth.dart';
 
+final authProvider = Provider<String>((ref) => ref.watch(authStateChangesProvider).value?.providerData.firstOrNull?.providerId ?? 'null');
+
 final equipmentStreamProvider = StreamProvider<List<Equipment>>((ref) {
   final user = ref.watch(authStateChangesProvider).value;
 

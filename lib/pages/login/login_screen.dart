@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -106,27 +107,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           AuthenticationAction.reauthenticate
                       ? 'Bitte melden Sie sich erneut an.'
                       : 'Anmelden'),
-/*
+
               if (!kIsMacOS() &&
                   (widget.authenticationAction !=
                           AuthenticationAction.reauthenticate ||
                       (widget.authenticationAction ==
                               AuthenticationAction.reauthenticate &&
-                          Auth().user?.providerData.first.providerId ==
-                              'google.com')))*/
-              buildSignInButton(
-                onPressed: () => _auth.signInWithGoogle(),
-              ),
-              /*
+                          ref.read(authProvider) == 'google.com')))
+                buildSignInButton(
+                  onPressed: () => _auth.signInWithGoogle(),
+                ),
+
               if (widget.authenticationAction !=
                       AuthenticationAction.reauthenticate ||
                   (widget.authenticationAction ==
                           AuthenticationAction.reauthenticate &&
-                      Auth().user?.providerData.first.providerId ==
-                          'apple.com'))
-              */
-              ElevatedButton(
-                  onPressed: () {}, child: const Text('Sign in with Apple')),
+                      ref.read(authProvider) == 'apple.com'))
+                ElevatedButton(
+                    onPressed: () {}, child: const Text('Sign in with Apple')),
               if (widget.authenticationAction == AuthenticationAction.signIn)
                 ElevatedButton(
                     onPressed: () async {
