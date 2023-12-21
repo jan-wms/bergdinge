@@ -8,19 +8,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'Entdecken',
-          ),
-          Expanded(child: Center(
-            child: Text('home'),
-          ))
-        ],
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Entdecken',
+        ),
+        Expanded(child: Placeholder())
+      ],
     );
   }
 }

@@ -19,13 +19,13 @@ class _SplitViewState extends State<SplitView> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth > Design.breakpoint) {
+    if (screenWidth > Design.breakpoint1) {
       return Scaffold(
         body: Row(
           children: [
-            const SizedBox(
-              width: 250,
-              child: Menu(),
+            SizedBox(
+              width: (screenWidth > Design.breakpoint2) ? 250 : 80,
+              child: const Menu(),
             ),
             Expanded(child: widget.child),
           ],
