@@ -195,14 +195,15 @@ class SettingsPage extends ConsumerWidget {
             ),
           ),
         if (!firebaseUser.isAnonymous)
-          const Card(
+          Card(
             child: Column(
               children: [
-                Icon(
+                const Icon(
                   Icons.check_circle_outline_rounded,
                   color: Colors.green,
                 ),
-                Text('Synchronisierung aktiviert'),
+                const Text('Synchronisierung aktiviert'),
+                Text(ref.read(authProvider)),
               ],
             ),
           ),

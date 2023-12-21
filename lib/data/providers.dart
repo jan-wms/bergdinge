@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data_models/equipment.dart';
 import '../data_models/packing_plan_item.dart';
 import '../firebase/firebase_auth.dart';
