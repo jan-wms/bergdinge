@@ -12,18 +12,25 @@ class EquipmentCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      width: 200,
-      height: 200,
-      child: InkWell(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20.0),
+      child: MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => onClick(equipment.id),
+        child:  Container(
+            width: 200.0,
+            height: 200.0,
+            padding: const EdgeInsets.only(bottom: 20.0, top: 40.0),
+            color: Colors.white,
             child: Stack(
               children: [
-                SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Card(
-                    child: Text('${equipment.brand!} ${equipment.name}'),
-                  ),
+                Column(
+                  children: [
+                    Expanded(child: Hero(tag: 'image${equipment.id}',
+                    child: Image.asset('assets/items/map.png'))),
+                    Text('${equipment.brand!} ${equipment.name}'),
+                  ],
                 ),
                 if(packingPlanId != null)
                   ref.watch(packingPlanItemStreamProvider(packingPlanId!)).when(
@@ -35,8 +42,9 @@ class EquipmentCard extends ConsumerWidget {
                     }, error: (Object error, StackTrace stackTrace) => Text(error.toString()), loading: () => Container(),),
               ],
             ),
-            onTap: () => onClick(equipment.id),
           ),
+        ),
+      ),
     );
   }
 }

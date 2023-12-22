@@ -329,7 +329,6 @@ class Data {
                       Category(name: 'Ski', id: '1.9.3.2'),
                       Category(name: 'Skifelle', id: '1.9.3.3'),
                       Category(name: 'Skihelme & Protektoren', id: '1.9.3.4'),
-                      Category(name: 'Skischuhe', id: '1.9.3.5'),
                     ],
                     ),
                 Category(name: 'Sonstige', id: '1.9.4'),
@@ -349,7 +348,8 @@ class Data {
           Category(name: 'Trail- & Laufschuhe', id: '2.5'),
           Category(name: 'Winterschuhe', id: '2.6'),
           Category(name: 'Zustiegsschuhe', id: '2.7'),
-          Category(name: 'Sonstige', id: '2.8'),
+          Category(name: 'Skischuhe', id: '2.8'),
+          Category(name: 'Sonstige', id: '2.9'),
         ],
     ),
     Category(

@@ -31,6 +31,12 @@ class EquipmentDetails extends ConsumerWidget {
 
                 return ListView(
                   children: [
+                    SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: Hero(tag: 'image$equipmentID',
+                          child: Image.asset('assets/items/map.png')),
+                    ),
                     Text('brand: ${equipment.brand}'),
                     Text('name: ${equipment.name}'),
                     Text('id: ${equipment.id}'),
