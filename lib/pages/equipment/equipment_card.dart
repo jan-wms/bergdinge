@@ -27,7 +27,9 @@ class EquipmentCard extends ConsumerWidget {
               children: [
                 Column(
                   children: [
-                    Expanded(child: Hero(tag: 'image${equipment.id}',
+                    Expanded(child: Hero(
+                        tag: equipment.id,
+                        //tag: 'image${equipment.id}',
                     child: Image.asset('assets/items/map.png'))),
                     Text('${equipment.brand!} ${equipment.name}'),
                   ],

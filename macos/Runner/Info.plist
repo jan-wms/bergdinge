@@ -34,5 +34,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>keychain-access-groups</key>
+        <array>
+            <string>$(AppIdentifierPrefix)com.google.GIDSignIn</string>
+        </array>
 </dict>
 </plist>

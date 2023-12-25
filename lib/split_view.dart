@@ -33,10 +33,10 @@ class _SplitViewState extends State<SplitView> {
       );
     } else {
       return Scaffold(
-        body: widget.child,
+        body: SafeArea(child: widget.child),
         bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,
           type: BottomNavigationBarType.fixed,

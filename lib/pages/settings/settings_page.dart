@@ -105,7 +105,7 @@ class SettingsPage extends ConsumerWidget {
                 ],
               ),
               Text(
-                Auth().user!.uid,
+                Auth().user?.uid ?? 'no uid provided',
               ),
             ],
           ),
@@ -170,7 +170,7 @@ class SettingsPage extends ConsumerWidget {
                 ),
               );
             }),
-        if (firebaseUser!.isAnonymous)
+        if (firebaseUser?.isAnonymous ?? false)
           Card(
             child: Column(
               children: [
@@ -194,7 +194,7 @@ class SettingsPage extends ConsumerWidget {
               ],
             ),
           ),
-        if (!firebaseUser.isAnonymous)
+        if (!(firebaseUser?.isAnonymous ?? true))
           Card(
             child: Column(
               children: [
@@ -228,7 +228,7 @@ class SettingsPage extends ConsumerWidget {
                     }
                   },
                   child: const Text('Account löschen')),
-              if (!firebaseUser.isAnonymous)
+              if (!(firebaseUser?.isAnonymous ?? true))
                 ElevatedButton(
                     onPressed: () {
                       Auth().signOut();
