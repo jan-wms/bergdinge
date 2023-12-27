@@ -1,9 +1,7 @@
-import 'package:animations/animations.dart';
-import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:flutter/material.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 
 import '../../data/data.dart';
 import '../../data_models/equipment.dart';
@@ -93,16 +91,7 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                                               Wrap(
                                                   children: [
                                                     for(var element in data.where((element) => element.category.startsWith('${subCategory.id}.')))
-                                                    //EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId), packingPlanId: widget.packingPlanId)
-                                                    OpenContainer(
-                                                        closedBuilder: (BuildContext context, VoidCallback openContainer) {
-                                                          return EquipmentCard(equipment: element, onClick: (value) => openContainer(), packingPlanId: widget.packingPlanId);
-                                                        },
-                                                        openBuilder:  (BuildContext context, VoidCallback _) {
-                                                        return EquipmentDetails(equipmentID: element.id);
-                                                      },
-                                                      routeSettings: const RouteSettings(name: '/details',),
-                                                    ),
+                                                    EquipmentCard(equipment: element, onClick: (equipmentId) => widget.onItemClick(equipmentId), packingPlanId: widget.packingPlanId)
                                                   ]
                                               ),
                                             ],

@@ -18,4 +18,12 @@ class Design {
 
   static const double breakpoint1 = 600.0;
   static const double breakpoint2 = 1000.0;
+
+  ThemeData lightTheme = ThemeData(
+    brightness: Brightness.light,
+  );
+
+  ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+  );
 }

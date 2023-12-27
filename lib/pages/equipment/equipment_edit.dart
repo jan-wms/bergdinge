@@ -92,141 +92,143 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const CustomBackButton(),
-                  Text(
-                      'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
-                  ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate() && !isLoading) {
-                          edit(
-                              equipmentList:
-                                  ref.read(equipmentStreamProvider).value);
-                        }
-                      },
-                      child: isLoading
-                          ? const CircularProgressIndicator.adaptive()
-                          : Text(widget.equipment != null
-                              ? ''
-                                  'Aktualisieren'
-                              : 'Hinzufügen')),
-                ],
-              ),
-              TextFormField(
-                controller: _controllerBrand,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                decoration: const InputDecoration(labelText: 'Hersteller'),
-                validator: (value) => EquipmentValidator.brand(value),
-              ),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _controllerName,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) => EquipmentValidator.name(value),
-              ),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                keyboardType: TextInputType.number,
-                controller: _controllerWeight,
-                decoration: const InputDecoration(labelText: 'Gewicht'),
-                validator: (value) => EquipmentValidator.weight(value),
-              ),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => EquipmentValidator.size(value),
-                controller: _controllerSize,
-                decoration: const InputDecoration(labelText: 'Größe'),
-              ),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => EquipmentValidator.priceOrUvp(
-                    value.toString().replaceAll(',', '.')),
-                controller: _controllerPrice,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Preis'),
-              ),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _controllerUvp,
-                keyboardType: TextInputType.number,
-                validator: (value) => EquipmentValidator.priceOrUvp(
-                    value.toString().replaceAll(',', '.')),
-                decoration: const InputDecoration(labelText: 'UVP'),
-              ),
-              Visibility(
-                child: FormField<int>(
-                  key: _formKeyCount,
-                  initialValue: widget.equipment?.count ?? 1,
-                  autovalidateMode: AutovalidateMode.always,
-                  validator: (value) => EquipmentValidator.count(value),
-                  builder: (state) => Row(
-                    children: [
-                      Text(state.value.toString()),
-                      TextButton(
-                          onPressed: () {
-                            if (state.value! > 1) {
-                              state.didChange(state.value! - 1);
-                            }
-                          },
-                          child: const Text('-')),
-                      TextButton(
-                          onPressed: () {
-                            state.didChange(state.value! + 1);
-                          },
-                          child: const Text('+')),
-                    ],
-                  ),
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const CustomBackButton(),
+                    Text(
+                        'Gegenstand ${widget.equipment != null ? 'bearbeiten' : 'hinzufügen'}'),
+                    ElevatedButton(
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate() && !isLoading) {
+                            edit(
+                                equipmentList:
+                                    ref.read(equipmentStreamProvider).value);
+                          }
+                        },
+                        child: isLoading
+                            ? const CircularProgressIndicator.adaptive()
+                            : Text(widget.equipment != null
+                                ? ''
+                                    'Aktualisieren'
+                                : 'Hinzufügen')),
+                  ],
                 ),
-              ),
-              FormField<DateTime?>(
-                key: _formKeyDate,
-                autovalidateMode: AutovalidateMode.always,
-                initialValue: widget.equipment?.purchaseDate,
-                validator: (value) => EquipmentValidator.purchaseDate(value),
-                builder: (state) => ListTile(
-                  trailing: const Icon(Icons.chevron_right_outlined),
-                  subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                  onTap: () async {
-                    final DateTime? d = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1950),
-                      lastDate: DateTime.now(),
-                    );
-                    state.didChange(d);
-                  },
-                  title: Text(state.value?.toString() ?? 'date not definded'),
-                ),
-              ),
-              FormField<String>(
-                  validator: (value) => EquipmentValidator.category(value),
+                TextFormField(
+                  controller: _controllerBrand,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  key: _formKeyCategory,
-                  initialValue: widget.equipment?.category ?? '-1',
-                  builder: (state) => ListTile(
-                    subtitle: Text(state.errorText ?? 'Kein Fehler'),
-                    title: Text('Kategorie: ${state.value.toString()}'),
-                    trailing: const Icon(Icons.chevron_right_outlined),
-                    onTap: () async {
-                      final String i = await selectCategory(context, state.value!);
-                      state.didChange(i);
-                    },
+                  decoration: const InputDecoration(labelText: 'Hersteller'),
+                  validator: (value) => EquipmentValidator.brand(value),
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _controllerName,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  validator: (value) => EquipmentValidator.name(value),
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.number,
+                  controller: _controllerWeight,
+                  decoration: const InputDecoration(labelText: 'Gewicht'),
+                  validator: (value) => EquipmentValidator.weight(value),
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => EquipmentValidator.size(value),
+                  controller: _controllerSize,
+                  decoration: const InputDecoration(labelText: 'Größe'),
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => EquipmentValidator.priceOrUvp(
+                      value.toString().replaceAll(',', '.')),
+                  controller: _controllerPrice,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Preis'),
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _controllerUvp,
+                  keyboardType: TextInputType.number,
+                  validator: (value) => EquipmentValidator.priceOrUvp(
+                      value.toString().replaceAll(',', '.')),
+                  decoration: const InputDecoration(labelText: 'UVP'),
+                ),
+                Visibility(
+                  child: FormField<int>(
+                    key: _formKeyCount,
+                    initialValue: widget.equipment?.count ?? 1,
+                    autovalidateMode: AutovalidateMode.always,
+                    validator: (value) => EquipmentValidator.count(value),
+                    builder: (state) => Row(
+                      children: [
+                        Text(state.value.toString()),
+                        TextButton(
+                            onPressed: () {
+                              if (state.value! > 1) {
+                                state.didChange(state.value! - 1);
+                              }
+                            },
+                            child: const Text('-')),
+                        TextButton(
+                            onPressed: () {
+                              state.didChange(state.value! + 1);
+                            },
+                            child: const Text('+')),
+                      ],
+                    ),
                   ),
                 ),
-            ],
+                FormField<DateTime?>(
+                  key: _formKeyDate,
+                  autovalidateMode: AutovalidateMode.always,
+                  initialValue: widget.equipment?.purchaseDate,
+                  validator: (value) => EquipmentValidator.purchaseDate(value),
+                  builder: (state) => ListTile(
+                    trailing: const Icon(Icons.chevron_right_outlined),
+                    subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                    onTap: () async {
+                      final DateTime? d = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1950),
+                        lastDate: DateTime.now(),
+                      );
+                      state.didChange(d);
+                    },
+                    title: Text(state.value?.toString() ?? 'date not definded'),
+                  ),
+                ),
+                FormField<String>(
+                    validator: (value) => EquipmentValidator.category(value),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKeyCategory,
+                    initialValue: widget.equipment?.category ?? '-1',
+                    builder: (state) => ListTile(
+                      subtitle: Text(state.errorText ?? 'Kein Fehler'),
+                      title: Text('Kategorie: ${state.value.toString()}'),
+                      trailing: const Icon(Icons.chevron_right_outlined),
+                      onTap: () async {
+                        final String i = await selectCategory(context, state.value!);
+                        state.didChange(i);
+                      },
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

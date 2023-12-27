@@ -20,7 +20,6 @@ import 'firebase/firebase_auth.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangesProvider);
 
@@ -49,7 +48,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => SetupScreen(editValue: EditValue.setUp),
       ),
       ShellRoute(
-        navigatorKey: _shellNavigatorKey,
+          navigatorKey: _shellNavigatorKey,
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return SplitView(child: child);
           },
@@ -118,11 +117,25 @@ final routerProvider = Provider<GoRouter>((ref) {
                         return EquipmentEdit(equipment: e);
                       }),
                   GoRoute(
-                      path: 'details',
-                      builder: (context, state) {
+                    path: 'details',
+                    pageBuilder: (context, state) {
+                      String equipmentID = state.extra as String;
+                      return CustomTransitionPage(
+                        fullscreenDialog: true,
+                        opaque: false,
+                        key: state.pageKey,
+                        child: EquipmentDetails(equipmentID: equipmentID),
+                        transitionDuration: const Duration(milliseconds: 300),
+                        transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) =>
+                            FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                  ),
+                  /*builder: (context, state) {
                         String equipmentID = state.extra as String;
                         return EquipmentDetails(equipmentID: equipmentID);
-                      }),
+                      }),*/
                 ]),
           ]),
     ],
@@ -133,22 +146,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       late final bool? isSetupCompleted;
       if (isAuthorized) {
         isSetupCompleted = await FirebaseFirestore.instance
-            .collection("users").doc(authState.value!.uid).get().then(
-                (DocumentSnapshot doc) {
-              try {
-                final data = doc.data() as Map<String, dynamic>;
-                return data['isSetupCompleted'];
-              } catch (e) {
-                return false;
-              }
-            });
+            .collection("users")
+            .doc(authState.value!.uid)
+            .get()
+            .then((DocumentSnapshot doc) {
+          try {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['isSetupCompleted'];
+          } catch (e) {
+            return false;
+          }
+        });
       }
       final isWelcome = state.uri.toString() == '/welcome';
 
       if (isWelcome) {
         return isAuthorized
-          ? ((isSetupCompleted ?? false) ? '/' : '/setup')
-          : null;
+            ? ((isSetupCompleted ?? false) ? '/' : '/setup')
+            : null;
       }
 
       if (isAuthorized) {

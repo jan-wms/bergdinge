@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomDialog {
-  static Future<T> showCustomModal<T>({
-      required BuildContext context, required Widget child}) async {
+  static Future<T> showCustomModal<T>(
+      {required BuildContext context, required Widget child}) async {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -21,7 +22,7 @@ class CustomDialog {
           expand: false,
           builder: (context, scrollController) {
             return Center(
-                    child: child,
+              child: child,
             );
           },
         );
@@ -34,14 +35,27 @@ class CustomDialog {
     return await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => Dialog(
-              child: child,
-            ));
+        builder: (context) => Align(
+          //TODO breakpoint1 .center
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          constraints: const BoxConstraints(
+            minHeight: 300,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
+          width: double.infinity,
+          child: child,
+            )));
   }
 
   static Future<bool?> showCustomConfirmationDialog<bool>(
       {required BuildContext context, required String description}) async {
-    final child = Column(
+    final Widget child =  Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(description),
@@ -52,23 +66,26 @@ class CustomDialog {
                 onPressed: () => context.pop(false),
                 child: const Text('Abbrechen')),
             ElevatedButton(
-                onPressed: () => context.pop(true), child: const Text('Ok')),
+                onPressed: () => context.pop(true),
+                child: const Text('Ok')),
           ],
         )
       ],
     );
-    return await showCustomDialog<bool>(context: context, child: child);
+    return await showCustomDialog(context: context, child: child);
   }
 
-  static Future<void> showCustomInformationDialog(
+  static Future<bool?> showCustomInformationDialog(
       {required BuildContext context, required String description}) async {
-    final child = Column(
+    final Widget child =  Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(description),
-        ElevatedButton(onPressed: () => context.pop(), child: const Text('Ok')),
+        ElevatedButton(
+            onPressed: () => context.pop(true), child: const Text('Ok')),
       ],
     );
-    return await showCustomDialog<void>(context: context, child: child);
+
+    return await showCustomDialog(context: context, child: child);
   }
 }

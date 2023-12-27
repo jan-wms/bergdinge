@@ -74,72 +74,74 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const CustomBackButton(),
-            const Text('Packliste bearbeiten'),
-            ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate() && !isLoading) {
-                    edit(
-                        packingPlanList:
-                            ref.read(packingPlanStreamProvider).value);
-                  }
-                },
-                child: isLoading
-                    ? const CircularProgressIndicator.adaptive()
-                    : const Text('edit'))
-          ],
-        ),
-        Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return SafeArea(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => PackingPlanValidator.name(value),
-                controller: _controllerName,
-                decoration: const InputDecoration(labelText: 'Name'),
-              ),
-              FormField<List<String>>(
-                  validator: (value) => PackingPlanValidator.sports(value),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  key: _formKeySports,
-                  initialValue: widget.packingPlan?.sports ?? <String>[],
-                  builder: (state) => Column(
-                        children: [
-                          const Text('Sportart'),
-                          Wrap(spacing: 5.0, children: [
-                            for (var sport in Data.sports)
-                              FilterChip(
-                                label: Text(sport),
-                                selected: state.value?.contains(sport) ?? false,
-                                onSelected: (bool value) {
-                                  var oldList = state.value!.toList();
-                                  if (value) {
-                                    if (!state.value!.contains(sport)) {
-                                      oldList.add(sport);
-                                    }
-                                  } else {
-                                    oldList.removeWhere((String s) {
-                                      return s == sport;
-                                    });
-                                  }
-                                  state.didChange(oldList);
-                                },
-                              )
-                          ]),
-                          Text(state.errorText ?? 'Kein Fehler'),
-                        ],
-                      )),
+              const CustomBackButton(),
+              const Text('Packliste bearbeiten'),
+              ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate() && !isLoading) {
+                      edit(
+                          packingPlanList:
+                              ref.read(packingPlanStreamProvider).value);
+                    }
+                  },
+                  child: isLoading
+                      ? const CircularProgressIndicator.adaptive()
+                      : const Text('edit'))
             ],
           ),
-        ),
-      ],
+          Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => PackingPlanValidator.name(value),
+                  controller: _controllerName,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                ),
+                FormField<List<String>>(
+                    validator: (value) => PackingPlanValidator.sports(value),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKeySports,
+                    initialValue: widget.packingPlan?.sports ?? <String>[],
+                    builder: (state) => Column(
+                          children: [
+                            const Text('Sportart'),
+                            Wrap(spacing: 5.0, children: [
+                              for (var sport in Data.sports)
+                                FilterChip(
+                                  label: Text(sport),
+                                  selected: state.value?.contains(sport) ?? false,
+                                  onSelected: (bool value) {
+                                    var oldList = state.value!.toList();
+                                    if (value) {
+                                      if (!state.value!.contains(sport)) {
+                                        oldList.add(sport);
+                                      }
+                                    } else {
+                                      oldList.removeWhere((String s) {
+                                        return s == sport;
+                                      });
+                                    }
+                                    state.didChange(oldList);
+                                  },
+                                )
+                            ]),
+                            Text(state.errorText ?? 'Kein Fehler'),
+                          ],
+                        )),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -33,7 +33,7 @@ class _SplitViewState extends State<SplitView> {
       );
     } else {
       return Scaffold(
-        body: SafeArea(child: widget.child),
+        body: widget.child,
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,

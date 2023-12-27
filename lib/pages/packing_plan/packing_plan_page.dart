@@ -11,33 +11,51 @@ class PackingPlanPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Text(
-            'Meine Packlisten',
-          ),
-          ElevatedButton(
-              onPressed: () => context.push('/packing_plan/edit'),
-              child: const Text('Packliste erstellen')),
-          Expanded(
-            child: packingPlanList.when(
-              error: (error, stackTrace) => Text(error.toString()),
-              loading: () => const CircularProgressIndicator.adaptive(),
-              data: (data) {
-                return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    final packingPlan = data[index];
-                    return PackingPlanCard(packingPlan: packingPlan);
-                  },
-                );
-              },
+    return SafeArea(
+        child: CustomScrollView(slivers: <Widget>[
+           SliverAppBar(
+            expandedHeight: 100,
+            pinned: true,
+            flexibleSpace: const FlexibleSpaceBar(
+              title: Text(
+                "Packlisten",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.end,
+              ),
             ),
+            actions: [
+              IconButton(
+                  onPressed: () => context.push('/packing_plan/edit'),
+                  icon: const Icon(Icons.add_rounded)),
+            ],
           ),
-        ],
-      ),
-    );
+
+
+
+          packingPlanList.when(
+            error: (error, stackTrace) => SliverToBoxAdapter(child: Text(error.toString())),
+            loading: () => const SliverToBoxAdapter(child: CircularProgressIndicator.adaptive()),
+            data: (data) {
+              return SliverList.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  final packingPlan = data[index];
+                  return PackingPlanCard(packingPlan: packingPlan);
+                },
+              );
+            },
+          ),
+          //TODO remove after testing
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 900,
+              child: Placeholder(),
+            ) ,
+          )
+    ]));
   }
 }

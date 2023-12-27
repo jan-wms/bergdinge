@@ -78,166 +78,168 @@ class SettingsPage extends ConsumerWidget {
     final userData = ref.watch(userDataStreamProvider).value;
     final firebaseUser = ref.watch(userChangesProvider).value;
 
-    return Column(
-      children: [
-        const Text("Einstellungen"),
-        Card(
-          child: Column(
-            children: [
-              Text('Hallo ${userData?['name']}!'),
-              ElevatedButton(
-                  onPressed: () {
-                    CustomDialog.showCustomModal(
-                      context: context,
-                      child: SetupScreen(editValue: EditValue.name),
-                    );
-                  },
-                  child: const Text('edit name')),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text(firebaseUser?.email ?? 'keine email'),
-                  IconButton(
-                      onPressed: () {
-                        copyToClipboard(context: context, value: Auth().user!.uid);
-                      },
-                      icon: const Icon(Icons.copy_rounded))
-                ],
-              ),
-              Text(
-                Auth().user?.uid ?? 'no uid provided',
-              ),
-            ],
-          ),
-        ),
-        FutureBuilder(
-            future: rootBundle.loadString("pubspec.yaml"),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              String version = "0.0.0";
-
-              if (snapshot.hasData) {
-                Map yamlData = loadYaml(snapshot.data);
-                version = yamlData["version"];
-              }
-              return Card(
-                child: Column(
-                  children: [
-                    const Text('Kontakt'),
-                    TextButton(
-                        onPressed: () async {
-                          String? encodeQueryParameters(
-                              Map<String, String> params) {
-                            return params.entries
-                                .map((MapEntry<String, String> e) =>
-                                    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-                                .join('&');
-                          }
-
-                          final Uri uri = Uri(
-                            scheme: 'mailto',
-                            path: Data.supportMail,
-                            query: encodeQueryParameters(<String, String>{
-                              'subject': 'Bergdinge',
-                            }),
-                          );
-
-                          launchUrl(uri).then((didLaunch) {
-                            if(didLaunch == false) {
-                              copyToClipboard(context: context, value: Data.supportMail);
-                            }
-                          });
-                        },
-                        child: Text(Data.supportMail)),
-                    TextButton(
-                        onPressed: () async {
-                          final Uri url = Uri.parse(Data.websiteUrl);
-                          launchUrl(url).then((didLaunch) {
-                            if(didLaunch == false) {
-                              copyToClipboard(context: context, value: Data.websiteUrl);
-                            }
-                          });
-                        },
-                        child: Text(Data.websiteUrlShort)),
-                    ElevatedButton(
-                        onPressed: () {
-                          showAboutDialog(
-                              context: context,
-                              applicationName: 'Bergdinge',
-                              applicationVersion: 'Version $version');
-                        },
-                        child: const Text('Über diese App')),
-                  ],
-                ),
-              );
-            }),
-        if (firebaseUser?.isAnonymous ?? false)
+    return SafeArea(
+      child: Column(
+        children: [
           Card(
             child: Column(
               children: [
-                const Text('Synchronisierung'),
-                ElevatedButton(
-                    onPressed: () async {
-                      CustomDialog.showCustomModal(
-                        context: context,
-                        child: LoginScreen(
-                            onComplete: () {
-                              context.pop();
-                              CustomDialog.showCustomInformationDialog(
-                                  context: context,
-                                  description: 'acc verlinkt');
-                            },
-                            authenticationAction:
-                                AuthenticationAction.linkAccounts),
-                      );
-                    },
-                    child: const Text('Account verknüpfen')),
-              ],
-            ),
-          ),
-        if (!(firebaseUser?.isAnonymous ?? true))
-          Card(
-            child: Column(
-              children: [
-                const Icon(
-                  Icons.check_circle_outline_rounded,
-                  color: Colors.green,
-                ),
-                const Text('Synchronisierung aktiviert'),
-                Text(ref.read(authProvider)),
-              ],
-            ),
-          ),
-        Card(
-          child: Column(
-            children: [
-              ElevatedButton(
-                  onPressed: () async {
-                    if (Auth().user!.isAnonymous) {
-                      deleteAccount(context);
-                    } else {
-                      await CustomDialog.showCustomModal(
-                        context: context,
-                        child: LoginScreen(
-                            onComplete: () {
-                              context.pop();
-                              deleteAccount(context);
-                            },
-                            authenticationAction:
-                                AuthenticationAction.reauthenticate),
-                      );
-                    }
-                  },
-                  child: const Text('Account löschen')),
-              if (!(firebaseUser?.isAnonymous ?? true))
+                Text('Hallo ${userData?['name']}!'),
                 ElevatedButton(
                     onPressed: () {
-                      Auth().signOut();
+                      CustomDialog.showCustomModal(
+                        context: context,
+                        child: SetupScreen(editValue: EditValue.name),
+                      );
                     },
-                    child: const Text('Abmelden')),
-            ],
+                    child: const Text('edit name')),
+
+                Text(firebaseUser?.email ?? 'keine email'),
+
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      Auth().user?.uid ?? 'no uid provided',
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          copyToClipboard(context: context, value: Auth().user!.uid);
+                        },
+                        icon: const Icon(Icons.copy_rounded))
+                  ],
+                ),
+
+              ],
+            ),
           ),
-        ),
-      ],
+
+          if (firebaseUser?.isAnonymous ?? false)
+            Card(
+              child: Column(
+                children: [
+                  const Text('Synchronisierung'),
+                  ElevatedButton(
+                      onPressed: () async {
+                        CustomDialog.showCustomModal(
+                          context: context,
+                          child: LoginScreen(
+                              onComplete: () {
+                                context.pop();
+                                CustomDialog.showCustomInformationDialog(
+                                    context: context,
+                                    description: 'acc verlinkt');
+                              },
+                              authenticationAction:
+                                  AuthenticationAction.linkAccounts),
+                        );
+                      },
+                      child: const Text('Account verknüpfen')),
+                ],
+              ),
+            ),
+          if (!(firebaseUser?.isAnonymous ?? true))
+            Card(
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: Colors.green,
+                    size: 50,
+                  ),
+                  const Text('Synchronisierung aktiviert'),
+                  Text(ref.read(authProvider)),
+                ],
+              ),
+            ),
+          FutureBuilder(
+              future: rootBundle.loadString("pubspec.yaml"),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                String version = "0.0.0";
+
+                if (snapshot.hasData) {
+                  Map yamlData = loadYaml(snapshot.data);
+                  version = yamlData["version"];
+                }
+                return Card(
+                  child: Column(
+                    children: [
+                      const Text('Kontakt'),
+                      TextButton(
+                          onPressed: () async {
+                            String? encodeQueryParameters(
+                                Map<String, String> params) {
+                              return params.entries
+                                  .map((MapEntry<String, String> e) =>
+                              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                                  .join('&');
+                            }
+
+                            final Uri uri = Uri(
+                              scheme: 'mailto',
+                              path: Data.supportMail,
+                              query: encodeQueryParameters(<String, String>{
+                                'subject': 'Bergdinge',
+                              }),
+                            );
+
+                            launchUrl(uri).then((didLaunch) {
+                              if(didLaunch == false) {
+                                copyToClipboard(context: context, value: Data.supportMail);
+                              }
+                            });
+                          },
+                          child: Text(Data.supportMail)),
+                      TextButton(
+                          onPressed: () async {
+                            final Uri url = Uri.parse(Data.websiteUrl);
+                            launchUrl(url).then((didLaunch) {
+                              if(didLaunch == false) {
+                                copyToClipboard(context: context, value: Data.websiteUrl);
+                              }
+                            });
+                          },
+                          child: Text(Data.websiteUrlShort)),
+                      TextButton(onPressed: () => showLicensePage(context: context), child: const Text('show licenses')),
+                      Text('Version $version'),
+                    ],
+                  ),
+                );
+              }),
+          Card(
+            child: Column(
+              children: [
+                ElevatedButton(
+                    onPressed: () async {
+                      if (Auth().user!.isAnonymous) {
+                        deleteAccount(context);
+                      } else {
+                        await CustomDialog.showCustomModal(
+                          context: context,
+                          child: LoginScreen(
+                              onComplete: () {
+                                context.pop();
+                                deleteAccount(context);
+                              },
+                              authenticationAction:
+                                  AuthenticationAction.reauthenticate),
+                        );
+                      }
+                    },
+                    child: const Text('Account löschen')),
+                if (!(firebaseUser?.isAnonymous ?? true))
+                  ElevatedButton(
+                      onPressed: () {
+                        Auth().signOut();
+                      },
+                      child: const Text('Abmelden')),
+              ],
+            ),
+          ),
+          ElevatedButton(onPressed: () => CustomDialog.showCustomInformationDialog(context: context, description: 'description'), child: const Text('information')),
+          ElevatedButton(onPressed: () => CustomDialog.showCustomConfirmationDialog(context: context, description: 'description'), child: const Text('confirmation')),
+        ],
+      ),
     );
   }
 }

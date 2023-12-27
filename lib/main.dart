@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/platform_menu_bar_wrapper.dart';
 import 'package:equipment_app/router.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,9 @@ class MyApp extends ConsumerWidget {
         routerDelegate: router.routerDelegate,
         routeInformationProvider: router.routeInformationProvider,
         title: 'Bergdinge',
+        theme: Design().lightTheme,
+        darkTheme: Design().darkTheme,
+        themeMode: ThemeMode.light,
       ),
     );
   }
