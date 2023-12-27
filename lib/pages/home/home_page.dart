@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
-           const SliverAppBar(
+          const SliverAppBar(
             expandedHeight: 100,
             collapsedHeight: 40,
             toolbarHeight: 0,
@@ -42,38 +42,122 @@ class _HomePageState extends State<HomePage> {
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                     child: Stack(
-                      children: [Image.asset('assets/items/landscape.jpg')],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    child: Stack(
-                      children: [Image.asset('assets/items/backpack.jpg')],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    child: Stack(
+                      alignment: Alignment.bottomLeft,
                       children: [
-                        Image.asset('assets/items/landscape2.jpg'),
-                        BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 8.0,
-                            sigmaY: 8.0,
+                        Image.asset('assets/items/landscape.jpg'),
+                        ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                          child: ShaderMask(
+                            shaderCallback: (rect) {
+                              return LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black,
+                                    Colors.black.withOpacity(0)
+                                  ],
+                                  stops: const [
+                                    0.7,
+                                    0.6
+                                  ]).createShader(rect);
+                            },
+                            blendMode: BlendMode.dstOut,
+                            child: Image.asset('assets/items/landscape.jpg'),
                           ),
-                          child: Container(
-                            color: Colors.transparent,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20.0, left: 10.0),
+                          child: Text(
+                            'How to: Rucksack packen',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w500),
                           ),
                         )
                       ],
                     ),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Image.asset('assets/items/backpack.jpg'),
+                        ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: ShaderMask(
+                            shaderCallback: (rect) {
+                              return LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black,
+                                    Colors.black.withOpacity(0)
+                                  ],
+                                  stops: const [
+                                    0.7,
+                                    0.6
+                                  ]).createShader(rect);
+                            },
+                            blendMode: BlendMode.dstOut,
+                            child: Image.asset('assets/items/backpack.jpg'),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20.0, left: 10.0),
+                          child: Text(
+                            'How to: Rucksack packen',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Stack(alignment: Alignment.bottomLeft, children: [
+                        Image.asset('assets/items/landscape2.jpg'),
+                        ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: ShaderMask(
+                            shaderCallback: (rect) {
+                              return LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black,
+                                    Colors.black.withOpacity(0)
+                                  ],
+                                  stops: const [
+                                    0.7,
+                                    0.6
+                                  ]).createShader(rect);
+                            },
+                            blendMode: BlendMode.dstOut,
+                            child: Image.asset('assets/items/landscape2.jpg'),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20.0, left: 10.0),
+                          child: Text(
+                            'How to: Rucksack packen',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )
+                      ])),
                 ),
               ]),
             ),
