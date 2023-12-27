@@ -123,17 +123,23 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
                   Row(
-                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      Text(
-                        Auth().user?.uid ?? 'no uid provided',
-                      ),
                       IconButton(
                           onPressed: () {
                             copyToClipboard(
                                 context: context, value: Auth().user!.uid);
                           },
-                          icon: const Icon(Icons.copy_rounded))
+                          icon: const Icon(
+                            Icons.copy_rounded,
+                            size: 20,
+                            color: Color.fromRGBO(210, 210, 210, 1),
+                          )),
+                      Text(
+                        Auth().user?.uid ?? 'no uid provided',
+                        style: const TextStyle(
+                          color: Color.fromRGBO(210, 210, 210, 1),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -144,37 +150,30 @@ class SettingsPage extends ConsumerWidget {
                 margin: const EdgeInsets.only(top: 20),
                 decoration: const BoxDecoration(
                   //color: Design.colors[4],
-                  color: (1 == 2) ? Color.fromRGBO(246, 236, 202, 1.0) :
-                  Color.fromRGBO(172, 236, 161, 1.0),
+                  color: (1 == 1)
+                      ? Color.fromRGBO(246, 236, 202, 1.0)
+                      : Color.fromRGBO(172, 236, 161, 1.0),
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 ),
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
                   children: [
-                    (1 == 2) ? const Icon(
-                      Icons.warning_rounded,
-                      color: Color.fromRGBO(189, 166, 57, 1.0),
-                      size: 50,
-                    ) : const Icon(
-                      Icons.check_circle_outline_rounded,
-                      color: Colors.green,
-                      size: 50,
-                    ),
+                    (1 == 1)
+                        ? const Icon(
+                            Icons.warning_rounded,
+                            color: Color.fromRGBO(189, 166, 57, 1.0),
+                            size: 50,
+                          )
+                        : const Icon(
+                            Icons.check_circle_outline_rounded,
+                            color: Colors.green,
+                            size: 50,
+                          ),
                     const Text('Synchronisierung aktiviert'),
                     Text(ref.read(authProvider)),
                   ],
                 ),
               ),
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              height: 400,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              ),
-              padding: const EdgeInsets.all(15.0),
-              child: const Placeholder(),
-            ),
             Card(
               child: Column(
                 children: [
@@ -206,6 +205,81 @@ class SettingsPage extends ConsumerWidget {
                   ],
                 ),
               ),
+            const Text('Kontakt'),
+            TextButton(
+                onPressed: () async {
+                  String? encodeQueryParameters(Map<String, String> params) {
+                    return params.entries
+                        .map((MapEntry<String, String> e) =>
+                            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                        .join('&');
+                  }
+
+                  final Uri uri = Uri(
+                    scheme: 'mailto',
+                    path: Data.supportMail,
+                    query: encodeQueryParameters(<String, String>{
+                      'subject': 'Bergdinge',
+                    }),
+                  );
+
+                  launchUrl(uri).then((didLaunch) {
+                    if (didLaunch == false) {
+                      copyToClipboard(
+                          context: context, value: Data.supportMail);
+                    }
+                  });
+                },
+                child: Text(Data.supportMail)),
+            TextButton(
+                onPressed: () async {
+                  final Uri url = Uri.parse(Data.websiteUrl);
+                  launchUrl(url).then((didLaunch) {
+                    if (didLaunch == false) {
+                      copyToClipboard(context: context, value: Data.websiteUrl);
+                    }
+                  });
+                },
+                child: Text(Data.websiteUrlShort)),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                    onPressed: () async {
+                      if (Auth().user!.isAnonymous) {
+                        deleteAccount(context);
+                      } else {
+                        await CustomDialog.showCustomModal(
+                          context: context,
+                          child: LoginScreen(
+                              onComplete: () {
+                                context.pop();
+                                deleteAccount(context);
+                              },
+                              authenticationAction:
+                                  AuthenticationAction.reauthenticate),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Account löschen',
+                      style: TextStyle(color: Colors.red),
+                    )),
+                if (!(firebaseUser?.isAnonymous ?? true))
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        backgroundColor: const Color.fromRGBO(253, 215, 215, 1.0),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      ),
+                      onPressed: () {
+                        Auth().signOut();
+                      },
+                      child: const Text('Abmelden')),
+              ],
+            ),
+            const Divider(),
             FutureBuilder(
                 future: rootBundle.loadString("pubspec.yaml"),
                 builder:
@@ -216,94 +290,30 @@ class SettingsPage extends ConsumerWidget {
                     Map yamlData = loadYaml(snapshot.data);
                     version = yamlData["version"];
                   }
-                  return Card(
-                    child: Column(
-                      children: [
-                        const Text('Kontakt'),
-                        TextButton(
-                            onPressed: () async {
-                              String? encodeQueryParameters(
-                                  Map<String, String> params) {
-                                return params.entries
-                                    .map((MapEntry<String, String> e) =>
-                                        '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-                                    .join('&');
-                              }
-
-                              final Uri uri = Uri(
-                                scheme: 'mailto',
-                                path: Data.supportMail,
-                                query: encodeQueryParameters(<String, String>{
-                                  'subject': 'Bergdinge',
-                                }),
-                              );
-
-                              launchUrl(uri).then((didLaunch) {
-                                if (didLaunch == false) {
-                                  copyToClipboard(
-                                      context: context,
-                                      value: Data.supportMail);
-                                }
-                              });
-                            },
-                            child: Text(Data.supportMail)),
-                        TextButton(
-                            onPressed: () async {
-                              final Uri url = Uri.parse(Data.websiteUrl);
-                              launchUrl(url).then((didLaunch) {
-                                if (didLaunch == false) {
-                                  copyToClipboard(
-                                      context: context, value: Data.websiteUrl);
-                                }
-                              });
-                            },
-                            child: Text(Data.websiteUrlShort)),
-                        TextButton(
-                            onPressed: () => showLicensePage(context: context),
-                            child: const Text('show licenses')),
-                        Text('Version $version'),
-                      ],
-                    ),
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      /*TextButton(
+                          onPressed: () => showLicensePage(context: context),
+                          child: const Text('show licenses')),*/
+                      Text(
+                        'Bergdinge Version $version ❤️',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   );
                 }),
-            Card(
-              child: Column(
-                children: [
-                  ElevatedButton(
-                      onPressed: () async {
-                        if (Auth().user!.isAnonymous) {
-                          deleteAccount(context);
-                        } else {
-                          await CustomDialog.showCustomModal(
-                            context: context,
-                            child: LoginScreen(
-                                onComplete: () {
-                                  context.pop();
-                                  deleteAccount(context);
-                                },
-                                authenticationAction:
-                                    AuthenticationAction.reauthenticate),
-                          );
-                        }
-                      },
-                      child: const Text('Account löschen')),
-                  if (!(firebaseUser?.isAnonymous ?? true))
-                    ElevatedButton(
-                        onPressed: () {
-                          Auth().signOut();
-                        },
-                        child: const Text('Abmelden')),
-                ],
-              ),
-            ),
-            ElevatedButton(
+            //TODO remove in production
+            /*ElevatedButton(
                 onPressed: () => CustomDialog.showCustomInformationDialog(
                     context: context, description: 'description'),
                 child: const Text('information')),
             ElevatedButton(
                 onPressed: () => CustomDialog.showCustomConfirmationDialog(
                     context: context, description: 'description'),
-                child: const Text('confirmation')),
+                child: const Text('confirmation')),*/
           ],
         ),
       ),
