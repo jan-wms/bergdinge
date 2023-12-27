@@ -33,6 +33,7 @@ class _SplitViewState extends State<SplitView> {
       );
     } else {
       return Scaffold(
+        backgroundColor: Colors.white,
         body: widget.child,
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
