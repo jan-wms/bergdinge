@@ -26,6 +26,8 @@ class PackingPlanPage extends ConsumerWidget {
                 ),
                 textAlign: TextAlign.end,
               ),
+              titlePadding: EdgeInsets.zero,
+              centerTitle: false,
             ),
             actions: [
               IconButton(

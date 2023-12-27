@@ -15,11 +15,13 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
-          const SliverAppBar(
+           const SliverAppBar(
             expandedHeight: 100,
+            collapsedHeight: 40,
+            toolbarHeight: 0,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.zero,
+              titlePadding: EdgeInsets.only(left: 20),
               centerTitle: false,
               title: Text(
                 'Entdecken',

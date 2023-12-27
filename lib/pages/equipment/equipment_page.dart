@@ -23,6 +23,8 @@ class EquipmentPage extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              titlePadding: EdgeInsets.zero,
+              centerTitle: false,
             ),
             pinned: true,
             actions: [IconButton(onPressed: () => context.push('/equipment/edit'), icon: const Icon(Icons.add_rounded))],
