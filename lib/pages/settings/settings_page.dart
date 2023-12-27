@@ -20,7 +20,7 @@ class SettingsPage extends ConsumerWidget {
 
   void deleteAccount(BuildContext context) {
     CustomDialog.showCustomConfirmationDialog(
-            context: context, description: 'Account wirklich löschen?')
+        context: context, description: 'Account wirklich löschen?')
         .then((result) async {
       if (result) {
         CustomDialog.showCustomDialog(
@@ -78,14 +78,18 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataStreamProvider).value;
-    final firebaseUser = ref.watch(userChangesProvider).value;
+    final userData = ref
+        .watch(userDataStreamProvider)
+        .value;
+    final firebaseUser = ref
+        .watch(userChangesProvider)
+        .value;
 
     return SafeArea(
       child: ListView(
         children: [
           Container(
-            margin: pagePadding,
+            margin: pagePadding.copyWith(top: 20.0),
             height: 200,
             decoration: BoxDecoration(
               color: Design.colors[0],
@@ -172,15 +176,15 @@ class SettingsPage extends ConsumerWidget {
                   children: [
                     (1 == 1)
                         ? Icon(
-                            Icons.warning_rounded,
-                            color: Color.fromRGBO(189, 166, 57, 1.0),
-                            size: 50,
-                          )
+                      Icons.warning_rounded,
+                      color: Color.fromRGBO(189, 166, 57, 1.0),
+                      size: 50,
+                    )
                         : Icon(
-                            Icons.check_circle_outline_rounded,
-                            color: Colors.green,
-                            size: 50,
-                          ),
+                      Icons.check_circle_outline_rounded,
+                      color: Colors.green,
+                      size: 50,
+                    ),
                     Padding(
                       padding: EdgeInsets.only(left: 10.0),
                       child: Column(
@@ -201,21 +205,26 @@ class SettingsPage extends ConsumerWidget {
                   padding: const EdgeInsets.only(top: 20.0),
                   child: (1 == 1)
                       ? ElevatedButton(
-                          onPressed: () async {
-                            CustomDialog.showCustomModal(
-                              context: context,
-                              child: LoginScreen(
-                                  onComplete: () {
-                                    context.pop();
-                                    CustomDialog.showCustomInformationDialog(
-                                        context: context,
-                                        description: 'acc verlinkt');
-                                  },
-                                  authenticationAction:
-                                      AuthenticationAction.linkAccounts),
-                            );
-                          },
-                          child: const Text('Aktivieren'))
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color.fromRGBO(189, 166, 57, 1.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))
+                      ),
+                      onPressed: () async {
+                        CustomDialog.showCustomModal(
+                          context: context,
+                          child: LoginScreen(
+                              onComplete: () {
+                                context.pop();
+                                CustomDialog.showCustomInformationDialog(
+                                    context: context,
+                                    description: 'acc verlinkt');
+                              },
+                              authenticationAction:
+                              AuthenticationAction.linkAccounts),
+                        );
+                      },
+                      child: const Text('Aktivieren'))
                       : Text(ref.read(authProvider)),
                 ),
               ],
@@ -225,18 +234,18 @@ class SettingsPage extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 4,
-                    blurRadius: 10,
-                    offset: const Offset(2, 3),
-                  ),
-                ],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 4,
+                  blurRadius: 10,
+                  offset: const Offset(2, 3),
+                ),
+              ],
             ),
-            margin: pagePadding.copyWith(top: 25.0, bottom: 25.0),
+            margin: pagePadding.copyWith(top: 25.0, bottom: 30.0),
             child: Column(
               children: [
                 const Text('Kontakt'),
@@ -246,7 +255,8 @@ class SettingsPage extends ConsumerWidget {
                           Map<String, String> params) {
                         return params.entries
                             .map((MapEntry<String, String> e) =>
-                                '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                        '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(
+                            e.value)}')
                             .join('&');
                       }
 
@@ -291,56 +301,76 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 const ListTile(
                   title: Text('Test'),
-                )
+                ),
+                const ListTile(
+                  title: Text('Test'),
+                ),
+                const ListTile(
+                  title: Text('Test'),
+                ),
               ],
             ),
           ),
 
           if (!(firebaseUser?.isAnonymous ?? true))
-            TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  backgroundColor: const Color.fromRGBO(255, 222, 222, 1.0),
+            Container(
+              margin: const EdgeInsets.only(
+                  left: 50.0, right: 50.0, bottom: 15.0),
+              child: TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    backgroundColor: const Color.fromRGBO(255, 222, 222, 1.0),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  ),
+                  onPressed: () {
+                    Auth().signOut();
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout_rounded),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          'Abmelden',
+                          style: TextStyle(fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  )),
+            ),
+          Container(
+            margin: const EdgeInsets.only(left: 50.0, right: 50.0),
+            child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color.fromRGBO(255, 194, 194, 1.0),
+                  side: const BorderSide(color: Colors.red),
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
-                onPressed: () {
-                  Auth().signOut();
+                onPressed: () async {
+                  if (Auth().user!.isAnonymous) {
+                    deleteAccount(context);
+                  } else {
+                    await CustomDialog.showCustomModal(
+                      context: context,
+                      child: LoginScreen(
+                          onComplete: () {
+                            context.pop();
+                            deleteAccount(context);
+                          },
+                          authenticationAction:
+                          AuthenticationAction.reauthenticate),
+                    );
+                  }
                 },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.logout_rounded),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        'Abmelden',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
+                child: const Text(
+                  'Account löschen',
+                  style: TextStyle(color: Colors.red, fontSize: 17
+                  ),
                 )),
-          TextButton(
-              onPressed: () async {
-                if (Auth().user!.isAnonymous) {
-                  deleteAccount(context);
-                } else {
-                  await CustomDialog.showCustomModal(
-                    context: context,
-                    child: LoginScreen(
-                        onComplete: () {
-                          context.pop();
-                          deleteAccount(context);
-                        },
-                        authenticationAction:
-                            AuthenticationAction.reauthenticate),
-                  );
-                }
-              },
-              child: const Text(
-                'Account löschen',
-                style: TextStyle(color: Colors.red),
-              )),
+          ),
           Padding(
             padding: pagePadding.copyWith(top: 20.0),
             child: const Divider(),

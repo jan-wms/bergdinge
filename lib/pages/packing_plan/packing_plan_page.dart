@@ -51,13 +51,6 @@ class PackingPlanPage extends ConsumerWidget {
               );
             },
           ),
-          //TODO remove after testing
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 900,
-              child: Placeholder(),
-            ) ,
-          )
     ]));
   }
 }
