@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +19,7 @@ class _HomePageState extends State<HomePage> {
             expandedHeight: 100,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.zero,
               centerTitle: false,
               title: Text(
                 'Entdecken',
@@ -47,6 +50,26 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                     child: Stack(
                       children: [Image.asset('assets/items/backpack.jpg')],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    child: Stack(
+                      children: [
+                        Image.asset('assets/items/landscape2.jpg'),
+                        BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 8.0,
+                            sigmaY: 8.0,
+                          ),
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),

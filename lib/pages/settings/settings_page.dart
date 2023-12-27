@@ -174,13 +174,8 @@ class SettingsPage extends ConsumerWidget {
                   ],
                 ),
               ),
-            Card(
-              child: Column(
-                children: [
-                  Text(firebaseUser?.email ?? 'keine email'),
-                ],
-              ),
-            ),
+            Text(firebaseUser?.email ?? 'keine email'),
+
             if (firebaseUser?.isAnonymous ?? false)
               Card(
                 child: Column(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Design {
   static const List<Color> sectionColor = [
@@ -33,6 +34,13 @@ class Design {
       color: Colors.white,
       surfaceTintColor: Colors.white,
     ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Design.colors[1],
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+    )
   );
 
   ThemeData darkTheme = ThemeData(

@@ -36,11 +36,6 @@ class _SplitViewState extends State<SplitView> {
         backgroundColor: Colors.white,
         body: widget.child,
         bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Entdecken'),
             BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Packlisten'),
