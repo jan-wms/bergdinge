@@ -16,6 +16,7 @@ class EquipmentPage extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 100,
             flexibleSpace: const FlexibleSpaceBar(
+              titlePadding: Design.pagePadding,
               title: Text(
                 "Ausrüstung",
                 style: TextStyle(
@@ -24,7 +25,6 @@ class EquipmentPage extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              titlePadding: EdgeInsets.zero,
               centerTitle: false,
             ),
             title: const Text('Ausrüstung'),
