@@ -25,6 +25,8 @@ class Design {
     Color.fromRGBO(201, 242, 199, 1.0),
   ];
 
+  static const pagePadding = EdgeInsets.only(left: 15, right: 15);
+
   static const double breakpoint1 = 600.0;
   static const double breakpoint2 = 1000.0;
 

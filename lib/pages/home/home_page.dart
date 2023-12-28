@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../data/design.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -27,7 +29,7 @@ class _HomePageState extends State<HomePage> {
             toolbarHeight: 0,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.only(left: 20),
+              titlePadding: Design.pagePadding,
               centerTitle: false,
               title: Text(
                 'Entdecken',
@@ -40,7 +42,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            padding: Design.pagePadding,
             sliver: SliverList.builder(
               itemCount: images.length,
               itemBuilder: (context, index) {
@@ -63,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                       child: Stack(alignment: Alignment.bottomLeft, children: [
                         Image.asset(image),
                         ImageFiltered(
-                          imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          imageFilter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
                           child: ShaderMask(
                             shaderCallback: (rect) {
                               return LinearGradient(

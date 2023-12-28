@@ -3,6 +3,8 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/design.dart';
+
 class EquipmentCard extends ConsumerWidget {
   final Equipment equipment;
   final ValueSetter<String> onClick;
@@ -28,7 +30,7 @@ class EquipmentCard extends ConsumerWidget {
             child: Container(
               width: 200.0,
               height: 200.0,
-              color: Colors.greenAccent,
+              color: Design.colors[3],
               padding: const EdgeInsets.only(bottom: 20.0, top: 40.0),
               child: Stack(
                 alignment: Alignment.center,

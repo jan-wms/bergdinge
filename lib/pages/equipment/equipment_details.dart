@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_back_button.dart';
 import '../../data/data.dart';
+import '../../data/design.dart';
 import '../../firebase/firebase_auth.dart';
 import 'package:equipment_app/data/providers.dart';
 
@@ -43,23 +44,25 @@ class EquipmentDetails extends ConsumerWidget {
                         Hero(
                           tag: 'image${equipment.id}',
                           child: Container(
-                            color: Colors.greenAccent,
+                            color: Design.colors[3],
                             height: 300.0,
                             width: double.infinity,
                             padding: const EdgeInsets.only(bottom: 20.0, top: 40.0),
-                            child: Column(
-                              children: [
-                                Expanded( child: Image.asset('assets/items/map.png')
-                                ),
-                                Text('${equipment.brand!} ${equipment.name}'),
-                              ],
+                            child: SafeArea(
+                              child: Column(
+                                children: [
+                                  Expanded( child: Image.asset('assets/items/map.png')
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
+                        Text('${equipment.brand!} ${equipment.name}'),
+                        Text(Data.getCategoryNames(equipment.category).last),
                         const CustomBackButton(),
                         Text('brand: ${equipment.brand}'),
                         Text('name: ${equipment.name}'),
-                        Text('id: ${equipment.id}'),
                         Text('count: ${equipment.count}'),
                         Text('uvp: ${equipment.uvp}'),
                         Text('price: ${equipment.price}'),
@@ -70,30 +73,72 @@ class EquipmentDetails extends ConsumerWidget {
                         Text('category: ${equipment.category}'),
                         Text(
                             'category: ${Data.getCategoryNames(equipment.category)}'),
-                        ElevatedButton(
-                            onPressed: () async {
-                              bool? confirmDelete =
-                                  await CustomDialog.showCustomConfirmationDialog(
-                                      context: context,
-                                      description: "Wirklich löschen?");
-                              if (confirmDelete ?? false) {
-                                await FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(Auth().user?.uid)
-                                    .collection('equipment')
-                                    .doc(equipment.id)
-                                    .delete()
-                                    .then((value) => context.pop());
-                              }
-                            },
-                            child: const Text('delete')),
-                        ElevatedButton(
-                            onPressed: () {
-                              context.push('/equipment/edit', extra: equipment);
-                            },
-                            child: const Text('edit')),
+
+
+                       Row(
+                         children: [
+                           OutlinedButton(
+                               style: OutlinedButton.styleFrom(
+                                 foregroundColor: const Color.fromRGBO(255, 194, 194, 1.0),
+                                 side: const BorderSide(color: Colors.red),
+                                 shape: const RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.all(Radius.circular(10))),
+                               ),
+                               onPressed: () async {
+                                 bool? confirmDelete =
+                                 await CustomDialog.showCustomConfirmationDialog(
+                                     context: context,
+                                     description: "Wirklich löschen?");
+                                 if (confirmDelete ?? false) {
+                                   await FirebaseFirestore.instance
+                                       .collection('users')
+                                       .doc(Auth().user?.uid)
+                                       .collection('equipment')
+                                       .doc(equipment.id)
+                                       .delete()
+                                       .then((value) => context.pop());
+                                 }
+                               },
+                               child: const Text(
+                                 'Löschen',
+                                 style: TextStyle(color: Colors.red, fontSize: 17
+                                 ),
+                               )),
+
+                           TextButton(
+                               style: TextButton.styleFrom(
+                                 foregroundColor: Design.colors[1],
+                                 backgroundColor: const Color.fromRGBO(
+                                     224, 255, 214, 1.0),
+                                 shape: const RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.all(Radius.circular(10))),
+                               ),
+                               onPressed: () => context.push('/equipment/edit', extra: equipment),
+                               child: const Row(
+                                 mainAxisAlignment: MainAxisAlignment.center,
+                                 children: [
+                                   Icon(Icons.edit_rounded),
+                                   Padding(
+                                     padding: EdgeInsets.only(left: 10.0),
+                                     child: Text(
+                                       'Bearbeiten',
+                                       style: TextStyle(fontSize: 17),
+                                     ),
+                                   ),
+                                 ],
+                               )),
+                         ],
+                       ),
                         Container(
-                          height: 300,
+                          height: 400,
+                        ),
+                        const Divider(),
+                        //TODO copy to clipboard
+                        GestureDetector(
+                          onLongPress: () {},
+                          child: Text(equipment.id, style: const TextStyle(
+                            color: Colors.grey
+                          ),),
                         ),
                       ],
                     ),

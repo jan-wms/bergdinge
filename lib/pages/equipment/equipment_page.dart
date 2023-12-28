@@ -43,14 +43,14 @@ class EquipmentPage extends StatelessWidget {
               ),
             ],
           ),
-          const SliverToBoxAdapter(
-              child: SizedBox(height: 900, child: Placeholder()))
-
-          /*EquipmentList(onItemClick: (equipmentId) =>
-                context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId),),
-              //context.push('/equipment/details', extra: equipmentId),
-            ),
-          ),*/
+          SliverPadding(
+            padding: Design.pagePadding,
+            sliver: EquipmentList(onItemClick: (equipmentId) =>
+                  //TODO
+                  context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId),),
+                //context.push('/equipment/details', extra: equipmentId),
+              ),
+          ),
         ],
       ),
     );

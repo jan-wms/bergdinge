@@ -74,8 +74,6 @@ class SettingsPage extends ConsumerWidget {
     });
   }
 
-  final pagePadding = const EdgeInsets.only(left: 15.0, right: 15.0);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref
@@ -89,7 +87,7 @@ class SettingsPage extends ConsumerWidget {
       child: ListView(
         children: [
           Container(
-            margin: pagePadding.copyWith(top: 20.0),
+            margin: Design.pagePadding.copyWith(top: 20.0),
             height: 200,
             decoration: BoxDecoration(
               color: Design.colors[0],
@@ -161,7 +159,7 @@ class SettingsPage extends ConsumerWidget {
             ),
           ),
           Container(
-            margin: pagePadding.copyWith(top: 15.0),
+            margin: Design.pagePadding.copyWith(top: 15.0),
             decoration: const BoxDecoration(
               //color: Design.colors[4],
               color: (1 == 1)
@@ -245,7 +243,7 @@ class SettingsPage extends ConsumerWidget {
                 ),
               ],
             ),
-            margin: pagePadding.copyWith(top: 25.0, bottom: 30.0),
+            margin: Design.pagePadding.copyWith(top: 25.0, bottom: 30.0),
             child: Column(
               children: [
                 const Text('Kontakt'),
@@ -372,7 +370,7 @@ class SettingsPage extends ConsumerWidget {
                 )),
           ),
           Padding(
-            padding: pagePadding.copyWith(top: 20.0),
+            padding: Design.pagePadding.copyWith(top: 20.0),
             child: const Divider(),
           ),
           FutureBuilder(
@@ -386,7 +384,7 @@ class SettingsPage extends ConsumerWidget {
                   version = yamlData["version"];
                 }
                 return Container(
-                  margin: pagePadding.copyWith(bottom: 50.0),
+                  margin: Design.pagePadding.copyWith(bottom: 50.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
