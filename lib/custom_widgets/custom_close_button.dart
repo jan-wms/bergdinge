@@ -14,6 +14,7 @@ class CustomCloseButton extends StatelessWidget {
         }
       },
       style: FilledButton.styleFrom(
+        padding: EdgeInsets.zero,
         backgroundColor: Colors.black54,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),

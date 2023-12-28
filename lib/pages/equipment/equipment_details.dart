@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dismissible_page/dismissible_page.dart';
+import 'package:equipment_app/copy_to_clipboard.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class EquipmentDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final equipmentList = ref.watch(equipmentStreamProvider);
+    final safeareaPadding = MediaQuery.of(context).padding;
 
     return DismissiblePage(
       onDismissed: () {
@@ -34,124 +36,210 @@ class EquipmentDetails extends ConsumerWidget {
             loading: () => const CircularProgressIndicator.adaptive(),
             data: (data) {
               Equipment equipment =
-              data.singleWhere((element) => element.id == equipmentID);
+                  data.singleWhere((element) => element.id == equipmentID);
 
-              return SafeArea(
-                top: false,
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Container(
-                        color: Colors.white,
-                        child: Column(
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Hero(
+                            tag: 'image${equipment.id}',
+                            child: Container(
+                              color: Design.colors[3],
+                              height: 300.0,
+                              width: double.infinity,
+                              child: SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(30.0),
+                                  child: Image.asset('assets/items/map.png'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: Design.pagePadding
+                                .copyWith(top: 15.0, bottom: 40.0),
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Hero(
-                                  tag: 'image${equipment.id}',
-                                  child: Container(
-                                    color: Design.colors[3],
-                                    height: 300.0,
-                                    width: double.infinity,
-                                    child: SafeArea(
-                                      child: Image.asset('assets/items/map.png'),
-                                    ),
-                                  ),
-                                ),
-                                Text('${equipment.brand!} ${equipment.name}'),
-                                Text(Data
-                                    .getCategoryNames(equipment.category)
-                                    .last),
-                                Row(
-                                  children: [
-                                    Text('weight: ${equipment.weight}'),
-                                    Text('size: ${equipment.size}'),
-                                    Text('count: ${equipment.count}'),
-                                  ],
-                                ),
-                                Text('uvp: ${equipment.uvp}'),
-                                Text('price: ${equipment.price}'),
-                                Text('purchaseDate: ${equipment.purchaseDate}'),
-                                Text('status: ${equipment.status}'),
                                 Text(
-                                    'category: ${Data.getCategoryNames(
-                                        equipment.category)}'),
-
-                                Row(
-                                  children: [
-                                    OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          foregroundColor:
-                                          const Color.fromRGBO(255, 194, 194, 1.0),
-                                          side: const BorderSide(color: Colors.red),
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.all(Radius.circular(10))),
-                                        ),
-                                        onPressed: () async {
-                                          bool? confirmDelete = await CustomDialog
-                                              .showCustomConfirmationDialog(
-                                              context: context,
-                                              description: "Wirklich löschen?");
-                                          if (confirmDelete ?? false) {
-                                            await FirebaseFirestore.instance
-                                                .collection('users')
-                                                .doc(Auth().user?.uid)
-                                                .collection('equipment')
-                                                .doc(equipment.id)
-                                                .delete()
-                                                .then((value) => context.pop());
-                                          }
-                                        },
-                                        child: const Text(
-                                          'Löschen',
-                                          style: TextStyle(color: Colors.red, fontSize: 17),
-                                        )),
-                                    TextButton(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Design.colors[1],
-                                          backgroundColor:
-                                          const Color.fromRGBO(224, 255, 214, 1.0),
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.all(Radius.circular(10))),
-                                        ),
-                                        onPressed: () =>
-                                            context.push('/equipment/edit',
-                                                extra: equipment),
-                                        child: const Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.edit_rounded),
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 10.0),
-                                              child: Text(
-                                                'Bearbeiten',
-                                                style: TextStyle(fontSize: 17),
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                  ],
+                                  '${equipment.brand!} ${equipment.name}',
+                                  style: const TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w600),
                                 ),
-                                Container(
-                                  height: 400,
-                                ),
-                                const Divider(),
-                                //TODO copy to clipboard
-                                GestureDetector(
-                                  onLongPress: () {},
-                                  child: Text(
-                                    equipment.id,
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
+                                Text(
+                                  Data.getCategoryNames(equipment.category)
+                                      .last,
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),
+                          ),
+                          SizedBox(
+                            width: 350,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 80,
+                                  width: 90,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black54,
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '${equipment.weight}g',
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                      const Icon(
+                                        Icons.scale_rounded,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 80,
+                                  width: 90,
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black54,
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                  child: Text(equipment.size ?? '*',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 80,
+                                  width: 90,
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black54,
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.ideographic,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: Text(
+                                          equipment.count.toString(),
+                                          style: const TextStyle(
+                                              fontSize: 35,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      const Text(
+                                        'x',
+                                        style: TextStyle(color: Colors.white70, fontSize: 20, fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Text('Originalpreis: ${equipment.uvp}'),
+                          Text('Kaufpreis: ${equipment.price}'),
+                          Text('Kaufdatum: ${equipment.purchaseDate}'),
+                          Container(
+                            height: 200,
+                          ),
+                          TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Design.colors[1],
+                                backgroundColor:
+                                    const Color.fromRGBO(224, 255, 214, 1.0),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                              ),
+                              onPressed: () => context.push('/equipment/edit',
+                                  extra: equipment),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.edit_rounded),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    child: Text(
+                                      'Bearbeiten',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor:
+                                    const Color.fromRGBO(255, 194, 194, 1.0),
+                                side: const BorderSide(color: Colors.red),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                              ),
+                              onPressed: () async {
+                                bool? confirmDelete = await CustomDialog
+                                    .showCustomConfirmationDialog(
+                                        context: context,
+                                        description: "Wirklich löschen?");
+                                if (confirmDelete ?? false) {
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(Auth().user?.uid)
+                                      .collection('equipment')
+                                      .doc(equipment.id)
+                                      .delete()
+                                      .then((value) => context.pop());
+                                }
+                              },
+                              child: const Text(
+                                'Löschen',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 17),
+                              )),
+                          const Padding(
+                            padding: Design.pagePadding,
+                            child: Divider(),
+                          ),
+                          GestureDetector(
+                            onLongPress: () => copyToClipboard(
+                                context: context, value: equipment.id),
+                            child: Text(
+                              equipment.id,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const Positioned(right: 0.0, top: 0.0,child: CustomCloseButton(),),
-                  ],
-                ),
+                  ),
+                  Positioned(
+                    right: safeareaPadding.right + 5,
+                    top: safeareaPadding.top + 5,
+                    child: const CustomCloseButton(),
+                  ),
+                ],
               );
             }),
       ),

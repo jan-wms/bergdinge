@@ -23,7 +23,6 @@ class CustomAppBar extends StatelessWidget {
         ),
         centerTitle: false,
       ),
-      title: Text(title),
       pinned: true,
       actions: [
         if(onAddButtonPressed != null)
