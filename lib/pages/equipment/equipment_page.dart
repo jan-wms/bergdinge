@@ -1,4 +1,5 @@
 import 'package:dismissible_page/dismissible_page.dart';
+import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:flutter/material.dart';
@@ -13,42 +14,13 @@ class EquipmentPage extends StatelessWidget {
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: 100,
-            flexibleSpace: const FlexibleSpaceBar(
-              titlePadding: Design.pagePadding,
-              title: Text(
-                "Ausrüstung",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              centerTitle: false,
-            ),
-            title: const Text('Ausrüstung'),
-            pinned: true,
-            actions: [
-              FilledButton(
-                onPressed: () => context.push('/equipment/edit'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Design.colors[1],
-                  foregroundColor: Colors.white,
-                  shape: const CircleBorder(),
-                ),
-                child: const Icon(
-                  Icons.add_rounded,
-                ),
-              ),
-            ],
-          ),
+          CustomAppBar(title: 'Ausrüstung', onAddButtonPressed: () => context.push('/equipment/edit'),),
           SliverPadding(
             padding: Design.pagePadding,
             sliver: EquipmentList(onItemClick: (equipmentId) =>
                   //TODO
-                  context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId),),
-                //context.push('/equipment/details', extra: equipmentId),
+                 //context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId)),
+                context.push('/equipment/details', extra: equipmentId),
               ),
           ),
         ],

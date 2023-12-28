@@ -118,11 +118,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                       }),
                   GoRoute(
                     path: 'details',
+                    //parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
                       String equipmentID = state.extra as String;
                       return CustomTransitionPage(
                         fullscreenDialog: true,
                         opaque: false,
+                        barrierDismissible: true,
+
                         key: state.pageKey,
                         child: EquipmentDetails(equipmentID: equipmentID),
                         transitionDuration: const Duration(milliseconds: 300),

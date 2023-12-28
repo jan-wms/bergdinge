@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/design.dart';
@@ -23,24 +24,7 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
-          const SliverAppBar(
-            expandedHeight: 100,
-            collapsedHeight: 40,
-            toolbarHeight: 0,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: Design.pagePadding,
-              centerTitle: false,
-              title: Text(
-                'Entdecken',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
+          const CustomAppBar(title: 'Entdecken'),
           SliverPadding(
             padding: Design.pagePadding,
             sliver: SliverList.builder(
