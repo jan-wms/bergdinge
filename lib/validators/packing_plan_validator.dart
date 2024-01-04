@@ -4,7 +4,7 @@ import '../data_models/packing_plan.dart';
 class PackingPlanValidator {
   static String? name(value) {
     if (value?.isEmpty ?? true) {
-      return 'Bitte einen Namen eingeben';
+      return 'Erforderlich';
     }
     return null;
   }
@@ -15,19 +15,12 @@ class PackingPlanValidator {
 
   static String? sports(List<String>? value) {
     if (value == null || value.isEmpty) {
-      return "Bitte wähle mindestens eine Sportart.";
+      return "Wähle mindestens eine Kategorie.";
     }
     for (var item in value) {
       if (!Data.sports.contains(item)) {
-        return "Unbekannter Sport.";
+        return "Fehler: Unbekannter Sport.";
       }
-    }
-    return null;
-  }
-
-  static String? items(List<PackingPlan>? value) {
-    if(value == null || value.isEmpty) {
-      return "Bitte füge Ausrüstung zu deiner Packliste hinzu.";
     }
     return null;
   }

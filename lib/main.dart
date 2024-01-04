@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:equipment_app/custom_widgets/dismiss_keyboard.dart';
 import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/platform_menu_bar_wrapper.dart';
 import 'package:equipment_app/router.dart';
@@ -23,15 +24,17 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return PlatformMenuBarWrapper(
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        routeInformationParser: router.routeInformationParser,
-        routerDelegate: router.routerDelegate,
-        routeInformationProvider: router.routeInformationProvider,
-        title: 'Bergdinge',
-        theme: Design().lightTheme,
-        darkTheme: Design().darkTheme,
-        themeMode: ThemeMode.light,
+      child: DismissKeyboard(
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          routeInformationParser: router.routeInformationParser,
+          routerDelegate: router.routerDelegate,
+          routeInformationProvider: router.routeInformationProvider,
+          title: 'Bergdinge',
+          theme: Design().lightTheme,
+          darkTheme: Design().darkTheme,
+          themeMode: ThemeMode.light,
+        ),
       ),
     );
   }

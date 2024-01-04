@@ -30,6 +30,10 @@ class Design {
   static const double breakpoint2 = 1000.0;
 
   ThemeData lightTheme = ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: colors.elementAt(2),
+      error: Colors.red,
+    ),
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
       color: Colors.white,
@@ -41,10 +45,17 @@ class Design {
       unselectedItemColor: Colors.grey,
       showSelectedLabels: true,
       showUnselectedLabels: true,
-    )
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colors.elementAt(2)),
+      ),
+      border: const OutlineInputBorder(),
+    ),
   );
 
   ThemeData darkTheme = ThemeData(
+    primarySwatch: Colors.green,
     brightness: Brightness.dark,
   );
 }

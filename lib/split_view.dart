@@ -38,9 +38,9 @@ class _SplitViewState extends State<SplitView> {
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Entdecken'),
-            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Packlisten'),
-            BottomNavigationBarItem(icon: Icon(Icons.backpack), label: 'Ausrüstung'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Einstellungen'),
+            BottomNavigationBarItem(icon: Icon(Icons.list_rounded), label: 'Packlisten'),
+            BottomNavigationBarItem(icon: Icon(Icons.backpack_rounded), label: 'Ausrüstung'),
+            BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Einstellungen'),
           ],
           currentIndex: tabIndex,
           onTap: (int index) {

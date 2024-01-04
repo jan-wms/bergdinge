@@ -87,12 +87,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                 },
                 routes: [
                   GoRoute(
-                      path: 'edit',
-                      builder: (context, state) {
-                        PackingPlan? p = state.extra as PackingPlan?;
-                        return PackingPlanEdit(packingPlan: p);
-                      }),
+                    parentNavigatorKey: _rootNavigatorKey,
+                    path: 'edit',
+                    builder: (context, state) {
+                      PackingPlan? p = state.extra as PackingPlan?;
+                      return PackingPlanEdit(packingPlan: p);
+                    },
+                  ),
                   GoRoute(
+                      parentNavigatorKey: _rootNavigatorKey,
                       path: 'details',
                       builder: (context, state) {
                         String packingPlanID = state.extra as String;
@@ -125,7 +128,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                         fullscreenDialog: true,
                         opaque: false,
                         barrierDismissible: true,
-
                         key: state.pageKey,
                         child: EquipmentDetails(equipmentID: equipmentID),
                         transitionDuration: const Duration(milliseconds: 300),

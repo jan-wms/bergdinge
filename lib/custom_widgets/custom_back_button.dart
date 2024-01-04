@@ -8,7 +8,7 @@ class CustomBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.chevron_left_rounded),
+      icon: const Icon(Icons.chevron_left_rounded, size: 40.0,),
       onPressed: () {
         if(context.canPop()) {
           context.pop(returnValue);

@@ -11,16 +11,13 @@ class PackingPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return ListTile(
       onTap: () {
         context.push('/packing_plan/details', extra: packingPlan.id);
       },
-      child: Card(
-        child: Column(children: [
-          Text(packingPlan.name),
-          Text(packingPlan.sports.toString()),
-        ]),
-      ),
+      title: Text(packingPlan.name),
+      subtitle: Text(packingPlan.sports.join(', ')),
+      trailing: const Icon(Icons.chevron_right_rounded),
     );
   }
 }

@@ -1,12 +1,13 @@
-import 'package:equipment_app/custom_widgets/custom_back_button.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/validators/packing_plan_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../custom_widgets/custom_close_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../data/data.dart';
+import '../../data/design.dart';
 import '../../data/providers.dart';
 import '../../firebase/firebase_auth.dart';
 
@@ -45,7 +46,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
       createdAt: widget.packingPlan?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
       notes: widget.packingPlan?.notes,
-        locations: ['Anzug', 'Rucksack'],
+      locations: ['Anzug', 'Rucksack'],
     );
 
     bool continueEdit = true;
@@ -74,73 +75,98 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const CustomBackButton(),
-              const Text('Packliste bearbeiten'),
-              ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate() && !isLoading) {
-                      edit(
-                          packingPlanList:
-                              ref.read(packingPlanStreamProvider).value);
-                    }
-                  },
-                  child: isLoading
-                      ? const CircularProgressIndicator.adaptive()
-                      : const Text('edit'))
-            ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+            'Packliste ${widget.packingPlan == null ? 'erstellen' : 'bearbeiten'}'),
+        actions: [
+          FilledButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate() && !isLoading) {
+                edit(
+                    packingPlanList: ref.read(packingPlanStreamProvider).value);
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Design.colors[1],
+              foregroundColor: Colors.white,
+              shape: const CircleBorder(),
+            ),
+            child: SizedBox(
+              width: 30,
+              height: 30,
+              child: isLoading
+                  ? const CircularProgressIndicator(
+                color: Colors.white54,
+              )
+                  : const Icon(Icons.check_rounded),
+            )
+
           ),
-          Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => PackingPlanValidator.name(value),
-                  controller: _controllerName,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                FormField<List<String>>(
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(30.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 30.0),
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) => PackingPlanValidator.name(value),
+                      controller: _controllerName,
+                      decoration: const InputDecoration(labelText: 'Name'),
+                    ),
+                  ),
+                  FormField<List<String>>(
                     validator: (value) => PackingPlanValidator.sports(value),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     key: _formKeySports,
                     initialValue: widget.packingPlan?.sports ?? <String>[],
                     builder: (state) => Column(
-                          children: [
-                            const Text('Sportart'),
-                            Wrap(spacing: 5.0, children: [
-                              for (var sport in Data.sports)
-                                FilterChip(
-                                  label: Text(sport),
-                                  selected: state.value?.contains(sport) ?? false,
-                                  onSelected: (bool value) {
-                                    var oldList = state.value!.toList();
-                                    if (value) {
-                                      if (!state.value!.contains(sport)) {
-                                        oldList.add(sport);
-                                      }
-                                    } else {
-                                      oldList.removeWhere((String s) {
-                                        return s == sport;
-                                      });
-                                    }
-                                    state.didChange(oldList);
-                                  },
-                                )
-                            ]),
-                            Text(state.errorText ?? 'Kein Fehler'),
-                          ],
-                        )),
-              ],
+                      children: [
+                        Wrap(spacing: 5.0, children: [
+                          for (var sport in Data.sports)
+                            FilterChip(
+                              label: Text(sport),
+                              selected: state.value?.contains(sport) ?? false,
+                              onSelected: (bool value) {
+                                var oldList = state.value!.toList();
+                                if (value) {
+                                  if (!state.value!.contains(sport)) {
+                                    oldList.add(sport);
+                                  }
+                                } else {
+                                  oldList.removeWhere((String s) {
+                                    return s == sport;
+                                  });
+                                }
+                                state.didChange(oldList);
+                              },
+                            )
+                        ]),
+                        Visibility(
+                          visible: state.errorText == null ? false : true,
+                          child: Text(
+                            state.errorText ?? 'Kein Fehler',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
