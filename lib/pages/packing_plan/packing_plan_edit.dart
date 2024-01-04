@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../custom_widgets/custom_close_button.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import '../../data/data.dart';
 import '../../data/design.dart';

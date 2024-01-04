@@ -32,7 +32,6 @@ class MyApp extends ConsumerWidget {
           routeInformationProvider: router.routeInformationProvider,
           title: 'Bergdinge',
           theme: Design().lightTheme,
-          darkTheme: Design().darkTheme,
           themeMode: ThemeMode.light,
         ),
       ),

@@ -43,8 +43,8 @@ class Design {
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Design.colors[1],
       unselectedItemColor: Colors.grey,
-      showSelectedLabels: true,
-      showUnselectedLabels: true,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     ),
     inputDecorationTheme: InputDecorationTheme(
       focusedBorder: OutlineInputBorder(
@@ -52,10 +52,5 @@ class Design {
       ),
       border: const OutlineInputBorder(),
     ),
-  );
-
-  ThemeData darkTheme = ThemeData(
-    primarySwatch: Colors.green,
-    brightness: Brightness.dark,
   );
 }
