@@ -22,11 +22,17 @@ class PackingPlanPage extends ConsumerWidget {
         loading: () => const SliverToBoxAdapter(
             child: CircularProgressIndicator.adaptive()),
         data: (data) {
-          return SliverList.builder(
+          return SliverList.separated(
             itemCount: data.length,
             itemBuilder: (context, index) {
               final packingPlan = data[index];
               return PackingPlanCard(packingPlan: packingPlan);
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return const Padding(
+                padding: Design.pagePadding,
+                child: Divider(height: 0.0,),
+              );
             },
           );
         },

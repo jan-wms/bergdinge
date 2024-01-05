@@ -134,6 +134,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                         Wrap(spacing: 5.0, children: [
                           for (var sport in Data.sports)
                             FilterChip(
+                              showCheckmark: false,
                               label: Text(sport),
                               selected: state.value?.contains(sport) ?? false,
                               onSelected: (bool value) {
@@ -153,9 +154,12 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                         ]),
                         Visibility(
                           visible: state.errorText == null ? false : true,
-                          child: Text(
-                            state.errorText ?? 'Kein Fehler',
-                            style: const TextStyle(color: Colors.red),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Text(
+                              state.errorText ?? 'Kein Fehler',
+                              style: const TextStyle(color: Colors.red),
+                            ),
                           ),
                         ),
                       ],

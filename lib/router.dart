@@ -114,6 +114,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 },
                 routes: [
                   GoRoute(
+                      parentNavigatorKey: _rootNavigatorKey,
                       path: 'edit',
                       builder: (context, state) {
                         Equipment? e = state.extra as Equipment?;

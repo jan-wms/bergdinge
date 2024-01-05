@@ -22,6 +22,7 @@ class Design {
     Color.fromRGBO(150, 190, 140, 1.0),
     Color.fromRGBO(172, 236, 161, 1.0),
     Color.fromRGBO(201, 242, 199, 1.0),
+    Color.fromRGBO(239, 255, 224, 1.0),
   ];
 
   static const pagePadding = EdgeInsets.only(left: 15, right: 15);
@@ -48,9 +49,11 @@ class Design {
     ),
     inputDecorationTheme: InputDecorationTheme(
       focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         borderSide: BorderSide(color: colors.elementAt(2)),
       ),
-      border: const OutlineInputBorder(),
+      border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
     ),
   );
 }

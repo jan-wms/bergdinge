@@ -107,7 +107,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           AuthenticationAction.reauthenticate
                       ? 'Bitte melden Sie sich erneut an.'
                       : 'Anmelden'),
-
               if (!kIsMacOS() &&
                   (widget.authenticationAction !=
                           AuthenticationAction.reauthenticate ||
@@ -117,7 +116,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 buildSignInButton(
                   onPressed: () => _auth.signInWithGoogle(),
                 ),
-
               if (widget.authenticationAction !=
                       AuthenticationAction.reauthenticate ||
                   (widget.authenticationAction ==

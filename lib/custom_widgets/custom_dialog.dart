@@ -34,6 +34,7 @@ class CustomDialog {
       {required BuildContext context, required Widget child}) async {
     return await showDialog(
         context: context,
+        useRootNavigator: true,
         barrierDismissible: false,
         builder: (context) => Align(
           //TODO breakpoint1 .center

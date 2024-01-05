@@ -15,7 +15,7 @@ class PackingPlanCard extends StatelessWidget {
       onTap: () {
         context.push('/packing_plan/details', extra: packingPlan.id);
       },
-      title: Text(packingPlan.name),
+      title: Text(packingPlan.name, style: const TextStyle(fontWeight: FontWeight.w500),),
       subtitle: Text(packingPlan.sports.join(', ')),
       trailing: const Icon(Icons.chevron_right_rounded),
     );

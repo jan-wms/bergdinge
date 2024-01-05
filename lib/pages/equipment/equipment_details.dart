@@ -49,7 +49,7 @@ class EquipmentDetails extends ConsumerWidget {
                           Hero(
                             tag: 'image${equipment.id}',
                             child: Container(
-                              color: Design.colors[3],
+                              color: Design.colors[5],
                               height: 300.0,
                               width: double.infinity,
                               child: SafeArea(
@@ -94,7 +94,7 @@ class EquipmentDetails extends ConsumerWidget {
                                   height: 80,
                                   width: 90,
                                   decoration: BoxDecoration(
-                                      color: Colors.black54,
+                                      color: Design.colors[5],
                                       borderRadius:
                                           BorderRadius.circular(10.0)),
                                   padding: const EdgeInsets.all(15.0),
@@ -102,11 +102,9 @@ class EquipmentDetails extends ConsumerWidget {
                                     children: [
                                       Text(
                                         '${equipment.weight}g',
-                                        style: const TextStyle(color: Colors.white),
                                       ),
                                       const Icon(
                                         Icons.scale_rounded,
-                                        color: Colors.white,
                                       ),
                                     ],
                                   ),
@@ -177,6 +175,7 @@ class EquipmentDetails extends ConsumerWidget {
                               onPressed: () => context.push('/equipment/edit',
                                   extra: equipment),
                               child: const Row(
+                                mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons.edit_rounded),
