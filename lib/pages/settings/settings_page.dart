@@ -96,17 +96,26 @@ class SettingsPage extends ConsumerWidget {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Hallo ${userData?['name']}!',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 35,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hallo ${userData?['name']}!',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 35,
+                                ),
                               ),
-                            ),
+                              Text(
+                                firebaseUser?.email ?? '',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                           FilledButton(
                             onPressed: () {
@@ -125,12 +134,6 @@ class SettingsPage extends ConsumerWidget {
                             ),
                           ),
                         ],
-                      ),
-                      Text(
-                        firebaseUser?.email ?? 'keine email',
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
                       ),
                       Row(
                         children: [
@@ -158,6 +161,7 @@ class SettingsPage extends ConsumerWidget {
                 Container(
                   margin: Design.pagePadding.copyWith(top: 15.0),
                   decoration: const BoxDecoration(
+                    //TODO
                     //color: Design.colors[4],
                     color: (1 == 1)
                         ? Color.fromRGBO(246, 236, 202, 1.0)
@@ -169,6 +173,7 @@ class SettingsPage extends ConsumerWidget {
                     children: [
                       const Row(
                         children: [
+                          //TODO
                           (1 == 1)
                               ? Icon(
                                   Icons.warning_rounded,
@@ -196,9 +201,11 @@ class SettingsPage extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      //(firebaseUser?.isAnonymous ?? false) ?
+                      //TODO
+                      //if(firebaseUser?.isAnonymous ?? false)
                       Padding(
                         padding: const EdgeInsets.only(top: 20.0),
+                        //TODO
                         child: (1 == 1)
                             ? ElevatedButton(
                                 style: ElevatedButton.styleFrom(
@@ -293,8 +300,11 @@ class SettingsPage extends ConsumerWidget {
                       const ListTile(
                         title: Text('Test'),
                       ),
-                      const ListTile(
-                        title: Text('Test'),
+                      InkWell(
+                        onTap: () {},
+                        child: const ListTile(
+                          title: Text('Test1'),
+                        ),
                       ),
                       const ListTile(
                         title: Text('Test'),
@@ -385,9 +395,6 @@ class SettingsPage extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      /*TextButton(
-                          onPressed: () => showLicensePage(context: context),
-                          child: const Text('show licenses')),*/
                       Text(
                         'Bergdinge Version $version️',
                         style: const TextStyle(
@@ -397,6 +404,8 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
+
+                ElevatedButton(onPressed: () => CustomDialog.showCustomConfirmationDialog(context: context, description: 'Möchtest du deinen Account wirklich löschen?'), child: const Text('test'))
               ],
             );
           }),

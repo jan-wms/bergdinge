@@ -30,6 +30,7 @@ final packingPlanStreamProvider = StreamProvider<List<PackingPlan>>((ref) {
       .collection('users')
       .doc(user?.uid)
       .collection('packing_plan')
+      .orderBy("createdAt", descending: true)
       .withConverter(
         fromFirestore: PackingPlan.fromFirestore,
         toFirestore: (PackingPlan p, _) => p.toMap(),

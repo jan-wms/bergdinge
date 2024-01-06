@@ -1,3 +1,4 @@
+import 'package:equipment_app/data/design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,7 +16,7 @@ class PackingPlanCard extends StatelessWidget {
       onTap: () {
         context.push('/packing_plan/details', extra: packingPlan.id);
       },
-      title: Text(packingPlan.name, style: const TextStyle(fontWeight: FontWeight.w500),),
+      title: Text(packingPlan.name, style: TextStyle(fontWeight: FontWeight.w500, color: Design.colors[0], fontSize: 17.0),),
       subtitle: Text(packingPlan.sports.join(', ')),
       trailing: const Icon(Icons.chevron_right_rounded),
     );

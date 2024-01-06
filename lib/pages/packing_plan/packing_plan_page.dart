@@ -14,29 +14,36 @@ class PackingPlanPage extends ConsumerWidget {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
 
     return SafeArea(
-        child: CustomScrollView(slivers: <Widget>[
-          CustomAppBar(title: 'Packlisten', onAddButtonPressed: () => context.push('/packing_plan/edit'),),
-      packingPlanList.when(
-        error: (error, stackTrace) =>
-            SliverToBoxAdapter(child: Text(error.toString())),
-        loading: () => const SliverToBoxAdapter(
-            child: CircularProgressIndicator.adaptive()),
-        data: (data) {
-          return SliverList.separated(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              final packingPlan = data[index];
-              return PackingPlanCard(packingPlan: packingPlan);
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Padding(
-                padding: Design.pagePadding,
-                child: Divider(height: 0.0,),
-              );
-            },
-          );
-        },
-      ),
-    ]));
+      child: CustomScrollView(slivers: <Widget>[
+        CustomAppBar(
+          title: 'Packlisten',
+          onAddButtonPressed: () => context.push('/packing_plan/edit'),
+        ),
+        packingPlanList.when(
+          error: (error, stackTrace) =>
+              SliverToBoxAdapter(child: Text(error.toString())),
+          loading: () => const SliverToBoxAdapter(
+              child: CircularProgressIndicator.adaptive()),
+          data: (data) {
+            return SliverList.separated(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final packingPlan = data[index];
+                return PackingPlanCard(packingPlan: packingPlan);
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Padding(
+                  padding: Design.pagePadding,
+                  child: Divider(
+                    height: 0.0,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
+      ]),
+    );
   }
 }
