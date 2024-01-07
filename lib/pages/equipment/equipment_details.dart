@@ -118,7 +118,8 @@ class EquipmentDetails extends ConsumerWidget {
                                       color: Colors.black54,
                                       borderRadius:
                                           BorderRadius.circular(10.0)),
-                                  child: Text(equipment.size ?? '*',
+                                  child: Text(
+                                    equipment.size ?? '*',
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -138,7 +139,8 @@ class EquipmentDetails extends ConsumerWidget {
                                     textBaseline: TextBaseline.ideographic,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 5),
+                                        padding:
+                                            const EdgeInsets.only(right: 5),
                                         child: Text(
                                           equipment.count.toString(),
                                           style: const TextStyle(
@@ -149,7 +151,10 @@ class EquipmentDetails extends ConsumerWidget {
                                       ),
                                       const Text(
                                         'x',
-                                        style: TextStyle(color: Colors.white70, fontSize: 20, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -200,8 +205,10 @@ class EquipmentDetails extends ConsumerWidget {
                               onPressed: () async {
                                 bool? confirmDelete = await CustomDialog
                                     .showCustomConfirmationDialog(
+                                        type: ConfirmType.confirmDelete,
                                         context: context,
-                                        description: "Wirklich löschen?");
+                                        description:
+                                            'Möchtest du diesen Gegenstand wirklich löschen?');
                                 if (confirmDelete ?? false) {
                                   await FirebaseFirestore.instance
                                       .collection('users')

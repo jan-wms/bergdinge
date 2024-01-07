@@ -21,7 +21,9 @@ class SettingsPage extends ConsumerWidget {
 
   void deleteAccount(BuildContext context) {
     CustomDialog.showCustomConfirmationDialog(
-            context: context, description: 'Account wirklich löschen?')
+            type: ConfirmType.confirmDelete,
+            context: context,
+            description: 'Möchtest du deinen Account wirklich löschen?')
         .then((result) async {
       if (result) {
         CustomDialog.showCustomDialog(
@@ -160,58 +162,63 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 Container(
                   margin: Design.pagePadding.copyWith(top: 15.0),
-                  decoration: const BoxDecoration(
-                    //TODO
-                    //color: Design.colors[4],
-                    color: (1 == 1)
-                        ? Color.fromRGBO(246, 236, 202, 1.0)
-                        : Color.fromRGBO(172, 236, 161, 1.0),
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  decoration: BoxDecoration(
+                    color: (firebaseUser?.isAnonymous ?? false)
+                        ? const Color.fromRGBO(246, 236, 202, 1.0)
+                        : Design.colors[7],
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                   ),
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
                     children: [
-                      const Row(
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          //TODO
-                          (1 == 1)
+                          (firebaseUser?.isAnonymous ?? false)
                               ? Icon(
                                   Icons.warning_rounded,
-                                  color: Color.fromRGBO(189, 166, 57, 1.0),
+                                  color: Design.colors[6],
                                   size: 50,
                                 )
-                              : Icon(
+                              : const Icon(
                                   Icons.check_circle_outline_rounded,
                                   color: Colors.green,
                                   size: 50,
                                 ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Synchronisierung',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Text('Cloud ist nicht aktiviert.')
-                              ],
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Synchronisierung',
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  //TODO adjust message
+                                  Text(
+                                    (firebaseUser?.isAnonymous ?? false) ? 'Melde dich an, um Bergdinge auf mehreren Geräten zu benutzen.' : 'Cloud-Synchronisierung ist aktiviert.',
+                                    style: const TextStyle(
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      //TODO
-                      //if(firebaseUser?.isAnonymous ?? false)
                       Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        //TODO
-                        child: (1 == 1)
+                        padding: const EdgeInsets.only(top: 30.0),
+                        child: (firebaseUser?.isAnonymous ?? false)
                             ? ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.white,
                                     backgroundColor:
-                                        const Color.fromRGBO(189, 166, 57, 1.0),
+                                        Design.colors[6],
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0))),
@@ -253,7 +260,6 @@ class SettingsPage extends ConsumerWidget {
                   margin: Design.pagePadding.copyWith(top: 25.0, bottom: 30.0),
                   child: Column(
                     children: [
-                      const Text('Kontakt'),
                       ListTile(
                           onTap: () async {
                             String? encodeQueryParameters(
@@ -404,8 +410,13 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-
-                ElevatedButton(onPressed: () => CustomDialog.showCustomConfirmationDialog(context: context, description: 'Möchtest du deinen Account wirklich löschen?'), child: const Text('test'))
+                ElevatedButton(
+                    onPressed: () => CustomDialog.showCustomConfirmationDialog(
+                        type: ConfirmType.confirmContinue,
+                        context: context,
+                        description:
+                            'Es existiert bereits ein Gegenstand mit dem Namen "gegenstand name". Trotzdem fortfahren?'),
+                    child: const Text('test'))
               ],
             );
           }),

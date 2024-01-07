@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/custom_back_button.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
@@ -79,6 +78,7 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
         element.id != e.id);
     if (duplicate != null && duplicate != -1) {
       await CustomDialog.showCustomConfirmationDialog(
+        type: ConfirmType.confirmContinue,
               context: context,
               description:
                   'Es existiert bereits ein Gegenstand mit dem Namen "${equipmentList!.elementAt(duplicate).name}". Trotzdem fortfahren?')

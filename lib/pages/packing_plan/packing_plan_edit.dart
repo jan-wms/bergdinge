@@ -54,6 +54,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
         element.id != p.id);
     if (duplicate != null && duplicate != -1) {
       await CustomDialog.showCustomConfirmationDialog(
+        type: ConfirmType.confirmContinue,
               context: context,
               description:
                   'Es existiert bereits eine Packliste mit dem Namen "${packingPlanList!.elementAt(duplicate).name}". Trotzdem fortfahren?')

@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../data/design.dart';
+
+enum ConfirmType {
+  confirmDelete,
+  confirmContinue,
+  confirmDefault,
+}
+
 class CustomDialog {
   static Future<T> showCustomModal<T>(
       {required BuildContext context, required Widget child}) async {
@@ -55,7 +63,28 @@ class CustomDialog {
   }
 
   static Future<bool?> showCustomConfirmationDialog<bool>(
-      {required BuildContext context, required String description}) async {
+      {required BuildContext context,
+      required String description,
+      required ConfirmType type}) async {
+    final Color buttonColor;
+    final String buttonText;
+
+    switch (type) {
+      case ConfirmType.confirmDelete:
+        buttonColor = Theme.of(context).colorScheme.error;
+        buttonText = 'Löschen';
+        break;
+      case ConfirmType.confirmContinue:
+        buttonColor = Design.colors[0];
+        buttonText = 'Weiter';
+        break;
+      case ConfirmType.confirmDefault:
+      default:
+        buttonColor = Design.colors[0];
+        buttonText = 'OK';
+        break;
+    }
+
     final Widget child = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,13 +120,13 @@ class CustomDialog {
                     padding: const EdgeInsets.only(
                         left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
                     foregroundColor: Colors.white,
-                    backgroundColor: Theme.of(context).colorScheme.error,
+                    backgroundColor: buttonColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0))),
                 onPressed: () => context.pop(true),
-                child: const Text(
-                  'Löschen',
-                  style: TextStyle(fontSize: 17),
+                child: Text(
+                  buttonText,
+                  style: const TextStyle(fontSize: 17),
                 ))
           ],
         )

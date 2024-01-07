@@ -230,9 +230,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       bool? confirmDelete =
                                                           await CustomDialog
                                                               .showCustomConfirmationDialog(
+                                                            type: ConfirmType.confirmDelete,
                                                                   context: context,
                                                                   description:
-                                                                      "Wirklich löschen?");
+                                                                  'Möchtest du diese Packliste wirklich löschen?');
                                                       if (confirmDelete ?? false) {
                                                         await FirebaseFirestore
                                                             .instance

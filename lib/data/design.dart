@@ -23,6 +23,8 @@ class Design {
     Color.fromRGBO(172, 236, 161, 1.0),
     Color.fromRGBO(201, 242, 199, 1.0),
     Color.fromRGBO(239, 255, 224, 1.0),
+    Color.fromRGBO(189, 166, 57, 1.0),
+    Color.fromRGBO(252, 253, 247, 1.0),
   ];
 
   static const pagePadding = EdgeInsets.only(left: 15, right: 15);
