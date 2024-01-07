@@ -67,6 +67,16 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                 !items.contains(element) &&
                     (element.name.toLowerCase().contains(searchPattern))));
                 if (items.isEmpty) {
+                  return const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.emoji_emotions_rounded),
+                        Text('Leider konnte nichts gefunden werden.'),
+                      ],
+                    )),
+                  );
                   return const SliverToBoxAdapter(child: Text('Leider konnte nichts gefunden werden.'));
                 }
                 return SliverList.builder(
