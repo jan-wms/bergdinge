@@ -14,14 +14,15 @@ class EquipmentPage extends StatelessWidget {
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
-          CustomAppBar(title: 'Ausrüstung', onAddButtonPressed: () => context.push('/equipment/edit'),),
-          SliverPadding(
-            padding: Design.pagePadding,
-            sliver: EquipmentList(onItemClick: (equipmentId) =>
-                  //TODO
-                 //context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId)),
+          CustomAppBar(
+            title: 'Ausrüstung',
+            onAddButtonPressed: () => context.push('/equipment/edit'),
+          ),
+          EquipmentList(
+            onItemClick: (equipmentId) =>
+                //TODO
+                //context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId)),
                 context.push('/equipment/details', extra: equipmentId),
-              ),
           ),
         ],
       ),

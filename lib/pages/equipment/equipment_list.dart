@@ -26,22 +26,26 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
     return MultiSliver(
       children: [
         SliverAppBar(
+          backgroundColor: Colors.white,
           pinned: true,
-          title: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: 'Suchen',
-                suffix: (controller.text.isNotEmpty)
-                    ? IconButton(
-                    onPressed: () => setState(() {
-                      controller.text = '';
-                    }),
-                    icon: const Icon(Icons.clear))
-                    : null),
-            onChanged: (value) {
-              setState(() {});
-            },
+          title: SizedBox(
+            width: double.infinity,
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: 'Suchen',
+                  suffix: (controller.text.isNotEmpty)
+                      ? IconButton(
+                      onPressed: () => setState(() {
+                        controller.text = '';
+                      }),
+                      icon: const Icon(Icons.clear))
+                      : null),
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
           ),
         ),
         equipmentList.when(

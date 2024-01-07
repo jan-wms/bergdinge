@@ -161,12 +161,21 @@ class SettingsPage extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  margin: Design.pagePadding.copyWith(top: 15.0),
+                  margin: Design.pagePadding.copyWith(top: 20.0),
                   decoration: BoxDecoration(
                     color: (firebaseUser?.isAnonymous ?? false)
                         ? const Color.fromRGBO(246, 236, 202, 1.0)
                         : Design.colors[7],
                     borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      if(!(firebaseUser?.isAnonymous ?? true))
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 4,
+                        blurRadius: 10,
+                        offset: const Offset(2, 3),
+                      ),
+                    ],
                   ),
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
@@ -198,7 +207,6 @@ class SettingsPage extends ConsumerWidget {
                                         fontSize: 25,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  //TODO adjust message
                                   Text(
                                     (firebaseUser?.isAnonymous ?? false) ? 'Melde dich an, um Bergdinge auf mehreren Geräten zu benutzen.' : 'Cloud-Synchronisierung ist aktiviert.',
                                     style: const TextStyle(
