@@ -132,7 +132,9 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                     initialValue: widget.packingPlan?.sports ?? <String>[],
                     builder: (state) => Column(
                       children: [
-                        Wrap(spacing: 5.0, children: [
+                        Wrap(spacing: 5.0,
+                            alignment: WrapAlignment.center,
+                            children: [
                           for (var sport in Data.sports)
                             FilterChip(
                               showCheckmark: false,

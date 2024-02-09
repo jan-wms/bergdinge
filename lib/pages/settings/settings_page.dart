@@ -418,13 +418,6 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-                ElevatedButton(
-                    onPressed: () => CustomDialog.showCustomConfirmationDialog(
-                        type: ConfirmType.confirmContinue,
-                        context: context,
-                        description:
-                            'Es existiert bereits ein Gegenstand mit dem Namen "gegenstand name". Trotzdem fortfahren?'),
-                    child: const Text('test'))
               ],
             );
           }),

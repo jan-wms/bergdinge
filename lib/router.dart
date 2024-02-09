@@ -3,6 +3,7 @@ import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
+import 'package:equipment_app/pages/home/article_page.dart';
 import 'package:equipment_app/pages/home/home_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/introduction/introduction_page.dart';
@@ -55,6 +56,26 @@ final routerProvider = Provider<GoRouter>((ref) {
           routes: [
             GoRoute(
               path: '/',
+              routes: [
+                GoRoute(
+                  path: 'article',
+                  //parentNavigatorKey: _rootNavigatorKey,
+                  pageBuilder: (context, state) {
+                    int tag = state.extra as int;
+                    return CustomTransitionPage(
+                      fullscreenDialog: true,
+                      opaque: false,
+                      barrierDismissible: true,
+                      key: state.pageKey,
+                      child: ArticlePage(index: tag),
+                      transitionDuration: const Duration(milliseconds: 300),
+                      transitionsBuilder: (context, animation,
+                          secondaryAnimation, child) =>
+                          FadeTransition(opacity: animation, child: child),
+                    );
+                  },
+                ),
+              ],
               pageBuilder: (context, state) {
                 return CustomTransitionPage(
                   key: state.pageKey,

@@ -77,7 +77,6 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                       ],
                     )),
                   );
-                  return const SliverToBoxAdapter(child: Text('Leider konnte nichts gefunden werden.'));
                 }
                 return SliverList.builder(
                   itemCount: items.length,

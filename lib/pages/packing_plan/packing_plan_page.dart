@@ -25,6 +25,13 @@ class PackingPlanPage extends ConsumerWidget {
           loading: () => const SliverToBoxAdapter(
               child: CircularProgressIndicator.adaptive()),
           data: (data) {
+            if(data.isEmpty) {
+              return const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: Text('Erstelle deine erste Packliste.')),
+              );
+            }
+
             return SliverList.separated(
               itemCount: data.length,
               itemBuilder: (context, index) {
