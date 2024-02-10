@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       top: false,
       child: CustomScrollView(
         slivers: <Widget>[
-          const CustomAppBar(title: 'Entdecken'),
+          CustomAppBar(title: 'Entdecken', onChanged: (_) {},),
           SliverPadding(
             padding: Design.pagePadding,
             sliver: SliverList.builder(

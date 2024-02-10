@@ -19,6 +19,7 @@ class PackingPlanPage extends ConsumerWidget {
         CustomAppBar(
           title: 'Packlisten',
           onAddButtonPressed: () => context.push('/packing_plan/edit'),
+          onChanged: (_) {},
         ),
         packingPlanList.when(
           error: (error, stackTrace) =>

@@ -8,32 +8,40 @@ class CustomAppBar extends StatelessWidget {
   final String title;
   final IconData? icon;
   final VoidCallback? onAddButtonPressed;
-  const CustomAppBar({super.key, required this.title, this.onAddButtonPressed, this.icon});
+  final ValueSetter<String> onChanged;
+
+  const CustomAppBar(
+      {super.key,
+      required this.title,
+      this.onAddButtonPressed,
+      this.icon,
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    return  SliverPersistentHeader(
+    return SliverPersistentHeader(
       pinned: true,
       floating: false,
       delegate: SearchHeader(
+        onAddButtonPressed: onAddButtonPressed,
         icon: icon ?? Icons.terrain,
         title: title,
-        search: const _Search(
-
-        ),
+        search: Search(onChanged: (value) => onChanged(value)),
       ),
     );
   }
 }
 
-class _Search extends StatefulWidget {
-  const _Search();
+class Search extends StatefulWidget {
+  const Search({super.key, required this.onChanged});
+
+  final ValueSetter<String> onChanged;
 
   @override
-  __SearchState createState() => __SearchState();
+  _SearchState createState() => _SearchState();
 }
 
-class __SearchState extends State<_Search> {
+class _SearchState extends State<Search> {
   late TextEditingController _editingController;
 
   @override
@@ -53,11 +61,14 @@ class __SearchState extends State<_Search> {
           Expanded(
             child: TextField(
               controller: _editingController,
-              onChanged: (_) => setState(() {}),
+              onChanged: (value) {
+                widget.onChanged(value);
+                setState(() {});
+              },
               decoration: InputDecoration(
                 hintText: 'Suchen',
                 hintStyle: TextStyle(
-                    color: Theme.of(context).primaryColor.withOpacity(0.5)),
+                    color: Theme.of(context).primaryColor.withOpacity(0.7)),
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
               ),
@@ -65,20 +76,20 @@ class __SearchState extends State<_Search> {
           ),
           _editingController.text.trim().isEmpty
               ? IconButton(
-              icon: Icon(Icons.search,
-                  color: Theme.of(context).primaryColor.withOpacity(0.5)),
-              onPressed: null)
+                  icon: Icon(Icons.search,
+                      color: Theme.of(context).primaryColor.withOpacity(0.7)),
+                  onPressed: null)
               : IconButton(
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            icon: Icon(Icons.clear,
-                color: Theme.of(context).primaryColor.withOpacity(0.5)),
-            onPressed: () => setState(
-                  () {
-                _editingController.clear();
-              },
-            ),
-          ),
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  icon: Icon(Icons.clear,
+                      color: Theme.of(context).primaryColor.withOpacity(0.7)),
+                  onPressed: () => setState(
+                    () {
+                      _editingController.clear();
+                    },
+                  ),
+                ),
         ],
       ),
     );
@@ -86,13 +97,18 @@ class __SearchState extends State<_Search> {
 }
 
 class SearchHeader extends SliverPersistentHeaderDelegate {
-  final double minTopBarHeight = 80 + MediaQueryData.fromView(window).padding.top;
-  final double maxTopBarHeight = 180 + MediaQueryData.fromView(window).padding.top;
+  final VoidCallback? onAddButtonPressed;
+
+  final double minTopBarHeight =
+      80 + MediaQueryData.fromView(window).padding.top;
+  final double maxTopBarHeight =
+      180 + MediaQueryData.fromView(window).padding.top;
   final String title;
   final IconData icon;
   final Widget search;
 
   SearchHeader({
+    required this.onAddButtonPressed,
     required this.title,
     required this.icon,
     required this.search,
@@ -100,10 +116,10 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context,
-      double shrinkOffset,
-      bool overlapsContent,
-      ) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     var shrinkFactor = min(1, shrinkOffset / (maxExtent - minExtent));
 
     var topBar = Positioned(
@@ -113,7 +129,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
       child: Container(
         alignment: Alignment.center,
         height:
-        max(maxTopBarHeight * (1 - shrinkFactor * 1.45), minTopBarHeight),
+            max(maxTopBarHeight * (1 - shrinkFactor * 1.45), minTopBarHeight),
         width: 100,
         decoration: BoxDecoration(
             color: Design.colors[1],
@@ -122,7 +138,8 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
               bottomRight: Radius.circular(36),
             )),
         child: Padding(
-          padding: EdgeInsets.only(top: MediaQueryData.fromView(window).padding.top),
+          padding:
+              EdgeInsets.only(top: MediaQueryData.fromView(window).padding.top),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -154,21 +171,49 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
               padding: const EdgeInsets.only(
                 bottom: 10,
               ),
-              child: Container(
-                alignment: Alignment.center,
-                width: 200,
-                height: 50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 5),
-                        blurRadius: 10,
-                        color: Design.colors[1].withOpacity(0.23),
-                      )
-                    ]),
-                child: search,
+              child: Wrap(
+                spacing: 15.0,
+                direction: Axis.horizontal,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: 200,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(0, 7),
+                            blurRadius: 10,
+                            color: Design.colors[1].withOpacity(0.23),
+                          )
+                        ]),
+                    child: search,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(0, 7),
+                            blurRadius: 10,
+                            color: Design.colors[1].withOpacity(0.23),
+                          )
+                        ]),
+                    child: IconButton(
+                      onPressed: onAddButtonPressed,
+                      highlightColor: Colors.transparent,
+                      icon: Icon(Icons.add_rounded,
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.7)),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

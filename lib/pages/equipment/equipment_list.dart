@@ -4,7 +4,6 @@ import 'package:equipment_app/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-
 import '../../data/data.dart';
 import '../../data_models/equipment.dart';
 import 'equipment_card.dart';

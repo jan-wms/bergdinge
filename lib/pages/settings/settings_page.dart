@@ -90,6 +90,7 @@ class SettingsPage extends ConsumerWidget {
                 CustomAppBar(
                   title: 'Hallo ${userData?['name']}!',
                   icon: Icons.person_rounded,
+                  onChanged: (_) {},
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(

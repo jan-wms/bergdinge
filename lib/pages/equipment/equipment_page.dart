@@ -18,6 +18,7 @@ class EquipmentPage extends StatelessWidget {
           CustomAppBar(
             title: 'Ausrüstung',
             onAddButtonPressed: () => context.push('/equipment/edit'),
+            onChanged: (_) {},
           ),
           EquipmentList(
             onItemClick: (equipmentId) =>
