@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
+  final IconData? icon;
   final VoidCallback? onAddButtonPressed;
-  const CustomAppBar({super.key, required this.title, this.onAddButtonPressed});
+  const CustomAppBar({super.key, required this.title, this.onAddButtonPressed, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +16,11 @@ class CustomAppBar extends StatelessWidget {
       pinned: true,
       floating: false,
       delegate: SearchHeader(
-        icon: Icons.terrain,
+        icon: icon ?? Icons.terrain,
         title: title,
-        search: const _Search(),
+        search: const _Search(
+
+        ),
       ),
     );
   }
@@ -160,7 +163,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        offset: const Offset(0, 10),
+                        offset: const Offset(0, 5),
                         blurRadius: 10,
                         color: Design.colors[1].withOpacity(0.23),
                       )

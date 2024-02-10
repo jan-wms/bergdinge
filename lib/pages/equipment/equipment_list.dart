@@ -59,7 +59,7 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
               if(data.isEmpty) {
                 return const SliverFillRemaining(
                   child: Center(
-                    child: Text('Ziemlich leer hier...'),
+                    child: Text('Füge Ausrüstung hinzu.'),
                   ),
                 );
               }
