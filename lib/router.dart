@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/data_models/equipment.dart';
-import 'package:equipment_app/data_models/packing_plan.dart';
-import 'package:equipment_app/pages/equipment/equipment_edit.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:equipment_app/pages/home/article_page.dart';
 import 'package:equipment_app/pages/home/home_page.dart';
@@ -9,7 +6,6 @@ import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:equipment_app/pages/introduction/introduction_page.dart';
 import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:equipment_app/pages/packing_plan/details/packing_plan_details.dart';
-import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
 import 'package:equipment_app/pages/settings/settings_page.dart';
 import 'package:equipment_app/split_view.dart';
@@ -108,14 +104,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                 },
                 routes: [
                   GoRoute(
-                    parentNavigatorKey: _rootNavigatorKey,
-                    path: 'edit',
-                    builder: (context, state) {
-                      PackingPlan? p = state.extra as PackingPlan?;
-                      return PackingPlanEdit(packingPlan: p);
-                    },
-                  ),
-                  GoRoute(
                       parentNavigatorKey: _rootNavigatorKey,
                       path: 'details',
                       builder: (context, state) {
@@ -134,13 +122,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   );
                 },
                 routes: [
-                  GoRoute(
-                      parentNavigatorKey: _rootNavigatorKey,
-                      path: 'edit',
-                      builder: (context, state) {
-                        Equipment? e = state.extra as Equipment?;
-                        return EquipmentEdit(equipment: e);
-                      }),
                   GoRoute(
                     path: 'details',
                     //parentNavigatorKey: _rootNavigatorKey,

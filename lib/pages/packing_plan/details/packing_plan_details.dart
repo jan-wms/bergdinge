@@ -8,6 +8,7 @@ import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/details/item_list.dart';
+import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +55,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             final PackingPlan packingPlan =
                                 packingPlanList.singleWhere((element) =>
                                     element.id == widget.packingPlanID);
-        
+
                             return ref
                                 .watch(
                                     packingPlanItemStreamProvider(packingPlan.id))
@@ -67,7 +68,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                     final TextEditingController controllerNotes =
                                         TextEditingController(
                                             text: packingPlan.notes ?? '');
-        
+
                                     Future<void> editItem(
                                         {required String equipmentId,
                                         required bool allowSelectLocation,
@@ -82,7 +83,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             packingPlan: packingPlan),
                                       );
                                     }
-        
+
                                     Statistic statisticFromItems(
                                         MapEntry<String, List<PackingPlanItem>?>
                                             entry) {
@@ -99,7 +100,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 ? topCategory.substring(
                                                     0, topCategory.indexOf('.', 1))
                                                 : topCategory);
-        
+
                                         categoryPackingPlanItemsMap
                                                 .containsKey(topCategory)
                                             ? categoryPackingPlanItemsMap[
@@ -108,7 +109,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             : categoryPackingPlanItemsMap[
                                                 topCategory] = [i];
                                       }
-        
+
                                       if (categoryPackingPlanItemsMap.length == 1 &&
                                           !categoryPackingPlanItemsMap.keys.single
                                               .startsWith('2') &&
@@ -124,14 +125,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         categoryPackingPlanItemsMap =
                                             s.categoryPackingPlanItemsMap;
                                       }
-        
+
                                       return Statistic(
                                           topCategory: entry.key,
                                           categoryPackingPlanItemsMap:
                                               categoryPackingPlanItemsMap,
                                           ref: ref);
                                     }
-        
+
                                     List<Statistic> statistics = [
                                       statisticFromItems(MapEntry(
                                           '',
@@ -145,14 +146,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                           dropdownIndexProvider))
                                               .toList())),
                                     ];
-        
+
                                     for (MapEntry<String,
                                             List<PackingPlanItem>> entry
                                         in statistics.first
                                             .categoryPackingPlanItemsMap.entries) {
                                       statistics.add(statisticFromItems(entry));
                                     }
-        
+
                                     List<Widget> getRightSection(
                                         Statistic statistic) {
                                       var result = <Widget>[
@@ -162,7 +163,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ];
-        
+
                                       Map<String, List<PackingPlanItem>>
                                           summarizedItems = {};
                                       for (MapEntry<String,
@@ -183,7 +184,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 isChecked: false))
                                             .toList();
                                       }
-        
+
                                       for (MapEntry<String,
                                               List<PackingPlanItem>> entry
                                           in summarizedItems.entries) {
@@ -202,7 +203,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       }
                                       return result;
                                     }
-        
+
                                     return Stack(children: [
                                       ListView(
                                         children: [
@@ -219,12 +220,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     in packingPlan.sports)
                                                   Text(sport),
                                                 ElevatedButton(
-                                                    onPressed: () {
-                                                      context.push(
-                                                          '/packing_plan/edit',
-                                                          extra: packingPlan);
-                                                    },
-                                                    child: const Text('edit')),
+                                                    onPressed: () => CustomDialog.showCustomModal(context: context, child: PackingPlanEdit(packingPlan: packingPlan,)),
+                                                    child: const Text('bearbeiten')),
                                                 ElevatedButton(
                                                     onPressed: () async {
                                                       bool? confirmDelete =
@@ -499,7 +496,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                             .collection(
                                                                 'packing_plan')
                                                             .doc(packingPlan.id);
-        
+
                                                     ref.update({
                                                       "notes": controllerNotes.text
                                                     });

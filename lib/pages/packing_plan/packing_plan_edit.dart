@@ -1,3 +1,4 @@
+import 'package:equipment_app/custom_widgets/custom_close_button.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/validators/packing_plan_validator.dart';
 import 'package:flutter/material.dart';
@@ -75,105 +76,97 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-            'Packliste ${widget.packingPlan == null ? 'erstellen' : 'bearbeiten'}'),
-        actions: [
-          FilledButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate() && !isLoading) {
-                edit(
-                    packingPlanList: ref.read(packingPlanStreamProvider).value);
-              }
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: Design.colors[1],
-              foregroundColor: Colors.white,
-              shape: const CircleBorder(),
-            ),
-            child: SizedBox(
-              width: 30,
-              height: 30,
-              child: isLoading
-                  ? const CircularProgressIndicator(
-                color: Colors.white54,
-              )
-                  : const Icon(Icons.check_rounded),
-            )
-
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.all(30.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 30.0),
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) => PackingPlanValidator.name(value),
-                      controller: _controllerName,
-                      decoration: const InputDecoration(labelText: 'Name'),
+    return SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(30.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    'Packliste ${widget.packingPlan == null ? 'erstellen' : 'bearbeiten'}'),
+                const CustomCloseButton(),
+                FilledButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate() && !isLoading) {
+                        edit(
+                            packingPlanList: ref.read(packingPlanStreamProvider).value);
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Design.colors[1],
+                      foregroundColor: Colors.white,
+                      shape: const CircleBorder(),
                     ),
-                  ),
-                  FormField<List<String>>(
-                    validator: (value) => PackingPlanValidator.sports(value),
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                        color: Colors.white54,
+                      )
+                          : const Icon(Icons.check_rounded),
+                    )
+
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    key: _formKeySports,
-                    initialValue: widget.packingPlan?.sports ?? <String>[],
-                    builder: (state) => Column(
-                      children: [
-                        Wrap(spacing: 5.0,
-                            alignment: WrapAlignment.center,
-                            children: [
-                          for (var sport in Data.sports)
-                            FilterChip(
-                              showCheckmark: false,
-                              label: Text(sport),
-                              selected: state.value?.contains(sport) ?? false,
-                              onSelected: (bool value) {
-                                var oldList = state.value!.toList();
-                                if (value) {
-                                  if (!state.value!.contains(sport)) {
-                                    oldList.add(sport);
-                                  }
-                                } else {
-                                  oldList.removeWhere((String s) {
-                                    return s == sport;
-                                  });
+                    validator: (value) => PackingPlanValidator.name(value),
+                    controller: _controllerName,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                  ),
+                ),
+                FormField<List<String>>(
+                  validator: (value) => PackingPlanValidator.sports(value),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: _formKeySports,
+                  initialValue: widget.packingPlan?.sports ?? <String>[],
+                  builder: (state) => Column(
+                    children: [
+                      Wrap(spacing: 5.0,
+                          alignment: WrapAlignment.center,
+                          children: [
+                        for (var sport in Data.sports)
+                          FilterChip(
+                            showCheckmark: false,
+                            label: Text(sport),
+                            selected: state.value?.contains(sport) ?? false,
+                            onSelected: (bool value) {
+                              var oldList = state.value!.toList();
+                              if (value) {
+                                if (!state.value!.contains(sport)) {
+                                  oldList.add(sport);
                                 }
-                                state.didChange(oldList);
-                              },
-                            )
-                        ]),
-                        Visibility(
-                          visible: state.errorText == null ? false : true,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Text(
-                              state.errorText ?? 'Kein Fehler',
-                              style: const TextStyle(color: Colors.red),
-                            ),
+                              } else {
+                                oldList.removeWhere((String s) {
+                                  return s == sport;
+                                });
+                              }
+                              state.didChange(oldList);
+                            },
+                          )
+                      ]),
+                      Visibility(
+                        visible: state.errorText == null ? false : true,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Text(
+                            state.errorText ?? 'Kein Fehler',
+                            style: const TextStyle(color: Colors.red),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      ),
     );
   }
 }

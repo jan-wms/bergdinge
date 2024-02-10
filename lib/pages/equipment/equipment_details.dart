@@ -12,6 +12,8 @@ import '../../data/design.dart';
 import '../../firebase/firebase_auth.dart';
 import 'package:equipment_app/data/providers.dart';
 
+import 'equipment_edit.dart';
+
 class EquipmentDetails extends ConsumerWidget {
   final String equipmentID;
 
@@ -177,8 +179,7 @@ class EquipmentDetails extends ConsumerWidget {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                               ),
-                              onPressed: () => context.push('/equipment/edit',
-                                  extra: equipment),
+                              onPressed: () => CustomDialog.showCustomModal(context: context, child: EquipmentEdit(equipment: equipment)),
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,7 @@
 import 'package:equipment_app/custom_widgets/custom_appbar.dart';
+import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_card.dart';
+import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,7 +20,7 @@ class PackingPlanPage extends ConsumerWidget {
       child: CustomScrollView(slivers: <Widget>[
         CustomAppBar(
           title: 'Packlisten',
-          onAddButtonPressed: () => context.push('/packing_plan/edit'),
+          onAddButtonPressed: () => CustomDialog.showCustomModal(context: context, child: const PackingPlanEdit()),
           onChanged: (_) {},
         ),
         packingPlanList.when(
