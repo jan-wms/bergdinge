@@ -14,6 +14,7 @@ class PackingPlanPage extends ConsumerWidget {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
 
     return SafeArea(
+      top: false,
       child: CustomScrollView(slivers: <Widget>[
         CustomAppBar(
           title: 'Packlisten',

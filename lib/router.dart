@@ -30,7 +30,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/launch_screen',
-        builder: (context, state) => const Scaffold(body: Placeholder()),
+        builder: (context, state) => const Scaffold(body: Placeholder(), backgroundColor: Colors.red,),
       ),
       GoRoute(
         path: '/welcome',

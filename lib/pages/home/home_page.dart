@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       child: CustomScrollView(
         slivers: <Widget>[
           const CustomAppBar(title: 'Entdecken'),
