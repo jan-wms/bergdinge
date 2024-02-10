@@ -56,6 +56,14 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
             loading: () => const SliverToBoxAdapter(child: CircularProgressIndicator.adaptive()),
             data: (data) {
 
+              if(data.isEmpty) {
+                return const SliverFillRemaining(
+                  child: Center(
+                    child: Text('Ziemlich leer hier...'),
+                  ),
+                );
+              }
+
               String searchPattern = controller.text.toLowerCase();
               if (searchPattern.isNotEmpty) {
                 List<Equipment> items = data

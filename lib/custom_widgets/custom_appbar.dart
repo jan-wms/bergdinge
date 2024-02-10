@@ -1,5 +1,5 @@
 /*https://stackoverflow.com/questions/63596715/flutter-custom-sliver-app-bar-with-search-bar*/
-
+import 'dart:ui';
 import 'dart:math';
 import 'package:equipment_app/data/design.dart';
 import 'package:flutter/material.dart';
@@ -83,8 +83,8 @@ class __SearchState extends State<_Search> {
 }
 
 class SearchHeader extends SliverPersistentHeaderDelegate {
-  final double minTopBarHeight = 100;
-  final double maxTopBarHeight = 200;
+  final double minTopBarHeight = 80 + MediaQueryData.fromView(window).padding.top;
+  final double maxTopBarHeight = 180 + MediaQueryData.fromView(window).padding.top;
   final String title;
   final IconData icon;
   final Widget search;
@@ -118,21 +118,24 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
               bottomLeft: Radius.circular(36),
               bottomRight: Radius.circular(36),
             )),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(title,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
-            const SizedBox(
-              width: 20,
-            ),
-            Icon(
-              icon,
-              size: 40,
-              color: Colors.white,
-            )
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(top: MediaQueryData.fromView(window).padding.top),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(title,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+              const SizedBox(
+                width: 20,
+              ),
+              Icon(
+                icon,
+                size: 40,
+                color: Colors.white,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -173,10 +176,10 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 230;
+  double get maxExtent => 210 + MediaQueryData.fromView(window).padding.top;
 
   @override
-  double get minExtent => 100;
+  double get minExtent => 80 + MediaQueryData.fromView(window).padding.top;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
