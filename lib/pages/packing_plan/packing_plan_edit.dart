@@ -55,7 +55,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
         element.id != p.id);
     if (duplicate != null && duplicate != -1) {
       await CustomDialog.showCustomConfirmationDialog(
-        type: ConfirmType.confirmContinue,
+              type: ConfirmType.confirmContinue,
               context: context,
               description:
                   'Es existiert bereits eine Packliste mit dem Namen "${packingPlanList!.elementAt(duplicate).name}". Trotzdem fortfahren?')
@@ -76,80 +76,59 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(30.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                    'Packliste ${widget.packingPlan == null ? 'erstellen' : 'bearbeiten'}'),
-                const CustomCloseButton(),
-                FilledButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate() && !isLoading) {
-                        edit(
-                            packingPlanList: ref.read(packingPlanStreamProvider).value);
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Design.colors[1],
-                      foregroundColor: Colors.white,
-                      shape: const CircleBorder(),
-                    ),
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: isLoading
-                          ? const CircularProgressIndicator(
-                        color: Colors.white54,
-                      )
-                          : const Icon(Icons.check_rounded),
-                    )
-
+    return SafeArea(
+      child: Padding(
+        padding: Design.pagePadding.copyWith(bottom: 40.0, top: 30.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const Text(
+                'Packliste',
+                style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w600),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30.0, top: 30.0),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => PackingPlanValidator.name(value),
+                  controller: _controllerName,
+                  decoration: const InputDecoration(labelText: 'Name'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 30.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) => PackingPlanValidator.name(value),
-                    controller: _controllerName,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                  ),
-                ),
-                FormField<List<String>>(
+              ),
+              Expanded(
+                child: FormField<List<String>>(
                   validator: (value) => PackingPlanValidator.sports(value),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   key: _formKeySports,
                   initialValue: widget.packingPlan?.sports ?? <String>[],
                   builder: (state) => Column(
                     children: [
-                      Wrap(spacing: 5.0,
+                      Wrap(
+                          spacing: 5.0,
                           alignment: WrapAlignment.center,
                           children: [
-                        for (var sport in Data.sports)
-                          FilterChip(
-                            showCheckmark: false,
-                            label: Text(sport),
-                            selected: state.value?.contains(sport) ?? false,
-                            onSelected: (bool value) {
-                              var oldList = state.value!.toList();
-                              if (value) {
-                                if (!state.value!.contains(sport)) {
-                                  oldList.add(sport);
-                                }
-                              } else {
-                                oldList.removeWhere((String s) {
-                                  return s == sport;
-                                });
-                              }
-                              state.didChange(oldList);
-                            },
-                          )
-                      ]),
+                            for (var sport in Data.sports)
+                              FilterChip(
+                                showCheckmark: false,
+                                label: Text(sport),
+                                selected: state.value?.contains(sport) ?? false,
+                                onSelected: (bool value) {
+                                  var oldList = state.value!.toList();
+                                  if (value) {
+                                    if (!state.value!.contains(sport)) {
+                                      oldList.add(sport);
+                                    }
+                                  } else {
+                                    oldList.removeWhere((String s) {
+                                      return s == sport;
+                                    });
+                                  }
+                                  state.didChange(oldList);
+                                },
+                              )
+                          ]),
                       Visibility(
                         visible: state.errorText == null ? false : true,
                         child: Padding(
@@ -163,10 +142,59 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      onPressed: () => context.pop(false),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black54,
+                      ),
+                      child: const Text(
+                        'Abbrechen',
+                        style: TextStyle(fontSize: 17),
+                      )),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                          foregroundColor: Colors.white,
+                          backgroundColor: Design.colors[1],
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0))),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate() && !isLoading) {
+                          edit(
+                              packingPlanList:
+                                  ref.read(packingPlanStreamProvider).value);
+                        }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 30,
+                        width: 105,
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white54,
+                                ),
+                              )
+                            : Text(
+                                widget.packingPlan == null
+                                    ? 'Hinzufügen'
+                                    : 'Bearbeiten',
+                                style: const TextStyle(fontSize: 17),
+                              ),
+                      ))
+                ],
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }

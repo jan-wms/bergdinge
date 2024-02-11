@@ -58,8 +58,8 @@ class Design {
       error: Colors.red,
     ),
     bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: Colors.white,
       modalBackgroundColor: Colors.white,
-    )
+      surfaceTintColor: Colors.white,
+    ),
   );
 }

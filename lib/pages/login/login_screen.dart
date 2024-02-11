@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../custom_widgets/custom_dialog.dart';
 import './sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -138,37 +139,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             AuthenticationAction.reauthenticate &&
                         ref.read(authProvider) == 'apple.com'))
                   _SignInWithAppleButton(
-                    onPressed: () async {
-                      ref.read(isLoadingProvider.notifier).update((state) => !state);
-                    },
-                    //TODO
-                    /* if(!ref.watch(isLoadingProvider)) {
-                      CustomDialog.showCustomInformationDialog(
-                          context: context,
-                          description: 'Diese Funktion ist nicht verfügbar.');
-                    }
-                  )*/
+                    onPressed: () => (!ref.watch(isLoadingProvider))
+                        ? CustomDialog.showCustomInformationDialog(
+                            context: context,
+                            description: 'Diese Funktion ist nicht verfügbar.')
+                        : null,
                   ),
                 if (widget.authenticationAction == AuthenticationAction.signIn)
                   Container(
                     height: 60.0,
                     margin: const EdgeInsets.only(top: 10.0),
                     child: (ref.watch(isLoadingProvider))
-                          ? Container(
-                      margin: const EdgeInsets.all(15.0),
-                      height: 30.0,
-                        width: 30.0,
-                        child:  const CircularProgressIndicator())
-                          : TextButton(
-                              style: TextButton.styleFrom(
-                                  //foregroundColor: Colors.white
-                                  ),
-                              onPressed: () async {
-                                ref.read(isLoadingProvider.notifier).state = true;
-                                await signInAnonymously(context);
-                                ref.read(isLoadingProvider.notifier).state = false;
-                              },
-                              child: const Text('Überspringen')),
+                        ? Container(
+                            margin: const EdgeInsets.all(15.0),
+                            height: 30.0,
+                            width: 30.0,
+                            child: const CircularProgressIndicator())
+                        : TextButton(
+                            style: TextButton.styleFrom(
+                                //foregroundColor: Colors.white
+                                ),
+                            onPressed: () async {
+                              ref.read(isLoadingProvider.notifier).state = true;
+                              await signInAnonymously(context);
+                              ref.read(isLoadingProvider.notifier).state =
+                                  false;
+                            },
+                            child: const Text('Überspringen')),
                   ),
               ],
             ),
