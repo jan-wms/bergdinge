@@ -22,9 +22,9 @@ class SettingsPage extends ConsumerWidget {
 
   void deleteAccount(BuildContext context) {
     CustomDialog.showCustomConfirmationDialog(
-            type: ConfirmType.confirmDelete,
-            context: context,
-            description: 'Möchtest du deinen Account wirklich löschen?')
+        type: ConfirmType.confirmDelete,
+        context: context,
+        description: 'Möchtest du deinen Account wirklich löschen?')
         .then((result) async {
       if (result) {
         CustomDialog.showCustomDialog(
@@ -71,8 +71,12 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataStreamProvider).value;
-    final firebaseUser = ref.watch(userChangesProvider).value;
+    final userData = ref
+        .watch(userDataStreamProvider)
+        .value;
+    final firebaseUser = ref
+        .watch(userChangesProvider)
+        .value;
 
     return SafeArea(
       top: false,
@@ -91,99 +95,44 @@ class SettingsPage extends ConsumerWidget {
                   title: 'Hallo ${userData?['name']}!',
                   icon: Icons.person_rounded,
                   onChanged: (_) {},
+                  onAddButtonPressed: ()  => CustomDialog.showCustomModal(
+                      context: context,
+                      child: SetupScreen(editValue: EditValue.name),
+                    ),
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
                       if (false)
-                        Container(
-                          margin: Design.pagePadding.copyWith(top: 20.0),
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Design.colors[0],
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20.0)),
-                          ),
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'lkjb',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 35,
-                                        ),
-                                      ),
-                                      Text(
-                                        firebaseUser?.email ?? '',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  FilledButton(
+                        Row(
+                              children: [
+                                IconButton(
                                     onPressed: () {
-                                      CustomDialog.showCustomModal(
-                                        context: context,
-                                        child: SetupScreen(
-                                            editValue: EditValue.name),
-                                      );
+                                      copyToClipboard(
+                                          context: context,
+                                          value: Auth().user!.uid);
                                     },
-                                    style: FilledButton.styleFrom(
-                                      foregroundColor: Design.colors[0],
-                                      backgroundColor: Colors.white,
-                                      shape: const CircleBorder(),
-                                    ),
-                                    child: const Icon(
-                                      Icons.edit_rounded,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        copyToClipboard(
-                                            context: context,
-                                            value: Auth().user!.uid);
-                                      },
-                                      icon: const Icon(
-                                        Icons.copy_rounded,
-                                        size: 20,
-                                        color: Color.fromRGBO(210, 210, 210, 1),
-                                      )),
-                                  Text(
-                                    Auth().user?.uid ?? 'no uid provided',
-                                    style: const TextStyle(
+                                    icon: const Icon(
+                                      Icons.copy_rounded,
+                                      size: 20,
                                       color: Color.fromRGBO(210, 210, 210, 1),
-                                    ),
+                                    )),
+                                Text(
+                                  Auth().user?.uid ?? 'no uid provided',
+                                  style: const TextStyle(
+                                    color: Color.fromRGBO(210, 210, 210, 1),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                          ],
                         ),
                       Container(
                         margin: Design.pagePadding.copyWith(top: 20.0),
                         decoration: BoxDecoration(
                           color: (firebaseUser?.isAnonymous ?? false)
                               ? const Color.fromRGBO(246, 236, 202, 1.0)
-                              : Design.colors[7],
+                              : (ref.read(authProvider) == 'apple.com') ? Colors.white : Design.colors[7],
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(20.0)),
+                          const BorderRadius.all(Radius.circular(20.0)),
                           boxShadow: [
                             if (!(firebaseUser?.isAnonymous ?? true))
                               BoxShadow(
@@ -202,21 +151,21 @@ class SettingsPage extends ConsumerWidget {
                               children: [
                                 (firebaseUser?.isAnonymous ?? false)
                                     ? Icon(
-                                        Icons.warning_rounded,
-                                        color: Design.colors[6],
-                                        size: 50,
-                                      )
+                                  Icons.warning_rounded,
+                                  color: Design.colors[6],
+                                  size: 50,
+                                )
                                     : const Icon(
-                                        Icons.check_circle_outline_rounded,
-                                        color: Colors.green,
-                                        size: 50,
-                                      ),
+                                  Icons.check_circle_outline_rounded,
+                                  color: Colors.green,
+                                  size: 50,
+                                ),
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 10.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Synchronisierung',
@@ -243,31 +192,31 @@ class SettingsPage extends ConsumerWidget {
                               padding: const EdgeInsets.only(top: 30.0),
                               child: (firebaseUser?.isAnonymous ?? false)
                                   ? ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          backgroundColor: Design.colors[6],
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0))),
-                                      onPressed: () async {
-                                        CustomDialog.showCustomModal(
-                                          context: context,
-                                          child: LoginScreen(
-                                              onComplete: () {
-                                                context.pop();
-                                                CustomDialog
-                                                    .showCustomInformationDialog(
-                                                        context: context,
-                                                        description:
-                                                            'acc verlinkt');
-                                              },
-                                              authenticationAction:
-                                                  AuthenticationAction
-                                                      .linkAccounts),
-                                        );
-                                      },
-                                      child: const Text('Aktivieren'))
-                                  : Text(ref.read(authProvider)),
+                                  style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Design.colors[6],
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10.0))),
+                                  onPressed: () async {
+                                    CustomDialog.showCustomModal(
+                                      context: context,
+                                      child: LoginScreen(
+                                          onComplete: () {
+                                            context.pop();
+                                            CustomDialog
+                                                .showCustomInformationDialog(
+                                                context: context,
+                                                description:
+                                                'acc verlinkt');
+                                          },
+                                          authenticationAction:
+                                          AuthenticationAction
+                                              .linkAccounts),
+                                    );
+                                  },
+                                  child: const Text('Aktivieren'))
+                                  : _DisplayAuthProvider(email: firebaseUser?.email, authProvider: ref.read(authProvider),)
                             ),
                           ],
                         ),
@@ -312,7 +261,8 @@ class SettingsPage extends ConsumerWidget {
                                     Map<String, String> params) {
                                   return params.entries
                                       .map((MapEntry<String, String> e) =>
-                                  '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                                  '${Uri.encodeComponent(e.key)}=${Uri
+                                      .encodeComponent(e.value)}')
                                       .join('&');
                                 }
 
@@ -334,24 +284,30 @@ class SettingsPage extends ConsumerWidget {
                               },
                             ),
                             _CustomListTile(title: 'Test', onTap: () {}),
-                            _CustomListTile(title: 'Unterstützen', icon: Icons.favorite_outline_rounded, onTap:  () async {
-                              final Uri url = Uri.parse('https://paypal.com/');
-                              launchUrl(url).then((didLaunch) {
-                                if (didLaunch == false) {
-                                  copyToClipboard(
-                                      context: context,
-                                      value: Data.websiteUrl);
-                                }
-                              });
-                            },),
+                            _CustomListTile(
+                              title: 'Unterstützen',
+                              icon: Icons.favorite_outline_rounded,
+                              onTap: () async {
+                                final Uri url =
+                                Uri.parse('https://paypal.com/');
+                                launchUrl(url).then((didLaunch) {
+                                  if (didLaunch == false) {
+                                    copyToClipboard(
+                                        context: context,
+                                        value: Data.websiteUrl);
+                                  }
+                                });
+                              },
+                            ),
                             _CustomListTile(
                               title: 'Lizenzen',
                               icon: Icons.chevron_right_rounded,
-                              onTap: () => showLicensePage(
-                                  context: context,
-                                  applicationName: 'Bergdinge',
-                                  applicationVersion: version,
-                                  useRootNavigator: true),
+                              onTap: () =>
+                                  showLicensePage(
+                                      context: context,
+                                      applicationName: 'Bergdinge',
+                                      applicationVersion: version,
+                                      useRootNavigator: true),
                             ),
                           ],
                         ),
@@ -364,10 +320,10 @@ class SettingsPage extends ConsumerWidget {
                               style: TextButton.styleFrom(
                                 foregroundColor: Colors.red,
                                 backgroundColor:
-                                    const Color.fromRGBO(255, 222, 222, 1.0),
+                                const Color.fromRGBO(255, 222, 222, 1.0),
                                 shape: const RoundedRectangleBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
+                                    BorderRadius.all(Radius.circular(10))),
                               ),
                               onPressed: () {
                                 Auth().signOut();
@@ -391,11 +347,11 @@ class SettingsPage extends ConsumerWidget {
                         child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               foregroundColor:
-                                  const Color.fromRGBO(255, 194, 194, 1.0),
+                              const Color.fromRGBO(255, 194, 194, 1.0),
                               side: const BorderSide(color: Colors.red),
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
+                                  BorderRadius.all(Radius.circular(10))),
                             ),
                             onPressed: () async {
                               if (Auth().user!.isAnonymous) {
@@ -409,7 +365,7 @@ class SettingsPage extends ConsumerWidget {
                                         deleteAccount(context);
                                       },
                                       authenticationAction:
-                                          AuthenticationAction.reauthenticate),
+                                      AuthenticationAction.reauthenticate),
                                 );
                               }
                             },
@@ -451,8 +407,7 @@ class _CustomListTile extends StatelessWidget {
   final IconData? icon;
   final VoidCallback onTap;
 
-  const _CustomListTile(
-      {required this.title, this.icon, required this.onTap});
+  const _CustomListTile({required this.title, this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -468,3 +423,54 @@ class _CustomListTile extends StatelessWidget {
     );
   }
 }
+
+class _DisplayAuthProvider extends StatelessWidget {
+  final String? email;
+  final String authProvider;
+  const _DisplayAuthProvider({this.email, required this.authProvider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius:
+        BorderRadius.circular(10),
+        color: (authProvider == 'apple.com') ? Colors.black : Colors.white,
+        boxShadow: (authProvider == 'apple.com') ? null : [
+          BoxShadow(
+            color:
+            Colors.grey.withOpacity(0.15),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+              width: 30,
+              height: 30,
+              child: Image.asset((authProvider == 'apple.com') ? 'assets/appleIcon.png' :
+                  'assets/googleIcon.png')),
+          Flexible(
+            child: Padding(
+              padding:
+              const EdgeInsets.only(left: 10),
+              child: Text(email ??
+                  ((authProvider == 'apple.com') ? 'Mit Apple angemeldet' : 'Über Google angemeldet'),
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15, color: (authProvider == 'apple.com') ? Colors.white : Colors.black54,
+                ),
+              ),),
+          )
+        ],
+      ),
+    );
+  }
+}
+

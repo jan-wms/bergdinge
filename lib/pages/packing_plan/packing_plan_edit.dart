@@ -98,48 +98,52 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                 ),
               ),
               Expanded(
-                child: FormField<List<String>>(
-                  validator: (value) => PackingPlanValidator.sports(value),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  key: _formKeySports,
-                  initialValue: widget.packingPlan?.sports ?? <String>[],
-                  builder: (state) => Column(
-                    children: [
-                      Wrap(
-                          spacing: 5.0,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            for (var sport in Data.sports)
-                              FilterChip(
-                                showCheckmark: false,
-                                label: Text(sport),
-                                selected: state.value?.contains(sport) ?? false,
-                                onSelected: (bool value) {
-                                  var oldList = state.value!.toList();
-                                  if (value) {
-                                    if (!state.value!.contains(sport)) {
-                                      oldList.add(sport);
-                                    }
-                                  } else {
-                                    oldList.removeWhere((String s) {
-                                      return s == sport;
-                                    });
-                                  }
-                                  state.didChange(oldList);
-                                },
-                              )
-                          ]),
-                      Visibility(
-                        visible: state.errorText == null ? false : true,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Text(
-                            state.errorText ?? 'Kein Fehler',
-                            style: const TextStyle(color: Colors.red),
+                child: Scrollbar(
+                  child: SingleChildScrollView(
+                    child: FormField<List<String>>(
+                      validator: (value) => PackingPlanValidator.sports(value),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      key: _formKeySports,
+                      initialValue: widget.packingPlan?.sports ?? <String>[],
+                      builder: (state) => Column(
+                        children: [
+                          Wrap(
+                              spacing: 5.0,
+                              alignment: WrapAlignment.center,
+                              children: [
+                                for (var sport in Data.sports)
+                                  FilterChip(
+                                    showCheckmark: false,
+                                    label: Text(sport),
+                                    selected: state.value?.contains(sport) ?? false,
+                                    onSelected: (bool value) {
+                                      var oldList = state.value!.toList();
+                                      if (value) {
+                                        if (!state.value!.contains(sport)) {
+                                          oldList.add(sport);
+                                        }
+                                      } else {
+                                        oldList.removeWhere((String s) {
+                                          return s == sport;
+                                        });
+                                      }
+                                      state.didChange(oldList);
+                                    },
+                                  )
+                              ]),
+                          Visibility(
+                            visible: state.errorText == null ? false : true,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 15.0),
+                              child: Text(
+                                state.errorText ?? 'Kein Fehler',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

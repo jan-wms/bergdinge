@@ -35,6 +35,8 @@ class EquipmentPage extends ConsumerWidget {
                 //context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId)),
                 context.push('/equipment/details', extra: equipmentId),
           ),
+          const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
+
         ],
       ),
     );
