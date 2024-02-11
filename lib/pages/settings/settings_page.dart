@@ -290,71 +290,63 @@ class SettingsPage extends ConsumerWidget {
                             .copyWith(top: 25.0, bottom: 30.0),
                         child: Column(
                           children: [
-                            ListTile(
-                                onTap: () async {
-                                  String? encodeQueryParameters(
-                                      Map<String, String> params) {
-                                    return params.entries
-                                        .map((MapEntry<String, String> e) =>
-                                            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-                                        .join('&');
+                            _CustomListTile(
+                              title: Data.websiteUrlShort,
+                              icon: Icons.launch_rounded,
+                              onTap: () async {
+                                final Uri url = Uri.parse(Data.websiteUrl);
+                                launchUrl(url).then((didLaunch) {
+                                  if (didLaunch == false) {
+                                    copyToClipboard(
+                                        context: context,
+                                        value: Data.websiteUrl);
                                   }
+                                });
+                              },
+                            ),
+                            _CustomListTile(
+                              title: Data.supportMail,
+                              icon: Icons.mail_outline_rounded,
+                              onTap: () async {
+                                String? encodeQueryParameters(
+                                    Map<String, String> params) {
+                                  return params.entries
+                                      .map((MapEntry<String, String> e) =>
+                                  '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                                      .join('&');
+                                }
 
-                                  final Uri uri = Uri(
-                                    scheme: 'mailto',
-                                    path: Data.supportMail,
-                                    query:
-                                        encodeQueryParameters(<String, String>{
-                                      'subject': 'Bergdinge',
-                                    }),
-                                  );
+                                final Uri uri = Uri(
+                                  scheme: 'mailto',
+                                  path: Data.supportMail,
+                                  query: encodeQueryParameters(<String, String>{
+                                    'subject': 'Bergdinge',
+                                  }),
+                                );
 
-                                  launchUrl(uri).then((didLaunch) {
-                                    if (didLaunch == false) {
-                                      copyToClipboard(
-                                          context: context,
-                                          value: Data.supportMail);
-                                    }
-                                  });
-                                },
-                                trailing:
-                                    const Icon(Icons.mail_outline_rounded),
-                                title: Text(Data.supportMail)),
-                            ListTile(
-                                onTap: () async {
-                                  final Uri url = Uri.parse(Data.websiteUrl);
-                                  launchUrl(url).then((didLaunch) {
-                                    if (didLaunch == false) {
-                                      copyToClipboard(
-                                          context: context,
-                                          value: Data.websiteUrl);
-                                    }
-                                  });
-                                },
-                                trailing: const Icon(Icons.launch_rounded),
-                                title: Row(
-                                  children: [
-                                    Text(Data.websiteUrlShort),
-                                  ],
-                                )),
-                            const ListTile(
-                              title: Text('Test'),
+                                launchUrl(uri).then((didLaunch) {
+                                  if (didLaunch == false) {
+                                    copyToClipboard(
+                                        context: context,
+                                        value: Data.supportMail);
+                                  }
+                                });
+                              },
                             ),
-                            InkWell(
-                              onTap: () {},
-                              child: const ListTile(
-                                title: Text('Test1'),
-                              ),
-                            ),
-                            const ListTile(
-                              title: Text('Test'),
-                            ),
-                            const ListTile(
-                              title: Text('Test'),
-                            ),
-                            ListTile(
-                              title: const Text('Lizenzen'),
-                              trailing: const Icon(Icons.chevron_right_rounded),
+                            _CustomListTile(title: 'Test', onTap: () {}),
+                            _CustomListTile(title: 'Unterstützen', icon: Icons.favorite_outline_rounded, onTap:  () async {
+                              final Uri url = Uri.parse('https://paypal.com/');
+                              launchUrl(url).then((didLaunch) {
+                                if (didLaunch == false) {
+                                  copyToClipboard(
+                                      context: context,
+                                      value: Data.websiteUrl);
+                                }
+                              });
+                            },),
+                            _CustomListTile(
+                              title: 'Lizenzen',
+                              icon: Icons.chevron_right_rounded,
                               onTap: () => showLicensePage(
                                   context: context,
                                   applicationName: 'Bergdinge',
@@ -450,6 +442,29 @@ class SettingsPage extends ConsumerWidget {
               ],
             );
           }),
+    );
+  }
+}
+
+class _CustomListTile extends StatelessWidget {
+  final String title;
+  final IconData? icon;
+  final VoidCallback onTap;
+
+  const _CustomListTile(
+      {required this.title, this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      child: InkWell(
+        onTap: onTap,
+        child: ListTile(
+          title: Text(title),
+          trailing: Icon(icon),
+        ), // ListTile
+      ), // InkWell
     );
   }
 }
