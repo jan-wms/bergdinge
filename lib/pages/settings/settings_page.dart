@@ -274,7 +274,7 @@ class SettingsPage extends ConsumerWidget {
                             }, icon: Icons.copy_rounded,),
                             _CustomListTile(
                               title: 'Lizenzen',
-                              icon: Icons.chevron_right_rounded,
+                              icon: Icons.arrow_forward_rounded,
                               onTap: () =>
                                   showLicensePage(
                                       context: context,

@@ -34,9 +34,10 @@ class Design {
 
   ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    appBarTheme: const AppBarTheme(
-      color: Colors.white,
+    appBarTheme: AppBarTheme(
+      color: Design.colors[1],
       surfaceTintColor: Colors.white,
+      foregroundColor: Colors.white,
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
