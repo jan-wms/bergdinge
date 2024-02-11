@@ -26,7 +26,6 @@ dependencies:
   url_launcher: ^6.1.12
   collection: ^1.18.0
   dismissible_page: ^1.0.2
-  sliver_tools: ^0.2.12
   flutter_native_splash: ^2.3.10
   shimmer: ^3.0.0
 

@@ -2,7 +2,6 @@ import 'package:equipment_app/data/design.dart';
 import 'package:flutter/material.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../data/data.dart';
 import '../../data_models/equipment.dart';
@@ -23,33 +22,8 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
   Widget build(BuildContext context) {
     final equipmentList = ref.watch(equipmentStreamProvider);
 
-    return MultiSliver(
-      children: [
-        SliverAppBar(
-          backgroundColor: Colors.white,
-          pinned: true,
-          title: SizedBox(
-            width: double.infinity,
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: 'Suchen',
-                  suffix: (controller.text.isNotEmpty)
-                      ? IconButton(
-                      onPressed: () => setState(() {
-                        controller.text = '';
-                      }),
-                      icon: const Icon(Icons.clear))
-                      : null),
-              onChanged: (value) {
-                setState(() {});
-              },
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: Design.pagePadding,
+    return SliverPadding(
+          padding: Design.pagePadding.copyWith(top: 20.0),
           sliver: equipmentList.when(
             error: (error, stackTrace) => SliverToBoxAdapter(child: Text(error.toString())),
             loading: () => const SliverToBoxAdapter(child: CircularProgressIndicator.adaptive()),
@@ -132,7 +106,6 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
               );
             },
           ),
-        ),],
     );
   }
 }
