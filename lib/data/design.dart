@@ -33,10 +33,6 @@ class Design {
   static const double breakpoint2 = 1000.0;
 
   ThemeData lightTheme = ThemeData(
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: colors.elementAt(2),
-      error: Colors.red,
-    ),
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
       color: Colors.white,
@@ -57,6 +53,13 @@ class Design {
       ),
       border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
+    ), colorScheme: ColorScheme.fromSeed(
+      seedColor: colors.elementAt(2),
+      error: Colors.red,
     ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.white,
+      modalBackgroundColor: Colors.white,
+    )
   );
 }

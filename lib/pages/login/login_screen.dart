@@ -94,64 +94,141 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(widget.authenticationAction ==
-                      AuthenticationAction.linkAccounts
-                  ? 'Mit Account verknüpfen'
-                  : widget.authenticationAction ==
-                          AuthenticationAction.reauthenticate
-                      ? 'Bitte melden Sie sich erneut an.'
-                      : 'Anmelden'),
-              if (!kIsMacOS() &&
-                  (widget.authenticationAction !=
-                          AuthenticationAction.reauthenticate ||
-                      (widget.authenticationAction ==
-                              AuthenticationAction.reauthenticate &&
-                          ref.read(authProvider) == 'google.com')))
-                buildSignInButton(
-                  onPressed: () => _auth.signInWithGoogle(),
-                ),
-              if (widget.authenticationAction !=
-                      AuthenticationAction.reauthenticate ||
-                  (widget.authenticationAction ==
-                          AuthenticationAction.reauthenticate &&
-                      ref.read(authProvider) == 'apple.com'))
-                ElevatedButton(
-                    onPressed: () {}, child: const Text('Sign in with Apple')),
-              if (widget.authenticationAction == AuthenticationAction.signIn)
-                ElevatedButton(
-                    onPressed: () async {
-                      ref.read(isLoadingProvider.notifier).state = true;
-                      await signInAnonymously(context);
-                      ref.read(isLoadingProvider.notifier).state = false;
-                    },
-                    child: const Text('Continue without sign in')),
-              Text(
-                ref.watch(errorMessageProvider),
-                style: const TextStyle(
-                  color: CupertinoColors.destructiveRed,
-                ),
-              ),
-              if (context.canPop())
-                TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text('Abbrechen')),
-            ],
+    return Center(
+      child: Wrap(
+        direction: Axis.vertical,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 30.0,
+        children: [
+          Text(
+            widget.authenticationAction == AuthenticationAction.linkAccounts
+                ? 'Mit Account verknüpfen'
+                : widget.authenticationAction ==
+                        AuthenticationAction.reauthenticate
+                    ? 'Bitte melden Sie sich erneut an.'
+                    : 'Anmelden',
+            style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 40.0,
+                color: Colors.white),
           ),
-        ),
-        if (ref.watch(isLoadingProvider))
           Container(
-            color: Colors.black12,
-            child: const Center(
-              child: CircularProgressIndicator.adaptive(),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
             ),
-          )
-      ],
+            padding: const EdgeInsets.all(30.0),
+            child: Wrap(
+              spacing: 20.0,
+              direction: Axis.vertical,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (!kIsMacOS() &&
+                    (widget.authenticationAction !=
+                            AuthenticationAction.reauthenticate ||
+                        (widget.authenticationAction ==
+                                AuthenticationAction.reauthenticate &&
+                            ref.read(authProvider) == 'google.com')))
+                  buildSignInButton(
+                    onPressed: () => _auth.signInWithGoogle(),
+                  ),
+                if (widget.authenticationAction !=
+                        AuthenticationAction.reauthenticate ||
+                    (widget.authenticationAction ==
+                            AuthenticationAction.reauthenticate &&
+                        ref.read(authProvider) == 'apple.com'))
+                  _SignInWithAppleButton(
+                    onPressed: () async {
+                      ref.read(isLoadingProvider.notifier).update((state) => !state);
+                    },
+                    //TODO
+                    /* if(!ref.watch(isLoadingProvider)) {
+                      CustomDialog.showCustomInformationDialog(
+                          context: context,
+                          description: 'Diese Funktion ist nicht verfügbar.');
+                    }
+                  )*/
+                  ),
+                if (widget.authenticationAction == AuthenticationAction.signIn)
+                  Container(
+                    height: 60.0,
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: (ref.watch(isLoadingProvider))
+                          ? Container(
+                      margin: const EdgeInsets.all(15.0),
+                      height: 30.0,
+                        width: 30.0,
+                        child:  const CircularProgressIndicator())
+                          : TextButton(
+                              style: TextButton.styleFrom(
+                                  //foregroundColor: Colors.white
+                                  ),
+                              onPressed: () async {
+                                ref.read(isLoadingProvider.notifier).state = true;
+                                await signInAnonymously(context);
+                                ref.read(isLoadingProvider.notifier).state = false;
+                              },
+                              child: const Text('Überspringen')),
+                  ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: ref.watch(errorMessageProvider).isNotEmpty,
+            child: Text(
+              ref.watch(errorMessageProvider),
+              style: const TextStyle(
+                color: CupertinoColors.destructiveRed,
+              ),
+            ),
+          ),
+          if (context.canPop())
+            TextButton(
+                onPressed: () => context.pop(), child: const Text('Abbrechen')),
+        ],
+      ),
+    );
+  }
+}
+
+class _SignInWithAppleButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _SignInWithAppleButton({Key? key, required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 265,
+      height: 60,
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            textStyle: const TextStyle(fontSize: 17),
+            padding: const EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            splashFactory: NoSplash.splashFactory),
+        onPressed: () => onPressed(),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+                width: 30,
+                height: 30,
+                child: Image.asset('assets/appleIcon.png')),
+            const Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Text(
+                'Mit Apple anmelden',
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

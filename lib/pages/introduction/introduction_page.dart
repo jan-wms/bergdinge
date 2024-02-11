@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../data/design.dart';
 import '../../firebase/firebase_auth.dart';
 import '../login/login_screen.dart';
 
@@ -14,7 +16,14 @@ class _IntroductionPageState extends State<IntroductionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white, // Color for Android
+        statusBarBrightness:
+        Brightness.dark // for IOS.
+    ),
+    child: Scaffold(
+      backgroundColor: Design.colors[1],
         body: PageView(
       physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,
@@ -42,6 +51,6 @@ class _IntroductionPageState extends State<IntroductionPage> {
           onComplete: () {},
         ),
       ],
-    ));
+    )));
   }
 }
