@@ -103,28 +103,6 @@ class SettingsPage extends ConsumerWidget {
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      if (false)
-                        Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      copyToClipboard(
-                                          context: context,
-                                          value: Auth().user!.uid);
-                                    },
-                                    icon: const Icon(
-                                      Icons.copy_rounded,
-                                      size: 20,
-                                      color: Color.fromRGBO(210, 210, 210, 1),
-                                    )),
-                                Text(
-                                  Auth().user?.uid ?? 'no uid provided',
-                                  style: const TextStyle(
-                                    color: Color.fromRGBO(210, 210, 210, 1),
-                                  ),
-                                ),
-                          ],
-                        ),
                       Container(
                         margin: Design.pagePadding.copyWith(top: 20.0),
                         decoration: BoxDecoration(
@@ -283,22 +261,17 @@ class SettingsPage extends ConsumerWidget {
                                 });
                               },
                             ),
-                            _CustomListTile(title: 'Test', onTap: () {}),
                             _CustomListTile(
                               title: 'Unterstützen',
                               icon: Icons.favorite_outline_rounded,
-                              onTap: () async {
-                                final Uri url =
-                                Uri.parse('https://paypal.com/');
-                                launchUrl(url).then((didLaunch) {
-                                  if (didLaunch == false) {
-                                    copyToClipboard(
-                                        context: context,
-                                        value: Data.websiteUrl);
-                                  }
-                                });
-                              },
+                              onTap: () => CustomDialog.showCustomInformationDialog(context: context, description: 'Diese Funktion ist nicht verfügbar.'),
                             ),
+                            const Padding(padding: EdgeInsets.only(top: 30.0)),
+                            _CustomListTile(title: 'UID kopieren', onTap: () {
+                              copyToClipboard(
+                                  context: context,
+                                  value: Auth().user?.uid ?? 'uid not provided');
+                            }, icon: Icons.copy_rounded,),
                             _CustomListTile(
                               title: 'Lizenzen',
                               icon: Icons.chevron_right_rounded,
