@@ -87,6 +87,7 @@ class _SearchState extends State<Search> {
                   onPressed: () => setState(
                     () {
                       _editingController.clear();
+                      widget.onChanged('');
                     },
                   ),
                 ),

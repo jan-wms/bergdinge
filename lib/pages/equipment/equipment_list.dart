@@ -1,4 +1,5 @@
 import 'package:equipment_app/data/design.dart';
+import 'package:equipment_app/pages/equipment/equipment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +38,7 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                 );
               }
 
-              String searchPattern = controller.text.toLowerCase();
+              String searchPattern = ref.watch(equipmentSearchProvider).toLowerCase();
               if (searchPattern.isNotEmpty) {
                 List<Equipment> items = data
                     .where((element) =>

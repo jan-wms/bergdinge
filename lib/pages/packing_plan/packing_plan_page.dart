@@ -7,6 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../data/design.dart';
 import '../../data/providers.dart';
+import '../../data_models/packing_plan.dart';
+
+final packingPlanSearchProvider = StateProvider.autoDispose<String>(
+  (ref) => '',
+);
 
 class PackingPlanPage extends ConsumerWidget {
   const PackingPlanPage({Key? key}) : super(key: key);
@@ -22,7 +27,9 @@ class PackingPlanPage extends ConsumerWidget {
           title: 'Packlisten',
           onAddButtonPressed: () => CustomDialog.showCustomModal(
               context: context, child: const PackingPlanEdit()),
-          onChanged: (_) {},
+          onChanged: (value) => ref
+              .read(packingPlanSearchProvider.notifier)
+              .update((state) => value),
         ),
         packingPlanList.when(
           error: (error, stackTrace) =>
@@ -77,10 +84,38 @@ class PackingPlanPage extends ConsumerWidget {
               );
             }
 
+            List<PackingPlan> dataToDisplay = data;
+
+            String searchPattern =
+                ref.watch(packingPlanSearchProvider).toLowerCase();
+            if (searchPattern.isNotEmpty) {
+              List<PackingPlan> result = data
+                  .where((element) =>
+                      element.name.toLowerCase().contains(searchPattern))
+                  .toList();
+
+              result.addAll(data.where((element) =>
+                  !result.contains(element) &&
+                  (element.sports
+                      .join(',')
+                      .toLowerCase()
+                      .contains(searchPattern))));
+
+              if (result.isEmpty) {
+                return const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Text('Leider konnte nichts gefunden werden.'),
+                  ),
+                );
+              }
+              dataToDisplay = result;
+            }
+
             return SliverList.separated(
-              itemCount: data.length,
+              itemCount: dataToDisplay.length,
               itemBuilder: (context, index) {
-                final packingPlan = data[index];
+                final packingPlan = dataToDisplay[index];
                 return PackingPlanCard(packingPlan: packingPlan);
               },
               separatorBuilder: (BuildContext context, int index) {

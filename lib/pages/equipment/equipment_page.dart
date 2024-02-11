@@ -1,26 +1,33 @@
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
-import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'equipment_details.dart';
 import 'equipment_edit.dart';
 
-class EquipmentPage extends StatelessWidget {
+final equipmentSearchProvider = StateProvider.autoDispose<String>(
+  (ref) => '',
+);
+
+class EquipmentPage extends ConsumerWidget {
   const EquipmentPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       top: false,
       child: CustomScrollView(
         slivers: <Widget>[
           CustomAppBar(
             title: 'Ausrüstung',
-            onAddButtonPressed: () => CustomDialog.showCustomModal(context: context, child: const EquipmentEdit()),
-            onChanged: (_) {},
+            onAddButtonPressed: () => CustomDialog.showCustomModal(
+                context: context, child: const EquipmentEdit()),
+            onChanged: (value) => ref
+                  .read(equipmentSearchProvider.notifier)
+                  .update((state) => value),
           ),
           EquipmentList(
             onItemClick: (equipmentId) =>
