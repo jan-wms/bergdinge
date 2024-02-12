@@ -1,5 +1,4 @@
 import '../data/data.dart';
-import '../data_models/packing_plan.dart';
 
 class PackingPlanValidator {
   static String? name(value) {

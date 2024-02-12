@@ -1,4 +1,3 @@
-import 'package:equipment_app/custom_widgets/custom_close_button.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/validators/packing_plan_validator.dart';
 import 'package:flutter/material.dart';
