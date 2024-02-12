@@ -86,52 +86,55 @@ class CustomDialog {
         break;
     }
 
-    final Widget child = Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Icon(
-          Icons.warning_rounded,
-          color: Color.fromRGBO(189, 166, 57, 1.0),
-          size: 50.0,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 40.0),
-          child: Text(
-            description,
-            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
-            softWrap: true,
-            textAlign: TextAlign.center,
+    final Widget child = Material(
+      color: Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Icon(
+            Icons.warning_rounded,
+            color: Color.fromRGBO(189, 166, 57, 1.0),
+            size: 50.0,
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextButton(
-                onPressed: () => context.pop(false),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.black54,
-                ),
-                child: const Text(
-                  'Abbrechen',
-                  style: TextStyle(fontSize: 17),
-                )),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-                    foregroundColor: Colors.white,
-                    backgroundColor: buttonColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0))),
-                onPressed: () => context.pop(true),
-                child: Text(
-                  buttonText,
-                  style: const TextStyle(fontSize: 17),
-                ))
-          ],
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 40.0),
+            child: Text(
+              description,
+              style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+              softWrap: true,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                  onPressed: () => context.pop(false),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black54,
+                  ),
+                  child: const Text(
+                    'Abbrechen',
+                    style: TextStyle(fontSize: 17),
+                  )),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                      foregroundColor: Colors.white,
+                      backgroundColor: buttonColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0))),
+                  onPressed: () => context.pop(true),
+                  child: Text(
+                    buttonText,
+                    style: const TextStyle(fontSize: 17),
+                  ))
+            ],
+          )
+        ],
+      ),
     );
     return await showCustomDialog(context: context, child: child);
   }

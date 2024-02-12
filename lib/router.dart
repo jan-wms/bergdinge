@@ -140,10 +140,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                       );
                     },
                   ),
-                  /*builder: (context, state) {
-                        String equipmentID = state.extra as String;
-                        return EquipmentDetails(equipmentID: equipmentID);
-                      }),*/
                 ]),
           ]),
     ],

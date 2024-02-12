@@ -55,11 +55,18 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   late TextEditingController _editingController;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _editingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focusNode.dispose();
   }
 
   @override
@@ -72,6 +79,7 @@ class _SearchState extends State<Search> {
         children: [
           Expanded(
             child: TextField(
+              focusNode: _focusNode,
               controller: _editingController,
               onChanged: (value) {
                 widget.onChanged(value);
@@ -88,9 +96,12 @@ class _SearchState extends State<Search> {
           ),
           _editingController.text.trim().isEmpty
               ? IconButton(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   icon: Icon(Icons.search,
                       color: Theme.of(context).primaryColor.withOpacity(0.7)),
-                  onPressed: null)
+                  onPressed: () => _focusNode.requestFocus(),
+                )
               : IconButton(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
@@ -111,11 +122,6 @@ class _SearchState extends State<Search> {
 
 class SearchHeader extends SliverPersistentHeaderDelegate {
   final VoidCallback? onButtonPressed;
-
-  final double minTopBarHeight =
-      80 + MediaQueryData.fromView(window).padding.top;
-  final double maxTopBarHeight =
-      180 + MediaQueryData.fromView(window).padding.top;
   final String title;
   final IconData? icon;
   final Widget? search;
@@ -140,6 +146,10 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
+    final double minTopBarHeight =
+        80 + MediaQueryData.fromView(View.of(context)).padding.top;
+    final double maxTopBarHeight =
+        180 + MediaQueryData.fromView(View.of(context)).padding.top;
     var shrinkFactor = min(1, shrinkOffset / (maxExtent - minExtent));
 
     var topBar = Positioned(
@@ -159,17 +169,13 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
             )),
         child: Padding(
           padding:
-              EdgeInsets.only(top: MediaQueryData.fromView(window).padding.top),
+              EdgeInsets.only(top: MediaQueryData.fromView(View.of(context)).padding.top),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium
-                      ?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
               const SizedBox(
                 width: 20,
               ),
@@ -261,11 +267,12 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 210 + MediaQueryData.fromView(window).padding.top;
-
-  @override
-  double get minExtent => 80 + MediaQueryData.fromView(window).padding.top;
-
-  @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
+
+  @override
+  double get maxExtent => 210 + MediaQueryData.fromView(PlatformDispatcher.instance.views.first).padding.top;
+
+  @override
+  double get minExtent => 80 + MediaQueryData.fromView(PlatformDispatcher.instance.views.first).padding.top;
+
 }

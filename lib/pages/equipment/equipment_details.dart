@@ -52,11 +52,12 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
       direction: DismissiblePageDismissDirection.down,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.black, // Color for Android
+            statusBarColor: Colors.black, // Android
             statusBarBrightness:
-                Brightness.light // Dark == white status bar -- for IOS.
+                Brightness.light // iOS
             ),
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: equipmentList.when(
               error: (error, stackTrace) => Text(error.toString()),
               loading: () => const CircularProgressIndicator.adaptive(),
@@ -77,7 +78,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                               child: Material(
                                 color: Colors.transparent,
                                 child: Container(
-                                  color: Design.colors[5],
+                                  color: Design.colors[6],
                                   height: 300.0,
                                   width: double.infinity,
                                   child: SafeArea(
@@ -125,7 +126,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                     height: 80,
                                     width: 90,
                                     decoration: BoxDecoration(
-                                        color: Design.colors[5],
+                                        color: Colors.black54,
                                         borderRadius:
                                             BorderRadius.circular(10.0)),
                                     padding: const EdgeInsets.all(15.0),
@@ -133,9 +134,12 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                       children: [
                                         Text(
                                           '${equipment.weight}g',
+                                          style:
+                                          const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                                         ),
                                         const Icon(
                                           Icons.scale_rounded,
+                                          color: Colors.white,
                                         ),
                                       ],
                                     ),
@@ -152,7 +156,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                     child: Text(
                                       equipment.size ?? '*',
                                       style:
-                                          const TextStyle(color: Colors.white),
+                                          const TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   Container(
@@ -198,65 +202,72 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                             Text('Kaufpreis: ${equipment.price}'),
                             Text('Kaufdatum: ${equipment.purchaseDate}'),
                             Container(
-                              height: 200,
+                              height: 110,
                             ),
-                            TextButton(
-                                style: TextButton.styleFrom(
-                                  foregroundColor: Design.colors[1],
-                                  backgroundColor:
-                                      const Color.fromRGBO(224, 255, 214, 1.0),
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                ),
-                                onPressed: () => CustomDialog.showCustomModal(
-                                    context: context,
-                                    child: EquipmentEdit(equipment: equipment)),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.edit_rounded),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 10.0),
-                                      child: Text(
-                                        'Bearbeiten',
-                                        style: TextStyle(fontSize: 17),
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor:
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor:
                                       const Color.fromRGBO(255, 194, 194, 1.0),
-                                  side: const BorderSide(color: Colors.red),
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                ),
-                                onPressed: () async {
-                                  bool? confirmDelete = await CustomDialog
-                                      .showCustomConfirmationDialog(
+                                      side: const BorderSide(color: Colors.red),
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                    onPressed: () async {
+                                      bool? confirmDelete = await CustomDialog
+                                          .showCustomConfirmationDialog(
                                           type: ConfirmType.confirmDelete,
                                           context: context,
                                           description:
-                                              'Möchtest du diesen Gegenstand wirklich löschen?');
-                                  if (confirmDelete ?? false) {
-                                    await FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(Auth().user?.uid)
-                                        .collection('equipment')
-                                        .doc(equipment.id)
-                                        .delete()
-                                        .then((value) => context.pop());
-                                  }
-                                },
-                                child: const Text(
-                                  'Löschen',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 17),
-                                )),
+                                          'Möchtest du diesen Gegenstand wirklich löschen?');
+                                      if (confirmDelete ?? false) {
+                                        await FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(Auth().user?.uid)
+                                            .collection('equipment')
+                                            .doc(equipment.id)
+                                            .delete()
+                                            .then((value) => context.pop());
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Löschen',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 17),
+                                    )),
+                                TextButton(
+                                    onPressed: () => context.pop(false),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.black54,
+                                    ),
+                                    child: const Text(
+                                      'Abbrechen',
+                                      style: TextStyle(fontSize: 17),
+                                    )),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.only(
+                                            left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Design.colors[1],
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10.0))),
+                                    onPressed: () => CustomDialog.showCustomModal(
+                context: context,
+                child: EquipmentEdit(equipment: equipment)),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      height: 30,
+                                      width: 105,
+                                      child: const Text('Bearbeiten',
+                                        style: TextStyle(fontSize: 17),
+                                      ),
+                                    ))
+                              ],
+                            ),
                             const Padding(
                               padding: Design.pagePadding,
                               child: Divider(),

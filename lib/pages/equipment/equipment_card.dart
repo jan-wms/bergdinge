@@ -30,7 +30,7 @@ class EquipmentCard extends ConsumerWidget {
             height: 200.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
-              color: Design.colors[5],
+              color: Design.colors[6],
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),

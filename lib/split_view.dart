@@ -23,9 +23,9 @@ class _SplitViewState extends State<SplitView> {
     if (screenWidth > Design.breakpoint1) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
+            statusBarColor: Colors.white, // Android
             statusBarBrightness:
-                Brightness.dark // Dark == white status bar -- for IOS.
+                Brightness.dark // iOS
             ),
         child: Scaffold(
           body: Row(
@@ -42,9 +42,9 @@ class _SplitViewState extends State<SplitView> {
     } else {
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.white, // Color for Android
+            statusBarColor: Colors.white, // Android
             statusBarBrightness:
-                Brightness.dark // Dark == white status bar -- for IOS.
+                Brightness.dark // iOS.
             ),
         child: Scaffold(
           backgroundColor: Colors.white,

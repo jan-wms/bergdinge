@@ -58,14 +58,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       await _auth.signInAnonymously();
     } on FirebaseAuthException catch (e) {
-      await handleError(e, context);
+      if(context.mounted) {
+        await handleError(e, context);
+      } else {
+        debugPrint('not mounted');
+      }
     }
   }
 
   @override
   void initState() {
     super.initState();
-
     gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(
         authenticationAction: widget.authenticationAction);
     gsiOnUserChanged.onError((e) {
