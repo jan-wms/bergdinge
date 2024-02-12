@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/pages/introduction/setup_screen.dart';
+import 'package:equipment_app/pages/setup/setup_screen.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +96,7 @@ class SettingsPage extends ConsumerWidget {
             return CustomScrollView(
               slivers: [
                 CustomAppBar(
-                  title: 'Hallo ${userData?['name']}!',
+                  title: 'Hallo${(userData?['name'] == null || userData?['name'] == 'null' || (userData?['name']).toString().isEmpty) ? '' : ' ${userData?['name']}'}!' ,
                   icon: Icons.person_rounded,
                   buttonIcon: Icons.edit_rounded,
                   onButtonPressed: () => CustomDialog.showCustomModal(

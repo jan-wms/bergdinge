@@ -1,21 +1,24 @@
 import 'dart:async';
 
+import 'package:equipment_app/pages/setup/setup_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatefulWidget {
+  final EditValue editValue;
   final VoidCallback onInit;
-  const LoadingPage({super.key, required this.onInit});
+  const LoadingPage({super.key, required this.onInit, required this.editValue});
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  final messages = [
-    'Bergdinge wird eingerichtet.',
+  late final defaultMessage = (widget.editValue == EditValue.name) ? 'Dein Profil wird aktualisiert.' : 'Bergdinge wird eingerichtet.';
+  late final messages = [
+    defaultMessage,
     'Einen Moment bitte.',
-    'Bergdinge wird eingerichtet.',
-    'Bergdinge wird eingerichtet.',
+    defaultMessage,
+    defaultMessage,
     'Eine stabile Internetverbindung ist erforderlich.'
   ];
 

@@ -73,6 +73,7 @@ class SetupScreen extends ConsumerWidget {
                 ],
               ),
             LoadingPage(
+              editValue: editValue,
               onInit: () => uploadToFirebase(),
             )
           ],

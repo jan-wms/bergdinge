@@ -45,12 +45,12 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class Search extends StatefulWidget {
-  const Search({super.key, required this.onChanged});
-
   final ValueSetter<String> onChanged;
 
+  const Search({super.key, required this.onChanged});
+
   @override
-  _SearchState createState() => _SearchState();
+  State<Search> createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
@@ -164,8 +164,12 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(title,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
               const SizedBox(
                 width: 20,
               ),
