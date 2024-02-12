@@ -196,21 +196,18 @@ class _SignInWithAppleButton extends StatelessWidget {
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
             textStyle: const TextStyle(fontSize: 16),
-            padding: const EdgeInsets.all(15),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             splashFactory: NoSplash.splashFactory),
         onPressed: () => onPressed(),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-                width: 25,
-                height: 25,
-                child: Image.asset('assets/appleIcon.png')),
-            const Padding(
-              padding: EdgeInsets.only(left: 20),
+           Icon(IconData(0xf02d8, fontFamily: 'MaterialIcons'),size: 30,),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
               child: Text(
                 'Mit Apple anmelden',
               ),

@@ -22,9 +22,9 @@ class SettingsPage extends ConsumerWidget {
 
   void deleteAccount(BuildContext context) {
     CustomDialog.showCustomConfirmationDialog(
-        type: ConfirmType.confirmDelete,
-        context: context,
-        description: 'Möchtest du deinen Account wirklich löschen?')
+            type: ConfirmType.confirmDelete,
+            context: context,
+            description: 'Möchtest du deinen Account wirklich löschen?')
         .then((result) async {
       if (result) {
         CustomDialog.showCustomDialog(
@@ -79,12 +79,8 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref
-        .watch(userDataStreamProvider)
-        .value;
-    final firebaseUser = ref
-        .watch(userChangesProvider)
-        .value;
+    final userData = ref.watch(userDataStreamProvider).value;
+    final firebaseUser = ref.watch(userChangesProvider).value;
 
     return SafeArea(
       top: false,
@@ -103,10 +99,10 @@ class SettingsPage extends ConsumerWidget {
                   title: 'Hallo ${userData?['name']}!',
                   icon: Icons.person_rounded,
                   buttonIcon: Icons.edit_rounded,
-                  onButtonPressed: ()  => CustomDialog.showCustomModal(
-                      context: context,
-                      child: SetupScreen(editValue: EditValue.name),
-                    ),
+                  onButtonPressed: () => CustomDialog.showCustomModal(
+                    context: context,
+                    child: SetupScreen(editValue: EditValue.name),
+                  ),
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(
@@ -116,9 +112,11 @@ class SettingsPage extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: (firebaseUser?.isAnonymous ?? false)
                               ? const Color.fromRGBO(246, 236, 202, 1.0)
-                              : (ref.read(authProvider) == 'apple.com') ? Colors.white : Design.colors[7],
+                              : (ref.read(authProvider) == 'apple.com')
+                                  ? Colors.white
+                                  : Design.colors[7],
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
+                              const BorderRadius.all(Radius.circular(20.0)),
                           boxShadow: [
                             if (!(firebaseUser?.isAnonymous ?? true))
                               BoxShadow(
@@ -137,21 +135,21 @@ class SettingsPage extends ConsumerWidget {
                               children: [
                                 (firebaseUser?.isAnonymous ?? false)
                                     ? Icon(
-                                  Icons.warning_rounded,
-                                  color: Design.colors[6],
-                                  size: 50,
-                                )
+                                        Icons.warning_rounded,
+                                        color: Design.colors[6],
+                                        size: 50,
+                                      )
                                     : const Icon(
-                                  Icons.check_circle_outline_rounded,
-                                  color: Colors.green,
-                                  size: 50,
-                                ),
+                                        Icons.check_circle_outline_rounded,
+                                        color: Colors.green,
+                                        size: 50,
+                                      ),
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 10.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Synchronisierung',
@@ -178,31 +176,34 @@ class SettingsPage extends ConsumerWidget {
                               padding: const EdgeInsets.only(top: 30.0),
                               child: (firebaseUser?.isAnonymous ?? false)
                                   ? ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: Design.colors[6],
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10.0))),
-                                  onPressed: () async {
-                                    CustomDialog.showCustomModal(
-                                      context: context,
-                                      child: LoginScreen(
-                                          onComplete: () {
-                                            context.pop();
-                                            CustomDialog
-                                                .showCustomInformationDialog(
-                                                context: context,
-                                                description:
-                                                'acc verlinkt');
-                                          },
-                                          authenticationAction:
-                                          AuthenticationAction
-                                              .linkAccounts),
-                                    );
-                                  },
-                                  child: const Text('Aktivieren'))
-                                  : _DisplayAuthProvider(email: firebaseUser?.email, authProvider: ref.read(authProvider),)
+                                      style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                          backgroundColor: Design.colors[6],
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0))),
+                                      onPressed: () async {
+                                        CustomDialog.showCustomModal(
+                                          context: context,
+                                          child: LoginScreen(
+                                              onComplete: () {
+                                                context.pop();
+                                                CustomDialog
+                                                    .showCustomInformationDialog(
+                                                        context: context,
+                                                        description:
+                                                            'acc verlinkt');
+                                              },
+                                              authenticationAction:
+                                                  AuthenticationAction
+                                                      .linkAccounts),
+                                        );
+                                      },
+                                      child: const Text('Aktivieren'))
+                                  : _DisplayAuthProvider(
+                                      email: firebaseUser?.email,
+                                      authProvider: ref.read(authProvider),
+                                    ),
                             ),
                           ],
                         ),
@@ -247,8 +248,7 @@ class SettingsPage extends ConsumerWidget {
                                     Map<String, String> params) {
                                   return params.entries
                                       .map((MapEntry<String, String> e) =>
-                                  '${Uri.encodeComponent(e.key)}=${Uri
-                                      .encodeComponent(e.value)}')
+                                          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
                                       .join('&');
                                 }
 
@@ -272,23 +272,31 @@ class SettingsPage extends ConsumerWidget {
                             _CustomListTile(
                               title: 'Unterstützen',
                               icon: Icons.favorite_outline_rounded,
-                              onTap: () => CustomDialog.showCustomInformationDialog(context: context, description: 'Diese Funktion ist nicht verfügbar.'),
+                              onTap: () =>
+                                  CustomDialog.showCustomInformationDialog(
+                                      context: context,
+                                      description:
+                                          'Diese Funktion ist nicht verfügbar.'),
                             ),
                             const Padding(padding: EdgeInsets.only(top: 30.0)),
-                            _CustomListTile(title: 'UID kopieren', onTap: () {
-                              copyToClipboard(
-                                  context: context,
-                                  value: Auth().user?.uid ?? 'uid not provided');
-                            }, icon: Icons.copy_rounded,),
+                            _CustomListTile(
+                              title: 'UID kopieren',
+                              onTap: () {
+                                copyToClipboard(
+                                    context: context,
+                                    value:
+                                        Auth().user?.uid ?? 'uid not provided');
+                              },
+                              icon: Icons.copy_rounded,
+                            ),
                             _CustomListTile(
                               title: 'Lizenzen',
                               icon: Icons.arrow_forward_rounded,
-                              onTap: () =>
-                                  showLicensePage(
-                                      context: context,
-                                      applicationName: 'Bergdinge',
-                                      applicationVersion: version,
-                                      useRootNavigator: true),
+                              onTap: () => showLicensePage(
+                                  context: context,
+                                  applicationName: 'Bergdinge',
+                                  applicationVersion: version,
+                                  useRootNavigator: true),
                             ),
                           ],
                         ),
@@ -301,10 +309,10 @@ class SettingsPage extends ConsumerWidget {
                               style: TextButton.styleFrom(
                                 foregroundColor: Colors.red,
                                 backgroundColor:
-                                const Color.fromRGBO(255, 222, 222, 1.0),
+                                    const Color.fromRGBO(255, 222, 222, 1.0),
                                 shape: const RoundedRectangleBorder(
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
                               onPressed: () {
                                 Auth().signOut();
@@ -328,11 +336,11 @@ class SettingsPage extends ConsumerWidget {
                         child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               foregroundColor:
-                              const Color.fromRGBO(255, 194, 194, 1.0),
+                                  const Color.fromRGBO(255, 194, 194, 1.0),
                               side: const BorderSide(color: Colors.red),
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
+                                      BorderRadius.all(Radius.circular(10))),
                             ),
                             onPressed: () async {
                               if (Auth().user!.isAnonymous) {
@@ -346,7 +354,7 @@ class SettingsPage extends ConsumerWidget {
                                         deleteAccount(context);
                                       },
                                       authenticationAction:
-                                      AuthenticationAction.reauthenticate),
+                                          AuthenticationAction.reauthenticate),
                                 );
                               }
                             },
@@ -408,50 +416,62 @@ class _CustomListTile extends StatelessWidget {
 class _DisplayAuthProvider extends StatelessWidget {
   final String? email;
   final String authProvider;
+
   const _DisplayAuthProvider({this.email, required this.authProvider});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       height: 50,
       decoration: BoxDecoration(
-        borderRadius:
-        BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10),
         color: (authProvider == 'apple.com') ? Colors.black : Colors.white,
-        boxShadow: (authProvider == 'apple.com') ? null : [
-          BoxShadow(
-            color:
-            Colors.grey.withOpacity(0.15),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: (authProvider == 'apple.com')
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-              width: 30,
-              height: 30,
-              child: Image.asset((authProvider == 'apple.com') ? 'assets/appleIcon.png' :
-                  'assets/googleIcon.png')),
+          (authProvider == 'apple.com')
+              ? const Icon(
+                  IconData(0xf02d8, fontFamily: 'MaterialIcons'),
+                  size: 30,
+                  color: Colors.white,
+                )
+              : SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Image.asset('assets/googleIcon.png')),
           Flexible(
             child: Padding(
-              padding:
-              const EdgeInsets.only(left: 10),
-              child: Text(email ??
-                  ((authProvider == 'apple.com') ? 'Mit Apple angemeldet' : 'Über Google angemeldet'),
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                email ??
+                    ((authProvider == 'apple.com')
+                        ? 'Mit Apple angemeldet'
+                        : 'Über Google angemeldet'),
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 15, color: (authProvider == 'apple.com') ? Colors.white : Colors.black54,
+                  fontSize: 15,
+                  color: (authProvider == 'apple.com')
+                      ? Colors.white
+                      : Colors.black54,
                 ),
-              ),),
+              ),
+            ),
           )
         ],
       ),
     );
   }
 }
-
