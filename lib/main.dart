@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:equipment_app/custom_widgets/dismiss_keyboard.dart';
 import 'package:equipment_app/data/design.dart';
-import 'package:equipment_app/platform_menu_bar_wrapper.dart';
 import 'package:equipment_app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,8 +22,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
-    return PlatformMenuBarWrapper(
-      child: DismissKeyboard(
+    return DismissKeyboard(
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           routeInformationParser: router.routeInformationParser,
@@ -34,7 +32,6 @@ class MyApp extends ConsumerWidget {
           theme: Design().lightTheme,
           themeMode: ThemeMode.light,
         ),
-      ),
     );
   }
 }

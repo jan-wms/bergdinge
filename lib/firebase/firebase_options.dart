@@ -25,16 +25,19 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+              'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -61,16 +64,6 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDTbH4u0a2cGqPs6hjf5TLokB97sCG7WxE',
-    appId: '1:431093041285:ios:78c60ad90a0ab1e33a41ec',
-    messagingSenderId: '431093041285',
-    projectId: 'equipment-app-2b003',
-    storageBucket: 'equipment-app-2b003.appspot.com',
-    iosClientId: '431093041285-rikll0p87kegnh2tqmqcupscuhb7v53a.apps.googleusercontent.com',
-    iosBundleId: 'com.wermeckes.equipmentApp',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDTbH4u0a2cGqPs6hjf5TLokB97sCG7WxE',
     appId: '1:431093041285:ios:78c60ad90a0ab1e33a41ec',
     messagingSenderId: '431093041285',

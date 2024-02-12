@@ -29,7 +29,15 @@ class SettingsPage extends ConsumerWidget {
       if (result) {
         CustomDialog.showCustomDialog(
             context: context,
-            child: const CircularProgressIndicator.adaptive());
+            child: const Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                    width: 30.0,
+                    height: 30.0,
+                    child: CircularProgressIndicator()),
+              ],
+            ));
 
         ///FirebaseStorage (e.g. profile picture)
         await FirebaseStorage.instance

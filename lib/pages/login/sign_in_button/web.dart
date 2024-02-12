@@ -14,7 +14,7 @@ import 'stub.dart';
 Widget buildSignInButton({HandleSignInFn? onPressed}) {
   return (GoogleSignInPlatform.instance as GoogleSignInPlugin).renderButton(
     configuration: GSIButtonConfiguration(
-      minimumWidth: 260,
+      minimumWidth: 240,
       size: GSIButtonSize.large,
       locale: 'de',
     ),

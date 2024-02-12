@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:equipment_app/custom_widgets/custom_close_button.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/equipment.dart';
@@ -9,6 +10,7 @@ import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/details/item_list.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
+import 'package:equipment_app/parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -50,23 +52,24 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                   data: (equipmentList) {
                     return ref.watch(packingPlanStreamProvider).when(
                           error: (error, stackTrace) => Text(error.toString()),
-                          loading: () => const CircularProgressIndicator.adaptive(),
+                          loading: () =>
+                              const CircularProgressIndicator.adaptive(),
                           data: (packingPlanList) {
                             final PackingPlan packingPlan =
                                 packingPlanList.singleWhere((element) =>
                                     element.id == widget.packingPlanID);
 
                             return ref
-                                .watch(
-                                    packingPlanItemStreamProvider(packingPlan.id))
+                                .watch(packingPlanItemStreamProvider(
+                                    packingPlan.id))
                                 .when(
                                   error: (error, stackTrace) =>
                                       Text(error.toString()),
-                                  loading: () =>
-                                      const CircularProgressIndicator.adaptive(),
+                                  loading: () => const CircularProgressIndicator
+                                      .adaptive(),
                                   data: (items) {
-                                    final TextEditingController controllerNotes =
-                                        TextEditingController(
+                                    final TextEditingController
+                                        controllerNotes = TextEditingController(
                                             text: packingPlan.notes ?? '');
 
                                     Future<void> editItem(
@@ -89,16 +92,17 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             entry) {
                                       Map<String, List<PackingPlanItem>>
                                           categoryPackingPlanItemsMap = {};
-                                      for (PackingPlanItem i in entry.value ?? []) {
+                                      for (PackingPlanItem i
+                                          in entry.value ?? []) {
                                         Equipment e = equipmentList.singleWhere(
                                             (element) =>
                                                 element.id == i.equipmentId);
-                                        String topCategory =
-                                            e.category.substring(entry.key.length);
+                                        String topCategory = e.category
+                                            .substring(entry.key.length);
                                         topCategory = entry.key +
                                             ((topCategory.contains('.', 1))
-                                                ? topCategory.substring(
-                                                    0, topCategory.indexOf('.', 1))
+                                                ? topCategory.substring(0,
+                                                    topCategory.indexOf('.', 1))
                                                 : topCategory);
 
                                         categoryPackingPlanItemsMap
@@ -110,12 +114,16 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 topCategory] = [i];
                                       }
 
-                                      if (categoryPackingPlanItemsMap.length == 1 &&
-                                          !categoryPackingPlanItemsMap.keys.single
+                                      if (categoryPackingPlanItemsMap.length ==
+                                              1 &&
+                                          !categoryPackingPlanItemsMap
+                                              .keys.single
                                               .startsWith('2') &&
-                                          !categoryPackingPlanItemsMap.keys.single
+                                          !categoryPackingPlanItemsMap
+                                              .keys.single
                                               .startsWith('3') &&
-                                          categoryPackingPlanItemsMap.keys.single
+                                          categoryPackingPlanItemsMap
+                                                  .keys.single
                                                   .split('.')
                                                   .length <
                                               3) {
@@ -149,8 +157,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                                     for (MapEntry<String,
                                             List<PackingPlanItem>> entry
-                                        in statistics.first
-                                            .categoryPackingPlanItemsMap.entries) {
+                                        in statistics
+                                            .first
+                                            .categoryPackingPlanItemsMap
+                                            .entries) {
                                       statistics.add(statisticFromItems(entry));
                                     }
 
@@ -168,7 +178,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           summarizedItems = {};
                                       for (MapEntry<String,
                                               List<PackingPlanItem>> entry
-                                          in statistic.categoryPackingPlanItemsMap
+                                          in statistic
+                                              .categoryPackingPlanItemsMap
                                               .entries) {
                                         Map<String, int> sumMap = {};
                                         for (PackingPlanItem p in entry.value) {
@@ -190,8 +201,9 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           in summarizedItems.entries) {
                                         result.add(Column(
                                           children: [
-                                            Text(Data.getCategoryNames(entry.key)
-                                                .last),
+                                            Text(
+                                                Data.getCategoryNames(entry.key)
+                                                    .last),
                                             for (PackingPlanItem item
                                                 in entry.value)
                                               Card(
@@ -211,31 +223,39 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             child: Column(
                                               children: [
                                                 Text(packingPlan.name),
-                                                Text(packingPlan.createdAt
-                                                    .toString()),
-                                                Text(packingPlan.updatedAt
-                                                    .toString()),
-                                                Text('notes: ${packingPlan.notes}'),
+                                                Text('erstellt:${parseDate(packingPlan.createdAt)}'),
+                                                Text('aktualisiert:${parseDate(packingPlan.updatedAt)}'),
                                                 for (var sport
                                                     in packingPlan.sports)
                                                   Text(sport),
                                                 ElevatedButton(
-                                                    onPressed: () => CustomDialog.showCustomModal(context: context, child: PackingPlanEdit(packingPlan: packingPlan,)),
-                                                    child: const Text('bearbeiten')),
+                                                    onPressed: () => CustomDialog
+                                                        .showCustomModal(
+                                                            context: context,
+                                                            child:
+                                                                PackingPlanEdit(
+                                                              packingPlan:
+                                                                  packingPlan,
+                                                            )),
+                                                    child: const Text(
+                                                        'bearbeiten')),
                                                 ElevatedButton(
                                                     onPressed: () async {
-                                                      bool? confirmDelete =
-                                                          await CustomDialog
-                                                              .showCustomConfirmationDialog(
-                                                            type: ConfirmType.confirmDelete,
-                                                                  context: context,
-                                                                  description:
+                                                      bool? confirmDelete = await CustomDialog
+                                                          .showCustomConfirmationDialog(
+                                                              type: ConfirmType
+                                                                  .confirmDelete,
+                                                              context: context,
+                                                              description:
                                                                   'Möchtest du diese Packliste wirklich löschen?');
-                                                      if (confirmDelete ?? false) {
+                                                      if (confirmDelete ??
+                                                          false) {
                                                         await FirebaseFirestore
                                                             .instance
                                                             .collection('users')
-                                                            .doc(Auth().user?.uid)
+                                                            .doc(Auth()
+                                                                .user
+                                                                ?.uid)
                                                             .collection(
                                                                 'packing_plan')
                                                             .doc(packingPlan.id)
@@ -244,7 +264,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                 context.pop());
                                                       }
                                                     },
-                                                    child: const Text('delete')),
+                                                    child:
+                                                        const Text('delete')),
                                               ],
                                             ),
                                           ),
@@ -260,7 +281,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       items: [
                                                         const DropdownMenuItem(
                                                             value: 0,
-                                                            child: Text('Gesamt')),
+                                                            child:
+                                                                Text('Gesamt')),
                                                         for (String location
                                                             in packingPlan
                                                                 .locations)
@@ -270,8 +292,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                       .indexOf(
                                                                           location) +
                                                                   1,
-                                                              child:
-                                                                  Text(location)),
+                                                              child: Text(
+                                                                  location)),
                                                       ],
                                                       onChanged: (value) {
                                                         ref
@@ -290,16 +312,15 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               context: context,
                                                               child: ItemList(
                                                                 packingPlanId:
-                                                                    packingPlan.id,
-                                                                onEdit: (equipmentId,
-                                                                        location) =>
-                                                                    editItem(
-                                                                        equipmentId:
-                                                                            equipmentId,
-                                                                        location:
-                                                                            location,
-                                                                        allowSelectLocation:
-                                                                            false),
+                                                                    packingPlan
+                                                                        .id,
+                                                                onEdit: (equipmentId, location) => editItem(
+                                                                    equipmentId:
+                                                                        equipmentId,
+                                                                    location:
+                                                                        location,
+                                                                    allowSelectLocation:
+                                                                        false),
                                                               ),
                                                             ),
                                                         icon: const Icon(Icons
@@ -316,9 +337,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                         child: Stack(children: [
                                                           PageView.builder(
                                                             itemBuilder:
-                                                                (context, index) {
-                                                              Statistic statistic =
-                                                                  statistics[index];
+                                                                (context,
+                                                                    index) {
+                                                              Statistic
+                                                                  statistic =
+                                                                  statistics[
+                                                                      index];
                                                               return SizedBox(
                                                                 height: 500,
                                                                 width: 500,
@@ -331,18 +355,15 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                       (value) {
                                                                     if (index ==
                                                                         0) {
-                                                                      Future.delayed(const Duration(
-                                                                              milliseconds:
-                                                                                  500))
+                                                                      Future.delayed(
+                                                                              const Duration(milliseconds: 500))
                                                                           .then(
                                                                         (result) => pageController.animateToPage(
                                                                             (value +
                                                                                 1),
-                                                                            duration: const Duration(
-                                                                                milliseconds:
-                                                                                    500),
-                                                                            curve: Curves
-                                                                                .ease),
+                                                                            duration:
+                                                                                const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease),
                                                                       );
                                                                     } else {
                                                                       ref
@@ -358,15 +379,15 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               );
                                                             },
                                                             itemCount:
-                                                                statistics.length,
+                                                                statistics
+                                                                    .length,
                                                             controller:
                                                                 pageController,
                                                             onPageChanged:
                                                                 (newPage) {
                                                               ref
-                                                                  .read(
-                                                                      pageIndexProvider
-                                                                          .notifier)
+                                                                  .read(pageIndexProvider
+                                                                      .notifier)
                                                                   .state = [
                                                                 newPage,
                                                                 -1
@@ -389,19 +410,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                   Container(
                                                                     width: 15,
                                                                     height: 15,
-                                                                    margin:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                            left: 5,
-                                                                            right:
-                                                                                5),
+                                                                    margin: const EdgeInsets
+                                                                        .only(
+                                                                        left: 5,
+                                                                        right:
+                                                                            5),
                                                                     decoration:
                                                                         BoxDecoration(
-                                                                      color: (i ==
-                                                                              ref
-                                                                                  .watch(
-                                                                                      pageIndexProvider)
-                                                                                  .first)
+                                                                      color: (i == ref.watch(pageIndexProvider).first)
                                                                           ? Colors
                                                                               .blue
                                                                           : Colors
@@ -411,12 +427,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                     ),
                                                                     child:
                                                                         GestureDetector(
-                                                                      onTap: () => pageController.animateToPage(i,
+                                                                      onTap: () => pageController.animateToPage(
+                                                                          i,
                                                                           duration: const Duration(
                                                                               milliseconds:
                                                                                   500),
-                                                                          curve: Curves
-                                                                              .ease),
+                                                                          curve:
+                                                                              Curves.ease),
                                                                     ),
                                                                   )
                                                               ],
@@ -433,10 +450,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .center,
-                                                            children: getRightSection((ref
-                                                                            .watch(
-                                                                                pageIndexProvider)
-                                                                            .last !=
+                                                            children: getRightSection((ref.watch(pageIndexProvider).last !=
                                                                         -1 &&
                                                                     statistics[ref.watch(pageIndexProvider).first]
                                                                             .categoryPackingPlanItemsMap
@@ -460,8 +474,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                                 pageIndexProvider)
                                                                             .last)
                                                                         .value))
-                                                                : statistics[
-                                                                    ref.read(pageIndexProvider).first]),
+                                                                : statistics[ref
+                                                                    .read(
+                                                                        pageIndexProvider)
+                                                                    .first]),
                                                           ),
                                                         ),
                                                       )
@@ -479,26 +495,33 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     PackingPlanValidator.notes(
                                                         value),
                                                 controller: controllerNotes,
-                                                decoration: const InputDecoration(
-                                                    labelText: 'Notizen'),
+                                                decoration:
+                                                    const InputDecoration(
+                                                        labelText: 'Notizen'),
                                                 minLines: 6,
                                                 maxLines: 6,
                                                 keyboardType:
                                                     TextInputType.multiline,
                                                 onTapOutside: (value) {
-                                                  FocusScope.of(context).unfocus();
+                                                  FocusScope.of(context)
+                                                      .unfocus();
                                                   if (_formKey.currentState!
                                                       .validate()) {
                                                     DocumentReference ref =
-                                                        FirebaseFirestore.instance
+                                                        FirebaseFirestore
+                                                            .instance
                                                             .collection('users')
-                                                            .doc(Auth().user?.uid)
+                                                            .doc(Auth()
+                                                                .user
+                                                                ?.uid)
                                                             .collection(
                                                                 'packing_plan')
-                                                            .doc(packingPlan.id);
+                                                            .doc(
+                                                                packingPlan.id);
 
                                                     ref.update({
-                                                      "notes": controllerNotes.text
+                                                      "notes":
+                                                          controllerNotes.text
                                                     });
                                                   }
                                                 },
@@ -510,74 +533,81 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       Positioned(
                                         bottom: 10,
                                         right: 10,
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 10.0),
-                                              child: ElevatedButton(
-                                                child: const Icon(
-                                                    Icons.lightbulb_rounded),
-                                                onPressed: () {
-                                                  const dialogContent =
-                                                      Text('tipps');
-                                                  CustomDialog.showCustomModal(
-                                                      context: context,
-                                                      child: dialogContent);
-                                                },
-                                              ),
+                                        child: SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 10.0),
+                                                  child: ElevatedButton(
+                                                    child: const Icon(Icons
+                                                        .lightbulb_rounded),
+                                                    onPressed: () {
+                                                      const dialogContent =
+                                                          Text('tipps');
+                                                      CustomDialog
+                                                          .showCustomModal(
+                                                              context: context,
+                                                              child:
+                                                                  dialogContent);
+                                                    },
+                                                  ),
+                                                ),
+                                                ElevatedButton(
+                                                  child: const Row(
+                                                    children: [
+                                                      Icon(Icons.add),
+                                                      Text('item'),
+                                                    ],
+                                                  ),
+                                                  onPressed: () =>
+                                                      CustomDialog
+                                                          .showCustomModal(
+                                                              context: context,
+                                                              child: Column(
+                                                                children: [
+                                                                  const Padding(
+                                                                    padding: EdgeInsets.only(right: 5.0, top: 20.0),
+                                                                    child: Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .centerRight,
+                                                                      child: CustomCloseButton(),
+                                                                    ),
+                                                                  ),
+                                                                  const Text(
+                                                                      'Ausrüstung hinzufügen'),
+                                                                  Expanded(
+                                                                      child:
+                                                                          CustomScrollView(
+                                                                    slivers: [
+                                                                      EquipmentList(
+                                                                        packingPlanId:
+                                                                            packingPlan.id,
+                                                                        onItemClick:
+                                                                            (equipmentId) {
+                                                                          int? loc = items
+                                                                              .where((element) => element.equipmentId == equipmentId)
+                                                                              .sorted((a, b) => a.location.compareTo(b.location))
+                                                                              .firstOrNull
+                                                                              ?.location;
+                                                                          editItem(
+                                                                              equipmentId: equipmentId,
+                                                                              location: loc,
+                                                                              allowSelectLocation: true);
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  )),
+                                                                ],
+                                                              )),
+                                                ),
+                                              ],
                                             ),
-                                            ElevatedButton(
-                                              child: const Row(
-                                                children: [
-                                                  Icon(Icons.add),
-                                                  Text('item'),
-                                                ],
-                                              ),
-                                              onPressed: () {
-                                                Widget dialogContent = Column(
-                                                  children: [
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child: IconButton(
-                                                          onPressed: () =>
-                                                              context.pop(),
-                                                          icon: const Icon(
-                                                              Icons.close)),
-                                                    ),
-                                                    const Text('add item to plan'),
-                                                    Expanded(
-                                                        child: EquipmentList(
-                                                      packingPlanId: packingPlan.id,
-                                                      onItemClick: (equipmentId) {
-                                                        int? loc = items
-                                                            .where((element) =>
-                                                                element
-                                                                    .equipmentId ==
-                                                                equipmentId)
-                                                            .sorted((a, b) => a
-                                                                .location
-                                                                .compareTo(
-                                                                    b.location))
-                                                            .firstOrNull
-                                                            ?.location;
-                                                        editItem(
-                                                            equipmentId:
-                                                                equipmentId,
-                                                            location: loc,
-                                                            allowSelectLocation:
-                                                                true);
-                                                      },
-                                                    )),
-                                                  ],
-                                                );
-                                                CustomDialog.showCustomModal(
-                                                    context: context,
-                                                    child: dialogContent);
-                                              },
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ]);

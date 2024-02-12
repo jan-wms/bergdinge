@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,11 +62,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  bool kIsMacOS() {
-    if (kIsWeb) return false;
-    return Platform.isMacOS;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -124,12 +118,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               direction: Axis.vertical,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                if (!kIsMacOS() &&
-                    (widget.authenticationAction !=
+                if (widget.authenticationAction !=
                             AuthenticationAction.reauthenticate ||
                         (widget.authenticationAction ==
                                 AuthenticationAction.reauthenticate &&
-                            ref.read(authProvider) == 'google.com')))
+                            ref.read(authProvider) == 'google.com'))
                   buildSignInButton(
                     onPressed: () => _auth.signInWithGoogle(),
                   ),
@@ -148,7 +141,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 if (widget.authenticationAction == AuthenticationAction.signIn)
                   Container(
                     height: 60.0,
-                    margin: const EdgeInsets.only(top: 10.0),
                     child: (ref.watch(isLoadingProvider))
                         ? Container(
                             margin: const EdgeInsets.all(15.0),
@@ -197,13 +189,13 @@ class _SignInWithAppleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 265,
-      height: 60,
+      width: 240,
+      height: 50,
       child: FilledButton(
         style: FilledButton.styleFrom(
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
-            textStyle: const TextStyle(fontSize: 17),
+            textStyle: const TextStyle(fontSize: 16),
             padding: const EdgeInsets.all(15),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -214,8 +206,8 @@ class _SignInWithAppleButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-                width: 30,
-                height: 30,
+                width: 25,
+                height: 25,
                 child: Image.asset('assets/appleIcon.png')),
             const Padding(
               padding: EdgeInsets.only(left: 20),

@@ -21,7 +21,7 @@ class _LoadingPageState extends State<LoadingPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator.adaptive(),
+          CircularProgressIndicator(),
           Text('App wird eingerichtet...'),
         ],
       ),

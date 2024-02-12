@@ -1,3 +1,3 @@
-# equipment_app
+# Bergdinge
 
-A new Flutter project.
+A Flutter project.

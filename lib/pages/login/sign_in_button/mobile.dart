@@ -21,8 +21,8 @@ class _SignInWithGoogleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 265,
-      height: 60,
+      width: 240,
+      height: 50,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -41,18 +41,18 @@ class _SignInWithGoogleButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.all(15),
-            textStyle: const TextStyle(fontSize: 17),
+            textStyle: const TextStyle(fontSize: 16),
             splashFactory: NoSplash.splashFactory),
         onPressed: onPressed,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-                width: 30,
-                height: 30,
+                width: 25,
+                height: 25,
                 child: Image.asset('assets/googleIcon.png')),
             const Padding(
-              padding: EdgeInsets.only(left: 20),
+              padding: EdgeInsets.only(left: 11),
               child: Text('Über Google anmelden'),
             ),
           ],

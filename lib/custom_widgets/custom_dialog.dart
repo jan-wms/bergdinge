@@ -50,6 +50,7 @@ class CustomDialog {
             child: Container(
               constraints: const BoxConstraints(
                 minHeight: 250,
+                maxWidth: 500.0
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -139,10 +140,35 @@ class CustomDialog {
       {required BuildContext context, required String description}) async {
     final Widget child = Column(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(description),
+        const Icon(
+          Icons.info_outline_rounded,
+          color: Colors.black45,
+          size: 50.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 40.0),
+          child: Text(
+            description,
+            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+            softWrap: true,
+            textAlign: TextAlign.center,
+          ),
+        ),
         ElevatedButton(
-            onPressed: () => context.pop(true), child: const Text('Ok')),
+            style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(
+                    left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                foregroundColor: Colors.white,
+                backgroundColor: Design.colors[0],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0))),
+            onPressed: () => context.pop(true),
+            child: const Text(
+              'OK',
+              style: TextStyle(fontSize: 17),
+            ))
       ],
     );
 
