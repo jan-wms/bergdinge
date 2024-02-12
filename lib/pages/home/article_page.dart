@@ -1,14 +1,32 @@
 import 'package:dismissible_page/dismissible_page.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../custom_widgets/custom_close_button.dart';
 import '../../data/design.dart';
 
-class ArticlePage extends StatelessWidget {
+class ArticlePage extends ConsumerStatefulWidget {
   final int index;
 
   const ArticlePage({Key? key, required this.index}) : super(key: key);
+
+  @override
+  ConsumerState<ArticlePage> createState() => _ArticlePageState();
+}
+
+class _ArticlePageState extends ConsumerState<ArticlePage> {
+  final _closeButtonVisibilityProvider =
+      StateProvider.autoDispose<bool>((ref) => false);
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      ref.read(_closeButtonVisibilityProvider.notifier).state = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +39,7 @@ class ArticlePage extends StatelessWidget {
 
     return DismissiblePage(
       onDismissed: () {
+        ref.read(_closeButtonVisibilityProvider.notifier).state = false;
         context.pop();
       },
       minRadius: 0.0,
@@ -36,8 +55,10 @@ class ArticlePage extends StatelessWidget {
               child: Column(
                 children: [
                   Hero(
-                    tag: index.toString(),
-                    child: Image.asset(images[index]),
+                    tag: widget.index.toString(),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Image.asset(images[widget.index])),
                   ),
                   Container(
                     padding:
@@ -73,7 +94,16 @@ class ArticlePage extends StatelessWidget {
           Positioned(
             right: safeareaPadding.right + 5,
             top: safeareaPadding.top + 5,
-            child: const CustomCloseButton(),
+            child: AnimatedOpacity(
+              opacity: ref.watch(_closeButtonVisibilityProvider) ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 100),
+              child: CustomCloseButton(
+                onPressed: () {
+                  ref.read(_closeButtonVisibilityProvider.notifier).state =
+                      false;
+                },
+              ),
+            ),
           ),
         ],
       )),

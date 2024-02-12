@@ -3,12 +3,16 @@ import 'package:go_router/go_router.dart';
 
 class CustomCloseButton extends StatelessWidget {
   final dynamic returnValue;
-  const CustomCloseButton({Key? key, this.returnValue}) : super(key: key);
+  final VoidCallback? onPressed;
+  const CustomCloseButton({Key? key, this.returnValue, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FilledButton(
       onPressed: () {
+        if(onPressed != null) {
+          onPressed!();
+        }
         if(context.canPop()) {
           context.pop(returnValue);
         }

@@ -56,7 +56,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               routes: [
                 GoRoute(
                   path: 'article',
-                  //parentNavigatorKey: _rootNavigatorKey,
+                  parentNavigatorKey: _rootNavigatorKey,
                   pageBuilder: (context, state) {
                     int tag = state.extra as int;
                     return CustomTransitionPage(
