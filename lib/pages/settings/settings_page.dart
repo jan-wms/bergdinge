@@ -1,4 +1,3 @@
-import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/data/design.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -279,7 +278,7 @@ class SettingsPage extends ConsumerWidget {
                                   CustomDialog.showCustomInformationDialog(
                                       context: context,
                                       description:
-                                          'Diese Funktion ist nicht verfügbar.'),
+                                          'Diese Funktion ist momentan nicht verfügbar.'),
                             ),
                             const Padding(padding: EdgeInsets.only(top: 30.0)),
                             _CustomListTile(

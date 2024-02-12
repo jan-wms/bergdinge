@@ -135,7 +135,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: () => (!ref.watch(isLoadingProvider))
                         ? CustomDialog.showCustomInformationDialog(
                             context: context,
-                            description: 'Diese Funktion ist nicht verfügbar.')
+                            description: 'Diese Funktion ist momentan nicht verfügbar.')
                         : null,
                   ),
                 if (widget.authenticationAction == AuthenticationAction.signIn)

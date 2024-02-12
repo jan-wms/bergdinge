@@ -50,102 +50,105 @@ class _EditItemState extends ConsumerState<EditItem> {
 
   @override
   Widget build(BuildContext context) {
-    return ref.watch(packingPlanItemStreamProvider(widget.packingPlan.id)).when(
-        error: (error, stackTrace) => Text(error.toString()),
-        loading: () => const CircularProgressIndicator.adaptive(),
-        data: (items) {
-          StateProvider<PackingPlanItem?> packingPlanProvider =
-              itemProviderFamily(items);
-          PackingPlanItem? packingPlanItem = ref.watch(packingPlanProvider);
-          StateProvider<int> count =
-              countProviderFamily(ref.watch(packingPlanProvider));
-
-          DocumentReference docRef = FirebaseFirestore.instance
-              .collection('users')
-              .doc(Auth().user?.uid)
-              .collection('packing_plan')
-              .doc(widget.packingPlan.id)
-              .collection('items')
-              .doc('${widget.equipmentId}${ref.watch(location)}');
-
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.location == null || widget.allowSelectLocation)
+    return Material(
+      color: Colors.transparent,
+      child: ref.watch(packingPlanItemStreamProvider(widget.packingPlan.id)).when(
+          error: (error, stackTrace) => Text(error.toString()),
+          loading: () => const CircularProgressIndicator.adaptive(),
+          data: (items) {
+            StateProvider<PackingPlanItem?> packingPlanProvider =
+                itemProviderFamily(items);
+            PackingPlanItem? packingPlanItem = ref.watch(packingPlanProvider);
+            StateProvider<int> count =
+                countProviderFamily(ref.watch(packingPlanProvider));
+      
+            DocumentReference docRef = FirebaseFirestore.instance
+                .collection('users')
+                .doc(Auth().user?.uid)
+                .collection('packing_plan')
+                .doc(widget.packingPlan.id)
+                .collection('items')
+                .doc('${widget.equipmentId}${ref.watch(location)}');
+      
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.location == null || widget.allowSelectLocation)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('location:'),
+                      DropdownButton(
+                          items: [
+                            for (var loc in widget.packingPlan.locations)
+                              DropdownMenuItem(
+                                value:
+                                    widget.packingPlan.locations.indexOf(loc) + 1,
+                                child: Text(loc),
+                              )
+                          ],
+                          value: ref.watch(location),
+                          onChanged: (newValue) =>
+                              ref.read(location.notifier).state = newValue ?? 1),
+                    ],
+                  ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('location:'),
-                    DropdownButton(
-                        items: [
-                          for (var loc in widget.packingPlan.locations)
-                            DropdownMenuItem(
-                              value:
-                                  widget.packingPlan.locations.indexOf(loc) + 1,
-                              child: Text(loc),
-                            )
-                        ],
-                        value: ref.watch(location),
-                        onChanged: (newValue) =>
-                            ref.read(location.notifier).state = newValue ?? 1),
+                    ElevatedButton(
+                      onPressed: () {
+                        int currentCount = ref.read(count);
+                        if (currentCount > 1) {
+                          ref.read(count.notifier).state = currentCount - 1;
+                        }
+                      },
+                      child: const Icon(Icons.chevron_left),
+                    ),
+                    Text('${ref.watch(count)}'),
+                    ElevatedButton(
+                        onPressed: () =>
+                            ref.read(count.notifier).state = ref.read(count) + 1,
+                        child: const Icon(Icons.chevron_right)),
                   ],
                 ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      int currentCount = ref.read(count);
-                      if (currentCount > 1) {
-                        ref.read(count.notifier).state = currentCount - 1;
-                      }
-                    },
-                    child: const Icon(Icons.chevron_left),
-                  ),
-                  Text('${ref.watch(count)}'),
+                if (packingPlanItem != null)
                   ElevatedButton(
                       onPressed: () =>
-                          ref.read(count.notifier).state = ref.read(count) + 1,
-                      child: const Icon(Icons.chevron_right)),
-                ],
-              ),
-              if (packingPlanItem != null)
-                ElevatedButton(
-                    onPressed: () =>
-                        docRef.delete().then((value) => context.pop()),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Text('Löschen'), Icon(Icons.delete_rounded)],
-                    )),
-              if (packingPlanItem == null)
-                ElevatedButton(
-                    onPressed: () {
-                      PackingPlanItem p = PackingPlanItem(
-                          equipmentCount: ref.read(count),
-                          equipmentId: widget.equipmentId,
-                          isChecked: packingPlanItem?.isChecked ?? false,
-                          location: ref.read(location));
-
-                      docRef.set(p.toMap()).then((value) => context.pop());
-                    },
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Text('add to plan'), Icon(Icons.add)],
-                    )),
-              if (packingPlanItem != null)
-                ElevatedButton(
-                    onPressed: () => docRef
-                        .update({'equipmentCount': ref.read(count)}).then(
-                            (value) => context.pop()),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Text('update'), Icon(Icons.check)],
-                    )),
-              TextButton(
-                  onPressed: () => context.pop(),
-                  child: const Text('Abbrechen')),
-            ],
-          );
-        });
+                          docRef.delete().then((value) => context.pop()),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Text('Löschen'), Icon(Icons.delete_rounded)],
+                      )),
+                if (packingPlanItem == null)
+                  ElevatedButton(
+                      onPressed: () {
+                        PackingPlanItem p = PackingPlanItem(
+                            equipmentCount: ref.read(count),
+                            equipmentId: widget.equipmentId,
+                            isChecked: packingPlanItem?.isChecked ?? false,
+                            location: ref.read(location));
+      
+                        docRef.set(p.toMap()).then((value) => context.pop());
+                      },
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Text('add to plan'), Icon(Icons.add)],
+                      )),
+                if (packingPlanItem != null)
+                  ElevatedButton(
+                      onPressed: () => docRef
+                          .update({'equipmentCount': ref.read(count)}).then(
+                              (value) => context.pop()),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Text('update'), Icon(Icons.check)],
+                      )),
+                TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Abbrechen')),
+              ],
+            );
+          }),
+    );
   }
 }
