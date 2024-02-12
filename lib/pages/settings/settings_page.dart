@@ -1,3 +1,4 @@
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/data/design.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -99,10 +100,12 @@ class SettingsPage extends ConsumerWidget {
                   title: 'Hallo${(userData?['name'] == null || userData?['name'] == 'null' || (userData?['name']).toString().isEmpty) ? '' : ' ${userData?['name']}'}!' ,
                   icon: Icons.person_rounded,
                   buttonIcon: Icons.edit_rounded,
-                  onButtonPressed: () => CustomDialog.showCustomModal(
+                  onButtonPressed: () {
+                    CustomDialog.showCustomModal(
                     context: context,
                     child: SetupScreen(editValue: EditValue.name),
-                  ),
+                  );
+                  },
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(
