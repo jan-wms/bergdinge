@@ -9,7 +9,7 @@ class CustomAppBar extends StatelessWidget {
   final String? subtitle;
   final IconData? icon;
   final VoidCallback? onButtonPressed;
-  final ValueSetter<String>? onChanged;
+  final ValueSetter<String>? onSearchChanged;
   final IconData? buttonIcon;
 
   const CustomAppBar(
@@ -17,12 +17,12 @@ class CustomAppBar extends StatelessWidget {
       required this.title,
       this.onButtonPressed,
       this.icon,
-      this.onChanged,
+      this.onSearchChanged,
       this.subtitle,
       this.buttonIcon})
       : assert(
-          ((onChanged != null) ^ (subtitle != null)),
-          'One of the parameters must be provided',
+          (onSearchChanged == null || subtitle == null),
+          'Only one parameters is allowed.',
         );
 
   @override
@@ -34,10 +34,10 @@ class CustomAppBar extends StatelessWidget {
         subtitle: subtitle,
         onButtonPressed: onButtonPressed,
         buttonIcon: buttonIcon ?? Icons.add_rounded,
-        icon: icon ?? Icons.terrain,
+        icon: icon,
         title: title,
-        search: (onChanged != null)
-            ? Search(onChanged: (value) => onChanged!(value))
+        search: (onSearchChanged != null)
+            ? Search(onChanged: (value) => onSearchChanged!(value))
             : null,
       ),
     );
@@ -117,7 +117,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
   final double maxTopBarHeight =
       180 + MediaQueryData.fromView(window).padding.top;
   final String title;
-  final IconData icon;
+  final IconData? icon;
   final Widget? search;
   final String? subtitle;
   final IconData buttonIcon;
@@ -126,12 +126,12 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
     required this.buttonIcon,
     required this.onButtonPressed,
     required this.title,
-    required this.icon,
+    this.icon,
     this.search,
     this.subtitle,
   }) : assert(
-          ((search != null) ^ (subtitle != null)),
-          'One of the parameters must be provided',
+          (search == null || subtitle == null),
+          'Only one parameters is allowed.',
         );
 
   @override
@@ -169,11 +169,12 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
               const SizedBox(
                 width: 20,
               ),
-              Icon(
-                icon,
-                size: 40,
-                color: Colors.white,
-              )
+              if (icon != null)
+                Icon(
+                  icon,
+                  size: 40,
+                  color: Colors.white,
+                )
             ],
           ),
         ),
@@ -195,31 +196,32 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                 spacing: 15.0,
                 direction: Axis.horizontal,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(0, 7),
-                            blurRadius: 10,
-                            color: Design.colors[1].withOpacity(0.23),
-                          )
-                        ]),
-                    child: search ??
-                        Text(
-                          subtitle!,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.7)),
-                        ),
-                  ),
+                  if (search != null || subtitle != null)
+                    Container(
+                      alignment: Alignment.center,
+                      width: 200,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(0, 7),
+                              blurRadius: 10,
+                              color: Design.colors[1].withOpacity(0.23),
+                            )
+                          ]),
+                      child: search ??
+                          Text(
+                            subtitle!,
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.7)),
+                          ),
+                    ),
                   if (onButtonPressed != null)
                     Container(
                       alignment: Alignment.center,

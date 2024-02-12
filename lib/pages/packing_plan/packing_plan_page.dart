@@ -25,9 +25,11 @@ class PackingPlanPage extends ConsumerWidget {
       child: CustomScrollView(slivers: <Widget>[
         CustomAppBar(
           title: 'Packlisten',
+          icon: Icons.terrain,
+
           onButtonPressed: () => CustomDialog.showCustomModal(
               context: context, child: const PackingPlanEdit()),
-          onChanged: (value) => ref
+          onSearchChanged: (value) => ref
               .read(packingPlanSearchProvider.notifier)
               .update((state) => value),
         ),

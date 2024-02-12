@@ -23,11 +23,12 @@ class EquipmentPage extends ConsumerWidget {
         slivers: <Widget>[
           CustomAppBar(
             title: 'Ausrüstung',
+            icon: Icons.terrain,
             onButtonPressed: () => CustomDialog.showCustomModal(
                 context: context, child: const EquipmentEdit()),
-            onChanged: (value) => ref
-                  .read(equipmentSearchProvider.notifier)
-                  .update((state) => value),
+            onSearchChanged: (value) => ref
+                .read(equipmentSearchProvider.notifier)
+                .update((state) => value),
           ),
           EquipmentList(
             onItemClick: (equipmentId) =>
@@ -36,7 +37,6 @@ class EquipmentPage extends ConsumerWidget {
                 context.push('/equipment/details', extra: equipmentId),
           ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
-
         ],
       ),
     );

@@ -57,7 +57,9 @@ class SetupScreen extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 slivers: [
                   const CustomAppBar(
-                      title: 'Bergdinge', subtitle: 'Wie heißt du?'),
+                      title: 'Bergdinge',
+                      icon: Icons.terrain,
+                      subtitle: 'Wie heißt du?'),
                   SliverFillRemaining(
                     child: SetName(
                         buttonText: (editValue == EditValue.name)
