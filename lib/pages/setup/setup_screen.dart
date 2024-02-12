@@ -46,6 +46,7 @@ class SetupScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: PageView(
