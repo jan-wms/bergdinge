@@ -23,7 +23,7 @@ class EquipmentPage extends ConsumerWidget {
         slivers: <Widget>[
           CustomAppBar(
             title: 'Ausrüstung',
-            onAddButtonPressed: () => CustomDialog.showCustomModal(
+            onButtonPressed: () => CustomDialog.showCustomModal(
                 context: context, child: const EquipmentEdit()),
             onChanged: (value) => ref
                   .read(equipmentSearchProvider.notifier)

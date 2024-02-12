@@ -3,7 +3,6 @@ import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/pages/setup/loading_page.dart';
 import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../firebase/firebase_auth.dart';

@@ -101,9 +101,10 @@ class SettingsPage extends ConsumerWidget {
               slivers: [
                 CustomAppBar(
                   title: 'Hallo ${userData?['name']}!',
+                  subtitle: 'test',
                   icon: Icons.person_rounded,
-                  onChanged: (_) {},
-                  onAddButtonPressed: ()  => CustomDialog.showCustomModal(
+                  buttonIcon: Icons.edit_rounded,
+                  onButtonPressed: ()  => CustomDialog.showCustomModal(
                       context: context,
                       child: SetupScreen(editValue: EditValue.name),
                     ),

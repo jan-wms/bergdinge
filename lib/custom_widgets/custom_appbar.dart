@@ -8,19 +8,22 @@ class CustomAppBar extends StatelessWidget {
   final String title;
   final String? subtitle;
   final IconData? icon;
-  final VoidCallback? onAddButtonPressed;
+  final VoidCallback? onButtonPressed;
   final ValueSetter<String>? onChanged;
+  final IconData? buttonIcon;
 
   const CustomAppBar(
       {super.key,
       required this.title,
-      this.onAddButtonPressed,
+      this.onButtonPressed,
       this.icon,
-        this.onChanged,
-        this.subtitle}) : assert(
-  ((onChanged != null) ^ (subtitle != null)),
-  'One of the parameters must be provided',
-  );
+      this.onChanged,
+      this.subtitle,
+      this.buttonIcon})
+      : assert(
+          ((onChanged != null) ^ (subtitle != null)),
+          'One of the parameters must be provided',
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +32,13 @@ class CustomAppBar extends StatelessWidget {
       floating: false,
       delegate: SearchHeader(
         subtitle: subtitle,
-        onAddButtonPressed: onAddButtonPressed,
+        onButtonPressed: onButtonPressed,
+        buttonIcon: buttonIcon ?? Icons.add_rounded,
         icon: icon ?? Icons.terrain,
         title: title,
-        search: (onChanged != null) ? Search(onChanged: (value) => onChanged!(value)) : null,
+        search: (onChanged != null)
+            ? Search(onChanged: (value) => onChanged!(value))
+            : null,
       ),
     );
   }
@@ -104,7 +110,7 @@ class _SearchState extends State<Search> {
 }
 
 class SearchHeader extends SliverPersistentHeaderDelegate {
-  final VoidCallback? onAddButtonPressed;
+  final VoidCallback? onButtonPressed;
 
   final double minTopBarHeight =
       80 + MediaQueryData.fromView(window).padding.top;
@@ -114,17 +120,19 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
   final IconData icon;
   final Widget? search;
   final String? subtitle;
+  final IconData buttonIcon;
 
   SearchHeader({
-    required this.onAddButtonPressed,
+    required this.buttonIcon,
+    required this.onButtonPressed,
     required this.title,
     required this.icon,
     this.search,
     this.subtitle,
   }) : assert(
-  ((search != null) ^ (subtitle != null)),
-  'One of the parameters must be provided',
-  );
+          ((search != null) ^ (subtitle != null)),
+          'One of the parameters must be provided',
+        );
 
   @override
   Widget build(
@@ -201,33 +209,41 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                             color: Design.colors[1].withOpacity(0.23),
                           )
                         ]),
-                    child: search ?? Text(subtitle!, style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).primaryColor.withOpacity(0.7)),),
+                    child: search ??
+                        Text(
+                          subtitle!,
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.7)),
+                        ),
                   ),
-                  /*Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(0, 7),
-                            blurRadius: 10,
-                            color: Design.colors[1].withOpacity(0.23),
-                          )
-                        ]),
-                    child: IconButton(
-                      onPressed: onAddButtonPressed,
-                      highlightColor: Colors.transparent,
-                      icon: Icon(Icons.add_rounded,
-                          color:
-                              Theme.of(context).primaryColor.withOpacity(0.7)),
+                  if (onButtonPressed != null)
+                    Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(0, 7),
+                              blurRadius: 10,
+                              color: Design.colors[1].withOpacity(0.23),
+                            )
+                          ]),
+                      child: IconButton(
+                        onPressed: onButtonPressed,
+                        highlightColor: Colors.transparent,
+                        icon: Icon(buttonIcon,
+                            color: Theme.of(context)
+                                .primaryColor
+                                .withOpacity(0.7)),
+                      ),
                     ),
-                  ),*/
                 ],
               ),
             ),
