@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/copy_to_clipboard.dart';
@@ -38,11 +36,11 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
     });
   }
 
-  final safeareaPadding = MediaQueryData.fromView(window).padding;
-
   @override
   Widget build(BuildContext context) {
+    final safeareaPadding = MediaQuery.of(context).padding;
     final equipmentList = ref.watch(equipmentStreamProvider);
+
     return DismissiblePage(
       onDismissed: () {
         ref.read(_closeButtonVisibilityProvider.notifier).state = false;
