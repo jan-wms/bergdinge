@@ -21,20 +21,28 @@ class _LoadingPageState extends State<LoadingPage> {
 
   int messageIndex = 0;
 
+  late final Timer timer;
+
   @override
   void initState() {
     super.initState();
     widget.onInit();
 
-    Timer.periodic(const Duration(seconds: 3), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 3), (t) {
       if (messageIndex < messages.length - 1) {
         setState(() {
           messageIndex++;
         });
       } else {
-        timer.cancel();
+        t.cancel();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer.cancel();
   }
 
   @override
