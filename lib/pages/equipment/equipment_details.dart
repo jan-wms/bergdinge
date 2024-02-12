@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/copy_to_clipboard.dart';
@@ -14,19 +16,36 @@ import 'package:equipment_app/data/providers.dart';
 
 import 'equipment_edit.dart';
 
-class EquipmentDetails extends ConsumerWidget {
+class EquipmentDetails extends ConsumerStatefulWidget {
   final String equipmentID;
 
   const EquipmentDetails({Key? key, required this.equipmentID})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final equipmentList = ref.watch(equipmentStreamProvider);
-    final safeareaPadding = MediaQuery.of(context).padding;
+  ConsumerState<EquipmentDetails> createState() => _EquipmentDetailsState();
+}
 
+class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
+  final _closeButtonVisibilityProvider =
+  StateProvider.autoDispose<bool>((ref) => false);
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      ref.read(_closeButtonVisibilityProvider.notifier).state = true;
+    });
+  }
+
+  final safeareaPadding = MediaQueryData.fromView(window).padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final equipmentList = ref.watch(equipmentStreamProvider);
     return DismissiblePage(
       onDismissed: () {
+        ref.read(_closeButtonVisibilityProvider.notifier).state = false;
         context.pop();
       },
       minRadius: 0.0,
@@ -38,7 +57,7 @@ class EquipmentDetails extends ConsumerWidget {
             loading: () => const CircularProgressIndicator.adaptive(),
             data: (data) {
               Equipment equipment =
-                  data.singleWhere((element) => element.id == equipmentID);
+                  data.singleWhere((element) => element.id == widget.equipmentID);
 
               return Stack(
                 children: [
@@ -50,14 +69,17 @@ class EquipmentDetails extends ConsumerWidget {
                         children: [
                           Hero(
                             tag: 'image${equipment.id}',
-                            child: Container(
-                              color: Design.colors[5],
-                              height: 300.0,
-                              width: double.infinity,
-                              child: SafeArea(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(30.0),
-                                  child: Image.asset('assets/items/map.png'),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Container(
+                                color: Design.colors[5],
+                                height: 300.0,
+                                width: double.infinity,
+                                child: SafeArea(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(30.0),
+                                    child: Image.asset('assets/items/map.png'),
+                                  ),
                                 ),
                               ),
                             ),
@@ -244,7 +266,16 @@ class EquipmentDetails extends ConsumerWidget {
                   Positioned(
                     right: safeareaPadding.right + 5,
                     top: safeareaPadding.top + 5,
-                    child: const CustomCloseButton(),
+                    child: AnimatedOpacity(
+                      opacity: ref.watch(_closeButtonVisibilityProvider) ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 100),
+                      child: CustomCloseButton(
+                        onPressed: () {
+                          ref.read(_closeButtonVisibilityProvider.notifier).state =
+                          false;
+                        },
+                      ),
+                    ),
                   ),
                 ],
               );

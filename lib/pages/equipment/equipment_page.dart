@@ -1,11 +1,9 @@
-import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'equipment_details.dart';
 import 'equipment_edit.dart';
 
 final equipmentSearchProvider = StateProvider.autoDispose<String>(
@@ -32,8 +30,6 @@ class EquipmentPage extends ConsumerWidget {
           ),
           EquipmentList(
             onItemClick: (equipmentId) =>
-                //TODO
-                //context.pushTransparentRoute(EquipmentDetails(equipmentID: equipmentId)),
                 context.push('/equipment/details', extra: equipmentId),
           ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
