@@ -6,16 +6,21 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final IconData? icon;
   final VoidCallback? onAddButtonPressed;
-  final ValueSetter<String> onChanged;
+  final ValueSetter<String>? onChanged;
 
   const CustomAppBar(
       {super.key,
       required this.title,
       this.onAddButtonPressed,
       this.icon,
-      required this.onChanged});
+        this.onChanged,
+        this.subtitle}) : assert(
+  ((onChanged != null) ^ (subtitle != null)),
+  'One of the parameters must be provided',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +28,11 @@ class CustomAppBar extends StatelessWidget {
       pinned: true,
       floating: false,
       delegate: SearchHeader(
+        subtitle: subtitle,
         onAddButtonPressed: onAddButtonPressed,
         icon: icon ?? Icons.terrain,
         title: title,
-        search: Search(onChanged: (value) => onChanged(value)),
+        search: (onChanged != null) ? Search(onChanged: (value) => onChanged!(value)) : null,
       ),
     );
   }
@@ -106,14 +112,19 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
       180 + MediaQueryData.fromView(window).padding.top;
   final String title;
   final IconData icon;
-  final Widget search;
+  final Widget? search;
+  final String? subtitle;
 
   SearchHeader({
     required this.onAddButtonPressed,
     required this.title,
     required this.icon,
-    required this.search,
-  });
+    this.search,
+    this.subtitle,
+  }) : assert(
+  ((search != null) ^ (subtitle != null)),
+  'One of the parameters must be provided',
+  );
 
   @override
   Widget build(
@@ -190,9 +201,12 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                             color: Design.colors[1].withOpacity(0.23),
                           )
                         ]),
-                    child: search,
+                    child: search ?? Text(subtitle!, style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).primaryColor.withOpacity(0.7)),),
                   ),
-                  Container(
+                  /*Container(
                     alignment: Alignment.center,
                     height: 50,
                     width: 50,
@@ -213,7 +227,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.7)),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

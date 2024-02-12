@@ -43,7 +43,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
     if (exception.code == 'user-mismatch' ||
         (exception.message?.contains('user-mismatch') ?? false)) {
-      message = 'Bitte melde dich mit deinem Account email@mail.de erneut an.';
+      message = 'Bitte melde dich mit deinem Account ${_auth.user?.email} erneut an.';
     }
     if (exception.message?.contains(
             'This credential is already associated with a different user account.') ??
@@ -139,7 +139,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         : null,
                   ),
                 if (widget.authenticationAction == AuthenticationAction.signIn)
-                  Container(
+                  SizedBox(
                     height: 60.0,
                     child: (ref.watch(isLoadingProvider))
                         ? Container(

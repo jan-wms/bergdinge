@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/pages/setup/loading_page.dart';
 import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../firebase/firebase_auth.dart';
@@ -46,22 +48,32 @@ class SetupScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
+        top: false,
         child: PageView(
           physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
           children: [
             if (editValue == EditValue.setUp || editValue == EditValue.name)
-              SetName(
-                  buttonText: (editValue == EditValue.name)
-                      ? ButtonText.doneText
-                      : ButtonText.continueText,
-                  onComplete: (newName) {
-                    ref.read(newNameProvider.notifier).state = newName;
-                    nextPage();
-                  }),
+              CustomScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                slivers: [
+                  const CustomAppBar(
+                      title: 'Bergdinge', subtitle: 'Wie heißt du?'),
+                  SliverFillRemaining(
+                    child: SetName(
+                        buttonText: (editValue == EditValue.name)
+                            ? ButtonText.doneText
+                            : ButtonText.continueText,
+                        onComplete: (newName) {
+                          ref.read(newNameProvider.notifier).state = newName;
+                          nextPage();
+                        }),
+                  ),
+                ],
+              ),
             LoadingPage(
               onInit: () => uploadToFirebase(),
-            ),
+            )
           ],
         ),
       ),

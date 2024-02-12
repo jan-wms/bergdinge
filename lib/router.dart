@@ -8,6 +8,7 @@ import 'package:equipment_app/pages/introduction/setup_screen.dart';
 import 'package:equipment_app/pages/packing_plan/details/packing_plan_details.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_page.dart';
 import 'package:equipment_app/pages/settings/settings_page.dart';
+import 'package:equipment_app/pages/setup/loading_page.dart';
 import 'package:equipment_app/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
