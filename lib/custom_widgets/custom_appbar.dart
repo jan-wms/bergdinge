@@ -11,14 +11,12 @@ class CustomAppBar extends StatelessWidget {
   final VoidCallback? onButtonPressed;
   final ValueSetter<String>? onSearchChanged;
   final IconData? buttonIcon;
-  final bool isInModal;
 
   const CustomAppBar(
       {super.key,
       required this.title,
       this.onButtonPressed,
       this.icon,
-        this.isInModal = false,
       this.onSearchChanged,
       this.subtitle,
       this.buttonIcon})
@@ -33,7 +31,6 @@ class CustomAppBar extends StatelessWidget {
       pinned: true,
       floating: false,
       delegate: SearchHeader(
-        isInModal: isInModal,
         subtitle: subtitle,
         onButtonPressed: onButtonPressed,
         buttonIcon: buttonIcon ?? Icons.add_rounded,
@@ -130,13 +127,11 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
   final Widget? search;
   final String? subtitle;
   final IconData buttonIcon;
-  final bool isInModal;
 
   SearchHeader({
     required this.buttonIcon,
     required this.onButtonPressed,
     required this.title,
-    required this.isInModal,
     this.icon,
     this.search,
     this.subtitle,
@@ -168,15 +163,12 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
         width: 100,
         decoration: BoxDecoration(
             color: Design.colors[1],
-            borderRadius: BorderRadius.only(
-              bottomLeft: const Radius.circular(36),
-              bottomRight: const Radius.circular(36),
-              topLeft: isInModal ? const Radius.circular(20.0) : Radius.zero,
-              topRight: isInModal ? const Radius.circular(20.0) : Radius.zero,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(36),
+              bottomRight: Radius.circular(36),
             )),
         child: Padding(
-          padding:
-              EdgeInsets.only(top: MediaQueryData.fromView(View.of(context)).padding.top),
+          padding: EdgeInsets.only(top: MediaQueryData.fromView(View.of(context)).padding.top),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

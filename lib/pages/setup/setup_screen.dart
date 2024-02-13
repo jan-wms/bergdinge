@@ -42,7 +42,7 @@ class SetupScreen extends ConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: PageView(
@@ -53,10 +53,9 @@ class SetupScreen extends ConsumerWidget {
               CustomScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 slivers: [
-                  CustomAppBar(
+                  const CustomAppBar(
                       title: 'Bergdinge',
                       icon: Icons.terrain,
-                      isInModal: editValue == EditValue.name,
                       subtitle: 'Wie heißt du?'),
                   SliverFillRemaining(
                     child: SetName(
