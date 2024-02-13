@@ -11,11 +11,14 @@ enum ConfirmType {
 
 class CustomDialog {
   static Future<T> showCustomModal<T>(
-      {required BuildContext context, required Widget child}) async {
+      {required BuildContext context,
+      required Widget child,
+      bool isFullscreen = false}) async {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
+      enableDrag: isFullscreen ? false : true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -24,9 +27,9 @@ class CustomDialog {
       ),
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.9,
-          maxChildSize: 0.9,
-          minChildSize: 0.9,
+          initialChildSize: isFullscreen ? 1.0 : 0.9,
+          maxChildSize: isFullscreen ? 1.0 : 0.9,
+          minChildSize: isFullscreen ? 1.0 : 0.9,
           expand: false,
           builder: (context, scrollController) {
             return Center(
@@ -48,10 +51,8 @@ class CustomDialog {
             //TODO breakpoint1 .center
             alignment: Alignment.bottomCenter,
             child: Container(
-              constraints: const BoxConstraints(
-                minHeight: 250,
-                maxWidth: 500.0
-              ),
+              constraints:
+                  const BoxConstraints(minHeight: 250, maxWidth: 500.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
@@ -101,7 +102,8 @@ class CustomDialog {
             padding: const EdgeInsets.only(bottom: 40.0),
             child: Text(
               description,
-              style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+              style:
+                  const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
               softWrap: true,
               textAlign: TextAlign.center,
             ),

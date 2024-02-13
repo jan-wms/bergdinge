@@ -30,7 +30,7 @@ class EquipmentCard extends ConsumerWidget {
             height: 200.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
-              color: Design.colors[6],
+              color: Design.colors[0],
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
@@ -47,7 +47,7 @@ class EquipmentCard extends ConsumerWidget {
                 Column(
                   children: [
                     Expanded(child: Image.asset('assets/items/map.png')),
-                    Text('${equipment.brand!} ${equipment.name}'),
+                    Text('${equipment.brand!} ${equipment.name}', style: TextStyle(color: Colors.white),),
                   ],
                 ),
                 if (packingPlanId != null)

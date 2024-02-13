@@ -101,6 +101,7 @@ class SettingsPage extends ConsumerWidget {
                   buttonIcon: Icons.edit_rounded,
                   onButtonPressed: () {
                     CustomDialog.showCustomModal(
+                      isFullscreen: true,
                     context: context,
                     child: SetupScreen(editValue: EditValue.name),
                   );

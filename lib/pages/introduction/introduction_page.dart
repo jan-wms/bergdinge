@@ -17,7 +17,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark.copyWith(
+        value: SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.white, // Color for Android
         statusBarBrightness:
         Brightness.dark // for IOS.
