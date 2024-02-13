@@ -47,7 +47,7 @@ class EquipmentCard extends ConsumerWidget {
                 Column(
                   children: [
                     Expanded(child: Image.asset('assets/items/map.png')),
-                    Text('${equipment.brand!} ${equipment.name}', style: TextStyle(color: Colors.white),),
+                    Text('${equipment.brand!} ${equipment.name}', style: const TextStyle(color: Colors.white),),
                   ],
                 ),
                 if (packingPlanId != null)

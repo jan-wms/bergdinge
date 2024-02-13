@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dismissible_page/dismissible_page.dart';
-import 'package:equipment_app/copy_to_clipboard.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:flutter/material.dart';

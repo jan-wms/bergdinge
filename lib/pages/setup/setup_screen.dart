@@ -40,14 +40,9 @@ class SetupScreen extends ConsumerWidget {
       }
     }
 
-    void nextPage() {
-      pageController.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-    }
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         top: false,
         child: PageView(
@@ -58,9 +53,10 @@ class SetupScreen extends ConsumerWidget {
               CustomScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 slivers: [
-                  const CustomAppBar(
+                  CustomAppBar(
                       title: 'Bergdinge',
                       icon: Icons.terrain,
+                      isInModal: editValue == EditValue.name,
                       subtitle: 'Wie heißt du?'),
                   SliverFillRemaining(
                     child: SetName(
@@ -69,7 +65,7 @@ class SetupScreen extends ConsumerWidget {
                             : ButtonText.continueText,
                         onComplete: (newName) {
                           ref.read(newNameProvider.notifier).state = newName;
-                          nextPage();
+                          pageController.jumpToPage(1);
                         }),
                   ),
                 ],
