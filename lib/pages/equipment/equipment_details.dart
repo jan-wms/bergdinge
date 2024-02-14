@@ -105,9 +105,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                           fontSize: 25,
                                           fontWeight: FontWeight.w600),
                                     ),
-                                    Text(
-                                      Data.getCategoryNames(equipment.category)
-                                          .last,
+                                    Text(Data.getCategoryNames(equipment.category).lastWhere((element) => !element.toLowerCase().contains('sonstige')),
                                       style: const TextStyle(
                                           fontSize: 17,
                                           color: Colors.black54,

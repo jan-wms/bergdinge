@@ -24,6 +24,7 @@ class PackingPlanPage extends ConsumerWidget {
       top: false,
       child: CustomScrollView(slivers: <Widget>[
         CustomAppBar(
+          searchInitialValue: ref.watch(packingPlanSearchProvider),
           title: 'Packlisten',
           icon: Icons.terrain,
 

@@ -20,6 +20,7 @@ class EquipmentPage extends ConsumerWidget {
       child: CustomScrollView(
         slivers: <Widget>[
           CustomAppBar(
+            searchInitialValue: ref.watch(equipmentSearchProvider),
             title: 'Ausrüstung',
             icon: Icons.terrain,
             onButtonPressed: () => CustomDialog.showCustomModal(

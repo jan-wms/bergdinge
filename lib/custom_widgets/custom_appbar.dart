@@ -11,6 +11,7 @@ class CustomAppBar extends StatelessWidget {
   final VoidCallback? onButtonPressed;
   final ValueSetter<String>? onSearchChanged;
   final IconData? buttonIcon;
+  final String searchInitialValue;
 
   const CustomAppBar(
       {super.key,
@@ -19,6 +20,7 @@ class CustomAppBar extends StatelessWidget {
       this.icon,
       this.onSearchChanged,
       this.subtitle,
+        this.searchInitialValue = '',
       this.buttonIcon})
       : assert(
           (onSearchChanged == null || subtitle == null),
@@ -37,7 +39,9 @@ class CustomAppBar extends StatelessWidget {
         icon: icon,
         title: title,
         search: (onSearchChanged != null)
-            ? Search(onChanged: (value) => onSearchChanged!(value))
+            ? Search(
+          initialValue: searchInitialValue,
+            onChanged: (value) => onSearchChanged!(value))
             : null,
       ),
     );
@@ -46,8 +50,9 @@ class CustomAppBar extends StatelessWidget {
 
 class Search extends StatefulWidget {
   final ValueSetter<String> onChanged;
+  final String initialValue;
 
-  const Search({super.key, required this.onChanged});
+  const Search({super.key, required this.onChanged, required this.initialValue});
 
   @override
   State<Search> createState() => _SearchState();
@@ -60,7 +65,7 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    _editingController = TextEditingController();
+    _editingController = TextEditingController(text: widget.initialValue);
   }
 
   @override
