@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data_models/equipment.dart';
@@ -61,8 +62,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
               loading: () => const CircularProgressIndicator.adaptive(),
               data: (data) {
                 Equipment equipment = data
-                    .singleWhere((element) => element.id == widget.equipmentID);
-
+                    .singleWhereOrNull((element) => element.id == widget.equipmentID) ?? Equipment(name: '', weight: 0, status: EquipmentStatus.disabled, category: '', count: 0, id: '', brand: '',);
                 return Stack(
                   children: [
                     CustomScrollView(
@@ -105,7 +105,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                           fontSize: 25,
                                           fontWeight: FontWeight.w600),
                                     ),
-                                    Text(Data.getCategoryNames(equipment.category).lastWhere((element) => !element.toLowerCase().contains('sonstige')),
+                                    Text(equipment.category.isEmpty ? '' : Data.getCategoryNames(equipment.category).lastWhere((element) => !element.toLowerCase().contains('sonstige')),
                                       style: const TextStyle(
                                           fontSize: 17,
                                           color: Colors.black54,

@@ -56,8 +56,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               const CircularProgressIndicator.adaptive(),
                           data: (packingPlanList) {
                             final PackingPlan packingPlan =
-                                packingPlanList.singleWhere((element) =>
-                                    element.id == widget.packingPlanID);
+                                packingPlanList.singleWhereOrNull((element) =>
+                                    element.id == widget.packingPlanID) ?? PackingPlan(name: '', sports: [], id: '', locations: [], createdAt: DateTime(0), updatedAt: DateTime(0));
 
                             return ref
                                 .watch(packingPlanItemStreamProvider(
