@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Design {
   static const List<Color> sectionColor = [
@@ -32,7 +33,7 @@ class Design {
   static const double breakpoint1 = 600.0;
   static const double breakpoint2 = 1000.0;
 
-  ThemeData lightTheme = ThemeData(
+  final ThemeData _lightTheme = ThemeData(
     brightness: Brightness.light,
     appBarTheme: AppBarTheme(
       color: Design.colors[1],
@@ -62,5 +63,9 @@ class Design {
       modalBackgroundColor: Colors.white,
       surfaceTintColor: Colors.white,
     ),
+  );
+
+  ThemeData get lightTheme => _lightTheme.copyWith(
+  textTheme: GoogleFonts.rubikTextTheme(_lightTheme.textTheme),
   );
 }

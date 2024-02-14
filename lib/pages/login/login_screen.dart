@@ -97,11 +97,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Flexible(
-          flex: 3,
+        Expanded(
           child: Container(
             decoration: BoxDecoration(
-              image: DecorationImage(image: Image.asset('assets/1.jpg').image, alignment: Alignment.bottomCenter, fit: BoxFit.cover),
+              image: DecorationImage(
+                  image: Image.asset('assets/1.jpg').image,
+                  alignment: Alignment.bottomCenter,
+                  fit: BoxFit.cover),
             ),
             alignment: Alignment.bottomLeft,
             padding: const EdgeInsets.all(50.0),
@@ -111,39 +113,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 15.0),
                   child: SizedBox(
-                      height: 50.0,
-                      child: Image.asset('assets/icon.png')),
+                      height: 50.0, child: Image.asset('assets/icon.png')),
                 ),
                 const Text(
-                      'Bergdinge',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 70.0),
-                    ),
+                  'Bergdinge',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 70.0),
+                ),
               ],
             ),
           ),
         ),
-        Flexible(
-          flex: 2,
+        Expanded(
           child: Container(
             color: Design.colors[1],
             height: double.infinity,
-            width: double.infinity,
             alignment: Alignment.center,
             child: Wrap(
               direction: Axis.vertical,
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 30.0,
               children: [
-                if(false)
-                Text(
-                  widget.authenticationAction ==
-                          AuthenticationAction.linkAccounts
-                      ? 'Mit Account verknüpfen'
-                      : widget.authenticationAction ==
-                              AuthenticationAction.reauthenticate
-                          ? 'Bitte melden Sie sich erneut an.'
-                          : 'Anmelden',
-                  style: const TextStyle(
+                const Text(
+                  'Anmelden',
+                  style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 40.0,
                       color: Colors.white),
@@ -153,7 +148,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  padding: const EdgeInsets.only(bottom: 30.0, left: 30.0, right: 30.0, top: 50.0),
+                  padding: const EdgeInsets.only(
+                      bottom: 30.0, left: 30.0, right: 30.0, top: 50.0),
                   child: Wrap(
                     spacing: 20.0,
                     direction: Axis.vertical,

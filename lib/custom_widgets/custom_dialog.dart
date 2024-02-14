@@ -63,7 +63,6 @@ class CustomDialog {
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
               ),
-              padding: const EdgeInsets.all(20),
               margin: const EdgeInsets.all(20),
               child: child,
             )));
@@ -154,6 +153,7 @@ class CustomDialog {
   static Future<bool?> showCustomInformationDialog(
       {required BuildContext context, required String description}) async {
     final Widget child = Container(
+      padding: const EdgeInsets.all(20.0),
       constraints: const BoxConstraints(
         maxWidth: 400.0,
       ),
