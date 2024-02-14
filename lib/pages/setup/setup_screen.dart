@@ -3,6 +3,7 @@ import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/pages/setup/loading_page.dart';
 import 'package:equipment_app/pages/setup/set_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../firebase/firebase_auth.dart';
@@ -23,6 +24,8 @@ class SetupScreen extends ConsumerWidget {
     final pageController = PageController(initialPage: 0);
 
     void uploadToFirebase() async {
+      var t = Future.delayed(const Duration(seconds: 2));
+
       if (editValue == EditValue.setUp || editValue == EditValue.name) {
         String name = ref.read(newNameProvider);
         ref.invalidate(newNameProvider);
@@ -35,9 +38,11 @@ class SetupScreen extends ConsumerWidget {
         }, SetOptions(merge: true));
       }
 
-      if (context.mounted) {
-        editValue == EditValue.setUp ? context.go('/') : context.pop();
-      }
+      t.whenComplete(() {
+        if (context.mounted) {
+          editValue == EditValue.setUp ? context.go('/') : context.pop();
+        }
+      });
     }
 
     return Scaffold(
@@ -69,10 +74,16 @@ class SetupScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-            LoadingPage(
-              editValue: editValue,
-              onInit: () => uploadToFirebase(),
-            )
+            AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.light.copyWith(
+                  statusBarColor: Colors.black, // Android
+                  statusBarBrightness: Brightness.light // iOS
+                  ),
+              child: LoadingPage(
+                editValue: editValue,
+                onInit: () => uploadToFirebase(),
+              ),
+            ),
           ],
         ),
       ),

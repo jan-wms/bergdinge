@@ -26,7 +26,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/launch_screen',
-        builder: (context, state) => const Scaffold(body: Placeholder(), backgroundColor: Colors.red,),
+        builder: (context, state) => const Scaffold(
+          body: Placeholder(),
+          backgroundColor: Colors.red,
+        ),
       ),
       GoRoute(
         path: '/welcome',
@@ -46,8 +49,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       ShellRoute(
           navigatorKey: _shellNavigatorKey,
-          builder: (BuildContext context, GoRouterState state, Widget child) {
-            return SplitView(child: child);
+          pageBuilder:
+              (BuildContext context, GoRouterState state, Widget child) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: SplitView(child: child),
+              transitionDuration: Duration.zero,
+              transitionsBuilder: (_, __, ___, Widget child) => child,
+            );
           },
           routes: [
             GoRoute(
@@ -65,9 +74,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                       key: state.pageKey,
                       child: ArticlePage(index: tag),
                       transitionDuration: const Duration(milliseconds: 300),
-                      transitionsBuilder: (context, animation,
-                          secondaryAnimation, child) =>
-                          FadeTransition(opacity: animation, child: child),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) =>
+                              FadeTransition(opacity: animation, child: child),
                     );
                   },
                 ),

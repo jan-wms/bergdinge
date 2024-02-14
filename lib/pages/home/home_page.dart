@@ -20,14 +20,23 @@ class _HomePageState extends State<HomePage> {
     'assets/items/landscape2.jpg',
   ];
 
+  final headlines = <String>[
+    'Rucksack richtig packen',
+    'Alpenacademy',
+    'Ausrüstungsverleih',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
       child: CustomScrollView(
         slivers: <Widget>[
-          const CustomAppBar(title: 'Entdecken',             icon: Icons.terrain,
-            subtitle: 'Bergdinge',),
+          const CustomAppBar(
+            title: 'Entdecken',
+            icon: Icons.terrain,
+            subtitle: 'Bergdinge',
+          ),
           SliverPadding(
             padding: Design.pagePadding,
             sliver: SliverList.builder(
@@ -56,40 +65,43 @@ class _HomePageState extends State<HomePage> {
                         child: ClipRRect(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
-                            child:
-                                Stack(alignment: Alignment.bottomLeft, children: [
-                              Image.asset(image),
-                              ImageFiltered(
-                                imageFilter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-                                child: ShaderMask(
-                                  shaderCallback: (rect) {
-                                    return LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.black,
-                                          Colors.black.withOpacity(0)
-                                        ],
-                                        stops: const [
-                                          0.7,
-                                          0.6
-                                        ]).createShader(rect);
-                                  },
-                                  blendMode: BlendMode.dstOut,
-                                  child: Image.asset(image),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 20.0, left: 10.0),
-                                child: Text(
-                                  'How to: Rucksack packen',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              )
-                            ])),
+                            child: Stack(
+                                alignment: Alignment.bottomLeft,
+                                children: [
+                                  Image.asset(image),
+                                  ImageFiltered(
+                                    imageFilter:
+                                        ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+                                    child: ShaderMask(
+                                      shaderCallback: (rect) {
+                                        return LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Colors.black,
+                                              Colors.black.withOpacity(0)
+                                            ],
+                                            stops: const [
+                                              0.7,
+                                              0.6
+                                            ]).createShader(rect);
+                                      },
+                                      blendMode: BlendMode.dstOut,
+                                      child: Image.asset(image),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        bottom: 20.0, left: 10.0),
+                                    child: Text(
+                                      headlines[index],
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  )
+                                ])),
                       ),
                     ),
                   ),
