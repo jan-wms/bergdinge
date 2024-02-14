@@ -12,7 +12,8 @@ class IntroductionPage extends StatefulWidget {
 }
 
 class _IntroductionPageState extends State<IntroductionPage> {
-  final _pageController = PageController(initialPage: 0);
+  //TODO initialPage: 0
+  final _pageController = PageController(initialPage: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
         Brightness.dark // for IOS.
     ),
     child: Scaffold(
-      backgroundColor: Design.colors[1],
+      backgroundColor: Colors.white,
         body: PageView(
       physics: const NeverScrollableScrollPhysics(),
       controller: _pageController,

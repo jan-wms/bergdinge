@@ -28,6 +28,7 @@ class _SplitViewState extends State<SplitView> {
                 Brightness.dark // iOS
             ),
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: Row(
             children: [
               SizedBox(
