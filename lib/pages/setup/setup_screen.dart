@@ -64,14 +64,14 @@ class SetupScreen extends ConsumerWidget {
                       subtitle: 'Wie heißt du?'),
                   SliverFillRemaining(
                     child: SetName(
-                        buttonText: (editValue == EditValue.name)
-                            ? ButtonText.doneText
-                            : ButtonText.continueText,
-                        onComplete: (newName) {
-                          ref.read(newNameProvider.notifier).state = newName;
-                          pageController.jumpToPage(1);
-                        }),
-                  ),
+                              buttonText: (editValue == EditValue.name)
+                                  ? ButtonText.doneText
+                                  : ButtonText.continueText,
+                              onComplete: (newName) {
+                                ref.read(newNameProvider.notifier).state = newName;
+                                pageController.jumpToPage(1);
+                              }),
+                      ),
                 ],
               ),
             AnnotatedRegion<SystemUiOverlayStyle>(

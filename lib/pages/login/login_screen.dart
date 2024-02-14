@@ -101,7 +101,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: Image.asset('assets/1.jpg').image,
+                  image: Image.asset('assets/2.jpg').image,
                   alignment: Alignment.bottomCenter,
                   fit: BoxFit.cover),
             ),

@@ -92,11 +92,12 @@ class CustomDialog {
     }
 
     final Widget child = Material(
-      color: Colors.white,
+      color: Colors.transparent,
       child: Container(
         constraints: const BoxConstraints(
           maxWidth: 400.0,
         ),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
