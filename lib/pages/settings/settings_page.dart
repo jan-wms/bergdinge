@@ -96,15 +96,16 @@ class SettingsPage extends ConsumerWidget {
             return CustomScrollView(
               slivers: [
                 CustomAppBar(
-                  title: 'Hallo${(userData?['name'] == null || userData?['name'] == 'null' || (userData?['name']).toString().isEmpty) ? '' : ' ${userData?['name']}'}!' ,
+                  title:
+                      'Hallo${(userData?['name'] == null || userData?['name'] == 'null' || (userData?['name']).toString().isEmpty) ? '' : ' ${userData?['name']}'}!',
                   icon: Icons.person_rounded,
                   buttonIcon: Icons.edit_rounded,
                   onButtonPressed: () {
                     CustomDialog.showCustomModal(
                       isFullscreen: true,
-                    context: context,
-                    child: SetupScreen(editValue: EditValue.name),
-                  );
+                      context: context,
+                      child: SetupScreen(editValue: EditValue.name),
+                    );
                   },
                 ),
                 SliverList(
@@ -275,11 +276,10 @@ class SettingsPage extends ConsumerWidget {
                             _CustomListTile(
                               title: 'Unterstützen',
                               icon: Icons.favorite_outline_rounded,
-                              onTap: () =>
-                                  CustomDialog.showCustomInformationDialog(
-                                      context: context,
-                                      description:
-                                          'Diese Funktion ist momentan nicht verfügbar.'),
+                              onTap: () => CustomDialog.showCustomInformationDialog(
+                                  context: context,
+                                  description:
+                                      'Diese Funktion ist momentan nicht verfügbar.'),
                             ),
                             const Padding(padding: EdgeInsets.only(top: 30.0)),
                             _CustomListTile(
@@ -293,14 +293,14 @@ class SettingsPage extends ConsumerWidget {
                               icon: Icons.copy_rounded,
                             ),
                             _CustomListTile(
-                              title: 'Lizenzen',
-                              icon: Icons.arrow_forward_rounded,
-                              onTap: () => showLicensePage(
-                                  context: context,
-                                  applicationName: 'Bergdinge',
-                                  applicationVersion: version,
-                                  useRootNavigator: true),
-                            ),
+                                title: 'Lizenzen',
+                                icon: Icons.arrow_forward_rounded,
+                                onTap: () => showLicensePage(
+                                    context: context,
+                                    applicationName: 'Bergdinge',
+                                    applicationVersion: version,
+                                    useRootNavigator: true),
+                              ),
                           ],
                         ),
                       ),
@@ -415,6 +415,7 @@ class _CustomListTile extends StatelessWidget {
     return Material(
       color: Colors.white,
       child: InkWell(
+        mouseCursor: SystemMouseCursors.click,
         onTap: onTap,
         child: ListTile(
           title: Text(title),

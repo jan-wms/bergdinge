@@ -24,7 +24,7 @@ class SetupScreen extends ConsumerWidget {
     final pageController = PageController(initialPage: 0);
 
     void uploadToFirebase() async {
-      var t = Future.delayed(const Duration(seconds: 2));
+      var timer = Future.delayed(const Duration(seconds: 2));
 
       if (editValue == EditValue.setUp || editValue == EditValue.name) {
         String name = ref.read(newNameProvider);
@@ -38,53 +38,58 @@ class SetupScreen extends ConsumerWidget {
         }, SetOptions(merge: true));
       }
 
-      t.whenComplete(() {
+      timer.whenComplete(() {
         if (context.mounted) {
           editValue == EditValue.setUp ? context.go('/') : context.pop();
         }
       });
     }
 
-    return Scaffold(
-      backgroundColor: (editValue == EditValue.name) ? Colors.transparent : Colors.white,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
+    return Material(
+      color: (editValue == EditValue.name) ? Colors.transparent : Colors.white,
+      //resizeToAvoidBottomInset: false,
+      child: Container(
+        constraints: (editValue == EditValue.name) ? const BoxConstraints(
+          maxWidth:  600.0,
+        ) : null,
+        child: SafeArea(
         top: false,
         child: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: pageController,
-          children: [
-            if (editValue == EditValue.setUp || editValue == EditValue.name)
-              CustomScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                slivers: [
-                  const CustomAppBar(
-                      title: 'Bergdinge',
-                      icon: Icons.terrain,
-                      subtitle: 'Wie heißt du?'),
-                  SliverFillRemaining(
-                    child: SetName(
-                              buttonText: (editValue == EditValue.name)
-                                  ? ButtonText.doneText
-                                  : ButtonText.continueText,
-                              onComplete: (newName) {
-                                ref.read(newNameProvider.notifier).state = newName;
-                                pageController.jumpToPage(1);
-                              }),
-                      ),
-                ],
+            physics: const NeverScrollableScrollPhysics(),
+            controller: pageController,
+            children: [
+              if (editValue == EditValue.setUp || editValue == EditValue.name)
+                CustomScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  slivers: [
+                    const CustomAppBar(
+                        title: 'Bergdinge',
+                        icon: Icons.terrain,
+                        subtitle: 'Wie heißt du?'),
+                    SliverFillRemaining(
+                      child: SetName(
+                                buttonText: (editValue == EditValue.name)
+                                    ? ButtonText.doneText
+                                    : ButtonText.continueText,
+                                onComplete: (newName) {
+                                  ref.read(newNameProvider.notifier).state = newName;
+                                  pageController.jumpToPage(1);
+                                }),
+                        ),
+                  ],
+                ),
+              AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle.light.copyWith(
+                    statusBarColor: Colors.black, // Android
+                    statusBarBrightness: Brightness.light // iOS
+                    ),
+                child: LoadingPage(
+                  editValue: editValue,
+                  onInit: () => uploadToFirebase(),
+                ),
               ),
-            AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle.light.copyWith(
-                  statusBarColor: Colors.black, // Android
-                  statusBarBrightness: Brightness.light // iOS
-                  ),
-              child: LoadingPage(
-                editValue: editValue,
-                onInit: () => uploadToFirebase(),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
