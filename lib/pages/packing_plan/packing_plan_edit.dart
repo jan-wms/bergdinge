@@ -76,7 +76,10 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: 700.0,
+        ),
         padding: Design.pagePadding.copyWith(bottom: 40.0, top: 30.0),
         child: Form(
           key: _formKey,
@@ -107,7 +110,9 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                       builder: (state) => Column(
                         children: [
                           Wrap(
+                              runSpacing: 5.0,
                               spacing: 5.0,
+
                               alignment: WrapAlignment.center,
                               children: [
                                 for (var sport in Data.sports)
@@ -146,53 +151,58 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                      onPressed: () => context.pop(false),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.black54,
-                      ),
-                      child: const Text(
-                        'Abbrechen',
-                        style: TextStyle(fontSize: 17),
-                      )),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-                          foregroundColor: Colors.white,
-                          backgroundColor: Design.colors[1],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate() && !isLoading) {
-                          edit(
-                              packingPlanList:
-                                  ref.read(packingPlanStreamProvider).value);
-                        }
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 30,
-                        width: 105,
-                        child: isLoading
-                            ? const SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white54,
+              Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 400.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                        onPressed: () => context.pop(false),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.black54,
+                        ),
+                        child: const Text(
+                          'Abbrechen',
+                          style: TextStyle(fontSize: 17),
+                        )),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                            foregroundColor: Colors.white,
+                            backgroundColor: Design.colors[1],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate() && !isLoading) {
+                            edit(
+                                packingPlanList:
+                                    ref.read(packingPlanStreamProvider).value);
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 30,
+                          width: 105,
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white54,
+                                  ),
+                                )
+                              : Text(
+                                  widget.packingPlan == null
+                                      ? 'Hinzufügen'
+                                      : 'Bearbeiten',
+                                  style: const TextStyle(fontSize: 17),
                                 ),
-                              )
-                            : Text(
-                                widget.packingPlan == null
-                                    ? 'Hinzufügen'
-                                    : 'Bearbeiten',
-                                style: const TextStyle(fontSize: 17),
-                              ),
-                      ))
-                ],
+                        ))
+                  ],
+                ),
               ),
             ],
           ),

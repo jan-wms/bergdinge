@@ -366,6 +366,15 @@ class SettingsPage extends ConsumerWidget {
                               style: TextStyle(color: Colors.red, fontSize: 17),
                             )),
                       ),
+                    ],
+                  ),
+                ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
                       Padding(
                         padding: Design.pagePadding.copyWith(top: 20.0),
                         child: const Divider(),
@@ -386,7 +395,7 @@ class SettingsPage extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ),
+                )
               ],
             );
           }),
