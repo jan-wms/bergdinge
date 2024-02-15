@@ -47,7 +47,7 @@ class _SplitViewState extends ConsumerState<SplitView> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    if (screenWidth > Design.breakpoint1) {
+    if (screenWidth > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
             statusBarColor: Colors.black, // Android
