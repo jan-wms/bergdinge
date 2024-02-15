@@ -50,8 +50,9 @@ class SetupScreen extends ConsumerWidget {
       color: (editValue == EditValue.name && (MediaQuery.of(context).size.width > Design.breakpoint1)) ? Colors.transparent : Colors.white,
       //resizeToAvoidBottomInset: false,
       child: Container(
-        constraints: (editValue == EditValue.name) ? const BoxConstraints(
+        constraints: (editValue == EditValue.name && (MediaQuery.of(context).size.width > Design.breakpoint1)) ? const BoxConstraints(
           maxWidth:  600.0,
+          maxHeight: 530.0
         ) : null,
         child: SafeArea(
         top: false,

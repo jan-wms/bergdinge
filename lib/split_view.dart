@@ -50,8 +50,8 @@ class _SplitViewState extends ConsumerState<SplitView> {
     if (screenWidth > Design.breakpoint1) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
-            statusBarColor: Colors.white, // Android
-            statusBarBrightness: Brightness.dark // iOS
+            statusBarColor: Colors.black, // Android
+            statusBarBrightness: Brightness.light // iOS
             ),
         child: Scaffold(
           backgroundColor: Colors.white,
