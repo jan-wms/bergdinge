@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equipment_app/data_models/article.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
 import 'package:equipment_app/pages/home/article_page.dart';
 import 'package:equipment_app/pages/home/home_page.dart';
@@ -66,13 +67,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                   path: 'article',
                   parentNavigatorKey: _rootNavigatorKey,
                   pageBuilder: (context, state) {
-                    int tag = state.extra as int;
+                    Article article = state.extra as Article;
                     return CustomTransitionPage(
                       fullscreenDialog: true,
                       opaque: false,
                       barrierDismissible: true,
                       key: state.pageKey,
-                      child: ArticlePage(index: tag),
+                      child: ArticlePage(article: article),
                       transitionDuration: const Duration(milliseconds: 300),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) =>

@@ -5,11 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../custom_widgets/custom_close_button.dart';
 import '../../data/design.dart';
+import '../../data_models/article.dart';
 
 class ArticlePage extends ConsumerStatefulWidget {
-  final int index;
+  final Article article;
 
-  const ArticlePage({Key? key, required this.index}) : super(key: key);
+  const ArticlePage({Key? key, required this.article}) : super(key: key);
 
   @override
   ConsumerState<ArticlePage> createState() => _ArticlePageState();
@@ -30,12 +31,6 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     final safeareaPadding = MediaQuery.of(context).padding;
-    final images = <String>[
-      'assets/items/landscape.jpg',
-      'assets/items/backpack.jpg',
-      'assets/items/landscape2.jpg',
-    ];
-
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return DismissiblePage(
@@ -56,7 +51,7 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
             slivers: [
               SliverToBoxAdapter(
                 child: Hero(
-                  tag: widget.index.toString(),
+                  tag: widget.article.title.toString(),
                   child: Material(
                       color: Colors.transparent,
                       child: Container(
@@ -74,7 +69,7 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
                           fit: BoxFit.scaleDown,
                           child: ClipRRect(
                               borderRadius: (isDesktop) ? BorderRadius.circular(50.0) : BorderRadius.zero,
-                              child: Image.asset(images[widget.index],)),
+                              child: Image(image: widget.article.imageProvider,)),
                         ),
                       )),
                 ),
@@ -90,22 +85,22 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
                           right: (isDesktop) ? (MediaQuery.of(context).size.width * 0.05) + safeareaPadding.right : null,
                             top: (isDesktop) ? MediaQuery.of(context).size.height * 0.05 : 15, bottom: safeareaPadding.bottom + 30.0),
                         alignment: Alignment.centerLeft,
-                        child: const Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Rucksack packen',
-                              style: TextStyle(
+                              widget.article.title,
+                              style: const TextStyle(
                                   fontSize: 25, fontWeight: FontWeight.w600),
                             ),
                             Text(
-                              'Ratgeber',
-                              style: TextStyle(
+                              widget.article.subTitle,
+                              style: const TextStyle(
                                   fontSize: 17,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w600),
                             ),
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.only(top: 30.0),
                               child: Text(
                                 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergrenluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo  et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor ins et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
