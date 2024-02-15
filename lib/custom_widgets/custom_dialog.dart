@@ -1,3 +1,4 @@
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,10 +16,14 @@ class CustomDialog {
       {required BuildContext context,
       required Widget child,
       bool isFullscreen = false}) async {
-    if(MediaQuery.of(context).size.width > Design.breakpoint1) {
-      return showCustomDialog(context: context, child: Material(color: Colors.transparent,child: child,));
+    if (MediaQuery.of(context).size.width > Design.breakpoint1) {
+      return showCustomDialog(
+          context: context,
+          child: Material(
+            color: Colors.transparent,
+            child: child,
+          ));
     }
-
 
     return await showModalBottomSheet(
       context: context,
@@ -54,10 +59,15 @@ class CustomDialog {
         useRootNavigator: true,
         barrierDismissible: false,
         builder: (context) => Align(
-            alignment: MediaQuery.of(context).size.width > Design.breakpoint1 ? Alignment.center :  Alignment.bottomCenter,
+            alignment: MediaQuery.of(context).size.width > Design.breakpoint1
+                ? Alignment.center
+                : Alignment.bottomCenter,
             child: Container(
-              constraints:
-              BoxConstraints(minHeight: 250, maxHeight: MediaQuery.of(context).size.height * 0.7),
+              constraints: BoxConstraints(
+                minHeight: 250,
+                maxHeight: MediaQuery.of(context).size.height * 0.7,
+                minWidth: min(300, MediaQuery.of(context).size.width - 40.0),
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
@@ -110,8 +120,8 @@ class CustomDialog {
               padding: const EdgeInsets.only(bottom: 40.0),
               child: Text(
                 description,
-                style:
-                    const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w500),
                 softWrap: true,
                 textAlign: TextAlign.center,
               ),
@@ -170,7 +180,8 @@ class CustomDialog {
             padding: const EdgeInsets.only(bottom: 40.0),
             child: Text(
               description,
-              style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+              style:
+                  const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
               softWrap: true,
               textAlign: TextAlign.center,
             ),
