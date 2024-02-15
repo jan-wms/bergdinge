@@ -83,275 +83,287 @@ class SettingsPage extends ConsumerWidget {
     final firebaseUser = ref.watch(userChangesProvider).value;
 
     return FutureBuilder(
-          future: rootBundle.loadString("pubspec.yaml"),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            String version = "0.0.0";
+        future: rootBundle.loadString("pubspec.yaml"),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          String version = "0.0.0";
 
-            if (snapshot.hasData) {
-              Map yamlData = loadYaml(snapshot.data);
-              version = yamlData["version"];
-            }
-            return CustomScrollView(
-              slivers: [
-                CustomAppBar(
-                  title:
-                      'Hallo${(userData?['name'] == null || userData?['name'] == 'null' || (userData?['name']).toString().isEmpty) ? '' : ' ${userData?['name']}'}!',
-                  icon: Icons.person_rounded,
-                  buttonIcon: Icons.edit_rounded,
-                  onButtonPressed: () {
-                    CustomDialog.showCustomModal(
-                      isFullscreen: true,
-                      context: context,
-                      child: SetupScreen(editValue: EditValue.name),
-                    );
-                  },
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Container(
-                        margin: Design.pagePadding.copyWith(top: 20.0),
-                        decoration: BoxDecoration(
-                          color: (firebaseUser?.isAnonymous ?? false)
-                              ? const Color.fromRGBO(246, 236, 202, 1.0)
-                              : (ref.read(authProvider) == 'apple.com')
-                                  ? Colors.white
-                                  : Design.colors[7],
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20.0)),
-                          boxShadow: [
-                            if (!(firebaseUser?.isAnonymous ?? true))
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                spreadRadius: 4,
-                                blurRadius: 10,
-                                offset: const Offset(2, 3),
-                              ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                (firebaseUser?.isAnonymous ?? false)
-                                    ? Icon(
-                                        Icons.warning_rounded,
-                                        color: Design.colors[6],
-                                        size: 50,
-                                      )
-                                    : const Icon(
-                                        Icons.check_circle_outline_rounded,
-                                        color: Colors.green,
-                                        size: 50,
-                                      ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Synchronisierung',
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        Text(
-                                          (firebaseUser?.isAnonymous ?? false)
-                                              ? 'Melde dich an, um Bergdinge auf mehreren Geräten zu benutzen.'
-                                              : 'Cloud-Synchronisierung ist aktiviert.',
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 30.0),
-                              child: (firebaseUser?.isAnonymous ?? false)
-                                  ? ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          backgroundColor: Design.colors[6],
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0))),
-                                      onPressed: () async {
-                                        CustomDialog.showCustomModal(
-                                          context: context,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(20.0),
-                                            child: LoginScreen(
-                                                onComplete: () {
-                                                  context.pop();
-                                                  CustomDialog
-                                                      .showCustomInformationDialog(
-                                                          context: context,
-                                                          description:
-                                                              'Synchronisierung erfolgreich.');
-                                                },
-                                                authenticationAction:
-                                                    AuthenticationAction
-                                                        .linkAccounts),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text('Aktivieren'))
-                                  : _DisplayAuthProvider(
-                                      email: firebaseUser?.email,
-                                      authProvider: ref.read(authProvider),
-                                    ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
+          if (snapshot.hasData) {
+            Map yamlData = loadYaml(snapshot.data);
+            version = yamlData["version"];
+          }
+          return CustomScrollView(
+            slivers: [
+              CustomAppBar(
+                title:
+                    'Hallo${(userData?['name'] == null || userData?['name'] == 'null' || (userData?['name']).toString().isEmpty) ? '' : ' ${userData?['name']}'}!',
+                icon: Icons.person_rounded,
+                buttonIcon: Icons.edit_rounded,
+                onButtonPressed: () {
+                  CustomDialog.showCustomModal(
+                    isFullscreen: true,
+                    context: context,
+                    child: SetupScreen(editValue: EditValue.name),
+                  );
+                },
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    Container(
+                      margin: Design.pagePadding.copyWith(top: 20.0),
+                      decoration: BoxDecoration(
+                        color: (firebaseUser?.isAnonymous ?? false)
+                            ? const Color.fromRGBO(246, 236, 202, 1.0)
+                            : (ref.read(authProvider) == 'apple.com')
+                                ? Colors.white
+                                : Design.colors[7],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20.0)),
+                        boxShadow: [
+                          if (!(firebaseUser?.isAnonymous ?? true))
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.2),
                               spreadRadius: 4,
                               blurRadius: 10,
                               offset: const Offset(2, 3),
                             ),
-                          ],
-                        ),
-                        margin: Design.pagePadding
-                            .copyWith(top: 25.0, bottom: 30.0),
-                        child: Column(
-                          children: [
-                            _CustomListTile(
-                              title: Data.websiteUrlShort,
-                              icon: Icons.launch_rounded,
-                              onTap: () async {
-                                final Uri url = Uri.parse(Data.websiteUrl);
-                                launchUrl(url).then((didLaunch) {
-                                  if (didLaunch == false) {
-                                    copyToClipboard(
-                                        context: context,
-                                        value: Data.websiteUrl);
-                                  }
-                                });
-                              },
-                            ),
-                            _CustomListTile(
-                              title: Data.supportMail,
-                              icon: Icons.mail_outline_rounded,
-                              onTap: () async {
-                                String? encodeQueryParameters(
-                                    Map<String, String> params) {
-                                  return params.entries
-                                      .map((MapEntry<String, String> e) =>
-                                          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-                                      .join('&');
-                                }
-
-                                final Uri uri = Uri(
-                                  scheme: 'mailto',
-                                  path: Data.supportMail,
-                                  query: encodeQueryParameters(<String, String>{
-                                    'subject': 'Bergdinge',
-                                  }),
-                                );
-
-                                launchUrl(uri).then((didLaunch) {
-                                  if (didLaunch == false) {
-                                    copyToClipboard(
-                                        context: context,
-                                        value: Data.supportMail);
-                                  }
-                                });
-                              },
-                            ),
-                            _CustomListTile(
-                              title: 'Unterstützen',
-                              icon: Icons.favorite_outline_rounded,
-                              onTap: () => CustomDialog.showCustomInformationDialog(
-                                  context: context,
-                                  description:
-                                      'Diese Funktion ist momentan nicht verfügbar.'),
-                            ),
-                            const Padding(padding: EdgeInsets.only(top: 30.0)),
-                            _CustomListTile(
-                              title: 'UID kopieren',
-                              onTap: () {
-                                copyToClipboard(
-                                    context: context,
-                                    value:
-                                        Auth().user?.uid ?? 'uid not provided');
-                              },
-                              icon: Icons.copy_rounded,
-                            ),
-                            _CustomListTile(
-                                title: 'Lizenzen',
-                                icon: Icons.arrow_forward_rounded,
-                                onTap: () => showLicensePage(
-                                    context: context,
-                                    applicationName: 'Bergdinge',
-                                    applicationVersion: version,
-                                    useRootNavigator: true),
-                              ),
-                          ],
-                        ),
+                        ],
                       ),
-                      if (!(firebaseUser?.isAnonymous ?? true))
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 50.0, right: 50.0, bottom: 15.0),
-                          child: TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                                backgroundColor:
-                                    const Color.fromRGBO(255, 222, 222, 1.0),
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                              ),
-                              onPressed: () {
-                                Auth().signOut();
-                              },
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.logout_rounded),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      'Abmelden',
-                                      style: TextStyle(fontSize: 17),
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              (firebaseUser?.isAnonymous ?? false)
+                                  ? Icon(
+                                      Icons.warning_rounded,
+                                      color: Design.colors[6],
+                                      size: 50,
+                                    )
+                                  : const Icon(
+                                      Icons.check_circle_outline_rounded,
+                                      color: Colors.green,
+                                      size: 50,
                                     ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Synchronisierung',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        (firebaseUser?.isAnonymous ?? false)
+                                            ? 'Melde dich an, um Bergdinge auf mehreren Geräten zu benutzen.'
+                                            : 'Cloud-Synchronisierung ist aktiviert.',
+                                        style: const TextStyle(
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              )),
-                        ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: (firebaseUser?.isAnonymous ?? false)
+                                ? ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Design.colors[6],
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0))),
+                                    onPressed: () async {
+                                      CustomDialog.showCustomModal(
+                                        context: context,
+                                        child: ClipRRect(
+                                          borderRadius: (MediaQuery.of(context)
+                                                      .size
+                                                      .width >
+                                                  Design.breakpoint1)
+                                              ? BorderRadius.circular(20.0)
+                                              : const BorderRadius.vertical(
+                                                  top: Radius.circular(20.0)),
+                                          child: LoginScreen(
+                                              onComplete: () {
+                                                context.pop();
+                                                CustomDialog
+                                                    .showCustomInformationDialog(
+                                                        context: context,
+                                                        description:
+                                                            'Synchronisierung erfolgreich.');
+                                              },
+                                              authenticationAction:
+                                                  AuthenticationAction
+                                                      .linkAccounts),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('Aktivieren'))
+                                : _DisplayAuthProvider(
+                                    email: firebaseUser?.email,
+                                    authProvider: ref.read(authProvider),
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(15.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 4,
+                            blurRadius: 10,
+                            offset: const Offset(2, 3),
+                          ),
+                        ],
+                      ),
+                      margin:
+                          Design.pagePadding.copyWith(top: 25.0, bottom: 30.0),
+                      child: Column(
+                        children: [
+                          _CustomListTile(
+                            title: Data.websiteUrlShort,
+                            icon: Icons.launch_rounded,
+                            onTap: () async {
+                              final Uri url = Uri.parse(Data.websiteUrl);
+                              launchUrl(url).then((didLaunch) {
+                                if (didLaunch == false) {
+                                  copyToClipboard(
+                                      context: context, value: Data.websiteUrl);
+                                }
+                              });
+                            },
+                          ),
+                          _CustomListTile(
+                            title: Data.supportMail,
+                            icon: Icons.mail_outline_rounded,
+                            onTap: () async {
+                              String? encodeQueryParameters(
+                                  Map<String, String> params) {
+                                return params.entries
+                                    .map((MapEntry<String, String> e) =>
+                                        '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                                    .join('&');
+                              }
+
+                              final Uri uri = Uri(
+                                scheme: 'mailto',
+                                path: Data.supportMail,
+                                query: encodeQueryParameters(<String, String>{
+                                  'subject': 'Bergdinge',
+                                }),
+                              );
+
+                              launchUrl(uri).then((didLaunch) {
+                                if (didLaunch == false) {
+                                  copyToClipboard(
+                                      context: context,
+                                      value: Data.supportMail);
+                                }
+                              });
+                            },
+                          ),
+                          _CustomListTile(
+                            title: 'Unterstützen',
+                            icon: Icons.favorite_outline_rounded,
+                            onTap: () => CustomDialog.showCustomInformationDialog(
+                                context: context,
+                                description:
+                                    'Diese Funktion ist momentan nicht verfügbar.'),
+                          ),
+                          const Padding(padding: EdgeInsets.only(top: 30.0)),
+                          _CustomListTile(
+                            title: 'UID kopieren',
+                            onTap: () {
+                              copyToClipboard(
+                                  context: context,
+                                  value:
+                                      Auth().user?.uid ?? 'uid not provided');
+                            },
+                            icon: Icons.copy_rounded,
+                          ),
+                          _CustomListTile(
+                            title: 'Lizenzen',
+                            icon: Icons.arrow_forward_rounded,
+                            onTap: () => showLicensePage(
+                                context: context,
+                                applicationName: 'Bergdinge',
+                                applicationVersion: version,
+                                useRootNavigator: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (!(firebaseUser?.isAnonymous ?? true))
                       Container(
-                        margin: const EdgeInsets.only(left: 50.0, right: 50.0),
-                        child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor:
-                                  const Color.fromRGBO(255, 194, 194, 1.0),
-                              side: const BorderSide(color: Colors.red),
+                        margin: const EdgeInsets.only(
+                            left: 50.0, right: 50.0, bottom: 15.0),
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red,
+                              backgroundColor:
+                                  const Color.fromRGBO(255, 222, 222, 1.0),
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                             ),
-                            onPressed: () async {
-                              if (Auth().user!.isAnonymous) {
-                                deleteAccount(context);
-                              } else {
-                                await CustomDialog.showCustomModal(
-                                  context: context,
+                            onPressed: () {
+                              Auth().signOut();
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.logout_rounded),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    'Abmelden',
+                                    style: TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 50.0, right: 50.0),
+                      child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor:
+                                const Color.fromRGBO(255, 194, 194, 1.0),
+                            side: const BorderSide(color: Colors.red),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                          ),
+                          onPressed: () async {
+                            if (Auth().user!.isAnonymous) {
+                              deleteAccount(context);
+                            } else {
+                              await CustomDialog.showCustomModal(
+                                context: context,
+                                child: ClipRRect(
+                                  borderRadius:
+                                      (MediaQuery.of(context).size.width >
+                                              Design.breakpoint1)
+                                          ? BorderRadius.circular(20.0)
+                                          : const BorderRadius.vertical(
+                                              top: Radius.circular(20.0)),
                                   child: LoginScreen(
                                       onComplete: () {
                                         context.pop();
@@ -359,48 +371,48 @@ class SettingsPage extends ConsumerWidget {
                                       },
                                       authenticationAction:
                                           AuthenticationAction.reauthenticate),
-                                );
-                              }
-                            },
-                            child: const Text(
-                              'Account löschen',
-                              style: TextStyle(color: Colors.red, fontSize: 17),
-                            )),
-                      ),
-                    ],
-                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'Account löschen',
+                            style: TextStyle(color: Colors.red, fontSize: 17),
+                          )),
+                    ),
+                  ],
                 ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: Design.pagePadding.copyWith(top: 20.0),
-                        child: const Divider(),
-                      ),
-                      Container(
-                        margin: Design.pagePadding.copyWith(bottom: 50.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              'Bergdinge Version $version️',
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
+              ),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: Design.pagePadding.copyWith(top: 20.0),
+                      child: const Divider(),
+                    ),
+                    Container(
+                      margin: Design.pagePadding.copyWith(bottom: 50.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            'Bergdinge Version $version️',
+                            style: const TextStyle(
+                              color: Colors.grey,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
-              ],
-            );
-          }
-    );
+                    ),
+                  ],
+                ),
+              )
+            ],
+          );
+        });
   }
 }
 
