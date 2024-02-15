@@ -15,9 +15,7 @@ class EquipmentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      top: false,
-      child: CustomScrollView(
+    return CustomScrollView(
         slivers: <Widget>[
           CustomAppBar(
             searchInitialValue: ref.watch(equipmentSearchProvider),
@@ -35,7 +33,6 @@ class EquipmentPage extends ConsumerWidget {
           ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
         ],
-      ),
     );
   }
 }

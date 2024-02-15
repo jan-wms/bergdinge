@@ -20,9 +20,7 @@ class PackingPlanPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final packingPlanList = ref.watch(packingPlanStreamProvider);
 
-    return SafeArea(
-      top: false,
-      child: CustomScrollView(slivers: <Widget>[
+    return CustomScrollView(slivers: <Widget>[
         CustomAppBar(
           searchInitialValue: ref.watch(packingPlanSearchProvider),
           title: 'Packlisten',
@@ -133,7 +131,7 @@ class PackingPlanPage extends ConsumerWidget {
           },
         ),
         const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
-      ]),
+      ]
     );
   }
 }

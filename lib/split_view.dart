@@ -57,8 +57,14 @@ class _SplitViewState extends ConsumerState<SplitView> {
           backgroundColor: Colors.white,
           body: Row(
             children: [
-              Menu(onIndexChanged: (newIndex) => goToTab(index: newIndex), icons: icons),
-              Expanded(child: widget.child),
+              SafeArea(
+                right: false,
+                  child: Menu(onIndexChanged: (newIndex) => goToTab(index: newIndex), icons: icons)),
+              Expanded(child: SafeArea(
+                  left: false,
+                  top: false,
+                  bottom: false,
+                  child: widget.child)),
             ],
           ),
         ),
@@ -71,7 +77,9 @@ class _SplitViewState extends ConsumerState<SplitView> {
             ),
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: widget.child,
+          body: SafeArea(
+            top: false,
+            child: widget.child,),
           bottomNavigationBar: BottomNavigationBar(
             items: [
               BottomNavigationBarItem(

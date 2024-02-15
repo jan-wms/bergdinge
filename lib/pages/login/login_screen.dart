@@ -148,8 +148,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  padding: const EdgeInsets.only(
-                      bottom: 30.0, left: 30.0, right: 30.0, top: 50.0),
+                  padding: EdgeInsets.only(
+                      bottom: 30.0, left: 30.0, right: 30.0, top: (widget.authenticationAction == AuthenticationAction.signIn) ? 50.0 : 30.0),
                   child: Wrap(
                     spacing: 20.0,
                     direction: Axis.vertical,

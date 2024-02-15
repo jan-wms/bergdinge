@@ -82,9 +82,7 @@ class SettingsPage extends ConsumerWidget {
     final userData = ref.watch(userDataStreamProvider).value;
     final firebaseUser = ref.watch(userChangesProvider).value;
 
-    return SafeArea(
-      top: false,
-      child: FutureBuilder(
+    return FutureBuilder(
           future: rootBundle.loadString("pubspec.yaml"),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             String version = "0.0.0";
@@ -189,18 +187,21 @@ class SettingsPage extends ConsumerWidget {
                                       onPressed: () async {
                                         CustomDialog.showCustomModal(
                                           context: context,
-                                          child: LoginScreen(
-                                              onComplete: () {
-                                                context.pop();
-                                                CustomDialog
-                                                    .showCustomInformationDialog(
-                                                        context: context,
-                                                        description:
-                                                            'acc verlinkt');
-                                              },
-                                              authenticationAction:
-                                                  AuthenticationAction
-                                                      .linkAccounts),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(20.0),
+                                            child: LoginScreen(
+                                                onComplete: () {
+                                                  context.pop();
+                                                  CustomDialog
+                                                      .showCustomInformationDialog(
+                                                          context: context,
+                                                          description:
+                                                              'Synchronisierung erfolgreich.');
+                                                },
+                                                authenticationAction:
+                                                    AuthenticationAction
+                                                        .linkAccounts),
+                                          ),
                                         );
                                       },
                                       child: const Text('Aktivieren'))
@@ -398,7 +399,7 @@ class SettingsPage extends ConsumerWidget {
                 )
               ],
             );
-          }),
+          }
     );
   }
 }

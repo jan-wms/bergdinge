@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../data/design.dart';
 import '../../firebase/firebase_auth.dart';
 
 enum EditValue {
@@ -46,7 +47,7 @@ class SetupScreen extends ConsumerWidget {
     }
 
     return Material(
-      color: (editValue == EditValue.name) ? Colors.transparent : Colors.white,
+      color: (editValue == EditValue.name && (MediaQuery.of(context).size.width > Design.breakpoint1)) ? Colors.transparent : Colors.white,
       //resizeToAvoidBottomInset: false,
       child: Container(
         constraints: (editValue == EditValue.name) ? const BoxConstraints(
@@ -59,24 +60,27 @@ class SetupScreen extends ConsumerWidget {
             controller: pageController,
             children: [
               if (editValue == EditValue.setUp || editValue == EditValue.name)
-                CustomScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  slivers: [
-                    const CustomAppBar(
-                        title: 'Bergdinge',
-                        icon: Icons.terrain,
-                        subtitle: 'Wie heißt du?'),
-                    SliverFillRemaining(
-                      child: SetName(
-                                buttonText: (editValue == EditValue.name)
-                                    ? ButtonText.doneText
-                                    : ButtonText.continueText,
-                                onComplete: (newName) {
-                                  ref.read(newNameProvider.notifier).state = newName;
-                                  pageController.jumpToPage(1);
-                                }),
-                        ),
-                  ],
+                ClipRRect(
+                  borderRadius: (editValue == EditValue.name && (MediaQuery.of(context).size.width > Design.breakpoint1)) ? BorderRadius.circular(20.0) : BorderRadius.zero,
+                  child: CustomScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    slivers: [
+                      const CustomAppBar(
+                          title: 'Bergdinge',
+                          icon: Icons.terrain,
+                          subtitle: 'Wie heißt du?'),
+                      SliverFillRemaining(
+                        child: SetName(
+                                  buttonText: (editValue == EditValue.name)
+                                      ? ButtonText.doneText
+                                      : ButtonText.continueText,
+                                  onComplete: (newName) {
+                                    ref.read(newNameProvider.notifier).state = newName;
+                                    pageController.jumpToPage(1);
+                                  }),
+                          ),
+                    ],
+                  ),
                 ),
               AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle.light.copyWith(
