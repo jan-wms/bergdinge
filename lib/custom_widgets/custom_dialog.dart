@@ -15,7 +15,6 @@ class CustomDialog {
       {required BuildContext context,
       required Widget child,
       bool isFullscreen = false}) async {
-    //TODO breakpoint
     if(MediaQuery.of(context).size.width > Design.breakpoint1) {
       return showCustomDialog(context: context, child: Material(color: Colors.transparent,child: child,));
     }

@@ -78,9 +78,9 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
     return SafeArea(
       child: Container(
         constraints: const BoxConstraints(
-          maxWidth: 700.0,
+          maxWidth: 600,
         ),
-        padding: Design.pagePadding.copyWith(bottom: 40.0, top: 30.0),
+        padding: (MediaQuery.of(context).size.width > Design.breakpoint1) ? const EdgeInsets.all(40.0) : Design.pagePadding.copyWith(bottom: 40.0, top: 30.0),
         child: Form(
           key: _formKey,
           child: Column(

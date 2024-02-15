@@ -1,78 +1,60 @@
-import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/firebase/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:equipment_app/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'data/design.dart';
 
 class Menu extends ConsumerWidget {
-  const Menu({super.key});
+  final ValueSetter<int> onIndexChanged;
+  final List<IconData> icons;
+
+  const Menu({super.key, required this.onIndexChanged, required this.icons});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Container(
-      color: Colors.black12,
-      child: ListView(
+      width: 100.0,
+      padding: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10,
+              spreadRadius: 5,
+              color: Design.colors[1].withOpacity(0.2),
+            )
+          ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-              'Hallo ${ref.watch(userDataStreamProvider).value?['name'] ?? ''}!'),
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.explore_rounded),
-                if (screenWidth > Design.breakpoint2) const Text('Entdecken'),
-              ],
-            ),
-            onTap: () => GoRouter.of(context).go('/'),
-          ),
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.checklist_rounded),
-                if (screenWidth > Design.breakpoint2) const Text('Packlisten'),
-              ],
-            ),
-            onTap: () => GoRouter.of(context).go('/packing_plan'),
-          ),
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.backpack_rounded),
-                if (screenWidth > Design.breakpoint2) const Text('Ausrüstung'),
-              ],
-            ),
-            onTap: () => GoRouter.of(context).go('/equipment'),
-          ),
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.person_rounded),
-                if (screenWidth > Design.breakpoint2) const Text('Profil'),
-              ],
-            ),
-            onTap: () => GoRouter.of(context).go('/settings'),
-          ),
-          if (kIsWeb &&
-              !(ref.watch(userChangesProvider).value?.isAnonymous ?? true))
-            ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.logout_outlined),
-                  if (screenWidth > Design.breakpoint2) const Text('Abmelden'),
-                ],
-              ),
-              onPressed: () => Auth().signOut(),
-            ),
+          for (int index = 0; index < icons.length; index++)
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(tabIndexProvider.notifier).state = index;
+                      onIndexChanged(index);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(15.0),
+                      decoration: BoxDecoration(
+                        color: (ref.watch(tabIndexProvider) == index)
+                            ? Design.colors[1]
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Icon(
+                        icons[index],
+                        color: (ref.watch(tabIndexProvider) == index)
+                            ? Colors.white
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                )),
         ],
       ),
     );
