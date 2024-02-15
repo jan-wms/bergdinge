@@ -30,7 +30,7 @@ class Design {
 
   static const pagePadding = EdgeInsets.only(left: 15, right: 15);
 
-  static const double breakpoint1 = 600.0;
+  static const double breakpoint1 = 800.0;
   static const double breakpoint2 = 1000.0;
 
   final ThemeData _lightTheme = ThemeData(

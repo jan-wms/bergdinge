@@ -46,8 +46,8 @@ class SetupScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: (editValue == EditValue.name) ? Colors.transparent : Colors.white,
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: PageView(

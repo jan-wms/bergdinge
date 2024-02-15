@@ -36,6 +36,8 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
       'assets/items/landscape2.jpg',
     ];
 
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
     return DismissiblePage(
       onDismissed: () {
         ref.read(_closeButtonVisibilityProvider.notifier).state = false;
@@ -45,52 +47,78 @@ class _ArticlePageState extends ConsumerState<ArticlePage> {
       maxRadius: 100.0,
       direction: DismissiblePageDismissDirection.down,
       child: Scaffold(
+        backgroundColor: Colors.white,
           body: Stack(
         children: [
-          SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  Hero(
-                    tag: widget.index.toString(),
-                    child: Material(
-                        color: Colors.transparent,
-                        child: Image.asset(images[widget.index])),
-                  ),
-                  Container(
-                    padding:
-                        Design.pagePadding.copyWith(top: 15.0, bottom: safeareaPadding.bottom+ 30.0),
-                    alignment: Alignment.centerLeft,
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Rucksack packen',
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.w600),
+          CustomScrollView(
+            scrollDirection: (isDesktop) ? Axis.horizontal : Axis.vertical,
+            physics: (isDesktop) ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Hero(
+                  tag: widget.index.toString(),
+                  child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: (isDesktop) ? EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.05,
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.05).add(EdgeInsets.only(left: safeareaPadding.left)) : EdgeInsets.zero,
+
+                        constraints: (isDesktop) ? BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height,
+                          maxWidth: MediaQuery.of(context).size.width * 0.5,
+                        ) : null,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: ClipRRect(
+                              borderRadius: (isDesktop) ? BorderRadius.circular(50.0) : BorderRadius.zero,
+                              child: Image.asset(images[widget.index],)),
                         ),
-                        Text(
-                          'Ratgeber',
-                          style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w600),
+                      )),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Align(
+                    alignment: Alignment.center,
+                    child: SingleChildScrollView(
+                      physics: (isDesktop) ? null : const NeverScrollableScrollPhysics(),
+                      child: Container(
+                        width: (isDesktop) ? MediaQuery.of(context).size.width * 0.5 : null,
+                        padding: Design.pagePadding.copyWith(
+                          right: (isDesktop) ? (MediaQuery.of(context).size.width * 0.05) + safeareaPadding.right : null,
+                            top: (isDesktop) ? MediaQuery.of(context).size.height * 0.05 : 15, bottom: safeareaPadding.bottom + 30.0),
+                        alignment: Alignment.centerLeft,
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Rucksack packen',
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              'Ratgeber',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 30.0),
+                              child: Text(
+                                'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+                                style: TextStyle(fontSize: 15.0),
+                              ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 30.0),
-                          child: Text(
-                              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-                              style: TextStyle(fontSize: 15.0),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ],
               ),
-            ),
+            ],
           ),
           Positioned(
             right: safeareaPadding.right + 5,

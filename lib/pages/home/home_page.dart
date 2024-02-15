@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       top: false,
       child: Padding(
         //TODO
-        padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+        padding: EdgeInsets.zero,//const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
         child: CustomScrollView(
           slivers: <Widget>[
             const CustomAppBar(
@@ -41,78 +41,85 @@ class _HomePageState extends State<HomePage> {
               subtitle: 'Bergdinge',
             ),
             SliverPadding(
-              padding: Design.pagePadding,
-              sliver: SliverList.builder(
-                itemCount: images.length,
-                itemBuilder: (context, index) {
-                  String image = images[index];
-                  return GestureDetector(
-                    onTap: () => context.push('/article', extra: index),
-                    child: Hero(
-                      tag: index.toString(),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                spreadRadius: 4,
-                                blurRadius: 10,
-                                offset: const Offset(2, 3),
-                              ),
-                            ],
-                          ),
-                          margin: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                              child: Stack(
-                                  alignment: Alignment.bottomLeft,
-                                  children: [
-                                    Image.asset(image),
-                                    ImageFiltered(
-                                      imageFilter:
-                                          ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-                                      child: ShaderMask(
-                                        shaderCallback: (rect) {
-                                          return LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.black,
-                                                Colors.black.withOpacity(0)
-                                              ],
-                                              stops: const [
-                                                0.7,
-                                                0.6
-                                              ]).createShader(rect);
-                                        },
-                                        blendMode: BlendMode.dstOut,
-                                        child: Image.asset(image),
-                                      ),
+              padding: Design.pagePadding.copyWith(top: 30.0, bottom: 30.0),
+              sliver: SliverToBoxAdapter(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Wrap(
+                    spacing: 20.0,
+                    runSpacing: 20.0,
+                    children: [
+                      for(var index = 0; index < images.length; index++)
+                        GestureDetector(
+                          onTap: () => context.push('/article', extra: index),
+                          child: Hero(
+                            tag: index.toString(),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 500.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 4,
+                                      blurRadius: 10,
+                                      offset: const Offset(2, 3),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 20.0, left: 10.0),
-                                      child: Text(
-                                        headlines[index],
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )
-                                  ])),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(20)),
+                                    child: Stack(
+                                        alignment: Alignment.bottomLeft,
+                                        children: [
+                                          Image.asset(images[index]),
+                                          ImageFiltered(
+                                            imageFilter:
+                                            ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+                                            child: ShaderMask(
+                                              shaderCallback: (rect) {
+                                                return LinearGradient(
+                                                    begin: Alignment.topCenter,
+                                                    end: Alignment.bottomCenter,
+                                                    colors: [
+                                                      Colors.black,
+                                                      Colors.black.withOpacity(0)
+                                                    ],
+                                                    stops: const [
+                                                      0.7,
+                                                      0.6
+                                                    ]).createShader(rect);
+                                              },
+                                              blendMode: BlendMode.dstOut,
+                                              child: Image.asset(images[index]),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 20.0, left: 10.0),
+                                            child: Text(
+                                              headlines[index],
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          )
+                                        ])),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
+                    ],
+                  ),
+                ),
               ),
             ),
-            const SliverPadding(padding: EdgeInsets.only(top: 30.0)),
           ],
         ),
       ),

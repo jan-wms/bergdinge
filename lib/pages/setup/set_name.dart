@@ -59,6 +59,7 @@ class _SetNameState extends State<SetName> {
       padding: Design.pagePadding.copyWith(bottom: 40.0, top: 50.0),
       alignment: Alignment.center,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
             Container(
@@ -81,7 +82,10 @@ class _SetNameState extends State<SetName> {
               ),
             ),
           Expanded(
-            child: Padding(
+            child: Container(
+              constraints: const BoxConstraints(
+                maxWidth: 400.0,
+              ),
               padding: const EdgeInsets.only(top: 50.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
