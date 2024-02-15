@@ -168,14 +168,9 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
         width: 100,
         decoration: BoxDecoration(
             color: Design.colors[1],
-            borderRadius: const BorderRadius.only(
-              //TODO
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-
-              //topRight: Radius.circular(20),
-             // topLeft: Radius.circular(20),
-
+            borderRadius: BorderRadius.vertical(
+              bottom: const Radius.circular(20),
+              top: (MediaQuery.of(context).size.width > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape) ? const Radius.circular(20) : Radius.zero,
             )),
         child: Padding(
           padding: EdgeInsets.only(top: MediaQueryData.fromView(View.of(context)).padding.top),

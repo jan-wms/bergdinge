@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equipment_app/data/design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +48,8 @@ class _SplitViewState extends ConsumerState<SplitView> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final safeareaPadding = MediaQuery.of(context).padding;
+
 
     if (screenWidth > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -59,12 +63,12 @@ class _SplitViewState extends ConsumerState<SplitView> {
             children: [
               SafeArea(
                 right: false,
-                  child: Menu(onIndexChanged: (newIndex) => goToTab(index: newIndex), icons: icons)),
-              Expanded(child: SafeArea(
-                  left: false,
                   top: false,
                   bottom: false,
-                  child: widget.child)),
+                  child: Menu(onIndexChanged: (newIndex) => goToTab(index: newIndex), icons: icons)),
+              Expanded(child: Padding(
+                    padding: EdgeInsets.only(right: max(10.0, safeareaPadding.right), top: max(10.0, safeareaPadding.top)),
+                      child: widget.child)),
             ],
           ),
         ),

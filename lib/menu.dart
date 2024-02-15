@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equipment_app/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,10 +13,17 @@ class Menu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final safeareaPadding = MediaQuery.of(context).padding;
+
     return Container(
       width: 100.0,
       padding: const EdgeInsets.all(10.0),
-      margin: const EdgeInsets.all(10.0),
+      margin: EdgeInsets.only(
+        right: 10.0,
+        top: max(10.0, safeareaPadding.top),
+        left: max(10.0, safeareaPadding.left),
+        bottom: max(10.0, safeareaPadding.bottom),
+      ),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.white,
