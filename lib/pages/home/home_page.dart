@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.transparent,
                                 child: Container(
                                   constraints: const BoxConstraints(
-                                    maxWidth: 500.0,
+                                    maxWidth: 480.0,
                                   ),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
