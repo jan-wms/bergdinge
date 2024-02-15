@@ -12,6 +12,7 @@ class CustomAppBar extends StatelessWidget {
   final ValueSetter<String>? onSearchChanged;
   final IconData? buttonIcon;
   final String searchInitialValue;
+  final bool disableRoundedCorners;
 
   const CustomAppBar(
       {super.key,
@@ -20,6 +21,7 @@ class CustomAppBar extends StatelessWidget {
       this.icon,
       this.onSearchChanged,
       this.subtitle,
+        this.disableRoundedCorners = false,
         this.searchInitialValue = '',
       this.buttonIcon})
       : assert(
@@ -33,6 +35,7 @@ class CustomAppBar extends StatelessWidget {
       pinned: true,
       floating: false,
       delegate: SearchHeader(
+        disableRoundedCorners: disableRoundedCorners,
         subtitle: subtitle,
         onButtonPressed: onButtonPressed,
         buttonIcon: buttonIcon ?? Icons.add_rounded,
@@ -132,11 +135,13 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
   final Widget? search;
   final String? subtitle;
   final IconData buttonIcon;
+  final bool disableRoundedCorners;
 
   SearchHeader({
     required this.buttonIcon,
     required this.onButtonPressed,
     required this.title,
+    required this.disableRoundedCorners,
     this.icon,
     this.search,
     this.subtitle,
@@ -170,7 +175,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
             color: Design.colors[1],
             borderRadius: BorderRadius.vertical(
               bottom: const Radius.circular(20),
-              top: (MediaQuery.of(context).size.width > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape) ? const Radius.circular(20) : Radius.zero,
+              top: (MediaQuery.of(context).size.width > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape && !disableRoundedCorners) ? const Radius.circular(20) : Radius.zero,
             )),
         child: Padding(
           padding: EdgeInsets.only(top: MediaQueryData.fromView(View.of(context)).padding.top),

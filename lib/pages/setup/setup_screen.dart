@@ -48,7 +48,6 @@ class SetupScreen extends ConsumerWidget {
 
     return Material(
       color: (editValue == EditValue.name && (MediaQuery.of(context).size.width > Design.breakpoint1)) ? Colors.transparent : Colors.white,
-      //resizeToAvoidBottomInset: false,
       child: Container(
         constraints: (editValue == EditValue.name && (MediaQuery.of(context).size.width > Design.breakpoint1)) ? const BoxConstraints(
           maxWidth:  600.0,
@@ -66,7 +65,8 @@ class SetupScreen extends ConsumerWidget {
                   child: CustomScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
-                      const CustomAppBar(
+                      CustomAppBar(
+                          disableRoundedCorners: (editValue == EditValue.setUp),
                           title: 'Bergdinge',
                           icon: Icons.terrain,
                           subtitle: 'Wie heißt du?'),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:equipment_app/custom_widgets/custom_appbar.dart';
 import 'package:equipment_app/data_models/article.dart';
 import 'package:flutter/material.dart';

@@ -382,7 +382,7 @@ class SettingsPage extends ConsumerWidget {
                       child: const Divider(),
                     ),
                     Container(
-                      margin: Design.pagePadding.copyWith(bottom: 50.0),
+                      margin: Design.pagePadding.copyWith(bottom: 15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
