@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_dialog.dart';
 import './sign_in_button/sign_in_button.dart';
@@ -108,33 +109,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         children: [
           if(isDesktop)
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: Image.asset('assets/2.jpg').image,
-                    alignment: Alignment.bottomCenter,
-                    fit: BoxFit.cover),
-              ),
-              alignment: Alignment.bottomLeft,
-              padding: const EdgeInsets.all(50.0),
-              width: double.infinity,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15.0),
-                      child: SizedBox(
-                          height: 50.0, child: Image.asset('assets/icon.png')),
-                    ),
-                    const Text(
-                      'Bergdinge',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 70.0),
-                    ),
-                  ],
+            child: Hero(
+              tag: 'onboarding',
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: Image.asset('assets/mountain.jpg').image,
+                      alignment: Alignment.bottomCenter,
+                      fit: BoxFit.cover),
+                ),
+                alignment: Alignment.bottomLeft,
+                padding: const EdgeInsets.all(50.0),
+                width: double.infinity,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15.0),
+                        child:  SvgPicture.asset('assets/icon.svg', semanticsLabel: 'Bergdinge Icon', height: 50.0, ),
+                      ),
+                      const Text(
+                        'Bergdinge',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70.0),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

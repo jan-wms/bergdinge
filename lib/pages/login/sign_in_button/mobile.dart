@@ -50,7 +50,7 @@ class _SignInWithGoogleButton extends StatelessWidget {
             SizedBox(
                 width: 25,
                 height: 25,
-                child: Image.asset('assets/googleIcon.png')),
+                child: Image.asset('assets/google.png')),
             const Padding(
               padding: EdgeInsets.only(left: 11),
               child: Text('Über Google anmelden'),

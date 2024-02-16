@@ -557,7 +557,7 @@ class _DisplayAuthProvider extends StatelessWidget {
               : SizedBox(
                   width: 30,
                   height: 30,
-                  child: Image.asset('assets/googleIcon.png')),
+                  child: Image.asset('assets/google.png')),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.only(left: 10),
