@@ -15,29 +15,29 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final articles = <Article>[
     Article(
-        title: 'Rucksack richtig packen',
-        subTitle: 'Ratgeber',
-        imageProvider: const AssetImage('assets/items/backpack.jpg'),
+      title: 'Rucksack richtig packen',
+      subTitle: 'Ratgeber',
+      imageProvider: const AssetImage('assets/items/backpack.jpg'),
     ),
     Article(
-        title: 'Alpenacademy',
-        subTitle: 'Ratgeber',
-        imageProvider: const AssetImage('assets/items/landscape.jpg'),
+      title: 'Alpenacademy',
+      subTitle: 'Ratgeber',
+      imageProvider: const AssetImage('assets/items/landscape.jpg'),
     ),
     Article(
-        title: 'Ausrüstungsverleih',
-        subTitle: 'Ratgeber',
-        imageProvider: const AssetImage('assets/items/landscape2.jpg'),
+      title: 'Ausrüstungsverleih',
+      subTitle: 'Ratgeber',
+      imageProvider: const AssetImage('assets/items/landscape2.jpg'),
     ),
     Article(
-        title: 'Ausrüstungsverleih1',
-        subTitle: 'Ratgeber',
-        imageProvider: const AssetImage('assets/items/landscape2.jpg'),
+      title: 'Ausrüstungsverleih1',
+      subTitle: 'Ratgeber',
+      imageProvider: const AssetImage('assets/items/landscape2.jpg'),
     ),
     Article(
-        title: 'Ausrüstungsverleih2',
-        subTitle: 'Ratgeber',
-        imageProvider: const AssetImage('assets/items/landscape.jpg'),
+      title: 'Ausrüstungsverleih2',
+      subTitle: 'Ratgeber',
+      imageProvider: const AssetImage('assets/items/landscape.jpg'),
     ),
   ];
 
@@ -51,24 +51,23 @@ class _HomePageState extends State<HomePage> {
           subtitle: 'Bergdinge',
         ),
         SliverPadding(
-          padding: Design.pagePadding.copyWith(top: 30.0, bottom: 30.0),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 13 / 9,
-              crossAxisSpacing: 30.0,
-              mainAxisSpacing: 30.0,
-              crossAxisCount: 2,
-            ),
-            delegate: SliverChildListDelegate(
-              [
-                for (var a in articles)
-                  _ArticleCard(
-                    article: a,
-                  )
-              ],
-            ),
-          ),
-        ),
+            padding: Design.pagePadding.copyWith(top: 30.0, bottom: 30.0),
+            sliver: SliverToBoxAdapter(
+              child: Align(
+                alignment: Alignment.center,
+                child: Wrap(
+                  spacing: 25.0,
+                  runSpacing: 25.0,
+                  direction: Axis.horizontal,
+                  children: [
+                    for (var a in articles)
+                      _ArticleCard(
+                        article: a,
+                      ),
+                  ],
+                ),
+              ),
+            )),
       ],
     );
   }
@@ -90,30 +89,42 @@ class _ArticleCard extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: Container(
-              alignment: Alignment.bottomLeft,
-              decoration: BoxDecoration(
-                image: DecorationImage(image: article.imageProvider, fit: BoxFit.cover),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 4,
-                    blurRadius: 10,
-                    offset: const Offset(2, 3),
-                  ),
-                ],
+              constraints: const BoxConstraints(
+                maxWidth: 500.0,
               ),
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                margin: const EdgeInsets.all(15.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(10.0)
+              child: AspectRatio(
+                aspectRatio: 5 / 3,
+                child: Container(
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: article.imageProvider, fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 4,
+                        blurRadius: 10,
+                        offset: const Offset(2, 3),
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    margin: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    child: Text(
+                      article.title,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 ),
-                child: Text(article.title, style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 23,
-                    fontWeight: FontWeight.w600),),
               ),
             ),
           ),
