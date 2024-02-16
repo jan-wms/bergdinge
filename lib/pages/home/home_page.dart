@@ -90,7 +90,7 @@ class _ArticleCard extends StatelessWidget {
             color: Colors.transparent,
             child: Container(
               constraints: const BoxConstraints(
-                maxWidth: 500.0,
+                maxWidth: 490.0,
               ),
               child: AspectRatio(
                 aspectRatio: 5 / 3,
