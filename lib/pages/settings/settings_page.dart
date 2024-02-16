@@ -207,6 +207,7 @@ class SettingsPage extends ConsumerWidget {
                                                             10.0))),
                                             onPressed: () async {
                                               CustomDialog.showCustomModal(
+                                                isFullscreen: true,
                                                 context: context,
                                                 child: ClipRRect(
                                                   borderRadius: (MediaQuery.of(
@@ -216,10 +217,7 @@ class SettingsPage extends ConsumerWidget {
                                                           Design.breakpoint1)
                                                       ? BorderRadius.circular(
                                                           20.0)
-                                                      : const BorderRadius
-                                                          .vertical(
-                                                          top: Radius.circular(
-                                                              20.0)),
+                                                      : BorderRadius.zero,
                                                   child: LoginScreen(
                                                       onComplete: () {
                                                         context.pop();
@@ -318,6 +316,7 @@ class SettingsPage extends ConsumerWidget {
                                         deleteAccount(context);
                                       } else {
                                         await CustomDialog.showCustomModal(
+                                          isFullscreen: true,
                                           context: context,
                                           child: ClipRRect(
                                             borderRadius: (MediaQuery.of(
@@ -326,8 +325,7 @@ class SettingsPage extends ConsumerWidget {
                                                         .width >
                                                     Design.breakpoint1)
                                                 ? BorderRadius.circular(20.0)
-                                                : const BorderRadius.vertical(
-                                                    top: Radius.circular(20.0)),
+                                                : BorderRadius.zero,
                                             child: LoginScreen(
                                                 onComplete: () {
                                                   context.pop();

@@ -26,6 +26,9 @@ class CustomDialog {
     }
 
     return await showModalBottomSheet(
+      constraints: (isFullscreen) ? const BoxConstraints(
+        maxWidth: double.infinity,
+      ) : null,
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
