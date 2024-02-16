@@ -32,6 +32,129 @@ class _IntroductionPageState extends State<IntroductionPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
+    final desktopView = [
+      Container(
+        color: Design.colors[1],
+        padding: const EdgeInsets.all(30.0),
+        child: Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                children: [
+                  Padding(
+                    padding:
+                    const EdgeInsets.only(right: 15.0),
+                    child: SvgPicture.asset('assets/icon.svg',
+                        semanticsLabel: 'Bergdinge Icon',
+                        height: 50.0),
+                  ),
+                  const Text(
+                    'Bergdinge',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 70.0),
+                  ),
+                ],
+              ),
+            )),
+      ),
+      Container(
+        color: Design.colors[1],
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              children: [
+                Padding(
+                  padding:
+                  const EdgeInsets.only(right: 15.0),
+                  child: SvgPicture.asset(
+                      'assets/icon.svg',
+                      semanticsLabel: 'Bergdinge Icon',
+                      height: 50.0),
+                ),
+                const Text(
+                  'Bergdinge',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 70.0),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Container(
+        color: Design.colors[1],
+        child: Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                children: [
+                  Padding(
+                    padding:
+                    const EdgeInsets.only(right: 15.0),
+                    child: SvgPicture.asset('assets/icon.svg',
+                        semanticsLabel: 'Bergdinge Icon',
+                        height: 50.0),
+                  ),
+                  const Text(
+                    'Bergdinge',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 70.0),
+                  ),
+                ],
+              ),
+            )),
+      ),
+    ];
+
+    final mobileView = [
+      Column(
+        children: [
+          Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                  child: Image.asset('assets/mountain.jpg')),
+          ),
+          Expanded(
+            child: Container(
+              color: Design.colors[1],
+              padding: const EdgeInsets.all(30.0),
+              child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding:
+                          const EdgeInsets.only(right: 15.0),
+                          child: SvgPicture.asset('assets/icon.svg',
+                              semanticsLabel: 'Bergdinge Icon',
+                              height: 50.0),
+                        ),
+                        const Text(
+                          'Bergdinge',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 70.0),
+                        ),
+                      ],
+                    ),
+                  )),
+            ),
+          ),
+        ],
+      ),
+    ];
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
             statusBarColor: Colors.white, // Color for Android
@@ -45,146 +168,73 @@ class _IntroductionPageState extends State<IntroductionPage> {
               children: [
                 Row(
                   children: [
+                    if(isDesktop)
                     Expanded(
-                      child: Hero(
-                        tag: 'onboarding',
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: Image.asset('assets/mountain.jpg').image,
-                                alignment: Alignment.bottomCenter,
-                                fit: BoxFit.cover),
-                          ),
-                          alignment: Alignment.bottomLeft,
-                          padding: const EdgeInsets.all(50.0),
-                          width: double.infinity,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: Image.asset('assets/mountain.jpg').image,
+                              alignment: Alignment.bottomCenter,
+                              fit: BoxFit.cover),
                         ),
+                        alignment: Alignment.bottomLeft,
+                        padding: const EdgeInsets.all(50.0),
+                        width: double.infinity,
                       ),
                     ),
                     Expanded(
-                        child: Container(
-                      color: Design.colors[1],
-                      child: Stack(
-                        //alignment: Alignment.center,
-                        children: [
-                          PageView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            controller: _innerPageController,
-                            children: [
-                              Center(
-                                  child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 15.0),
-                                      child: SvgPicture.asset('assets/icon.svg',
-                                          semanticsLabel: 'Bergdinge Icon',
-                                          height: 50.0),
-                                    ),
-                                    const Text(
-                                      'Bergdinge',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 70.0),
-                                    ),
-                                  ],
+                        child: Stack(
+                          children: [
+                            PageView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              controller: _innerPageController,
+                              children: (isDesktop) ? desktopView : mobileView,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(55.0),
+                              alignment: Alignment.bottomCenter,
+                              child: SmoothPageIndicator(
+                                  controller: _innerPageController,
+                                  count: 3,
+                                  effect: const ExpandingDotsEffect(
+                                    dotColor: Colors.white,
+                                    activeDotColor: Colors.white,
+                                  ),
+                                  onDotClicked: (index) =>
+                                      _innerPageController.animateToPage(index,
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut)),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(40.0),
+                              alignment: Alignment.bottomRight,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: const Offset(0, 7),
+                                        blurRadius: 10,
+                                        color: Design.colors[1].withOpacity(0.23),
+                                      )
+                                    ]),
+                                child: IconButton(
+                                  onPressed: () => _nextPage(),
+                                  highlightColor: Colors.transparent,
+                                  icon: Icon(Icons.chevron_right_rounded,
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.7)),
                                 ),
-                              )),
-                              Center(
-                                  child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 15.0),
-                                      child: SvgPicture.asset('assets/icon.svg',
-                                          semanticsLabel: 'Bergdinge Icon',
-                                          height: 50.0),
-                                    ),
-                                    const Text(
-                                      'Bergdinge',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 70.0),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                              Center(
-                                  child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 15.0),
-                                      child: SvgPicture.asset('assets/icon.svg',
-                                          semanticsLabel: 'Bergdinge Icon',
-                                          height: 50.0),
-                                    ),
-                                    const Text(
-                                      'Bergdinge',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 70.0),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(55.0),
-                            alignment: Alignment.bottomCenter,
-                            child: SmoothPageIndicator(
-                                controller: _innerPageController,
-                                count: 3,
-                                effect: const ExpandingDotsEffect(
-                                  dotColor: Colors.white,
-                                  activeDotColor: Colors.white,
-                                ),
-                                onDotClicked: (index) =>
-                                    _innerPageController.animateToPage(index,
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut)),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(40.0),
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      offset: const Offset(0, 7),
-                                      blurRadius: 10,
-                                      color: Design.colors[1].withOpacity(0.23),
-                                    )
-                                  ]),
-                              child: IconButton(
-                                onPressed: () => _nextPage(),
-                                highlightColor: Colors.transparent,
-                                icon: Icon(Icons.chevron_right_rounded,
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withOpacity(0.7)),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ))
+                          ],
+                        ))
                   ],
                 ),
                 LoginScreen(
