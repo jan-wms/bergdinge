@@ -29,3 +29,14 @@ String parseDate (DateTime input) {
 
   return result;
 }
+
+String parsePrice (double price) {
+  bool isInteger(num value) =>
+      value is int || value == value.round();
+
+  String result = price.toStringAsFixed(2);
+  if(isInteger(price)) {
+    result = price.round().toString();
+  }
+  return result;
+}

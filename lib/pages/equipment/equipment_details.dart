@@ -280,11 +280,25 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                   ),
                                 ),
                                 //TODO
-                                Text('Kaufpreis: ${equipment.price ?? equipment.uvp}€'),
-                                if(equipment.price != equipment.uvp && equipment.price != null)
-                                Text('${equipment.uvp}€', style: const TextStyle(decoration: TextDecoration.lineThrough),),
+                                if (equipment.price != null ||
+                                    equipment.uvp != null)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                          'Kaufpreis: ${parsePrice((equipment.price ?? equipment.uvp)!)}€'),
+                                      if (equipment.price != equipment.uvp &&
+                                          equipment.price != null && equipment.uvp != null)
+                                        Text(
+                                          '${parsePrice(equipment.uvp!)}€',
+                                          style: const TextStyle(
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                        ),
+                                    ],
+                                  ),
 
-                                if(equipment.purchaseDate != null)
+                                if (equipment.purchaseDate != null)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -293,11 +307,10 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                     ],
                                   ),
 
-
-
-                                if (isDesktop) Padding(
-                                    padding: const EdgeInsets.only(top: 40.0),
-                                    child: _Actions(equipment: equipment)),
+                                if (isDesktop)
+                                  Padding(
+                                      padding: const EdgeInsets.only(top: 40.0),
+                                      child: _Actions(equipment: equipment)),
                               ]),
                             )),
                           ),
