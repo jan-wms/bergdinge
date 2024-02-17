@@ -51,17 +51,19 @@ class _IntroductionPageState extends State<IntroductionPage> {
                   ),
               child: Flex(
                 direction: (isDesktop) ? Axis.horizontal : Axis.vertical,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Expanded(
                     child: Container(
-                      alignment: Alignment.bottomLeft,
+                      alignment: Alignment.bottomCenter,
                       padding: const EdgeInsets.all(50.0),
                       width: double.infinity,
                       child: Lottie.asset('assets/backpack.json', repeat: false),
                     ),
                   ),
-                  Expanded(
+                  Flexible(
                     child: Container(
+                      height: 250,
                       decoration: BoxDecoration(
                           color: Design.colors[1],
                           borderRadius: BorderRadius.circular(25.0)),
@@ -82,6 +84,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.all(30.0),
+                                alignment: Alignment.topCenter,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Row(
@@ -105,52 +108,40 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                   ),
                                 ),
                               ),
-                              Center(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 15.0),
-                                        child: SvgPicture.asset(
-                                            'assets/icon.svg',
-                                            semanticsLabel: 'Bergdinge Icon',
-                                            height: 50.0),
-                                      ),
-                                      const Text(
-                                        'Bergdinge',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 70.0),
-                                      ),
-                                    ],
-                                  ),
+                              Container(
+                                padding: const EdgeInsets.all(30.0),
+                                child: const Text(
+                                  'Deine Ausrüstung im Überblick',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 30.0),
                                 ),
                               ),
-                              Center(
+                              Container(
+                                  padding: const EdgeInsets.all(30.0),
                                   child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 15.0),
-                                      child: SvgPicture.asset('assets/icon.svg',
-                                          semanticsLabel: 'Bergdinge Icon',
-                                          height: 50.0),
+                                    fit: BoxFit.scaleDown,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 15.0),
+                                          child: SvgPicture.asset(
+                                              'assets/icon.svg',
+                                              semanticsLabel: 'Bergdinge Icon',
+                                              height: 50.0),
+                                        ),
+                                        const Text(
+                                          'Bergdinge',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 70.0),
+                                        ),
+                                      ],
                                     ),
-                                    const Text(
-                                      'Bergdinge',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 70.0),
-                                    ),
-                                  ],
-                                ),
-                              )),
+                                  )),
                             ],
                           ),
                           Container(

@@ -99,12 +99,12 @@ class _Button extends StatelessWidget {
             foregroundColor: Colors.white,
             backgroundColor: Design.colors[1],
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0))),
+                borderRadius: BorderRadius.circular(20.0))),
         onPressed: () => context.go('/'),
         child: Container(
           alignment: Alignment.center,
           height: 50,
-          width: 200,
+          width: 210,
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
