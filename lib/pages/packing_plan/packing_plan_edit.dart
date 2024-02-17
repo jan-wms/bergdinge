@@ -77,11 +77,15 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        constraints: (MediaQuery.of(context).size.width > Design.breakpoint1) ? const BoxConstraints(
-          maxWidth: 600,
-          maxHeight: 600,
-        ) : null,
-        padding: (MediaQuery.of(context).size.width > Design.breakpoint1) ? const EdgeInsets.all(40.0) : Design.pagePadding.copyWith(bottom: 40.0, top: 30.0),
+        constraints: (MediaQuery.of(context).size.width > Design.breakpoint1)
+            ? const BoxConstraints(
+                maxWidth: 600,
+                maxHeight: 600,
+              )
+            : null,
+        padding: (MediaQuery.of(context).size.width > Design.breakpoint1)
+            ? const EdgeInsets.all(40.0)
+            : Design.pagePadding.copyWith(bottom: 40.0, top: 30.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -113,14 +117,14 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                           Wrap(
                               runSpacing: 5.0,
                               spacing: 5.0,
-
                               alignment: WrapAlignment.center,
                               children: [
                                 for (var sport in Data.sports)
                                   FilterChip(
                                     showCheckmark: false,
                                     label: Text(sport),
-                                    selected: state.value?.contains(sport) ?? false,
+                                    selected:
+                                        state.value?.contains(sport) ?? false,
                                     onSelected: (bool value) {
                                       var oldList = state.value!.toList();
                                       if (value) {
@@ -169,39 +173,40 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
                           style: TextStyle(fontSize: 17),
                         )),
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.only(
-                                left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-                            foregroundColor: Colors.white,
-                            backgroundColor: Design.colors[1],
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0))),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate() && !isLoading) {
-                            edit(
-                                packingPlanList:
-                                    ref.read(packingPlanStreamProvider).value);
-                          }
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 30,
-                          width: 105,
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 30,
-                                  width: 30,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white54,
-                                  ),
-                                )
-                              : Text(
-                                  widget.packingPlan == null
-                                      ? 'Hinzufügen'
-                                      : 'Bearbeiten',
-                                  style: const TextStyle(fontSize: 17),
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                          foregroundColor: Colors.white,
+                          backgroundColor: Design.colors[1],
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0))),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate() && !isLoading) {
+                          edit(
+                              packingPlanList:
+                                  ref.read(packingPlanStreamProvider).value);
+                        }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 30,
+                        width: 105,
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white54,
                                 ),
-                        ))
+                              )
+                            : Text(
+                                widget.packingPlan == null
+                                    ? 'Hinzufügen'
+                                    : 'Bearbeiten',
+                                style: const TextStyle(fontSize: 17),
+                              ),
+                      ),
+                    ),
                   ],
                 ),
               ),

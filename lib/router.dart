@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/article.dart';
 import 'package:equipment_app/pages/equipment/equipment_details.dart';
+import 'package:equipment_app/pages/error/error_page.dart';
 import 'package:equipment_app/pages/home/article_page.dart';
 import 'package:equipment_app/pages/home/home_page.dart';
 import 'package:equipment_app/pages/equipment/equipment_page.dart';
@@ -153,6 +154,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ]),
           ]),
     ],
+    errorBuilder: (context, state) {
+      return const ErrorPage();
+    },
     redirect: (context, state) async {
       if (authState.isLoading || authState.hasError) return '/launch_screen';
 
