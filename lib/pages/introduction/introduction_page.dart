@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
@@ -32,133 +34,13 @@ class _IntroductionPageState extends State<IntroductionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final safeareaPadding = MediaQuery.of(context).padding;
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-
-    final desktopView = [
-      Container(
-        color: Design.colors[1],
-        padding: const EdgeInsets.all(30.0),
-        child: Center(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                children: [
-                  Padding(
-                    padding:
-                    const EdgeInsets.only(right: 15.0),
-                    child: SvgPicture.asset('assets/icon.svg',
-                        semanticsLabel: 'Bergdinge Icon',
-                        height: 50.0),
-                  ),
-                  const Text(
-                    'Bergdinge',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 70.0),
-                  ),
-                ],
-              ),
-            )),
-      ),
-      Container(
-        color: Design.colors[1],
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              children: [
-                Padding(
-                  padding:
-                  const EdgeInsets.only(right: 15.0),
-                  child: SvgPicture.asset(
-                      'assets/icon.svg',
-                      semanticsLabel: 'Bergdinge Icon',
-                      height: 50.0),
-                ),
-                const Text(
-                  'Bergdinge',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 70.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      Container(
-        color: Design.colors[1],
-        child: Center(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                children: [
-                  Padding(
-                    padding:
-                    const EdgeInsets.only(right: 15.0),
-                    child: SvgPicture.asset('assets/icon.svg',
-                        semanticsLabel: 'Bergdinge Icon',
-                        height: 50.0),
-                  ),
-                  const Text(
-                    'Bergdinge',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 70.0),
-                  ),
-                ],
-              ),
-            )),
-      ),
-    ];
-
-    final mobileView = [
-      Column(
-        children: [
-          Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                  child: Image.asset('assets/mountain.jpg')),
-          ),
-          Expanded(
-            child: Container(
-              color: Design.colors[1],
-              padding: const EdgeInsets.all(30.0),
-              child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding:
-                          const EdgeInsets.only(right: 15.0),
-                          child: SvgPicture.asset('assets/icon.svg',
-                              semanticsLabel: 'Bergdinge Icon',
-                              height: 50.0),
-                        ),
-                        const Text(
-                          'Bergdinge',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 70.0),
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
-          ),
-        ],
-      ),
-    ];
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
-            statusBarColor: Colors.white, // Color for Android
-            statusBarBrightness: Brightness.dark // for IOS.
+            statusBarColor: Colors.black, // Color for Android
+            statusBarBrightness: Brightness.light // for IOS.
             ),
         child: Scaffold(
             backgroundColor: Colors.white,
@@ -166,9 +48,9 @@ class _IntroductionPageState extends State<IntroductionPage> {
               physics: const NeverScrollableScrollPhysics(),
               controller: _outerPageController,
               children: [
-                Row(
+                Flex(
+                  direction: (isDesktop) ? Axis.horizontal : Axis.vertical,
                   children: [
-                    if(isDesktop)
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -183,12 +65,94 @@ class _IntroductionPageState extends State<IntroductionPage> {
                       ),
                     ),
                     Expanded(
-                        child: Stack(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Design.colors[1],
+                              borderRadius: BorderRadius.circular(25.0)
+                          ),
+                          margin: EdgeInsets.only(
+                            top: (isDesktop) ? max(10.0, safeareaPadding.top) : 10.0,
+                            right: max(10.0, safeareaPadding.right),
+                            bottom: max(10.0, safeareaPadding.bottom),
+                            left: (isDesktop)  ? 10.0 : max(10.0, safeareaPadding.left),
+                          ),
+                          child: Stack(
                           children: [
                             PageView(
                               physics: const NeverScrollableScrollPhysics(),
                               controller: _innerPageController,
-                              children: (isDesktop) ? desktopView : mobileView,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(30.0),
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(right: 15.0),
+                                          child: SvgPicture.asset('assets/icon.svg',
+                                              semanticsLabel: 'Bergdinge Icon',
+                                              height: 50.0),
+                                        ),
+                                        const Text(
+                                          'Bergdinge',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 70.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(right: 15.0),
+                                          child: SvgPicture.asset(
+                                              'assets/icon.svg',
+                                              semanticsLabel: 'Bergdinge Icon',
+                                              height: 50.0),
+                                        ),
+                                        const Text(
+                                          'Bergdinge',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 70.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.only(right: 15.0),
+                                            child: SvgPicture.asset('assets/icon.svg',
+                                                semanticsLabel: 'Bergdinge Icon',
+                                                height: 50.0),
+                                          ),
+                                          const Text(
+                                            'Bergdinge',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 70.0),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ],
                             ),
                             Container(
                               padding: const EdgeInsets.all(55.0),
@@ -234,7 +198,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                               ),
                             ),
                           ],
-                        ))
+                        ),),),
                   ],
                 ),
                 LoginScreen(
