@@ -55,7 +55,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      alignment: Alignment.bottomCenter,
+                      alignment: Alignment.center,
                       padding: const EdgeInsets.all(50.0),
                       width: double.infinity,
                       child: Lottie.asset('assets/backpack.json', repeat: false),
@@ -63,7 +63,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                   ),
                   Flexible(
                     child: Container(
-                      height: 250,
+                      height: (isDesktop) ? null : 250,
                       decoration: BoxDecoration(
                           color: Design.colors[1],
                           borderRadius: BorderRadius.circular(25.0)),
@@ -84,7 +84,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.all(30.0),
-                                alignment: Alignment.topCenter,
+                                alignment: (isDesktop) ? Alignment.center : Alignment.topCenter,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Row(
@@ -109,6 +109,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                 ),
                               ),
                               Container(
+                                alignment: (isDesktop) ? Alignment.center : Alignment.topCenter,
                                 padding: const EdgeInsets.all(30.0),
                                 child: const Text(
                                   'Deine Ausrüstung im Überblick',
