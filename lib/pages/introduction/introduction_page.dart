@@ -4,8 +4,6 @@ import 'package:equipment_app/pages/login/login_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 
 class IntroductionPage extends StatefulWidget {
   const IntroductionPage({super.key});
@@ -39,41 +37,58 @@ class _IntroductionPageState extends State<IntroductionPage> {
                   ),
               child: SafeArea(
                 child: Container(
-                  padding: Design.pagePadding,
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Dein Abenteuer beginnt hier.',
-                        style: TextStyle(
-                          fontSize: 40.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 50.0),
+                        child: Image.asset('assets/bild3.jpg'),
                       ),
-                      const Text(
-                        'Behalte mit Bergdinge deine Ausrüstung im Überblick.',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black54,
-                        ),
+                      Expanded(child: Container()),
+                      const Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 20.0),
+                            child: Text(
+                              'Dein Abenteuer beginnt hier.',
+                              style: TextStyle(
+                                height: 1.1,
+                                fontSize: 40.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Behalte mit der Bergdinge App deine Ausrüstung im Überblick.',
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.only(
-                                left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-                            foregroundColor: Colors.white,
-                            backgroundColor: Design.colors[1],
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0))),
-                        onPressed: () => _outerPageController.jumpToPage(1),
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 30,
-                          width: 200,
-                          child: const Text(
-                            'Entdecken',
-                            style: TextStyle(fontSize: 17),
+                      Expanded(flex: 2, child: Container()),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 50.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Design.colors[1],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0))),
+                          onPressed: () => _outerPageController.jumpToPage(1),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 30,
+                            width: 200,
+                            child: const Text(
+                              'Entdecken',
+                              style: TextStyle(fontSize: 17),
+                            ),
                           ),
                         ),
                       ),
