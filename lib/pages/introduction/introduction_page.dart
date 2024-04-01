@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
@@ -8,30 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class IntroductionPage extends StatefulWidget {
-  const IntroductionPage({Key? key}) : super(key: key);
+  const IntroductionPage({super.key});
 
   @override
   State<IntroductionPage> createState() => _IntroductionPageState();
 }
 
 class _IntroductionPageState extends State<IntroductionPage> {
-  final _innerPageController = PageController(initialPage: 0);
   final _outerPageController = PageController(initialPage: 0);
   final isWebMobile = kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.iOS ||
           defaultTargetPlatform == TargetPlatform.android);
 
-  void _nextPage() async {
-    if (_innerPageController.page! < 2) {
-      _innerPageController.nextPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
-    } else {
-      _outerPageController.jumpToPage(1);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,151 +37,50 @@ class _IntroductionPageState extends State<IntroductionPage> {
                   statusBarColor: Colors.black, // Android
                   statusBarBrightness: Brightness.light // IOS.
                   ),
-              child: Flex(
-                direction: (isDesktop) ? Axis.horizontal : Axis.vertical,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(50.0),
-                      width: double.infinity,
-                      child: Lottie.asset('assets/backpack.json', repeat: false),
-                    ),
-                  ),
-                  Flexible(
-                    child: Container(
-                      height: (isDesktop) ? null : 250,
-                      decoration: BoxDecoration(
-                          color: Design.colors[1],
-                          borderRadius: BorderRadius.circular(25.0)),
-                      margin: EdgeInsets.only(
-                        top:
-                            (isDesktop) ? max(10.0, safeareaPadding.top) : 10.0,
-                        right: max(10.0, safeareaPadding.right),
-                        bottom: max(10.0, safeareaPadding.bottom),
-                        left: (isDesktop)
-                            ? 10.0
-                            : max(10.0, safeareaPadding.left),
+              child: SafeArea(
+                child: Container(
+                  padding: Design.pagePadding,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Dein Abenteuer beginnt hier.',
+                        style: TextStyle(
+                          fontSize: 40.0,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      child: Stack(
-                        children: [
-                          PageView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            controller: _innerPageController,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(30.0),
-                                alignment: (isDesktop) ? Alignment.center : Alignment.topCenter,
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 15.0),
-                                        child: SvgPicture.asset(
-                                            'assets/icon.svg',
-                                            semanticsLabel: 'Bergdinge Icon',
-                                            height: 50.0),
-                                      ),
-                                      const Text(
-                                        'Bergdinge',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 70.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                alignment: (isDesktop) ? Alignment.center : Alignment.topCenter,
-                                padding: const EdgeInsets.all(30.0),
-                                child: const Text(
-                                  'Deine Ausrüstung im Überblick',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 30.0),
-                                ),
-                              ),
-                              Container(
-                                  padding: const EdgeInsets.all(30.0),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 15.0),
-                                          child: SvgPicture.asset(
-                                              'assets/icon.svg',
-                                              semanticsLabel: 'Bergdinge Icon',
-                                              height: 50.0),
-                                        ),
-                                        const Text(
-                                          'Bergdinge',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 70.0),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(55.0),
-                            alignment: Alignment.bottomCenter,
-                            child: SmoothPageIndicator(
-                                controller: _innerPageController,
-                                count: 3,
-                                effect: const ExpandingDotsEffect(
-                                  dotColor: Colors.white,
-                                  activeDotColor: Colors.white,
-                                ),
-                                onDotClicked: (index) =>
-                                    _innerPageController.animateToPage(index,
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut)),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(40.0),
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      offset: const Offset(0, 7),
-                                      blurRadius: 10,
-                                      color: Design.colors[1].withOpacity(0.23),
-                                    )
-                                  ]),
-                              child: IconButton(
-                                onPressed: () => _nextPage(),
-                                highlightColor: Colors.transparent,
-                                icon: Icon(Icons.chevron_right_rounded,
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withOpacity(0.7)),
-                              ),
-                            ),
-                          ),
-                        ],
+                      const Text(
+                        'Behalte mit Bergdinge deine Ausrüstung im Überblick.',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black54,
+                        ),
                       ),
-                    ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.only(
+                                left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                            foregroundColor: Colors.white,
+                            backgroundColor: Design.colors[1],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        onPressed: () => _outerPageController.jumpToPage(1),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 30,
+                          width: 200,
+                          child: const Text(
+                            'Entdecken',
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              )
             ),
             AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle.light.copyWith(
