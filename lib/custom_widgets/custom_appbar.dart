@@ -182,9 +182,15 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(title,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - 90,
+                ),
+                child: Text(title,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
               const SizedBox(
                 width: 20,
               ),
