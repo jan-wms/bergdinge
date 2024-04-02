@@ -1,7 +1,6 @@
 import 'package:equipment_app/data/design.dart';
 import 'package:equipment_app/firebase/firebase_auth.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -126,7 +125,7 @@ class _Message extends StatelessWidget {
             ),
           ),
           Text(
-            'Behalte mit der Bergdinge App deine Ausrüstung stets im Überblick.',
+            'Behalte mit der Bergdinge App deine Ausrüstung im Überblick.',
             style: TextStyle(
               fontSize: 17.0,
               fontWeight: FontWeight.w400,
