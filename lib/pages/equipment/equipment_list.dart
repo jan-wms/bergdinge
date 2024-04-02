@@ -58,13 +58,8 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
               return const SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
-                    child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.emoji_emotions_rounded),
-                    Text('Leider konnte nichts gefunden werden.'),
-                  ],
-                )),
+                  child: Text('Leider konnte nichts gefunden werden.'),
+                ),
               );
             }
             return SliverList.builder(
@@ -99,62 +94,76 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                                 fontWeight: FontWeight.w600, fontSize: 27),
                           ),
                           Padding(
-                            padding:(category.name == 'Ausrüstung' ||
-                                category.name == 'Bekleidung') ? EdgeInsets.zero : const EdgeInsets.only(top: 15.0, bottom: 20.0),
+                            padding: (category.name == 'Ausrüstung' ||
+                                    category.name == 'Bekleidung')
+                                ? EdgeInsets.zero
+                                : const EdgeInsets.only(
+                                    top: 15.0, bottom: 20.0),
                             child: Wrap(
                                 spacing: Design.pagePadding.left,
                                 runSpacing: Design.pagePadding.left,
                                 children: [
-                              if (category.name == 'Ausrüstung' ||
-                                  category.name == 'Bekleidung')
-                                for (var subCategory in category.subCategories!)
-                                  if (data
-                                      .where((element) => element.category
-                                          .startsWith('${subCategory.id}.'))
-                                      .isNotEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 20.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 15.0),
-                                            child: Text(
-                                              subCategory.name.toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.black54,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 20),
-                                            ),
+                                  if (category.name == 'Ausrüstung' ||
+                                      category.name == 'Bekleidung')
+                                    for (var subCategory
+                                        in category.subCategories!)
+                                      if (data
+                                          .where((element) => element.category
+                                              .startsWith('${subCategory.id}.'))
+                                          .isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 20.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 15.0),
+                                                child: Text(
+                                                  subCategory.name.toString(),
+                                                  style: const TextStyle(
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 20),
+                                                ),
+                                              ),
+                                              Wrap(
+                                                  spacing:
+                                                      Design.pagePadding.left,
+                                                  runSpacing:
+                                                      Design.pagePadding.left,
+                                                  children: [
+                                                    for (var element in data.where(
+                                                        (element) => element
+                                                            .category
+                                                            .startsWith(
+                                                                '${subCategory.id}.')))
+                                                      EquipmentCard(
+                                                          equipment: element,
+                                                          onClick: (equipmentId) =>
+                                                              widget.onItemClick(
+                                                                  equipmentId),
+                                                          packingPlanId: widget
+                                                              .packingPlanId)
+                                                  ]),
+                                            ],
                                           ),
-                                          Wrap(
-                                            spacing: Design.pagePadding.left,
-                                              runSpacing: Design.pagePadding.left,
-                                              children: [
-                                            for (var element in data.where(
-                                                (element) => element.category
-                                                    .startsWith(
-                                                        '${subCategory.id}.')))
-                                              EquipmentCard(
-                                                  equipment: element,
-                                                  onClick: (equipmentId) =>
-                                                      widget.onItemClick(equipmentId),
-                                                  packingPlanId: widget.packingPlanId)
-                                          ]),
-                                        ],
-                                      ),
-                                    ),
-                              if (category.name == 'Schuhe' ||
-                                  category.name == 'Verpflegung')
-                                for (var element in data.where((element) =>
-                                    element.category.startsWith('${category.id}.')))
-                                  EquipmentCard(
-                                      equipment: element,
-                                      onClick: (equipmentId) =>
-                                          widget.onItemClick(equipmentId),
-                                      packingPlanId: widget.packingPlanId)
-                            ]),
+                                        ),
+                                  if (category.name == 'Schuhe' ||
+                                      category.name == 'Verpflegung')
+                                    for (var element in data.where((element) =>
+                                        element.category
+                                            .startsWith('${category.id}.')))
+                                      EquipmentCard(
+                                          equipment: element,
+                                          onClick: (equipmentId) =>
+                                              widget.onItemClick(equipmentId),
+                                          packingPlanId: widget.packingPlanId)
+                                ]),
                           ),
                         ],
                       ),
