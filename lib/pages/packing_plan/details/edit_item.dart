@@ -141,11 +141,8 @@ class _EditItemState extends ConsumerState<EditItem> {
                               (value) => context.pop()),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: [Text('update'), Icon(Icons.check)],
+                        children: [Text('Fertig'), Icon(Icons.check)],
                       )),
-                TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text('Abbrechen')),
               ],
             );
           }),

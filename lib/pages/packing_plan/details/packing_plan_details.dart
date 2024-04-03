@@ -341,9 +341,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     ],
                                                   ),
                                                   SizedBox(
-                                                    height: 550,
+                                                    height: 800,
                                                     width: double.infinity,
-                                                    child: Row(
+                                                    child: Flex(
+                                                      direction: Axis. vertical,
                                                       children: [
                                                         Expanded(
                                                           flex: 1,
