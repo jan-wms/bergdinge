@@ -36,6 +36,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final pageIndexProvider = StateProvider<List<int>>((ref) => [0, -1]);
 
   String title = "";
+  late PackingPlan p;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,55 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
       appBar: AppBar(
         title: Text(title),
         scrolledUnderElevation: 0.0,
+        actions: [
+          MenuAnchor(
+            builder: (BuildContext context, MenuController controller,
+                Widget? child) {
+              return IconButton(
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+                icon: const Icon(Icons.more_vert_rounded),
+                tooltip: 'Show menu',
+              );
+            },
+            menuChildren: [
+              MenuItemButton(
+                onPressed: () => CustomDialog.showCustomModal(
+                    context: context,
+                    child: PackingPlanEdit(
+                      packingPlan: p,
+                    )),
+                child: const Text('Bearbeiten'),
+              ),
+              MenuItemButton(
+                onPressed: () async {
+                  bool? confirmDelete =
+                      await CustomDialog.showCustomConfirmationDialog(
+                          type: ConfirmType.confirmDelete,
+                          context: context,
+                          description:
+                              'Möchtest du diese Packliste wirklich löschen?');
+                  if (confirmDelete ?? false) {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(Auth().user?.uid)
+                        .collection('packing_plan')
+                        .doc(p.id)
+                        .delete()
+                        .then((value) => context.pop());
+                  }
+                  ;
+                },
+                child: const Text('Löschen'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: SafeArea(
         bottom: false,
@@ -71,6 +121,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         updatedAt: DateTime(0));
 
                             title = packingPlan.name;
+                            p = packingPlan;
 
                             return ref
                                 .watch(packingPlanItemStreamProvider(
@@ -235,120 +286,85 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         child: ListView(
                                           children: [
                                             Column(
-                                                children: [
-                                                  Text(
-                                                      'erstellt: ${parseDate(packingPlan.createdAt)}'),
-                                                  Text(
-                                                      'aktualisiert: ${parseDate(packingPlan.updatedAt)}'),
-                                                  for (var sport
-                                                      in packingPlan.sports)
-                                                    Text(sport),
-                                                  ElevatedButton(
-                                                      onPressed: () => CustomDialog
-                                                          .showCustomModal(
-                                                              context: context,
-                                                              child:
-                                                                  PackingPlanEdit(
-                                                                packingPlan:
-                                                                    packingPlan,
-                                                              )),
-                                                      child: const Text(
-                                                          'bearbeiten')),
-                                                  ElevatedButton(
-                                                      onPressed: () async {
-                                                        bool? confirmDelete = await CustomDialog
-                                                            .showCustomConfirmationDialog(
-                                                                type: ConfirmType
-                                                                    .confirmDelete,
-                                                                context: context,
-                                                                description:
-                                                                    'Möchtest du diese Packliste wirklich löschen?');
-                                                        if (confirmDelete ??
-                                                            false) {
-                                                          await FirebaseFirestore
-                                                              .instance
-                                                              .collection('users')
-                                                              .doc(Auth()
-                                                                  .user
-                                                                  ?.uid)
-                                                              .collection(
-                                                                  'packing_plan')
-                                                              .doc(packingPlan.id)
-                                                              .delete()
-                                                              .then((value) =>
-                                                                  context.pop());
-                                                        }
-                                                      },
-                                                      child:
-                                                          const Text('delete')),
-                                                ],
-                                              ),
+                                              children: [
+                                                Text(
+                                                    'erstellt: ${parseDate(packingPlan.createdAt)}'),
+                                                Text(
+                                                    'aktualisiert: ${parseDate(packingPlan.updatedAt)}'),
+                                                for (var sport
+                                                    in packingPlan.sports)
+                                                  Text(sport),
+                                              ],
+                                            ),
                                             Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      DropdownButton(
-                                                        items: [
-                                                          const DropdownMenuItem(
-                                                              value: 0,
-                                                              child:
-                                                                  Text('Gesamt')),
-                                                          for (String location
-                                                              in packingPlan
-                                                                  .locations)
-                                                            DropdownMenuItem(
-                                                                value: packingPlan
-                                                                        .locations
-                                                                        .indexOf(
-                                                                            location) +
-                                                                    1,
-                                                                child: Text(
-                                                                    location)),
-                                                        ],
-                                                        onChanged: (value) {
-                                                          ref
-                                                              .read(
-                                                                  dropdownIndexProvider
-                                                                      .notifier)
-                                                              .state = value ?? 0;
-                                                        },
-                                                        value: ref.watch(
-                                                            dropdownIndexProvider),
-                                                      ),
-                                                      IconButton(
-                                                          onPressed: () =>
-                                                              CustomDialog
-                                                                  .showCustomModal(
-                                                                context: context,
-                                                                child: ItemList(
-                                                                  packingPlanId:
-                                                                      packingPlan
-                                                                          .id,
-                                                                  onEdit: (equipmentId, location) => editItem(
-                                                                      equipmentId:
-                                                                          equipmentId,
-                                                                      location:
-                                                                          location,
-                                                                      allowSelectLocation:
-                                                                          false),
-                                                                ),
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    DropdownButton(
+                                                      items: [
+                                                        const DropdownMenuItem(
+                                                            value: 0,
+                                                            child:
+                                                                Text('Gesamt')),
+                                                        for (String location
+                                                            in packingPlan
+                                                                .locations)
+                                                          DropdownMenuItem(
+                                                              value: packingPlan
+                                                                      .locations
+                                                                      .indexOf(
+                                                                          location) +
+                                                                  1,
+                                                              child: Text(
+                                                                  location)),
+                                                      ],
+                                                      onChanged: (value) {
+                                                        ref
+                                                            .read(
+                                                                dropdownIndexProvider
+                                                                    .notifier)
+                                                            .state = value ?? 0;
+                                                      },
+                                                      value: ref.watch(
+                                                          dropdownIndexProvider),
+                                                    ),
+                                                    IconButton(
+                                                        onPressed: () =>
+                                                            CustomDialog
+                                                                .showCustomModal(
+                                                              context: context,
+                                                              child: ItemList(
+                                                                packingPlanId:
+                                                                    packingPlan
+                                                                        .id,
+                                                                onEdit: (equipmentId, location) => editItem(
+                                                                    equipmentId:
+                                                                        equipmentId,
+                                                                    location:
+                                                                        location,
+                                                                    allowSelectLocation:
+                                                                        false),
                                                               ),
-                                                          icon: const Icon(Icons
-                                                              .library_add_check_outlined)),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 800,
-                                                    width: double.infinity,
-                                                    child: Flex(
-                                                      direction: Axis. vertical,
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 1,
-                                                          child: Stack(children: [
+                                                            ),
+                                                        icon: const Icon(Icons
+                                                            .library_add_check_outlined)),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 800,
+                                                  width: double.infinity,
+                                                  child: Flex(
+                                                    direction: Axis.vertical,
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Stack(
+                                                          alignment: Alignment
+                                                              .bottomCenter,
+                                                          children: [
                                                             PageView.builder(
                                                               itemBuilder:
                                                                   (context,
@@ -369,14 +385,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                         (value) {
                                                                       if (index ==
                                                                           0) {
-                                                                        Future.delayed(
-                                                                                const Duration(milliseconds: 500))
+                                                                        Future.delayed(const Duration(milliseconds: 500))
                                                                             .then(
                                                                           (result) => pageController.animateToPage(
-                                                                              (value +
-                                                                                  1),
-                                                                              duration:
-                                                                                  const Duration(milliseconds: 500),
+                                                                              (value + 1),
+                                                                              duration: const Duration(milliseconds: 500),
                                                                               curve: Curves.ease),
                                                                         );
                                                                       } else {
@@ -408,139 +421,136 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                 ];
                                                               },
                                                             ),
-                                                            Positioned(
-                                                              bottom: 20,
-                                                              left: 0,
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  for (var i = 0;
-                                                                      i <
-                                                                          statistics
-                                                                              .length;
-                                                                      i++)
-                                                                    Container(
-                                                                      width: 15,
-                                                                      height: 15,
-                                                                      margin: const EdgeInsets
-                                                                          .only(
-                                                                          left: 5,
-                                                                          right:
-                                                                              5),
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color: (i == ref.watch(pageIndexProvider).first)
-                                                                            ? Colors
-                                                                                .blue
-                                                                            : Colors
-                                                                                .black12,
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                      ),
-                                                                      child:
-                                                                          GestureDetector(
-                                                                        onTap: () => pageController.animateToPage(
-                                                                            i,
-                                                                            duration: const Duration(
-                                                                                milliseconds:
-                                                                                    500),
-                                                                            curve:
-                                                                                Curves.ease),
-                                                                      ),
-                                                                    )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ]),
-                                                        ),
-                                                        Expanded(
-                                                          flex: 1,
-                                                          child: Container(
-                                                            color: Colors.black12,
-                                                            width: 400,
-                                                            child: Column(
+                                                            Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
                                                                       .center,
-                                                              children: getRightSection((ref.watch(pageIndexProvider).last !=
-                                                                          -1 &&
-                                                                      statistics[ref.watch(pageIndexProvider).first]
-                                                                              .categoryPackingPlanItemsMap
-                                                                              .entries
-                                                                              .length >
-                                                                          1)
-                                                                  ? statisticFromItems(MapEntry(
-                                                                      statistics[ref.read(pageIndexProvider).first]
-                                                                          .categoryPackingPlanItemsMap
-                                                                          .entries
-                                                                          .elementAt(ref
-                                                                              .watch(
-                                                                                  pageIndexProvider)
-                                                                              .last)
-                                                                          .key,
-                                                                      statistics[ref.read(pageIndexProvider).first]
-                                                                          .categoryPackingPlanItemsMap
-                                                                          .entries
-                                                                          .elementAt(ref
-                                                                              .watch(
-                                                                                  pageIndexProvider)
-                                                                              .last)
-                                                                          .value))
-                                                                  : statistics[ref
-                                                                      .read(
-                                                                          pageIndexProvider)
-                                                                      .first]),
+                                                              children: [
+                                                                for (var i = 0;
+                                                                    i <
+                                                                        statistics
+                                                                            .length;
+                                                                    i++)
+                                                                  Container(
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    margin: const EdgeInsets
+                                                                        .only(
+                                                                        left: 5,
+                                                                        right:
+                                                                            5),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: (i == ref.watch(pageIndexProvider).first)
+                                                                          ? Colors
+                                                                              .black54
+                                                                          : Colors
+                                                                              .black12,
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                    ),
+                                                                    child:
+                                                                        GestureDetector(
+                                                                      onTap: () => pageController.animateToPage(
+                                                                          i,
+                                                                          duration: const Duration(
+                                                                              milliseconds:
+                                                                                  500),
+                                                                          curve:
+                                                                              Curves.ease),
+                                                                    ),
+                                                                  )
+                                                              ],
                                                             ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            Form(
-                                                key: _formKey,
-                                                child: TextFormField(
-                                                  validator: (value) =>
-                                                      PackingPlanValidator.notes(
-                                                          value),
-                                                  controller: controllerNotes,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          labelText: 'Notizen',
-                                                      alignLabelWithHint: true,
+                                                          ],
+                                                        ),
                                                       ),
-                                                  minLines: 2,
-                                                  maxLines: 6,
-                                                  keyboardType:
-                                                      TextInputType.multiline,
-                                                  onTapOutside: (value) {
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                    if (_formKey.currentState!
-                                                        .validate()) {
-                                                      DocumentReference ref =
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection('users')
-                                                              .doc(Auth()
-                                                                  .user
-                                                                  ?.uid)
-                                                              .collection(
-                                                                  'packing_plan')
-                                                              .doc(
-                                                                  packingPlan.id);
-
-                                                      ref.update({
-                                                        "notes":
-                                                            controllerNotes.text
-                                                      });
-                                                    }
-                                                  },
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Container(
+                                                          color: Colors.black12,
+                                                          width: 400,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: getRightSection((ref.watch(pageIndexProvider).last !=
+                                                                        -1 &&
+                                                                    statistics[ref.watch(pageIndexProvider).first]
+                                                                            .categoryPackingPlanItemsMap
+                                                                            .entries
+                                                                            .length >
+                                                                        1)
+                                                                ? statisticFromItems(MapEntry(
+                                                                    statistics[ref.read(pageIndexProvider).first]
+                                                                        .categoryPackingPlanItemsMap
+                                                                        .entries
+                                                                        .elementAt(ref
+                                                                            .watch(
+                                                                                pageIndexProvider)
+                                                                            .last)
+                                                                        .key,
+                                                                    statistics[ref.read(pageIndexProvider).first]
+                                                                        .categoryPackingPlanItemsMap
+                                                                        .entries
+                                                                        .elementAt(ref
+                                                                            .watch(
+                                                                                pageIndexProvider)
+                                                                            .last)
+                                                                        .value))
+                                                                : statistics[ref
+                                                                    .read(
+                                                                        pageIndexProvider)
+                                                                    .first]),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
+                                              ],
+                                            ),
+                                            Form(
+                                              key: _formKey,
+                                              child: TextFormField(
+                                                validator: (value) =>
+                                                    PackingPlanValidator.notes(
+                                                        value),
+                                                controller: controllerNotes,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: 'Notizen',
+                                                  alignLabelWithHint: true,
+                                                ),
+                                                minLines: 2,
+                                                maxLines: 6,
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                                onTapOutside: (value) {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    DocumentReference ref =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection('users')
+                                                            .doc(Auth()
+                                                                .user
+                                                                ?.uid)
+                                                            .collection(
+                                                                'packing_plan')
+                                                            .doc(
+                                                                packingPlan.id);
+
+                                                    ref.update({
+                                                      "notes":
+                                                          controllerNotes.text
+                                                    });
+                                                  }
+                                                },
                                               ),
+                                            ),
                                           ],
                                         ),
                                       ),

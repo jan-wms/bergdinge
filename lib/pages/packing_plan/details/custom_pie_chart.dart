@@ -25,11 +25,11 @@ class _CustomPieChartState extends State<CustomPieChart> {
         widget.chartData.asMap().entries.map((e) {
       final isTouched = e.key == touchedPieChartIndex;
       return PieChartSectionData(
-        color: Design.sectionColor[e.key],
+        color: Design.getSectionColor(e.key),
         value: e.value.y,
         title: e.value.text,
         radius: isTouched ? 110.0 : 100.0,
-        titleStyle: TextStyle(color: Design.textColor[e.key]),
+        titleStyle: TextStyle(color: Design.getTextColor(e.key)),
       );
     }).toList();
 
@@ -61,8 +61,7 @@ class _CustomPieChartState extends State<CustomPieChart> {
         ),
       ),
       swapAnimationDuration: const Duration(milliseconds: 150),
-      // Optional
-      swapAnimationCurve: Curves.linear, // Optional
+      swapAnimationCurve: Curves.linear,
     );
   }
 }

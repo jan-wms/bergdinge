@@ -31,8 +31,12 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
       sliver: equipmentList.when(
         error: (error, stackTrace) =>
             SliverToBoxAdapter(child: Text(error.toString())),
-        loading: () => const SliverToBoxAdapter(
-            child: CircularProgressIndicator.adaptive()),
+        loading: () => const SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
         data: (data) {
           if (data.isEmpty) {
             return const SliverFillRemaining(
