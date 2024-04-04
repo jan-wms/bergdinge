@@ -259,54 +259,69 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                   sliver: SliverList(
                                     delegate: SliverChildListDelegate(
                                       [
-                                        Flex(direction: isDesktop ? Axis.horizontal : Axis.vertical,
-                                        children: [
-                                          Column(
+                                        Flex(
+                                          direction: isDesktop
+                                              ? Axis.horizontal
+                                              : Axis.vertical,
+                                          children: [
+                                            Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
                                                     'erstellt: ${parseDate(packingPlan.createdAt)}'),
                                                 Text(
                                                     'aktualisiert: ${parseDate(packingPlan.updatedAt)}'),
-                                                for (var sport in packingPlan.sports)
+                                                for (var sport
+                                                    in packingPlan.sports)
                                                   Text(sport),
                                               ],
                                             ),
-                                        Form(
-                                          key: _formKey,
-                                          child: TextFormField(
-                                            validator: (value) =>
-                                                PackingPlanValidator.notes(
-                                                    value),
-                                            controller: controllerNotes,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Notizen',
-                                              alignLabelWithHint: true,
-                                            ),
-                                            minLines: 2,
-                                            maxLines: 6,
-                                            keyboardType:
-                                                TextInputType.multiline,
-                                            onTapOutside: (value) {
-                                              FocusScope.of(context).unfocus();
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                DocumentReference ref =
-                                                    FirebaseFirestore.instance
-                                                        .collection('users')
-                                                        .doc(Auth().user?.uid)
-                                                        .collection(
-                                                            'packing_plan')
-                                                        .doc(packingPlan.id);
+                                            SizedBox(
+                                              width: 300,
+                                              child: Form(
+                                                key: _formKey,
+                                                child: TextFormField(
+                                                  validator: (value) =>
+                                                      PackingPlanValidator.notes(
+                                                          value),
+                                                  controller: controllerNotes,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    labelText: 'Notizen',
+                                                    alignLabelWithHint: true,
+                                                  ),
+                                                  minLines: 2,
+                                                  maxLines: 6,
+                                                  keyboardType:
+                                                      TextInputType.multiline,
+                                                  onTapOutside: (value) {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      DocumentReference ref =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection('users')
+                                                              .doc(Auth()
+                                                                  .user
+                                                                  ?.uid)
+                                                              .collection(
+                                                                  'packing_plan')
+                                                              .doc(
+                                                                  packingPlan.id);
 
-                                                ref.update({
-                                                  "notes": controllerNotes.text
-                                                });
-                                              }
-                                            },
-                                          ),
+                                                      ref.update({
+                                                        "notes":
+                                                            controllerNotes.text
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        ],),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
