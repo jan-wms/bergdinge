@@ -18,6 +18,19 @@ class ItemList extends ConsumerWidget {
   final String packingPlanId;
   final void Function(String, int) onEdit;
 
+  Future<void> toggle ({required String equipmentId, required int location, required bool newValue}) async {
+      DocumentReference docRef = FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(Auth().user?.uid)
+          .collection('packing_plan')
+          .doc(packingPlanId)
+          .collection('items')
+          .doc('$equipmentId$location');
+
+      docRef.update({'isChecked': newValue});
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.read(equipmentStreamProvider).when(
@@ -52,20 +65,10 @@ class ItemList extends ConsumerWidget {
                         final PackingPlanItem item = items[index];
                         final Equipment equipment = equipmentList.singleWhere((element) => element.id == item.equipmentId);
                         return ListTile(
+                          onTap: () => toggle(equipmentId: item.equipmentId, location: item.location, newValue: !item.isChecked),
                           leading: CustomCheckBox(
                               value: item.isChecked,
-                              onChanged: (value) {
-                                DocumentReference docRef = FirebaseFirestore
-                                    .instance
-                                    .collection('users')
-                                    .doc(Auth().user?.uid)
-                                    .collection('packing_plan')
-                                    .doc(packingPlanId)
-                                    .collection('items')
-                                    .doc('${item.equipmentId}${item.location}');
-
-                                docRef.update({'isChecked': value});
-                              }),
+                              onChanged: (value) => toggle(equipmentId: item.equipmentId, location: item.location, newValue: value),),
                           title: Text(
                               '${equipment.brand} ${equipment.name} @${locations[item.location - 1]} ${item.equipmentCount}x'),
                           trailing: IconButton(
