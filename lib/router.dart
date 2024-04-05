@@ -115,8 +115,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 },
                 routes: [
                   GoRoute(
-                      parentNavigatorKey: _shellNavigatorKey,
-                      //parentNavigatorKey: _rootNavigatorKey,
+                      //TODO
+                      //parentNavigatorKey: _shellNavigatorKey,
+                      parentNavigatorKey: _rootNavigatorKey,
                       path: 'details',
                       builder: (context, state) {
                         String packingPlanID = state.extra as String;

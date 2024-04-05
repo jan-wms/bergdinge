@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:equipment_app/custom_widgets/custom_appbar_small.dart';
+import 'package:equipment_app/custom_widgets/custom_small_appbar.dart';
 import 'package:equipment_app/custom_widgets/custom_close_button.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/design.dart';
@@ -36,6 +36,15 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final pageController = PageController(initialPage: 0);
   final pageIndexProvider = StateProvider<List<int>>((ref) => [0, -1]);
 
+  final Widget _loading = const CustomScrollView(
+    slivers: [
+      CustomSmallAppBar(title: ''),
+      SliverFillRemaining(
+        child: Center(child: CircularProgressIndicator.adaptive(),),
+      )
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
@@ -44,11 +53,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
       backgroundColor: Colors.white,
       body: ref.watch(equipmentStreamProvider).when(
           error: (error, stackTrace) => Text(error.toString()),
-          loading: () => const CircularProgressIndicator.adaptive(),
+          loading: () => _loading,
           data: (equipmentList) {
             return ref.watch(packingPlanStreamProvider).when(
                   error: (error, stackTrace) => Text(error.toString()),
-                  loading: () => const CircularProgressIndicator.adaptive(),
+                  loading: () => _loading,
                   data: (packingPlanList) {
                     final PackingPlan packingPlan =
                         packingPlanList.singleWhereOrNull((element) =>
@@ -66,7 +75,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                         .when(
                           error: (error, stackTrace) => Text(error.toString()),
                           loading: () =>
-                              const CircularProgressIndicator.adaptive(),
+                          _loading,
                           data: (items) {
                             final TextEditingController controllerNotes =
                                 TextEditingController(

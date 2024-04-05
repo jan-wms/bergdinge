@@ -14,7 +14,7 @@ final packingPlanSearchProvider = StateProvider.autoDispose<String>(
 );
 
 class PackingPlanPage extends ConsumerWidget {
-  const PackingPlanPage({Key? key}) : super(key: key);
+  const PackingPlanPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
