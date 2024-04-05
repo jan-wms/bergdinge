@@ -405,6 +405,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   CustomDialog.showCustomModal(
                                                 context: context,
                                                 child: ItemList(
+                                                  locations: packingPlan.locations,
                                                   packingPlanId: packingPlan.id,
                                                   onEdit: (equipmentId,
                                                           location) =>
