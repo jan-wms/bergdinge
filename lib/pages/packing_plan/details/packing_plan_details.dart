@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:equipment_app/custom_widgets/custom_appbar_small.dart';
 import 'package:equipment_app/custom_widgets/custom_close_button.dart';
 import 'package:equipment_app/data/data.dart';
 import 'package:equipment_app/data/design.dart';
@@ -197,7 +198,66 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                             return CustomScrollView(
                               slivers: [
-                                SliverAppBar(
+                                CustomSmallAppBar(
+                                  title: packingPlan.name,
+                                  actions: [
+                                    MenuAnchor(
+                                      builder: (BuildContext context,
+                                          MenuController controller,
+                                          Widget? child) {
+                                        return IconButton(
+                                          color: Colors.white,
+                                          onPressed: () {
+                                            if (controller.isOpen) {
+                                              controller.close();
+                                            } else {
+                                              controller.open();
+                                            }
+                                          },
+                                          icon: const Icon(
+                                              Icons.more_vert_rounded),
+                                        );
+                                      },
+                                      menuChildren: [
+                                        MenuItemButton(
+                                          onPressed: () =>
+                                              CustomDialog.showCustomModal(
+                                                  context: context,
+                                                  child: PackingPlanEdit(
+                                                    packingPlan: packingPlan,
+                                                  )),
+                                          child: const Text('Bearbeiten'),
+                                        ),
+                                        MenuItemButton(
+                                          onPressed: () async {
+                                            bool? confirmDelete = await CustomDialog
+                                                .showCustomConfirmationDialog(
+                                                type: ConfirmType
+                                                    .confirmDelete,
+                                                context: context,
+                                                description:
+                                                'Möchtest du diese Packliste wirklich löschen?');
+                                            if (confirmDelete ?? false) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(Auth().user?.uid)
+                                                  .collection('packing_plan')
+                                                  .doc(packingPlan.id)
+                                                  .delete()
+                                                  .then(
+                                                      (value) => context.pop());
+                                            }
+                                          },
+                                          child: const Text('Löschen'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                /*SliverAppBar(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all((MediaQuery.of(context).size.width > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape) ? const Radius.circular(20) : Radius.zero,)
+                                  ),
                                   title: Text(packingPlan.name),
                                   scrolledUnderElevation: 0.0,
                                   actions: [
@@ -252,7 +312,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       ],
                                     ),
                                   ],
-                                ),
+                                ),*/
                                 SliverPadding(
                                   padding: Design.pagePadding,
                                   sliver: SliverList(
