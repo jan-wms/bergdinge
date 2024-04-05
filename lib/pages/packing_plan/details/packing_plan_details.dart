@@ -215,7 +215,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           },
                                           icon: const Icon(
                                               Icons.more_vert_rounded),
-                                          tooltip: 'Show menu',
                                         );
                                       },
                                       menuChildren: [
@@ -282,8 +281,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 key: _formKey,
                                                 child: TextFormField(
                                                   validator: (value) =>
-                                                      PackingPlanValidator.notes(
-                                                          value),
+                                                      PackingPlanValidator
+                                                          .notes(value),
                                                   controller: controllerNotes,
                                                   decoration:
                                                       const InputDecoration(
@@ -302,14 +301,15 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       DocumentReference ref =
                                                           FirebaseFirestore
                                                               .instance
-                                                              .collection('users')
+                                                              .collection(
+                                                                  'users')
                                                               .doc(Auth()
                                                                   .user
                                                                   ?.uid)
                                                               .collection(
                                                                   'packing_plan')
-                                                              .doc(
-                                                                  packingPlan.id);
+                                                              .doc(packingPlan
+                                                                  .id);
 
                                                       ref.update({
                                                         "notes":

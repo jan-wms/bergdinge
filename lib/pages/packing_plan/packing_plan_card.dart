@@ -7,8 +7,7 @@ import '../../data_models/packing_plan.dart';
 class PackingPlanCard extends StatelessWidget {
   final PackingPlan packingPlan;
 
-  const PackingPlanCard({Key? key, required this.packingPlan})
-      : super(key: key);
+  const PackingPlanCard({super.key, required this.packingPlan});
 
   @override
   Widget build(BuildContext context) {
