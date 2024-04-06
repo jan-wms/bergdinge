@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/custom_widgets/custom_checkbox.dart';
+import 'package:equipment_app/custom_widgets/popupitem_extension.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/data_models/equipment.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../custom_widgets/custom_close_button.dart';
 import '../../../data/design.dart';
@@ -12,23 +14,29 @@ import '../../../firebase/firebase_auth.dart';
 
 class ItemList extends ConsumerWidget {
   final List<String> locations;
+
   const ItemList(
-      {super.key, required this.packingPlanId, required this.onEdit, required this.locations});
+      {super.key,
+      required this.packingPlanId,
+      required this.onEdit,
+      required this.locations});
 
   final String packingPlanId;
   final void Function(String, int) onEdit;
 
-  Future<void> toggle ({required String equipmentId, required int location, required bool newValue}) async {
-      DocumentReference docRef = FirebaseFirestore
-          .instance
-          .collection('users')
-          .doc(Auth().user?.uid)
-          .collection('packing_plan')
-          .doc(packingPlanId)
-          .collection('items')
-          .doc('$equipmentId$location');
+  Future<void> toggle(
+      {required String equipmentId,
+      required int location,
+      required bool newValue}) async {
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(Auth().user?.uid)
+        .collection('packing_plan')
+        .doc(packingPlanId)
+        .collection('items')
+        .doc('$equipmentId$location');
 
-      docRef.update({'isChecked': newValue});
+    docRef.update({'isChecked': newValue});
   }
 
   @override
@@ -63,22 +71,124 @@ class ItemList extends ConsumerWidget {
                       itemCount: items.length,
                       itemBuilder: (context, index) {
                         final PackingPlanItem item = items[index];
-                        final Equipment equipment = equipmentList.singleWhere((element) => element.id == item.equipmentId);
+                        final Equipment equipment = equipmentList.singleWhere(
+                            (element) => element.id == item.equipmentId);
+
+                        DocumentReference docRef = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(Auth().user?.uid)
+                            .collection('packing_plan')
+                            .doc(packingPlanId)
+                            .collection('items')
+                            .doc('${item.equipmentId}${item.location}');
+
                         return ListTile(
-                          onTap: () => toggle(equipmentId: item.equipmentId, location: item.location, newValue: !item.isChecked),
+                          onTap: () => toggle(
+                              equipmentId: item.equipmentId,
+                              location: item.location,
+                              newValue: !item.isChecked),
                           leading: CustomCheckBox(
-                              value: item.isChecked,
-                              onChanged: (value) => toggle(equipmentId: item.equipmentId, location: item.location, newValue: value),),
+                            value: item.isChecked,
+                            onChanged: (value) => toggle(
+                                equipmentId: item.equipmentId,
+                                location: item.location,
+                                newValue: value),
+                          ),
                           title: Text(
                               '${equipment.brand} ${equipment.name} @${locations[item.location - 1]} ${item.equipmentCount}x'),
-                          trailing: IconButton(
+                          trailing: TooltipVisibility(
+                            visible: false,
+                            child: Theme(
+                              data: Theme.of(context).copyWith(
+                                splashFactory: NoSplash.splashFactory,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                              ),
+                              child: PopupMenuButton(
+                                icon: const Icon(
+                                  Icons.more_vert_rounded,
+                                ),
+                                iconColor: Colors.black54,
+                                color: Colors.white,
+                                splashRadius: 100,
+                                surfaceTintColor: Colors.white,
+                                itemBuilder: (context) => [
+                                  CustomPopupMenuItem(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        TextButton(
+                                            style: TextButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0))),
+                                            onPressed: () {
+                                              if (item.equipmentCount > 1) {
+                                                docRef.update({
+                                                  'equipmentCount':
+                                                      (item.equipmentCount - 1)
+                                                });
+                                              }
+                                            },
+                                            child: const Icon(
+                                                Icons.chevron_left_rounded)),
+                                        Text(
+                                          item.equipmentCount.toString(),
+                                          style: const TextStyle(fontSize: 17),
+                                        ),
+                                        TextButton(
+                                            style: TextButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0))),
+                                            onPressed: () => docRef.update({
+                                                  'equipmentCount':
+                                                      (item.equipmentCount + 1)
+                                                }),
+                                            child: const Icon(
+                                                Icons.chevron_right_rounded)),
+                                      ],
+                                    ),
+                                  ),
+                                  CustomPopupMenuItem(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5.0, top: 10.0),
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                          foregroundColor: Colors.red,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0))),
+                                      onPressed: () => docRef
+                                          .delete()
+                                          .then((value) => context.pop()),
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.delete_rounded),
+                                          Text('Löschen'),
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          /*IconButton(
                             onPressed: () =>
                                 onEdit(item.equipmentId, item.location),
                             icon: const Icon(
                               Icons.more_vert_rounded,
                               color: Colors.black54,
                             ),
-                          ),
+                          ),*/
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
