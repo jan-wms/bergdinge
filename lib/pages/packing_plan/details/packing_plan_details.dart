@@ -13,9 +13,7 @@ import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/details/item_list.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/parser.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../custom_widgets/custom_dialog.dart';
@@ -631,7 +629,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                 .circular(5.0),
                                                         border: Border.all(
                                                             color:
-                                                                Colors.black54),
+                                                                Colors.black38),
                                                       ),
                                                       child: Row(
                                                         children: [
