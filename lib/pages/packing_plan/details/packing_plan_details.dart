@@ -13,10 +13,13 @@ import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/details/item_list.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/parser.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../custom_widgets/custom_dialog.dart';
+import '../../../custom_widgets/popupitem_extension.dart';
 import '../../../firebase/firebase_auth.dart';
 import '../../../validators/packing_plan_validator.dart';
 import 'custom_pie_chart.dart';
@@ -40,7 +43,9 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
     slivers: [
       CustomSmallAppBar(title: ''),
       SliverFillRemaining(
-        child: Center(child: CircularProgressIndicator.adaptive(),),
+        child: Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
       )
     ],
   );
@@ -74,8 +79,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                         .watch(packingPlanItemStreamProvider(packingPlan.id))
                         .when(
                           error: (error, stackTrace) => Text(error.toString()),
-                          loading: () =>
-                          _loading,
+                          loading: () => _loading,
                           data: (items) {
                             final TextEditingController controllerNotes =
                                 TextEditingController(
@@ -162,8 +166,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                             List<Widget> getRightSection(Statistic statistic) {
                               var result = <Widget>[
-                                Text(
-                                  '${statistic.title}: ${statistic.weight}',
+                                Text(statistic.title,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -205,123 +208,159 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               return result;
                             }
 
+                            Statistic getCurrentStatistic () {
+                              return (ref
+                                  .watch(
+                                  pageIndexProvider)
+                                  .last !=
+                                  -1 &&
+                                  statistics[ref.watch(pageIndexProvider).first]
+                                      .categoryPackingPlanItemsMap
+                                      .entries
+                                      .length >
+                                      1)
+                                  ? statisticFromItems(MapEntry(
+                                  statistics[ref.read(pageIndexProvider).first]
+                                      .categoryPackingPlanItemsMap
+                                      .entries
+                                      .elementAt(ref
+                                      .watch(
+                                      pageIndexProvider)
+                                      .last)
+                                      .key,
+                                  statistics[ref.read(pageIndexProvider).first]
+                                      .categoryPackingPlanItemsMap
+                                      .entries
+                                      .elementAt(ref
+                                      .watch(
+                                      pageIndexProvider)
+                                      .last)
+                                      .value))
+                                  : statistics[ref
+                                  .read(pageIndexProvider)
+                                  .first];
+                            }
+
                             return CustomScrollView(
                               slivers: [
                                 CustomSmallAppBar(
                                   title: packingPlan.name,
                                   actions: [
-                                    MenuAnchor(
-                                      builder: (BuildContext context,
-                                          MenuController controller,
-                                          Widget? child) {
-                                        return IconButton(
-                                          color: Colors.white,
-                                          onPressed: () {
-                                            if (controller.isOpen) {
-                                              controller.close();
-                                            } else {
-                                              controller.open();
-                                            }
-                                          },
+                                    TooltipVisibility(
+                                      visible: false,
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          splashFactory: NoSplash.splashFactory,
+                                          highlightColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                        ),
+                                        child: PopupMenuButton(
                                           icon: const Icon(
-                                              Icons.more_vert_rounded),
-                                        );
-                                      },
-                                      menuChildren: [
-                                        MenuItemButton(
-                                          onPressed: () =>
-                                              CustomDialog.showCustomModal(
-                                                  context: context,
-                                                  child: PackingPlanEdit(
-                                                    packingPlan: packingPlan,
-                                                  )),
-                                          child: const Text('Bearbeiten'),
+                                            Icons.more_vert_rounded,
+                                          ),
+                                          iconColor: Colors.white,
+                                          color: Colors.white,
+                                          splashRadius: 100,
+                                          offset: const Offset(-10, 0),
+                                          surfaceTintColor: Colors.white,
+                                          itemBuilder: (context) => [
+                                            CustomPopupMenuItem(
+                                                child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 5.0,
+                                                  right: 5.0,
+                                              ),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                    foregroundColor:
+                                                        Design.colors[0],
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0))),
+                                                onPressed: () {
+                                                  context.pop();
+                                                  CustomDialog.showCustomModal(
+                                                      context: context,
+                                                      child: PackingPlanEdit(
+                                                        packingPlan:
+                                                            packingPlan,
+                                                      ));
+                                                },
+                                                child: const Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.edit_rounded),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 8.0),
+                                                      child: Text('Bearbeiten'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )),
+                                            CustomPopupMenuItem(
+                                                child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 5.0,
+                                                  right: 5.0,
+                                                  top: 10.0),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                    foregroundColor: Colors.red,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0))),
+                                                onPressed: () async {
+                                                  context.pop();
+                                                  bool? confirmDelete =
+                                                      await CustomDialog
+                                                          .showCustomConfirmationDialog(
+                                                              type: ConfirmType
+                                                                  .confirmDelete,
+                                                              context: context,
+                                                              description:
+                                                                  'Möchtest du diese Packliste wirklich löschen?');
+                                                  if (confirmDelete ?? false) {
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('users')
+                                                        .doc(Auth().user?.uid)
+                                                        .collection(
+                                                            'packing_plan')
+                                                        .doc(packingPlan.id)
+                                                        .delete()
+                                                        .then((value) =>
+                                                            context.pop());
+                                                  }
+                                                },
+                                                child: const Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.delete_rounded),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 8.0),
+                                                      child: Text('Löschen'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )),
+                                          ],
                                         ),
-                                        MenuItemButton(
-                                          onPressed: () async {
-                                            bool? confirmDelete = await CustomDialog
-                                                .showCustomConfirmationDialog(
-                                                type: ConfirmType
-                                                    .confirmDelete,
-                                                context: context,
-                                                description:
-                                                'Möchtest du diese Packliste wirklich löschen?');
-                                            if (confirmDelete ?? false) {
-                                              await FirebaseFirestore.instance
-                                                  .collection('users')
-                                                  .doc(Auth().user?.uid)
-                                                  .collection('packing_plan')
-                                                  .doc(packingPlan.id)
-                                                  .delete()
-                                                  .then(
-                                                      (value) => context.pop());
-                                            }
-                                          },
-                                          child: const Text('Löschen'),
-                                        ),
-                                      ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                                /*SliverAppBar(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all((MediaQuery.of(context).size.width > Design.breakpoint1 && MediaQuery.of(context).orientation == Orientation.landscape) ? const Radius.circular(20) : Radius.zero,)
-                                  ),
-                                  title: Text(packingPlan.name),
-                                  scrolledUnderElevation: 0.0,
-                                  actions: [
-                                    MenuAnchor(
-                                      builder: (BuildContext context,
-                                          MenuController controller,
-                                          Widget? child) {
-                                        return IconButton(
-                                          onPressed: () {
-                                            if (controller.isOpen) {
-                                              controller.close();
-                                            } else {
-                                              controller.open();
-                                            }
-                                          },
-                                          icon: const Icon(
-                                              Icons.more_vert_rounded),
-                                        );
-                                      },
-                                      menuChildren: [
-                                        MenuItemButton(
-                                          onPressed: () =>
-                                              CustomDialog.showCustomModal(
-                                                  context: context,
-                                                  child: PackingPlanEdit(
-                                                    packingPlan: packingPlan,
-                                                  )),
-                                          child: const Text('Bearbeiten'),
-                                        ),
-                                        MenuItemButton(
-                                          onPressed: () async {
-                                            bool? confirmDelete = await CustomDialog
-                                                .showCustomConfirmationDialog(
-                                                    type: ConfirmType
-                                                        .confirmDelete,
-                                                    context: context,
-                                                    description:
-                                                        'Möchtest du diese Packliste wirklich löschen?');
-                                            if (confirmDelete ?? false) {
-                                              await FirebaseFirestore.instance
-                                                  .collection('users')
-                                                  .doc(Auth().user?.uid)
-                                                  .collection('packing_plan')
-                                                  .doc(packingPlan.id)
-                                                  .delete()
-                                                  .then(
-                                                      (value) => context.pop());
-                                            }
-                                          },
-                                          child: const Text('Löschen'),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),*/
                                 SliverPadding(
                                   padding: Design.pagePadding,
                                   sliver: SliverList(
@@ -474,7 +513,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   CustomDialog.showCustomModal(
                                                 context: context,
                                                 child: ItemList(
-                                                  locations: packingPlan.locations,
+                                                  locations:
+                                                      packingPlan.locations,
                                                   packingPlanId: packingPlan.id,
                                                   onEdit: (equipmentId,
                                                           location) =>
@@ -489,161 +529,212 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             ),
                                           ],
                                         ),
-                                        DropdownButton(
-                                          items: [
-                                            const DropdownMenuItem(
-                                                value: 0,
-                                                child: Text('Gesamt')),
-                                            for (String location
-                                                in packingPlan.locations)
-                                              DropdownMenuItem(
-                                                  value: packingPlan.locations
-                                                          .indexOf(location) +
-                                                      1,
-                                                  child: Text(location)),
+                                        Row(
+                                          children: [
+                                            TooltipVisibility(
+                                              visible: false,
+                                              child: Theme(
+                                                data: Theme.of(context).copyWith(
+                                                  splashFactory: NoSplash.splashFactory,
+                                                  highlightColor: Colors.transparent,
+                                                  splashColor: Colors.transparent,
+                                                ),
+                                                child: PopupMenuButton(
+                                                  color: Colors.white,
+                                                  splashRadius: 100,
+                                                  surfaceTintColor: Colors.white,
+                                                  itemBuilder: (context) => [
+                                                    CustomPopupMenuItem(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(
+                                                              left: 5.0,
+                                                              right: 5.0,
+                                                          ),
+                                                          child: TextButton(
+                                                            style: TextButton.styleFrom(
+                                                                foregroundColor:
+                                                                Design.colors[0],
+                                                                shape:
+                                                                RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                        10.0))),
+                                                            onPressed: () {
+                                                              context.pop();
+                                                              ref
+                                                                  .read(dropdownIndexProvider
+                                                                  .notifier)
+                                                                  .state = 0;
+                                                            },
+                                                            child: const Text('Gesamt'),
+
+                                                          ),
+                                                        ),
+                                                    ),
+                                                    for (String location
+                                                    in packingPlan.locations)
+                                                    CustomPopupMenuItem(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(
+                                                              left: 5.0,
+                                                              right: 5.0,
+                                                              top: 10.0),
+                                                          child: TextButton(
+                                                            style: TextButton.styleFrom(
+                                                                foregroundColor: Design.colors[0],
+                                                                shape:
+                                                                RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                        10.0))),
+                                                            onPressed: () {
+                                                              context.pop();
+                                                              ref
+                                                                  .read(dropdownIndexProvider
+                                                                  .notifier)
+                                                                  .state = packingPlan.locations.indexWhere((element) => element == location) + 1;
+                                                            },
+                                                            child: Text(location),
+                                                          ),
+                                                        ),
+                                                    ),
+                                                  ],
+                                                  child: Text(ref.watch(dropdownIndexProvider) == 0 ? 'Gesamt' : packingPlan.locations[ref.watch(dropdownIndexProvider) - 1], style: const TextStyle(fontSize: 17),),
+                                                ),
+                                              ),
+                                            ),
+                                            const Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                child: Icon(Icons.chevron_right_rounded, color: Colors.black38,),
+                                            ),
+                                            Text(getCurrentStatistic().title, style: const TextStyle(color: Colors.black54, fontSize: 17),),
+                                            if(getCurrentStatistic().title.isNotEmpty)
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                              child: Icon(Icons.chevron_right_rounded, color: Colors.black38,),
+                                            ),
+                                            Text('${getCurrentStatistic().weight} g',
+                                              style: const TextStyle(
+                                                fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ],
-                                          onChanged: (value) {
-                                            ref
-                                                .read(dropdownIndexProvider
-                                                    .notifier)
-                                                .state = value ?? 0;
-                                          },
-                                          value:
-                                              ref.watch(dropdownIndexProvider),
                                         ),
-                                        SizedBox(
-                                          height: 400,
-                                          width: double.infinity,
-                                          child: Stack(
-                                            alignment: Alignment.bottomCenter,
-                                            children: [
-                                              PageView.builder(
-                                                itemBuilder: (context, index) {
-                                                  Statistic statistic =
-                                                      statistics[index];
-                                                  return SizedBox(
-                                                    height: 500,
-                                                    width: 500,
-                                                    child: CustomPieChart(
-                                                      chartData:
-                                                          statistic.chartData,
-                                                      onTouchedIndexChanged:
-                                                          (value) {
-                                                        if (index == 0) {
-                                                          Future.delayed(
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                          500))
-                                                              .then(
-                                                            (result) => pageController
-                                                                .animateToPage(
-                                                                    (value + 1),
-                                                                    duration: const Duration(
-                                                                        milliseconds:
-                                                                            500),
-                                                                    curve: Curves
-                                                                        .ease),
-                                                          );
-                                                        } else {
-                                                          ref
-                                                              .read(
-                                                                  pageIndexProvider
-                                                                      .notifier)
-                                                              .state = [
-                                                            index,
-                                                            value
-                                                          ];
-                                                        }
+                                        Flex(
+                                          direction: isDesktop ? Axis.horizontal : Axis.vertical,
+                                          children: [
+                                            Expanded(
+                                              child: SizedBox(
+                                                height: 400,
+                                                child: Stack(
+                                                  alignment: Alignment.bottomCenter,
+                                                  children: [
+                                                    PageView.builder(
+                                                      itemBuilder: (context, index) {
+                                                        Statistic statistic =
+                                                            statistics[index];
+                                                        return SizedBox(
+                                                          height: 500,
+                                                          width: 500,
+                                                          child: CustomPieChart(
+                                                            chartData:
+                                                                statistic.chartData,
+                                                            onTouchedIndexChanged:
+                                                                (value) {
+                                                              if (index == 0) {
+                                                                Future.delayed(
+                                                                        const Duration(
+                                                                            milliseconds:
+                                                                                500))
+                                                                    .then(
+                                                                  (result) => pageController
+                                                                      .animateToPage(
+                                                                          (value + 1),
+                                                                          duration: const Duration(
+                                                                              milliseconds:
+                                                                                  500),
+                                                                          curve: Curves
+                                                                              .ease),
+                                                                );
+                                                              } else {
+                                                                ref
+                                                                    .read(
+                                                                        pageIndexProvider
+                                                                            .notifier)
+                                                                    .state = [
+                                                                  index,
+                                                                  value
+                                                                ];
+                                                              }
+                                                            },
+                                                          ),
+                                                        );
+                                                      },
+                                                      itemCount: statistics.length,
+                                                      controller: pageController,
+                                                      onPageChanged: (newPage) {
+                                                        ref
+                                                            .read(pageIndexProvider
+                                                                .notifier)
+                                                            .state = [newPage, -1];
                                                       },
                                                     ),
-                                                  );
-                                                },
-                                                itemCount: statistics.length,
-                                                controller: pageController,
-                                                onPageChanged: (newPage) {
-                                                  ref
-                                                      .read(pageIndexProvider
-                                                          .notifier)
-                                                      .state = [newPage, -1];
-                                                },
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.center,
+                                                      children: [
+                                                        for (var i = 0;
+                                                            i < statistics.length;
+                                                            i++)
+                                                          Container(
+                                                            width: 15,
+                                                            height: 15,
+                                                            margin:
+                                                                const EdgeInsets.only(
+                                                                    left: 5,
+                                                                    right: 5),
+                                                            decoration: BoxDecoration(
+                                                              color: (i ==
+                                                                      ref
+                                                                          .watch(
+                                                                              pageIndexProvider)
+                                                                          .first)
+                                                                  ? Colors.black54
+                                                                  : Colors.black12,
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: GestureDetector(
+                                                              onTap: () => pageController
+                                                                  .animateToPage(i,
+                                                                      duration:
+                                                                          const Duration(
+                                                                              milliseconds:
+                                                                                  500),
+                                                                      curve: Curves
+                                                                          .ease),
+                                                            ),
+                                                          )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  for (var i = 0;
-                                                      i < statistics.length;
-                                                      i++)
-                                                    Container(
-                                                      width: 15,
-                                                      height: 15,
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              left: 5,
-                                                              right: 5),
-                                                      decoration: BoxDecoration(
-                                                        color: (i ==
-                                                                ref
-                                                                    .watch(
-                                                                        pageIndexProvider)
-                                                                    .first)
-                                                            ? Colors.black54
-                                                            : Colors.black12,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: GestureDetector(
-                                                        onTap: () => pageController
-                                                            .animateToPage(i,
-                                                                duration:
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            500),
-                                                                curve: Curves
-                                                                    .ease),
-                                                      ),
-                                                    )
-                                                ],
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                color: Colors.black12,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  children: getRightSection(getCurrentStatistic()),
+                                                ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                        Container(
-                                          color: Colors.black12,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: getRightSection((ref
-                                                            .watch(
-                                                                pageIndexProvider)
-                                                            .last !=
-                                                        -1 &&
-                                                    statistics[ref.watch(pageIndexProvider).first]
-                                                            .categoryPackingPlanItemsMap
-                                                            .entries
-                                                            .length >
-                                                        1)
-                                                ? statisticFromItems(MapEntry(
-                                                    statistics[ref.read(pageIndexProvider).first]
-                                                        .categoryPackingPlanItemsMap
-                                                        .entries
-                                                        .elementAt(ref
-                                                            .watch(
-                                                                pageIndexProvider)
-                                                            .last)
-                                                        .key,
-                                                    statistics[ref.read(pageIndexProvider).first]
-                                                        .categoryPackingPlanItemsMap
-                                                        .entries
-                                                        .elementAt(ref
-                                                            .watch(
-                                                                pageIndexProvider)
-                                                            .last)
-                                                        .value))
-                                                : statistics[ref
-                                                    .read(pageIndexProvider)
-                                                    .first]),
-                                          ),
-                                        ),
+
                                       ],
                                     ),
                                   ),
@@ -670,8 +761,8 @@ class Statistic {
       required this.ref});
 
   String get title => topCategory.isEmpty
-      ? 'total weight'
-      : 'weight ${Data.getCategoryNames(topCategory).last}';
+      ? ''
+      : Data.getCategoryNames(topCategory).last;
 
   double getWeight(List<PackingPlanItem>? items) {
     var result = 0.0;

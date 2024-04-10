@@ -105,12 +105,11 @@ class ItemList extends ConsumerWidget {
                                 splashColor: Colors.transparent,
                               ),
                               child: PopupMenuButton(
-                                icon: const Icon(
-                                  Icons.more_vert_rounded,
-                                ),
+                                icon: const Icon(Icons.more_vert_rounded,),
                                 iconColor: Colors.black54,
                                 color: Colors.white,
                                 splashRadius: 100,
+                                offset: const Offset(-10, 0),
                                 surfaceTintColor: Colors.white,
                                 itemBuilder: (context) => [
                                   CustomPopupMenuItem(
@@ -171,7 +170,10 @@ class ItemList extends ConsumerWidget {
                                             MainAxisAlignment.center,
                                         children: [
                                           Icon(Icons.delete_rounded),
-                                          Text('Löschen'),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 8.0),
+                                            child: Text('Löschen'),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -180,15 +182,6 @@ class ItemList extends ConsumerWidget {
                               ),
                             ),
                           ),
-
-                          /*IconButton(
-                            onPressed: () =>
-                                onEdit(item.equipmentId, item.location),
-                            icon: const Icon(
-                              Icons.more_vert_rounded,
-                              color: Colors.black54,
-                            ),
-                          ),*/
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
