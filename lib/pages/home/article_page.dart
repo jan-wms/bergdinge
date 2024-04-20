@@ -10,7 +10,7 @@ import '../../data_models/article.dart';
 class ArticlePage extends ConsumerStatefulWidget {
   final Article article;
 
-  const ArticlePage({Key? key, required this.article}) : super(key: key);
+  const ArticlePage({super.key, required this.article});
 
   @override
   ConsumerState<ArticlePage> createState() => _ArticlePageState();

@@ -72,14 +72,16 @@ class _SmallHeader extends SliverPersistentHeaderDelegate {
         //width: 100,
         decoration: BoxDecoration(
             color: Design.colors[1],
-            borderRadius: BorderRadius.all(
-              (MediaQuery.of(context).size.width > Design.breakpoint1 &&
-                      MediaQuery.of(context).orientation ==
-                          Orientation.landscape &&
-                      !disableRoundedCorners)
+            borderRadius: BorderRadius.vertical(
+              bottom: const Radius.circular(20.0),
+              top: (MediaQuery.of(context).size.width > Design.breakpoint1 &&
+                  MediaQuery.of(context).orientation ==
+                      Orientation.landscape &&
+                  !disableRoundedCorners)
                   ? const Radius.circular(20)
                   : Radius.zero,
-            )),
+            ),
+        ),
         child: Padding(
           padding: EdgeInsets.only(
               top: MediaQueryData.fromView(View.of(context)).padding.top),
