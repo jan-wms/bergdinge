@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 class CustomBackButton extends StatelessWidget {
   final dynamic returnValue;
-  const CustomBackButton({Key? key, this.returnValue}) : super(key: key);
+  const CustomBackButton({super.key, this.returnValue});
 
   @override
   Widget build(BuildContext context) {

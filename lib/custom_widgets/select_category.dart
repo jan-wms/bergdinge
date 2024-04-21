@@ -20,7 +20,7 @@ Future<String> selectCategory(BuildContext context, String selected) async {
 class SelectCategory extends StatefulWidget {
   final String selected;
 
-  const SelectCategory({Key? key, required this.selected}) : super(key: key);
+  const SelectCategory({super.key, required this.selected});
 
   @override
   State<SelectCategory> createState() => _SelectCategoryState();

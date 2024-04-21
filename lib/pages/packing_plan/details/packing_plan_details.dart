@@ -205,6 +205,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               for (MapEntry<String, List<PackingPlanItem>> entry
                                   in summarizedItems.entries) {
                                 result.add(Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       Data.getCategoryNames(entry.key).last,
@@ -213,6 +214,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         fontSize: 20.0,
                                       ),
                                     ),
+
                                     ///---
                                     /*ListView.separated(
                                       physics: const NeverScrollableScrollPhysics(),
@@ -342,13 +344,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         );
                                       },
                                     ),*/
+
                                     ///-----
                                     for (PackingPlanItem item in entry.value)
                                       ListTile(
-                                        onTap: () => toggle(
-                                            equipmentId: item.equipmentId,
-                                            location: item.location,
-                                            newValue: !item.isChecked),
+                                        onTap: () => context.push(
+                                            '/equipment/details',
+                                            extra: item.equipmentId),
                                         leading: CustomCheckBox(
                                           value: item.isChecked,
                                           onChanged: (value) => toggle(
@@ -640,8 +642,18 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               ElevatedButton(
-                                                child: const Icon(
-                                                    Icons.lightbulb_rounded),
+                                                style: ElevatedButton.styleFrom(
+                                                  //foregroundColor: Colors.yellow,
+                                                  foregroundColor: Colors.white,
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                    Icons.lightbulb_rounded, color: Design.colors[6],),
                                                 onPressed: () {
                                                   CustomDialog.showCustomModal(
                                                       context: context,
@@ -650,10 +662,28 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 },
                                               ),
                                               ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  foregroundColor:
+                                                      Design.colors[0],
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                ),
                                                 child: const Row(
                                                   children: [
                                                     Icon(Icons.add),
-                                                    Text('item'),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10.0),
+                                                      child: Text(
+                                                        'Ausrüstung',
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 onPressed: () =>
@@ -664,20 +694,38 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               children: [
                                                                 const Padding(
                                                                   padding: EdgeInsets.only(
-                                                                      right:
-                                                                          5.0,
-                                                                      top:
-                                                                          20.0),
-                                                                  child: Align(
+                                                                      top: 20.0,
+                                                                      bottom:
+                                                                          10.0),
+                                                                  child: Stack(
                                                                     alignment:
                                                                         Alignment
-                                                                            .centerRight,
-                                                                    child:
-                                                                        CustomCloseButton(),
+                                                                            .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        'Ausrüstung hinzufügen',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                21,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
+                                                                      ),
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.centerRight,
+                                                                        child:
+                                                                            CustomCloseButton(),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                                const Text(
-                                                                    'Ausrüstung hinzufügen'),
+                                                                const Divider(
+                                                                  indent: 15,
+                                                                  endIndent: 15,
+                                                                  height: 1,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
                                                                 Expanded(
                                                                     child:
                                                                         CustomScrollView(
@@ -710,30 +758,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               ],
                                                             )),
                                               ),
-                                              if (items.isNotEmpty)
-                                                ElevatedButton(
-                                                  child: const Icon(Icons
-                                                      .library_add_check_outlined),
-                                                  onPressed: () => CustomDialog
-                                                      .showCustomModal(
-                                                    context: context,
-                                                    child: ItemList(
-                                                      locations:
-                                                          packingPlan.locations,
-                                                      packingPlanId:
-                                                          packingPlan.id,
-                                                      onEdit: (equipmentId,
-                                                              location) =>
-                                                          editItem(
-                                                              equipmentId:
-                                                                  equipmentId,
-                                                              location:
-                                                                  location,
-                                                              allowSelectLocation:
-                                                                  false),
-                                                    ),
-                                                  ),
-                                                ),
                                             ],
                                           ),
                                         ),
@@ -1081,6 +1105,25 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ],
                                         ),
                                       ),
+                                      if (items.isNotEmpty)
+                                        ElevatedButton(
+                                          child: const Icon(
+                                              Icons.library_add_check_outlined),
+                                          onPressed: () =>
+                                              CustomDialog.showCustomModal(
+                                            context: context,
+                                            child: ItemList(
+                                              locations: packingPlan.locations,
+                                              packingPlanId: packingPlan.id,
+                                              onEdit: (equipmentId, location) =>
+                                                  editItem(
+                                                      equipmentId: equipmentId,
+                                                      location: location,
+                                                      allowSelectLocation:
+                                                          false),
+                                            ),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),

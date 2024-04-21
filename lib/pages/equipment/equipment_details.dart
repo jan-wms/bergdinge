@@ -18,8 +18,7 @@ import 'equipment_edit.dart';
 class EquipmentDetails extends ConsumerStatefulWidget {
   final String equipmentID;
 
-  const EquipmentDetails({Key? key, required this.equipmentID})
-      : super(key: key);
+  const EquipmentDetails({super.key, required this.equipmentID});
 
   @override
   ConsumerState<EquipmentDetails> createState() => _EquipmentDetailsState();

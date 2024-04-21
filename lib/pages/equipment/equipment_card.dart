@@ -11,11 +11,10 @@ class EquipmentCard extends ConsumerWidget {
   final String? packingPlanId;
 
   const EquipmentCard(
-      {Key? key,
+      {super.key,
       required this.onClick,
       required this.equipment,
-      this.packingPlanId})
-      : super(key: key);
+      this.packingPlanId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,15 +41,17 @@ class EquipmentCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              padding: const EdgeInsets.all(10.0),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Column(
-                    children: [
-                      Expanded(child: Image.asset('assets/items/map.png')),
-                      Text('${equipment.brand!} ${equipment.name}', style: const TextStyle(color: Colors.white),),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        Expanded(child: Image.asset('assets/items/map.png')),
+                        Text('${equipment.brand!} ${equipment.name}', style: const TextStyle(color: Colors.white),),
+                      ],
+                    ),
                   ),
                   if (packingPlanId != null)
                     ref
@@ -60,11 +61,32 @@ class EquipmentCard extends ConsumerWidget {
                             if (data.indexWhere((element) =>
                                     element.equipmentId == equipment.id) !=
                                 -1) {
-                              return const Align(
+                              return Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  width: double.infinity,
+                                  height: double.infinity,
                                   alignment: Alignment.center,
-                                  child: Icon(
-                                    Icons.check_circle_outline_outlined,
-                                    size: 50.0,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: const ShapeDecoration(shape: CircleBorder(),
+                                        color: Colors.white,
+                                        ),
+                                        height: 60.0,
+                                        width: 60.0,
+                                      ),
+                                      const Icon(
+                                        //Icons.check_circle_outline_rounded,
+                                        Icons.check_circle_rounded,
+                                        color: Colors.green,
+                                        size: 80.0,
+                                        weight: 400,
+                                      ),
+                                    ],
                                   ));
                             }
                             return Container();

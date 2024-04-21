@@ -13,7 +13,7 @@ import '../../firebase/firebase_auth.dart';
 class PackingPlanEdit extends ConsumerStatefulWidget {
   final PackingPlan? packingPlan;
 
-  const PackingPlanEdit({Key? key, this.packingPlan}) : super(key: key);
+  const PackingPlanEdit({super.key, this.packingPlan});
 
   @override
   ConsumerState<PackingPlanEdit> createState() => _PackingPlanEditState();

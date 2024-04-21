@@ -15,7 +15,7 @@ enum EditValue {
 }
 
 class SetupScreen extends ConsumerWidget {
-  SetupScreen({Key? key, required this.editValue}) : super(key: key);
+  SetupScreen({super.key, required this.editValue});
 
   final newNameProvider = StateProvider<String>((ref) => '');
   final EditValue editValue;

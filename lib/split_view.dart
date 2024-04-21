@@ -10,7 +10,7 @@ import 'menu.dart';
 final tabIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
 
 class SplitView extends ConsumerStatefulWidget {
-  const SplitView({Key? key, required this.child}) : super(key: key);
+  const SplitView({super.key, required this.child});
   final Widget child;
 
   @override

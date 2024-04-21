@@ -235,7 +235,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 class _SignInWithAppleButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const _SignInWithAppleButton({super.key, required this.onPressed});
+  const _SignInWithAppleButton({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
