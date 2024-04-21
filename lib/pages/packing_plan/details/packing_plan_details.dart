@@ -215,137 +215,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       ),
                                     ),
 
-                                    ///---
-                                    /*ListView.separated(
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: entry.value.length,
-                                      itemBuilder: (context, index) {
-                                        final PackingPlanItem item = entry.value[index];
-                                        final Equipment equipment = equipmentList.singleWhere(
-                                                (element) => element.id == item.equipmentId);
-
-                                        DocumentReference docRef = FirebaseFirestore.instance
-                                            .collection('users')
-                                            .doc(Auth().user?.uid)
-                                            .collection('packing_plan')
-                                            .doc(packingPlan.id)
-                                            .collection('items')
-                                            .doc('${item.equipmentId}${item.location}');
-
-                                        return ListTile(
-                                          onTap: () => toggle(
-                                              equipmentId: item.equipmentId,
-                                              location: item.location,
-                                              newValue: !item.isChecked),
-                                          leading: CustomCheckBox(
-                                            value: item.isChecked,
-                                            onChanged: (value) => toggle(
-                                                equipmentId: item.equipmentId,
-                                                location: item.location,
-                                                newValue: value),
-                                          ),
-                                          title: Text(
-                                              '${equipment.brand} ${equipment.name} @${packingPlan.locations[item.location - 1]} ${item.equipmentCount}x'),
-                                          trailing: TooltipVisibility(
-                                            visible: false,
-                                            child: Theme(
-                                              data: Theme.of(context).copyWith(
-                                                splashFactory: NoSplash.splashFactory,
-                                                highlightColor: Colors.transparent,
-                                                splashColor: Colors.transparent,
-                                              ),
-                                              child: PopupMenuButton(
-                                                icon: const Icon(Icons.more_vert_rounded,),
-                                                iconColor: Colors.black54,
-                                                color: Colors.white,
-                                                splashRadius: 100,
-                                                offset: const Offset(-10, 0),
-                                                surfaceTintColor: Colors.white,
-                                                itemBuilder: (context) => [
-                                                  CustomPopupMenuItem(
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.spaceEvenly,
-                                                      children: [
-                                                        TextButton(
-                                                            style: TextButton.styleFrom(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        10.0))),
-                                                            onPressed: () {
-                                                              if (item.equipmentCount > 1) {
-                                                                docRef.update({
-                                                                  'equipmentCount':
-                                                                  (item.equipmentCount - 1)
-                                                                });
-                                                              }
-                                                            },
-                                                            child: const Icon(
-                                                                Icons.chevron_left_rounded)),
-                                                        Text(
-                                                          item.equipmentCount.toString(),
-                                                          style: const TextStyle(fontSize: 17),
-                                                        ),
-                                                        TextButton(
-                                                            style: TextButton.styleFrom(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        10.0))),
-                                                            onPressed: () => docRef.update({
-                                                              'equipmentCount':
-                                                              (item.equipmentCount + 1)
-                                                            }),
-                                                            child: const Icon(
-                                                                Icons.chevron_right_rounded)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  CustomPopupMenuItem(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(
-                                                            left: 5.0, right: 5.0, top: 10.0),
-                                                        child: TextButton(
-                                                          style: TextButton.styleFrom(
-                                                              foregroundColor: Colors.red,
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(10.0))),
-                                                          onPressed: () => docRef
-                                                              .delete()
-                                                              .then((value) => context.pop()),
-                                                          child: const Row(
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment.center,
-                                                            children: [
-                                                              Icon(Icons.delete_rounded),
-                                                              Padding(
-                                                                padding: EdgeInsets.only(left: 8.0),
-                                                                child: Text('Löschen'),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      separatorBuilder: (BuildContext context, int index) {
-                                        return Padding(
-                                          padding: Design.pagePadding
-                                              .add(const EdgeInsets.only(left: 45.0)),
-                                          child: const Divider(
-                                            height: 0.0,
-                                          ),
-                                        );
-                                      },
-                                    ),*/
-
-                                    ///-----
                                     for (PackingPlanItem item in entry.value)
                                       ListTile(
                                         onTap: () => context.push(
@@ -360,6 +229,81 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                         ),
                                         title: Text(
                                             '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name} ${item.equipmentCount}x'),
+                                        trailing: TooltipVisibility(
+                                          visible: false,
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                              splashFactory: NoSplash.splashFactory,
+                                              highlightColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                            ),
+                                            child: PopupMenuButton(
+                                              icon: const Icon(Icons.more_vert_rounded,),
+                                              iconColor: Colors.black54,
+                                              color: Colors.white,
+                                              splashRadius: 100,
+                                              offset: const Offset(-10, 0),
+                                              surfaceTintColor: Colors.white,
+                                              itemBuilder: (context) => [
+                                                CustomPopupMenuItem(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      TextButton(
+                                                          style: TextButton.styleFrom(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(
+                                                                      10.0))),
+                                                          onPressed: () {},
+                                                          child: const Icon(
+                                                              Icons.chevron_left_rounded)),
+                                                      Text(
+                                                        item.equipmentCount.toString(),
+                                                        style: const TextStyle(fontSize: 17),
+                                                      ),
+                                                      TextButton(
+                                                          style: TextButton.styleFrom(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(
+                                                                      10.0))),
+                                                          onPressed: () {},
+                                                          child: const Icon(
+                                                              Icons.chevron_right_rounded)),
+                                                    ],
+                                                  ),
+                                                ),
+                                                CustomPopupMenuItem(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(
+                                                          left: 5.0, right: 5.0, top: 10.0),
+                                                      child: TextButton(
+                                                        style: TextButton.styleFrom(
+                                                            foregroundColor: Colors.red,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                BorderRadius.circular(10.0))),
+                                                        onPressed: () {},
+                                                        child: const Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(Icons.delete_rounded),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(left: 8.0),
+                                                              child: Text('Löschen'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                   ],
                                 ));
