@@ -48,8 +48,14 @@ class EquipmentCard extends ConsumerWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       children: [
-                        Expanded(child: Image.asset('assets/items/map.png')),
-                        Text('${equipment.brand!} ${equipment.name}', style: const TextStyle(color: Colors.white),),
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset('assets/items/map.png'),
+                        )),
+                        Text('${equipment.brand!} ${equipment.name}',
+                          style: const TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),

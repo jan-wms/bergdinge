@@ -587,33 +587,45 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             children: [
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                  //foregroundColor: Colors.yellow,
-                                                  foregroundColor: Colors.white,
+                                                  foregroundColor:
+                                                  Design.colors[0],
                                                   backgroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
+                                                    BorderRadius.circular(
+                                                        10.0),
                                                   ),
                                                 ),
-                                                child: Icon(
-                                                    Icons.lightbulb_rounded, color: Design.colors[6],),
+                                                child: const Row(
+                                                  children: [
+                                                    Icon(Icons.lightbulb_rounded),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 10.0),
+                                                      child: Text(
+                                                        'Tipps',
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                                 onPressed: () {
                                                   CustomDialog.showCustomModal(
                                                       context: context,
                                                       child:
-                                                          const Text('tipps'));
+                                                      const Text('tipps'));
                                                 },
                                               ),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   foregroundColor:
-                                                      Design.colors[0],
+                                                  Design.colors[0],
                                                   backgroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
+                                                    BorderRadius.circular(
+                                                        10.0),
                                                   ),
                                                 ),
                                                 child: const Row(
@@ -633,74 +645,74 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 onPressed: () =>
                                                     CustomDialog
                                                         .showCustomModal(
-                                                            context: context,
-                                                            child: Column(
-                                                              children: [
-                                                                const Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                      top: 20.0,
-                                                                      bottom:
-                                                                          10.0),
-                                                                  child: Stack(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        'Ausrüstung hinzufügen',
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                21,
-                                                                            fontWeight:
-                                                                                FontWeight.w600),
-                                                                      ),
-                                                                      Align(
-                                                                        alignment:
-                                                                            Alignment.centerRight,
-                                                                        child:
-                                                                            CustomCloseButton(),
-                                                                      ),
-                                                                    ],
+                                                        context: context,
+                                                        child: Column(
+                                                          children: [
+                                                            const Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  top: 20.0,
+                                                                  bottom:
+                                                                  10.0),
+                                                              child: Stack(
+                                                                alignment:
+                                                                Alignment
+                                                                    .center,
+                                                                children: [
+                                                                  Text(
+                                                                    'Ausrüstung hinzufügen',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                        21,
+                                                                        fontWeight:
+                                                                        FontWeight.w600),
                                                                   ),
-                                                                ),
-                                                                const Divider(
-                                                                  indent: 15,
-                                                                  endIndent: 15,
-                                                                  height: 1,
-                                                                  color: Colors
-                                                                      .grey,
-                                                                ),
-                                                                Expanded(
+                                                                  Align(
+                                                                    alignment:
+                                                                    Alignment.centerRight,
                                                                     child:
-                                                                        CustomScrollView(
+                                                                    CustomCloseButton(),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            const Divider(
+                                                              indent: 15,
+                                                              endIndent: 15,
+                                                              height: 1,
+                                                              color: Colors
+                                                                  .grey,
+                                                            ),
+                                                            Expanded(
+                                                                child:
+                                                                CustomScrollView(
                                                                   slivers: [
                                                                     EquipmentList(
                                                                       packingPlanId:
-                                                                          packingPlan
-                                                                              .id,
+                                                                      packingPlan
+                                                                          .id,
                                                                       onItemClick:
                                                                           (equipmentId) {
                                                                         int? loc = items
                                                                             .where((element) =>
-                                                                                element.equipmentId ==
-                                                                                equipmentId)
+                                                                        element.equipmentId ==
+                                                                            equipmentId)
                                                                             .sorted((a, b) =>
-                                                                                a.location.compareTo(b.location))
+                                                                            a.location.compareTo(b.location))
                                                                             .firstOrNull
                                                                             ?.location;
                                                                         editItem(
                                                                             equipmentId:
-                                                                                equipmentId,
+                                                                            equipmentId,
                                                                             location:
-                                                                                loc,
+                                                                            loc,
                                                                             allowSelectLocation:
-                                                                                true);
+                                                                            true);
                                                                       },
                                                                     ),
                                                                   ],
                                                                 )),
-                                                              ],
-                                                            )),
+                                                          ],
+                                                        )),
                                               ),
                                             ],
                                           ),
