@@ -239,8 +239,22 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   },
                                                 )
                                               : null,
-                                          title: Text(
-                                              '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name} ${item.equipmentCount}x'),
+                                          title: Row(
+                                            children: [
+                                              Text(
+                                                  '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name}'),
+                                              if(item.equipmentCount > 1)
+                                              Container(
+                                                margin: const EdgeInsets.only(left: 20.0),
+                                                decoration: BoxDecoration(
+                                                  color: (equipmentList.singleWhere((element) => element.id == item.equipmentId).category == '3.0') ? Colors.blue : Colors.orange,
+                                                  borderRadius: BorderRadius.circular(5.0),
+                                                ),
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text('${item.equipmentCount}${(equipmentList.singleWhere((element) => element.id == item.equipmentId).category == '3.0') ? ' ml' : 'x'}', style: const TextStyle(color: Colors.white),),
+                                              ),
+                                            ],
+                                          ),
                                           trailing: (ref.read(
                                                       dropdownIndexProvider) !=
                                                   0)
@@ -796,24 +810,68 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                             ),
                                                           ),
                                                           Expanded(
-                                                              child: ListView.separated(
-                                                                itemCount: Data.tips.where((element) => element.isRelevant(packingPlan)).length,
-                                                                itemBuilder: (context, index) {
-                                                                  Tip tip = Data.tips.where((element) => element.isRelevant(packingPlan)).toList()[index];
-                                                                  return Row(
+                                                            child: ListView
+                                                                .separated(
+                                                              itemCount: Data
+                                                                  .tips
+                                                                  .where((element) =>
+                                                                      element.isRelevant(
+                                                                          packingPlan))
+                                                                  .length,
+                                                              itemBuilder:
+                                                                  (context,
+                                                                      index) {
+                                                                Tip tip = Data
+                                                                    .tips
+                                                                    .where((element) =>
+                                                                        element.isRelevant(
+                                                                            packingPlan))
+                                                                    .toList()[index];
+                                                                return Padding(
+                                                                  padding: Design
+                                                                          .pagePadding,
+                                                                  child: Row(
                                                                     children: [
-                                                                      Column(
-                                                                        children: [
-                                                                          Text(tip.title),
-                                                                          Text(tip.subTitle),
-                                                                        ]
+                                                                      Expanded(
+                                                                        child:
+                                                                            Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Text(
+                                                                              tip.title,
+                                                                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                                                                            ),
+                                                                            Text(
+                                                                              tip.subTitle,
+                                                                              style: const TextStyle(fontSize: 15, color: Colors.black54),
+                                                                            ),
+                                                                          ],
+                                                                        ),
                                                                       ),
-                                                                      Icon(tip.conditionIsMet ? Icons.check_circle_rounded : Icons.warning_rounded),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(left: 15.0),
+                                                                        child: tip.isConditionMet(items, equipmentList)
+                                                                            ? Icon(Icons
+                                                                                .check_circle_rounded, color: Design.colors[1], size: 50.0,)
+                                                                            : Icon(
+                                                                                Icons.warning_rounded, color: Design.colors[6], size: 50.0,),
+                                                                      ),
                                                                     ],
-                                                                  );
-                                                                },
-                                                                separatorBuilder: (context, _) => const Divider(),),
                                                                   ),
+                                                                );
+                                                              },
+                                                              separatorBuilder:
+                                                                  (context,
+                                                                          _) =>
+                                                                      Padding(
+                                                                padding: Design
+                                                                        .pagePadding.add(const EdgeInsets.only(top: 10.0, bottom: 10.0)),
+                                                                child:
+                                                                    const Divider(),
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ],
                                                       ));
                                                 },
