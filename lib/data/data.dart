@@ -1,4 +1,5 @@
 import 'package:equipment_app/data_models/category.dart';
+import 'package:equipment_app/data_models/tip.dart';
 
 enum EquipmentStatus {
   active,
@@ -22,7 +23,14 @@ class Data {
   static String websiteUrl = 'https://bergdinge.de/';
   static String websiteUrlShort = 'bergdinge.de';
   static String supportMail = 'app@bergdinge.de';
-  
+
+  static List<Tip> tips = [
+    Tip(title: 'LVS Ausrüstung', subTitle: 'Denke auf Skitour immer an deine LVS Ausrüstung.', relevantSports: ['Skitour'], conditionIsMet: true),
+    Tip(title: 'Erste Hilfe', subTitle: 'Du solltest auf jeder Tour ein kleines Erste Hilfe Set dabei haben.', relevantSports: sports, conditionIsMet: false),
+    Tip(title: 'Klettergurt', subTitle: 'Du hast noch keinen Klettergurt eingepackt.', relevantSports: sports.where((element) => element.toLowerCase().contains('kletter')).toList() + ['Hochtour'], conditionIsMet: false),
+    Tip(title: 'Hüttenschlafsack', subTitle: 'Ein Hüttenschlafsack ist auf den meisten Hütten pflicht.', relevantSports: ['Hüttentour'], conditionIsMet: true),
+    Tip(title: 'Gewicht', subTitle: 'Nimm nur das Nötigste mit, doch spare nicht bei der Sicherheitsausstattung!', relevantSports: sports, conditionIsMet: false),
+  ];
   
   static List<String> sports = [
     'Wandern',

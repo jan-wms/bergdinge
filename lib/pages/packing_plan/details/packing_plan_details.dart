@@ -10,7 +10,6 @@ import 'package:equipment_app/data_models/packing_plan.dart';
 import 'package:equipment_app/data_models/packing_plan_item.dart';
 import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
-import 'package:equipment_app/pages/packing_plan/details/item_list.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/parser.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import '../../../custom_widgets/custom_checkbox.dart';
 import '../../../custom_widgets/custom_dialog.dart';
 import '../../../custom_widgets/popupitem_extension.dart';
+import '../../../data_models/tip.dart';
 import '../../../firebase/firebase_auth.dart';
 import '../../../validators/packing_plan_validator.dart';
 import 'custom_pie_chart.dart';
@@ -210,7 +210,15 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       dropdownIndexProvider) !=
                                                   0)
                                               ? CustomCheckBox(
-                                                  value: items.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).isChecked,
+                                                  value: items
+                                                      .singleWhere((element) =>
+                                                          element.equipmentId ==
+                                                              item
+                                                                  .equipmentId &&
+                                                          element.location ==
+                                                              ref.read(
+                                                                  dropdownIndexProvider))
+                                                      .isChecked,
                                                   onChanged: (value) async {
                                                     DocumentReference docRef =
                                                         FirebaseFirestore
@@ -233,123 +241,186 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               : null,
                                           title: Text(
                                               '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name} ${item.equipmentCount}x'),
-                                          trailing: TooltipVisibility(
-                                            visible: false,
-                                            child: Theme(
-                                              data: Theme.of(context).copyWith(
-                                                splashFactory:
-                                                    NoSplash.splashFactory,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                splashColor: Colors.transparent,
-                                              ),
-                                              child: PopupMenuButton(
-                                                icon: const Icon(
-                                                  Icons.more_vert_rounded,
-                                                ),
-                                                iconColor: Colors.black54,
-                                                color: Colors.white,
-                                                splashRadius: 100,
-                                                offset: const Offset(-10, 0),
-                                                surfaceTintColor: Colors.white,
-                                                itemBuilder: (context) => [
-                                                  CustomPopupMenuItem(
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        TextButton(
-                                                            style: TextButton.styleFrom(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0))),
-                                                            onPressed: () {},
-                                                            child: const Icon(Icons
-                                                                .chevron_left_rounded)),
-                                                        Text(
-                                                          item.equipmentCount
-                                                              .toString(),
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 17),
+                                          trailing: (ref.read(
+                                                      dropdownIndexProvider) !=
+                                                  0)
+                                              ? TooltipVisibility(
+                                                  visible: false,
+                                                  child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                      splashFactory: NoSplash
+                                                          .splashFactory,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                    ),
+                                                    child: PopupMenuButton(
+                                                      icon: const Icon(
+                                                        Icons.more_vert_rounded,
+                                                      ),
+                                                      iconColor: Colors.black54,
+                                                      color: Colors.white,
+                                                      splashRadius: 100,
+                                                      offset:
+                                                          const Offset(-10, 0),
+                                                      surfaceTintColor:
+                                                          Colors.white,
+                                                      itemBuilder: (context) =>
+                                                          [
+                                                        CustomPopupMenuItem(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceEvenly,
+                                                            children: [
+                                                              TextButton(
+                                                                  style: TextButton.styleFrom(
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              10.0))),
+                                                                  onPressed:
+                                                                      () {
+                                                                    if (item.equipmentCount >
+                                                                        1) {
+                                                                      DocumentReference docRef = FirebaseFirestore
+                                                                          .instance
+                                                                          .collection(
+                                                                              'users')
+                                                                          .doc(Auth()
+                                                                              .user
+                                                                              ?.uid)
+                                                                          .collection(
+                                                                              'packing_plan')
+                                                                          .doc(packingPlan
+                                                                              .id)
+                                                                          .collection(
+                                                                              'items')
+                                                                          .doc(
+                                                                              '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+                                                                      docRef
+                                                                          .update({
+                                                                        'equipmentCount':
+                                                                            (item.equipmentCount -
+                                                                                1)
+                                                                      });
+                                                                    }
+                                                                  },
+                                                                  child: const Icon(
+                                                                      Icons
+                                                                          .chevron_left_rounded)),
+                                                              //TODO
+                                                              Text(
+                                                                item.equipmentCount
+                                                                    .toString(),
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            17),
+                                                              ),
+                                                              TextButton(
+                                                                  style: TextButton.styleFrom(
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              10.0))),
+                                                                  onPressed:
+                                                                      () {
+                                                                    DocumentReference docRef = FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            'users')
+                                                                        .doc(Auth()
+                                                                            .user
+                                                                            ?.uid)
+                                                                        .collection(
+                                                                            'packing_plan')
+                                                                        .doc(packingPlan
+                                                                            .id)
+                                                                        .collection(
+                                                                            'items')
+                                                                        .doc(
+                                                                            '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+
+                                                                    docRef
+                                                                        .update({
+                                                                      'equipmentCount':
+                                                                          (item.equipmentCount +
+                                                                              1)
+                                                                    });
+                                                                  },
+                                                                  child: const Icon(
+                                                                      Icons
+                                                                          .chevron_right_rounded)),
+                                                            ],
+                                                          ),
                                                         ),
-                                                        TextButton(
-                                                            style: TextButton.styleFrom(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0))),
-                                                            onPressed: () {},
-                                                            child: const Icon(Icons
-                                                                .chevron_right_rounded)),
+                                                        CustomPopupMenuItem(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left: 5.0,
+                                                                    right: 5.0,
+                                                                    top: 10.0),
+                                                            child: TextButton(
+                                                              style: TextButton.styleFrom(
+                                                                  foregroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10.0))),
+                                                              onPressed:
+                                                                  () async {
+                                                                DocumentReference docRef = FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'users')
+                                                                    .doc(Auth()
+                                                                        .user
+                                                                        ?.uid)
+                                                                    .collection(
+                                                                        'packing_plan')
+                                                                    .doc(
+                                                                        packingPlan
+                                                                            .id)
+                                                                    .collection(
+                                                                        'items')
+                                                                    .doc(
+                                                                        '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+                                                                docRef
+                                                                    .delete()
+                                                                    .then((value) =>
+                                                                        context
+                                                                            .pop());
+                                                              },
+                                                              child: const Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Icon(Icons
+                                                                      .delete_rounded),
+                                                                  Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                8.0),
+                                                                    child: Text(
+                                                                        'Löschen'),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
-                                                  CustomPopupMenuItem(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 5.0,
-                                                              right: 5.0,
-                                                              top: 10.0),
-                                                      child: TextButton(
-                                                        style: TextButton.styleFrom(
-                                                            foregroundColor:
-                                                                Colors.red,
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0))),
-                                                        onPressed: () async {
-                                                          DocumentReference
-                                                              docRef =
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(Auth()
-                                                                      .user
-                                                                      ?.uid)
-                                                                  .collection(
-                                                                      'packing_plan')
-                                                                  .doc(
-                                                                      packingPlan
-                                                                          .id)
-                                                                  .collection(
-                                                                      'items')
-                                                                  .doc(
-                                                                      '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
-                                                          docRef.delete().then(
-                                                              (value) => context
-                                                                  .pop());
-                                                        },
-                                                        child: const Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(Icons
-                                                                .delete_rounded),
-                                                            Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      left:
-                                                                          8.0),
-                                                              child: Text(
-                                                                  'Löschen'),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
+                                                )
+                                              : null,
                                         ),
                                     ],
                                   ),
@@ -692,9 +763,9 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 onPressed: () {
                                                   CustomDialog.showCustomModal(
                                                       context: context,
-                                                      child: const Column(
+                                                      child: Column(
                                                         children: [
-                                                          Padding(
+                                                          const Padding(
                                                             padding:
                                                                 EdgeInsets.only(
                                                                     top: 20.0,
@@ -725,8 +796,24 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                             ),
                                                           ),
                                                           Expanded(
-                                                              child:
-                                                                  Placeholder()),
+                                                              child: ListView.separated(
+                                                                itemCount: Data.tips.where((element) => element.isRelevant(packingPlan)).length,
+                                                                itemBuilder: (context, index) {
+                                                                  Tip tip = Data.tips.where((element) => element.isRelevant(packingPlan)).toList()[index];
+                                                                  return Row(
+                                                                    children: [
+                                                                      Column(
+                                                                        children: [
+                                                                          Text(tip.title),
+                                                                          Text(tip.subTitle),
+                                                                        ]
+                                                                      ),
+                                                                      Icon(tip.conditionIsMet ? Icons.check_circle_rounded : Icons.warning_rounded),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                                separatorBuilder: (context, _) => const Divider(),),
+                                                                  ),
                                                         ],
                                                       ));
                                                 },
@@ -1175,26 +1262,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ],
                                         ),
                                       ),
-                                      //TODO
-                                      if (false)
-                                        ElevatedButton(
-                                          child: const Icon(
-                                              Icons.library_add_check_outlined),
-                                          onPressed: () =>
-                                              CustomDialog.showCustomModal(
-                                            context: context,
-                                            child: ItemList(
-                                              locations: packingPlan.locations,
-                                              packingPlanId: packingPlan.id,
-                                              onEdit: (equipmentId, location) =>
-                                                  editItem(
-                                                      equipmentId: equipmentId,
-                                                      location: location,
-                                                      allowSelectLocation:
-                                                          false),
-                                            ),
-                                          ),
-                                        ),
                                     ],
                                   ),
                                 ),
