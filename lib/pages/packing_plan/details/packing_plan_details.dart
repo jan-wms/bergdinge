@@ -163,22 +163,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                               statistics.add(statisticFromItems(entry));
                             }
 
-                            Future<void> toggle(
-                                {required String equipmentId,
-                                required int location,
-                                required bool newValue}) async {
-                              DocumentReference docRef = FirebaseFirestore
-                                  .instance
-                                  .collection('users')
-                                  .doc(Auth().user?.uid)
-                                  .collection('packing_plan')
-                                  .doc(packingPlan.id)
-                                  .collection('items')
-                                  .doc('$equipmentId$location');
-
-                              docRef.update({'isChecked': newValue});
-                            }
-
                             List<Widget> getRightSection(Statistic statistic) {
                               var result = <Widget>[];
 
@@ -204,108 +188,171 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                               for (MapEntry<String, List<PackingPlanItem>> entry
                                   in summarizedItems.entries) {
-                                result.add(Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      Data.getCategoryNames(entry.key).last,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 20.0,
-                                      ),
-                                    ),
-
-                                    for (PackingPlanItem item in entry.value)
-                                      ListTile(
-                                        onTap: () => context.push(
-                                            '/equipment/details',
-                                            extra: item.equipmentId),
-                                        leading: CustomCheckBox(
-                                          value: item.isChecked,
-                                          onChanged: (value) => toggle(
-                                              equipmentId: item.equipmentId,
-                                              location: item.location,
-                                              newValue: value),
+                                result.add(Padding(
+                                  padding: const EdgeInsets.only(top: 30.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        Data.getCategoryNames(entry.key).last,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 20.0,
                                         ),
-                                        title: Text(
-                                            '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name} ${item.equipmentCount}x'),
-                                        trailing: TooltipVisibility(
-                                          visible: false,
-                                          child: Theme(
-                                            data: Theme.of(context).copyWith(
-                                              splashFactory: NoSplash.splashFactory,
-                                              highlightColor: Colors.transparent,
-                                              splashColor: Colors.transparent,
-                                            ),
-                                            child: PopupMenuButton(
-                                              icon: const Icon(Icons.more_vert_rounded,),
-                                              iconColor: Colors.black54,
-                                              color: Colors.white,
-                                              splashRadius: 100,
-                                              offset: const Offset(-10, 0),
-                                              surfaceTintColor: Colors.white,
-                                              itemBuilder: (context) => [
-                                                CustomPopupMenuItem(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      TextButton(
-                                                          style: TextButton.styleFrom(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      10.0))),
-                                                          onPressed: () {},
-                                                          child: const Icon(
-                                                              Icons.chevron_left_rounded)),
-                                                      Text(
-                                                        item.equipmentCount.toString(),
-                                                        style: const TextStyle(fontSize: 17),
-                                                      ),
-                                                      TextButton(
-                                                          style: TextButton.styleFrom(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      10.0))),
-                                                          onPressed: () {},
-                                                          child: const Icon(
-                                                              Icons.chevron_right_rounded)),
-                                                    ],
-                                                  ),
+                                      ),
+                                      for (PackingPlanItem item in entry.value)
+                                        ListTile(
+                                          onTap: () => context.push(
+                                              '/equipment/details',
+                                              extra: item.equipmentId),
+                                          leading: (ref.read(
+                                                      dropdownIndexProvider) !=
+                                                  0)
+                                              ? CustomCheckBox(
+                                                  value: items.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).isChecked,
+                                                  onChanged: (value) async {
+                                                    DocumentReference docRef =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection('users')
+                                                            .doc(Auth()
+                                                                .user
+                                                                ?.uid)
+                                                            .collection(
+                                                                'packing_plan')
+                                                            .doc(packingPlan.id)
+                                                            .collection('items')
+                                                            .doc(
+                                                                '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+
+                                                    docRef.update(
+                                                        {'isChecked': value});
+                                                  },
+                                                )
+                                              : null,
+                                          title: Text(
+                                              '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name} ${item.equipmentCount}x'),
+                                          trailing: TooltipVisibility(
+                                            visible: false,
+                                            child: Theme(
+                                              data: Theme.of(context).copyWith(
+                                                splashFactory:
+                                                    NoSplash.splashFactory,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                splashColor: Colors.transparent,
+                                              ),
+                                              child: PopupMenuButton(
+                                                icon: const Icon(
+                                                  Icons.more_vert_rounded,
                                                 ),
-                                                CustomPopupMenuItem(
+                                                iconColor: Colors.black54,
+                                                color: Colors.white,
+                                                splashRadius: 100,
+                                                offset: const Offset(-10, 0),
+                                                surfaceTintColor: Colors.white,
+                                                itemBuilder: (context) => [
+                                                  CustomPopupMenuItem(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        TextButton(
+                                                            style: TextButton.styleFrom(
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0))),
+                                                            onPressed: () {},
+                                                            child: const Icon(Icons
+                                                                .chevron_left_rounded)),
+                                                        Text(
+                                                          item.equipmentCount
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 17),
+                                                        ),
+                                                        TextButton(
+                                                            style: TextButton.styleFrom(
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0))),
+                                                            onPressed: () {},
+                                                            child: const Icon(Icons
+                                                                .chevron_right_rounded)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  CustomPopupMenuItem(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          left: 5.0, right: 5.0, top: 10.0),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5.0,
+                                                              right: 5.0,
+                                                              top: 10.0),
                                                       child: TextButton(
                                                         style: TextButton.styleFrom(
-                                                            foregroundColor: Colors.red,
+                                                            foregroundColor:
+                                                                Colors.red,
                                                             shape: RoundedRectangleBorder(
                                                                 borderRadius:
-                                                                BorderRadius.circular(10.0))),
-                                                        onPressed: () {},
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0))),
+                                                        onPressed: () async {
+                                                          DocumentReference
+                                                              docRef =
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .doc(Auth()
+                                                                      .user
+                                                                      ?.uid)
+                                                                  .collection(
+                                                                      'packing_plan')
+                                                                  .doc(
+                                                                      packingPlan
+                                                                          .id)
+                                                                  .collection(
+                                                                      'items')
+                                                                  .doc(
+                                                                      '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+                                                          docRef.delete().then(
+                                                              (value) => context
+                                                                  .pop());
+                                                        },
                                                         child: const Row(
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment.center,
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: [
-                                                            Icon(Icons.delete_rounded),
+                                                            Icon(Icons
+                                                                .delete_rounded),
                                                             Padding(
-                                                              padding: EdgeInsets.only(left: 8.0),
-                                                              child: Text('Löschen'),
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left:
+                                                                          8.0),
+                                                              child: Text(
+                                                                  'Löschen'),
                                                             ),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
-                                                ),
-                                              ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                  ],
+                                    ],
+                                  ),
                                 ));
                               }
                               return result;
@@ -494,44 +541,75 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       isDesktop ? 0.0 : 15.0,
                                                 ),
                                                 child: Wrap(
-                                                    runSpacing: 5.0,
-                                                    spacing: 10.0,
-                                                    alignment:
-                                                        WrapAlignment.center,
-                                                    children: [
-                                                      for (var sport
-                                                          in packingPlan.sports)
-                                                        FilterChip(
-                                                          showCheckmark: false,
-                                                          label: Text(sport),
-                                                          labelStyle: TextStyle(
-                                                              color: Design
-                                                                  .colors[0]),
-                                                          selected: true,
-                                                          onSelected:
-                                                              (bool value) {},
+                                                  runSpacing: 13.0,
+                                                  spacing: 13.0,
+                                                  alignment:
+                                                      WrapAlignment.center,
+                                                  children: [
+                                                    for (var sport
+                                                        in packingPlan.sports)
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    13.0,
+                                                                vertical: 9.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: const Color
+                                                              .fromRGBO(
+                                                              218, 231, 208, 1),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10.0),
                                                         ),
-                                                      FilterChip(
-                                                        showCheckmark: false,
-                                                        label: const Icon(
+                                                        child: Text(
+                                                          sport,
+                                                          style: TextStyle(
+                                                            fontSize: 15.0,
+                                                            color: Design
+                                                                .colors[0],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    GestureDetector(
+                                                      onTap: () => CustomDialog
+                                                          .showCustomModal(
+                                                              context: context,
+                                                              child:
+                                                                  PackingPlanEdit(
+                                                                packingPlan:
+                                                                    packingPlan,
+                                                              )),
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    15.0,
+                                                                vertical: 8.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: const Color
+                                                              .fromRGBO(240,
+                                                              240, 240, 1.0),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10.0),
+                                                        ),
+                                                        child: Icon(
                                                           Icons.add_rounded,
-                                                          size: 18,
-                                                          color: Colors.black54,
+                                                          size: 22,
+                                                          color:
+                                                              Design.colors[0],
                                                         ),
-                                                        selected: false,
-                                                        onSelected: (bool
-                                                                value) =>
-                                                            CustomDialog
-                                                                .showCustomModal(
-                                                                    context:
-                                                                        context,
-                                                                    child:
-                                                                        PackingPlanEdit(
-                                                                      packingPlan:
-                                                                          packingPlan,
-                                                                    )),
-                                                      )
-                                                    ]),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                               Form(
                                                 key: _formKey,
@@ -588,17 +666,18 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   foregroundColor:
-                                                  Design.colors[0],
+                                                      Design.colors[0],
                                                   backgroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0),
+                                                        BorderRadius.circular(
+                                                            10.0),
                                                   ),
                                                 ),
                                                 child: const Row(
                                                   children: [
-                                                    Icon(Icons.lightbulb_rounded),
+                                                    Icon(Icons
+                                                        .lightbulb_rounded),
                                                     Padding(
                                                       padding: EdgeInsets.only(
                                                           left: 10.0),
@@ -613,19 +692,54 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 onPressed: () {
                                                   CustomDialog.showCustomModal(
                                                       context: context,
-                                                      child:
-                                                      const Text('tipps'));
+                                                      child: const Column(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 20.0,
+                                                                    bottom:
+                                                                        10.0),
+                                                            child: Stack(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              children: [
+                                                                Text(
+                                                                  'Tipps',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          21,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600),
+                                                                ),
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerRight,
+                                                                  child:
+                                                                      CustomCloseButton(),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                              child:
+                                                                  Placeholder()),
+                                                        ],
+                                                      ));
                                                 },
                                               ),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   foregroundColor:
-                                                  Design.colors[0],
+                                                      Design.colors[0],
                                                   backgroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0),
+                                                        BorderRadius.circular(
+                                                            10.0),
                                                   ),
                                                 ),
                                                 child: const Row(
@@ -645,74 +759,74 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 onPressed: () =>
                                                     CustomDialog
                                                         .showCustomModal(
-                                                        context: context,
-                                                        child: Column(
-                                                          children: [
-                                                            const Padding(
-                                                              padding: EdgeInsets.only(
-                                                                  top: 20.0,
-                                                                  bottom:
-                                                                  10.0),
-                                                              child: Stack(
-                                                                alignment:
-                                                                Alignment
-                                                                    .center,
-                                                                children: [
-                                                                  Text(
-                                                                    'Ausrüstung hinzufügen',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                        21,
-                                                                        fontWeight:
-                                                                        FontWeight.w600),
-                                                                  ),
-                                                                  Align(
+                                                            context: context,
+                                                            child: Column(
+                                                              children: [
+                                                                const Padding(
+                                                                  padding: EdgeInsets.only(
+                                                                      top: 20.0,
+                                                                      bottom:
+                                                                          10.0),
+                                                                  child: Stack(
                                                                     alignment:
-                                                                    Alignment.centerRight,
-                                                                    child:
-                                                                    CustomCloseButton(),
+                                                                        Alignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        'Ausrüstung hinzufügen',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                21,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
+                                                                      ),
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.centerRight,
+                                                                        child:
+                                                                            CustomCloseButton(),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            const Divider(
-                                                              indent: 15,
-                                                              endIndent: 15,
-                                                              height: 1,
-                                                              color: Colors
-                                                                  .grey,
-                                                            ),
-                                                            Expanded(
-                                                                child:
-                                                                CustomScrollView(
+                                                                ),
+                                                                const Divider(
+                                                                  indent: 15,
+                                                                  endIndent: 15,
+                                                                  height: 1,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                                Expanded(
+                                                                    child:
+                                                                        CustomScrollView(
                                                                   slivers: [
                                                                     EquipmentList(
                                                                       packingPlanId:
-                                                                      packingPlan
-                                                                          .id,
+                                                                          packingPlan
+                                                                              .id,
                                                                       onItemClick:
                                                                           (equipmentId) {
                                                                         int? loc = items
                                                                             .where((element) =>
-                                                                        element.equipmentId ==
-                                                                            equipmentId)
+                                                                                element.equipmentId ==
+                                                                                equipmentId)
                                                                             .sorted((a, b) =>
-                                                                            a.location.compareTo(b.location))
+                                                                                a.location.compareTo(b.location))
                                                                             .firstOrNull
                                                                             ?.location;
                                                                         editItem(
                                                                             equipmentId:
-                                                                            equipmentId,
+                                                                                equipmentId,
                                                                             location:
-                                                                            loc,
+                                                                                loc,
                                                                             allowSelectLocation:
-                                                                            true);
+                                                                                true);
                                                                       },
                                                                     ),
                                                                   ],
                                                                 )),
-                                                          ],
-                                                        )),
+                                                              ],
+                                                            )),
                                               ),
                                             ],
                                           ),
@@ -1061,7 +1175,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ],
                                         ),
                                       ),
-                                      if (items.isNotEmpty)
+                                      //TODO
+                                      if (false)
                                         ElevatedButton(
                                           child: const Icon(
                                               Icons.library_add_check_outlined),
