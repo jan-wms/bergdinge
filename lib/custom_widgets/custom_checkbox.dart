@@ -5,9 +5,11 @@ import '../data/design.dart';
 class CustomCheckBox extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
+  final bool disabled;
 
   const CustomCheckBox({
     super.key,
+    this.disabled = false,
     required this.value,
     required this.onChanged,
   });
@@ -60,9 +62,9 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
       padding: const EdgeInsets.all(1.0),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: fillColor,
+        color:  fillColor,
         border: Border.all(
-          color: (!widget.value ? (Design.colors[1].withOpacity(0.6)) : Colors.transparent),
+          color: widget.disabled ? Colors.black45 : (!widget.value ? (Design.colors[1].withOpacity(0.6)) : Colors.transparent),
           width: 2.0,
         ),
       ),
@@ -78,7 +80,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: _buildIcon(),
-      onPressed: () => widget.onChanged(!_checked),
+      onPressed: widget.disabled ? null : () => widget.onChanged(!_checked),
       mouseCursor: SystemMouseCursors.click,
     );
   }

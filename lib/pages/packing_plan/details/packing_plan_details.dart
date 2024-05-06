@@ -12,9 +12,7 @@ import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/parser.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../custom_widgets/custom_checkbox.dart';
@@ -206,7 +204,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ),
                                         ),
                                       ),
-                                      for (PackingPlanItem item in entry.value)
+                                      for (PackingPlanItem item
+                                          in entry.value) ...[
                                         ListTile(
                                           onTap: () => context.push(
                                               '/equipment/details',
@@ -463,6 +462,18 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 )
                                               : null,
                                         ),
+                                        if (entry.value.last != item)
+                                          Padding(
+                                            padding: (ref.read(
+                                                dropdownIndexProvider) !=
+                                                0)
+                                                ? const EdgeInsets.only(
+                                                left: 80.0, right: 30.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                                            child: const Divider(
+                                              height: 5.0,
+                                            ),
+                                          ),
+                                      ],
                                     ],
                                   ),
                                 ));
@@ -1025,8 +1036,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           Padding(
                                             padding: Design.pagePadding,
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 TooltipVisibility(
                                                   visible: false,
@@ -1172,39 +1185,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   ),
                                                 ),
                                                 Wrap(
-                                                    spacing: 0.0,
-                                                    runSpacing: 0.0,
-                                                    children: [
-                                                      if (getCurrentStatistic()
-                                                          .title
-                                                          .isNotEmpty)
-                                                        SizedBox(
-                                                          height: 40,
-                                                          child: Row(
-                                                            children: [
-                                                              const Padding(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        horizontal:
-                                                                            5.0),
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .chevron_right_rounded,
-                                                                  color: Colors
-                                                                      .black38,
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                getCurrentStatistic()
-                                                                    .title,
-                                                                style: const TextStyle(
-                                                                    color: Colors
-                                                                        .black54,
-                                                                    fontSize: 17),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
+                                                  spacing: 0.0,
+                                                  runSpacing: 0.0,
+                                                  children: [
+                                                    if (getCurrentStatistic()
+                                                        .title
+                                                        .isNotEmpty)
                                                       SizedBox(
                                                         height: 40,
                                                         child: Row(
@@ -1217,24 +1203,51 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               child: Icon(
                                                                 Icons
                                                                     .chevron_right_rounded,
-                                                                color:
-                                                                    Colors.black38,
+                                                                color: Colors
+                                                                    .black38,
                                                               ),
                                                             ),
                                                             Text(
-                                                              '${getCurrentStatistic().weight} g',
-                                                              style: TextStyle(
-                                                                  fontSize: 17,
-                                                                  color: Design
-                                                                      .colors[0],
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                              getCurrentStatistic()
+                                                                  .title,
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .black54,
+                                                                  fontSize: 17),
                                                             ),
                                                           ],
                                                         ),
                                                       ),
-                                                    ],
+                                                    SizedBox(
+                                                      height: 40,
+                                                      child: Row(
+                                                        children: [
+                                                          const Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        5.0),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .chevron_right_rounded,
+                                                              color: Colors
+                                                                  .black38,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            '${getCurrentStatistic().weight} g',
+                                                            style: TextStyle(
+                                                                fontSize: 17,
+                                                                color: Design
+                                                                    .colors[0],
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
