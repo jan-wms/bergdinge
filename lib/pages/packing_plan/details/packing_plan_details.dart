@@ -12,7 +12,9 @@ import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/parser.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../custom_widgets/custom_checkbox.dart';
@@ -194,11 +196,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        Data.getCategoryNames(entry.key).last,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 20.0,
+                                      Padding(
+                                        padding: Design.pagePadding,
+                                        child: Text(
+                                          Data.getCategoryNames(entry.key).last,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 20.0,
+                                          ),
                                         ),
                                       ),
                                       for (PackingPlanItem item in entry.value)
@@ -241,18 +246,40 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               : null,
                                           title: Row(
                                             children: [
-                                              Text(
-                                                  '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name}'),
-                                              if(item.equipmentCount > 1)
-                                              Container(
-                                                margin: const EdgeInsets.only(left: 20.0),
-                                                decoration: BoxDecoration(
-                                                  color: (equipmentList.singleWhere((element) => element.id == item.equipmentId).category == '3.0') ? Colors.blue : Colors.orange,
-                                                  borderRadius: BorderRadius.circular(5.0),
-                                                ),
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text('${item.equipmentCount}${(equipmentList.singleWhere((element) => element.id == item.equipmentId).category == '3.0') ? ' ml' : 'x'}', style: const TextStyle(color: Colors.white),),
+                                              Flexible(
+                                                child: Text(
+                                                    '${equipmentList.singleWhere((element) => element.id == item.equipmentId).brand} ${equipmentList.singleWhere((element) => element.id == item.equipmentId).name}'),
                                               ),
+                                              if (item.equipmentCount > 1)
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      left: 10.0),
+                                                  decoration: BoxDecoration(
+                                                    color: (equipmentList
+                                                                .singleWhere(
+                                                                    (element) =>
+                                                                        element
+                                                                            .id ==
+                                                                        item.equipmentId)
+                                                                .category ==
+                                                            '3.0')
+                                                        ? Colors.blue
+                                                        : Colors.orange,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 5.0),
+                                                  child: Text(
+                                                    '${item.equipmentCount}${(equipmentList.singleWhere((element) => element.id == item.equipmentId).category == '3.0') ? ' ml' : 'x'}',
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14),
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                           trailing: (ref.read(
@@ -592,13 +619,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                   ],
                                 ),
                                 SliverPadding(
-                                  padding: Design.pagePadding.copyWith(
+                                  padding: const EdgeInsets.only(
                                     top: 20.0,
                                   ),
                                   sliver: SliverList(
                                     delegate: SliverChildListDelegate(
                                       [
                                         Container(
+                                          margin: Design.pagePadding,
                                           padding: const EdgeInsets.all(15.0),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
@@ -699,6 +727,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               Form(
                                                 key: _formKey,
                                                 child: TextFormField(
+                                                  autofocus: false,
                                                   validator: (value) =>
                                                       PackingPlanValidator
                                                           .notes(value),
@@ -742,8 +771,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 40.0),
+                                          padding: Design.pagePadding.copyWith(
+                                              top: 40.0, bottom: 40.0),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceEvenly,
@@ -829,7 +858,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                     .toList()[index];
                                                                 return Padding(
                                                                   padding: Design
-                                                                          .pagePadding,
+                                                                      .pagePadding,
                                                                   child: Row(
                                                                     children: [
                                                                       Expanded(
@@ -850,12 +879,22 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                         ),
                                                                       ),
                                                                       Padding(
-                                                                        padding: const EdgeInsets.only(left: 15.0),
-                                                                        child: tip.isConditionMet(items, equipmentList)
-                                                                            ? Icon(Icons
-                                                                                .check_circle_rounded, color: Design.colors[1], size: 50.0,)
+                                                                        padding: const EdgeInsets
+                                                                            .only(
+                                                                            left:
+                                                                                15.0),
+                                                                        child: tip.isConditionMet(items,
+                                                                                equipmentList)
+                                                                            ? Icon(
+                                                                                Icons.check_circle_rounded,
+                                                                                color: Design.colors[1],
+                                                                                size: 50.0,
+                                                                              )
                                                                             : Icon(
-                                                                                Icons.warning_rounded, color: Design.colors[6], size: 50.0,),
+                                                                                Icons.warning_rounded,
+                                                                                color: Design.colors[6],
+                                                                                size: 50.0,
+                                                                              ),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -866,7 +905,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                           _) =>
                                                                       Padding(
                                                                 padding: Design
-                                                                        .pagePadding.add(const EdgeInsets.only(top: 10.0, bottom: 10.0)),
+                                                                    .pagePadding
+                                                                    .add(const EdgeInsets
+                                                                        .only(
+                                                                        top:
+                                                                            10.0,
+                                                                        bottom:
+                                                                            10.0)),
                                                                 child:
                                                                     const Divider(),
                                                               ),
@@ -977,69 +1022,39 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ),
                                         ),
                                         if (items.isNotEmpty)
-                                          Row(
-                                            children: [
-                                              TooltipVisibility(
-                                                visible: false,
-                                                child: Theme(
-                                                  data: Theme.of(context)
-                                                      .copyWith(
-                                                    splashFactory:
-                                                        NoSplash.splashFactory,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                  ),
-                                                  child: PopupMenuButton(
-                                                    color: Colors.white,
-                                                    splashRadius: 100,
-                                                    surfaceTintColor:
-                                                        Colors.white,
-                                                    itemBuilder: (context) => [
-                                                      CustomPopupMenuItem(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 5.0,
-                                                            right: 5.0,
-                                                          ),
-                                                          child: TextButton(
-                                                            style: TextButton.styleFrom(
-                                                                foregroundColor:
-                                                                    Design.colors[
-                                                                        0],
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0))),
-                                                            onPressed: () {
-                                                              context.pop();
-                                                              ref
-                                                                  .read(dropdownIndexProvider
-                                                                      .notifier)
-                                                                  .state = 0;
-                                                            },
-                                                            child: const Text(
-                                                              'Gesamt',
-                                                              style: TextStyle(
-                                                                  fontSize: 17),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      for (String location
-                                                          in packingPlan
-                                                              .locations)
+                                          Padding(
+                                            padding: Design.pagePadding,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                TooltipVisibility(
+                                                  visible: false,
+                                                  child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                      splashFactory: NoSplash
+                                                          .splashFactory,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                    ),
+                                                    child: PopupMenuButton(
+                                                      color: Colors.white,
+                                                      splashRadius: 100,
+                                                      surfaceTintColor:
+                                                          Colors.white,
+                                                      itemBuilder: (context) =>
+                                                          [
                                                         CustomPopupMenuItem(
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .only(
-                                                                    left: 5.0,
-                                                                    right: 5.0,
-                                                                    top: 10.0),
+                                                              left: 5.0,
+                                                              right: 5.0,
+                                                            ),
                                                             child: TextButton(
                                                               style: TextButton.styleFrom(
                                                                   foregroundColor:
@@ -1054,103 +1069,175 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                 ref
                                                                     .read(dropdownIndexProvider
                                                                         .notifier)
-                                                                    .state = packingPlan
-                                                                        .locations
-                                                                        .indexWhere((element) =>
-                                                                            element ==
-                                                                            location) +
-                                                                    1;
+                                                                    .state = 0;
                                                               },
-                                                              child: Text(
-                                                                location,
-                                                                style:
-                                                                    const TextStyle(
-                                                                        fontSize:
-                                                                            17),
+                                                              child: const Text(
+                                                                'Gesamt',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        17),
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                    ],
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              7.0),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5.0),
-                                                        border: Border.all(
-                                                            color:
-                                                                Colors.black38),
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            ref.watch(dropdownIndexProvider) ==
-                                                                    0
-                                                                ? 'Gesamt'
-                                                                : packingPlan
-                                                                    .locations[ref
-                                                                        .watch(
-                                                                            dropdownIndexProvider) -
-                                                                    1],
-                                                            style: TextStyle(
-                                                                fontSize: 17,
-                                                                color: Design
-                                                                    .colors[0]),
-                                                          ),
-                                                          const Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 8.0),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .keyboard_arrow_down_rounded,
-                                                              color: Colors
-                                                                  .black38,
+                                                        for (String location
+                                                            in packingPlan
+                                                                .locations)
+                                                          CustomPopupMenuItem(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 5.0,
+                                                                      right:
+                                                                          5.0,
+                                                                      top:
+                                                                          10.0),
+                                                              child: TextButton(
+                                                                style: TextButton.styleFrom(
+                                                                    foregroundColor:
+                                                                        Design.colors[
+                                                                            0],
+                                                                    shape: RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10.0))),
+                                                                onPressed: () {
+                                                                  context.pop();
+                                                                  ref
+                                                                      .read(dropdownIndexProvider
+                                                                          .notifier)
+                                                                      .state = packingPlan
+                                                                          .locations
+                                                                          .indexWhere((element) =>
+                                                                              element ==
+                                                                              location) +
+                                                                      1;
+                                                                },
+                                                                child: Text(
+                                                                  location,
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          17),
+                                                                ),
+                                                              ),
                                                             ),
-                                                          )
-                                                        ],
+                                                          ),
+                                                      ],
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(7.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                          border: Border.all(
+                                                              color: Colors
+                                                                  .black38),
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              ref.watch(dropdownIndexProvider) ==
+                                                                      0
+                                                                  ? 'Gesamt'
+                                                                  : packingPlan
+                                                                          .locations[
+                                                                      ref.watch(
+                                                                              dropdownIndexProvider) -
+                                                                          1],
+                                                              style: TextStyle(
+                                                                  fontSize: 17,
+                                                                  color: Design
+                                                                      .colors[0]),
+                                                            ),
+                                                            const Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left:
+                                                                          8.0),
+                                                              child: Icon(
+                                                                Icons
+                                                                    .keyboard_arrow_down_rounded,
+                                                                color: Colors
+                                                                    .black38,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10.0),
-                                                child: Icon(
-                                                  Icons.chevron_right_rounded,
-                                                  color: Colors.black38,
+                                                Wrap(
+                                                    spacing: 0.0,
+                                                    runSpacing: 0.0,
+                                                    children: [
+                                                      if (getCurrentStatistic()
+                                                          .title
+                                                          .isNotEmpty)
+                                                        SizedBox(
+                                                          height: 40,
+                                                          child: Row(
+                                                            children: [
+                                                              const Padding(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            5.0),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .chevron_right_rounded,
+                                                                  color: Colors
+                                                                      .black38,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                getCurrentStatistic()
+                                                                    .title,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    fontSize: 17),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      SizedBox(
+                                                        height: 40,
+                                                        child: Row(
+                                                          children: [
+                                                            const Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          5.0),
+                                                              child: Icon(
+                                                                Icons
+                                                                    .chevron_right_rounded,
+                                                                color:
+                                                                    Colors.black38,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              '${getCurrentStatistic().weight} g',
+                                                              style: TextStyle(
+                                                                  fontSize: 17,
+                                                                  color: Design
+                                                                      .colors[0],
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                 ),
-                                              ),
-                                              Text(
-                                                getCurrentStatistic().title,
-                                                style: const TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize: 17),
-                                              ),
-                                              if (getCurrentStatistic()
-                                                  .title
-                                                  .isNotEmpty)
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                                  child: Icon(
-                                                    Icons.chevron_right_rounded,
-                                                    color: Colors.black38,
-                                                  ),
-                                                ),
-                                              Text(
-                                                '${getCurrentStatistic().weight} g',
-                                                style: TextStyle(
-                                                    fontSize: 17,
-                                                    color: Design.colors[0],
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         if (items.isNotEmpty)
                                           Flex(
