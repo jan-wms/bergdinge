@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:equipment_app/custom_widgets/custom_small_appbar.dart';
@@ -210,39 +212,53 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           onTap: () => context.push(
                                               '/equipment/details',
                                               extra: item.equipmentId),
-                                          leading: (ref.read(
-                                                      dropdownIndexProvider) !=
-                                                  0)
-                                              ? CustomCheckBox(
-                                                  value: items
-                                                      .singleWhere((element) =>
-                                                          element.equipmentId ==
-                                                              item
-                                                                  .equipmentId &&
-                                                          element.location ==
-                                                              ref.read(
-                                                                  dropdownIndexProvider))
-                                                      .isChecked,
-                                                  onChanged: (value) async {
-                                                    DocumentReference docRef =
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection('users')
-                                                            .doc(Auth()
-                                                                .user
-                                                                ?.uid)
-                                                            .collection(
-                                                                'packing_plan')
-                                                            .doc(packingPlan.id)
-                                                            .collection('items')
-                                                            .doc(
-                                                                '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+                                          leading: CustomCheckBox(
+                                                disabled: (ref.read(
+                                                    dropdownIndexProvider) ==
+                                                    0) ? true : false,
+                                            value: (ref.read(
+                                                        dropdownIndexProvider) ==
+                                                    0)
+                                                ? false
+                                                : items
+                                                    .singleWhere((element) =>
+                                                        element.equipmentId ==
+                                                            item.equipmentId &&
+                                                        element.location ==
+                                                            ref.read(
+                                                                dropdownIndexProvider))
+                                                    .isChecked,
+                                            onChanged: (value) async {
+                                              if (ref.read(
+                                                      dropdownIndexProvider) ==
+                                                  0) {
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    width: min(MediaQuery.of(context).size.width * 0.9, 500),
+                                                    behavior: SnackBarBehavior.floating,
+                                                    showCloseIcon: true,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    content: const Text("Wähle zum Bearbeiten oben den Ort aus, zum Beispiel Rucksack oder Anzug."),
+                                                  ),
+                                                  );
+                                              } else {
+                                                DocumentReference docRef =
+                                                    FirebaseFirestore.instance
+                                                        .collection('users')
+                                                        .doc(Auth().user?.uid)
+                                                        .collection(
+                                                            'packing_plan')
+                                                        .doc(packingPlan.id)
+                                                        .collection('items')
+                                                        .doc(
+                                                            '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
 
-                                                    docRef.update(
-                                                        {'isChecked': value});
-                                                  },
-                                                )
-                                              : null,
+                                                docRef.update(
+                                                    {'isChecked': value});
+                                              }
+                                            },
+                                          ),
                                           title: Row(
                                             children: [
                                               Flexible(
@@ -322,8 +338,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                               10.0))),
                                                                   onPressed:
                                                                       () {
-                                                                    if (item.equipmentCount >
-                                                                        1) {
+                                                                    if ((ref.watch(packingPlanItemStreamProvider(packingPlan.id)).value?.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).equipmentCount ?? 0) > 1) {
                                                                       DocumentReference docRef = FirebaseFirestore
                                                                           .instance
                                                                           .collection(
@@ -339,26 +354,28 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                               'items')
                                                                           .doc(
                                                                               '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
+
+                                                                      int newValue = (ref.watch(packingPlanItemStreamProvider(packingPlan.id)).value?.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).equipmentCount ?? 0) - 1;
+
                                                                       docRef
                                                                           .update({
                                                                         'equipmentCount':
-                                                                            (item.equipmentCount -
-                                                                                1)
+                                                                            (newValue)
                                                                       });
                                                                     }
                                                                   },
                                                                   child: const Icon(
                                                                       Icons
                                                                           .chevron_left_rounded)),
-                                                              //TODO
-                                                              Text(
-                                                                item.equipmentCount
-                                                                    .toString(),
-                                                                style:
-                                                                    const TextStyle(
-                                                                        fontSize:
-                                                                            17),
-                                                              ),
+                                                              Consumer(builder: (BuildContext context,WidgetRef ref, child) {
+                                                                return Text(
+                                                                  ref.watch(packingPlanItemStreamProvider(packingPlan.id)).value?.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).equipmentCount.toString() ?? '',
+                                                                  style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                      17),
+                                                                );
+                                                              },),
                                                               TextButton(
                                                                   style: TextButton.styleFrom(
                                                                       shape: RoundedRectangleBorder(
@@ -382,11 +399,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                         .doc(
                                                                             '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
 
+
+
+                                                                    int newValue = (ref.watch(packingPlanItemStreamProvider(packingPlan.id)).value?.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).equipmentCount ?? 0) + 1;
+
                                                                     docRef
                                                                         .update({
                                                                       'equipmentCount':
-                                                                          (item.equipmentCount +
-                                                                              1)
+                                                                          (newValue)
                                                                     });
                                                                   },
                                                                   child: const Icon(
@@ -463,13 +483,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               : null,
                                         ),
                                         if (entry.value.last != item)
-                                          Padding(
-                                            padding: (ref.read(
-                                                dropdownIndexProvider) !=
-                                                0)
-                                                ? const EdgeInsets.only(
-                                                left: 80.0, right: 30.0) : EdgeInsets.symmetric(horizontal: 20.0),
-                                            child: const Divider(
+                                          const Padding(
+                                            padding: EdgeInsets.only(
+                                                    left: 80.0, right: 30.0),
+                                            child: Divider(
                                               height: 5.0,
                                             ),
                                           ),

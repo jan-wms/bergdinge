@@ -80,7 +80,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: _buildIcon(),
-      onPressed: widget.disabled ? null : () => widget.onChanged(!_checked),
+      onPressed: () => widget.onChanged(!_checked),
       mouseCursor: SystemMouseCursors.click,
     );
   }

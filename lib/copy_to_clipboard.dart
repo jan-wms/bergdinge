@@ -13,7 +13,7 @@ void copyToClipboard(
         shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
-        content: const Text("In die Zwischenablage kopiert"),
+        content: const Text("In die Zwischenablage kopiert."),
       ),
     );
   });
