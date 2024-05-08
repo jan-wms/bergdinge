@@ -191,122 +191,139 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 350,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.center,
-                                        height: 80,
-                                        width: 90,
-                                        decoration: BoxDecoration(
-                                            color: Colors.black54,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              '${equipment.weight}g',
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 80,
+                                      width: 90,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${equipment.weight}g',
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          const Icon(
+                                            Icons.scale_rounded,
+                                            color: Colors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 80,
+                                      width: 90,
+                                      padding: const EdgeInsets.all(15.0),
+                                      decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: Text(
+                                        equipment.size ?? '*',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 35,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 80,
+                                      width: 90,
+                                      padding: const EdgeInsets.all(15.0),
+                                      decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.ideographic,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: Text(
+                                              equipment.count.toString(),
                                               style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500),
+                                                  fontSize: 35,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
                                             ),
-                                            const Icon(
-                                              Icons.scale_rounded,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                          const Text(
+                                            'x',
+                                            style: TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        height: 80,
-                                        width: 90,
-                                        padding: const EdgeInsets.all(15.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.black54,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
-                                        child: Text(
-                                          equipment.size ?? '*',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 35,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        height: 80,
-                                        width: 90,
-                                        padding: const EdgeInsets.all(15.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.black54,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.baseline,
-                                          textBaseline:
-                                              TextBaseline.ideographic,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 5),
-                                              child: Text(
-                                                equipment.count.toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 35,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                            const Text(
-                                              'x',
-                                              style: TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
-                                //TODO
                                 if (equipment.price != null ||
                                     equipment.uvp != null)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                          'Kaufpreis: ${parsePrice((equipment.price ?? equipment.uvp)!)}€'),
+                                        '${parsePrice((equipment.price ?? equipment.uvp)!)}€',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w600,
+                                          color: Design.colors[0],
+                                        ),
+                                      ),
                                       if (equipment.price != equipment.uvp &&
                                           equipment.price != null &&
                                           equipment.uvp != null)
-                                        Text(
-                                          '${parsePrice(equipment.uvp!)}€',
-                                          style: const TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: Text(
+                                            '${parsePrice(equipment.uvp!)}€',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 19,
+                                                color: Colors.black
+                                                    .withOpacity(0.6),
+                                                decoration:
+                                                    TextDecoration.lineThrough),
+                                          ),
                                         ),
                                     ],
                                   ),
-
                                 if (equipment.purchaseDate != null)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.date_range_rounded),
-                                      Text(parseDate(equipment.purchaseDate!)),
+                                      const Padding(
+                                        padding: EdgeInsets.only(right: 10.0),
+                                        child: Icon(Icons.date_range_rounded),
+                                      ),
+                                      Text(
+                                        parseDate(equipment.purchaseDate!),
+                                        style: TextStyle(
+                                          fontSize: 23,
+                                          fontWeight: FontWeight.w600,
+                                          color: Design.colors[0],
+                                        ),
+                                      ),
                                     ],
                                   ),
-
                                 if (isDesktop)
                                   Padding(
                                       padding: const EdgeInsets.only(top: 40.0),

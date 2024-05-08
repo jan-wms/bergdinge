@@ -18,15 +18,6 @@ String parseDate (DateTime input) {
   result = '$result ${months[input.month]}';
   result = '$result ${input.year}';
 
-  DateTime now = DateTime.now();
-  DateTime today = DateTime(now.year, now.month, now.day);
-  DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
-  if(DateTime(input.year, input.month, input.day) == today) {
-    result = 'Heute';
-  } else if(DateTime(input.year, input.month, input.day) == yesterday) {
-    result = 'Gestern';
-  }
-
   return result;
 }
 
