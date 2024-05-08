@@ -287,7 +287,8 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                       Text(
                                           'Kaufpreis: ${parsePrice((equipment.price ?? equipment.uvp)!)}€'),
                                       if (equipment.price != equipment.uvp &&
-                                          equipment.price != null && equipment.uvp != null)
+                                          equipment.price != null &&
+                                          equipment.uvp != null)
                                         Text(
                                           '${parsePrice(equipment.uvp!)}€',
                                           style: const TextStyle(
@@ -358,69 +359,53 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 400.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.red),
-              padding: const EdgeInsets.only(
-                  left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-              foregroundColor: const Color.fromRGBO(255, 194, 194, 1.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-            ),
-            onPressed: () async {
-              bool? confirmDelete =
-                  await CustomDialog.showCustomConfirmationDialog(
-                      type: ConfirmType.confirmDelete,
-                      context: context,
-                      description:
-                          'Möchtest du diesen Gegenstand wirklich löschen?');
-              if (confirmDelete ?? false) {
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(Auth().user?.uid)
-                    .collection('equipment')
-                    .doc(equipment.id)
-                    .delete()
-                    .then((value) => context.pop());
-              }
-            },
-            child: Container(
-              alignment: Alignment.center,
-              height: 30,
-              width: 105,
-              child: const Text(
-                'Löschen',
-                style: TextStyle(fontSize: 17, color: Colors.red),
-              ),
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.red,
+            backgroundColor: const Color.fromRGBO(255, 230, 230, 1.0),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(
-                    left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-                foregroundColor: Colors.white,
-                backgroundColor: Design.colors[1],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0))),
-            onPressed: () => CustomDialog.showCustomModal(
-                context: context, child: EquipmentEdit(equipment: equipment)),
-            child: Container(
-              alignment: Alignment.center,
-              height: 30,
-              width: 105,
-              child: const Text(
-                'Bearbeiten',
-                style: TextStyle(fontSize: 17),
-              ),
-            ),
+          onPressed: () async {
+            bool? confirmDelete =
+                await CustomDialog.showCustomConfirmationDialog(
+                    type: ConfirmType.confirmDelete,
+                    context: context,
+                    description:
+                        'Möchtest du diesen Gegenstand wirklich löschen?');
+            if (confirmDelete ?? false) {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(Auth().user?.uid)
+                  .collection('equipment')
+                  .doc(equipment.id)
+                  .delete()
+                  .then((value) => context.pop());
+            }
+          },
+          icon: const Icon(
+            Icons.delete_rounded,
+            size: 35,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(
+          width: 20.0,
+          height: 20.0,
+        ),
+        IconButton(
+          style: TextButton.styleFrom(
+            foregroundColor: Design.colors[0],
+            backgroundColor: const Color.fromRGBO(220, 245, 220, 1.0),
+          ),
+          onPressed: () => CustomDialog.showCustomModal(
+              context: context, child: EquipmentEdit(equipment: equipment)),
+          icon: const Icon(
+            Icons.edit_rounded,
+            size: 35,
+          ),
+        ),
+      ],
     );
   }
 }
