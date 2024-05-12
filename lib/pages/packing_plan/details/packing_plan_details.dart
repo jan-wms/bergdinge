@@ -86,20 +86,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                 TextEditingController(
                                     text: packingPlan.notes ?? '');
 
-                            Future<void> editItem(
-                                {required String equipmentId,
-                                required bool allowSelectLocation,
-                                int? location}) async {
-                              CustomDialog.showCustomDialog(
-                                context: context,
-                                child: EditItem(
-                                    allowSelectLocation: allowSelectLocation,
-                                    location: location,
-                                    equipmentId: equipmentId,
-                                    packingPlan: packingPlan),
-                              );
-                            }
-
                             Statistic statisticFromItems(
                                 MapEntry<String, List<PackingPlanItem>?>
                                     entry) {
@@ -1032,13 +1018,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                                 a.location.compareTo(b.location))
                                                                             .firstOrNull
                                                                             ?.location;
-                                                                        editItem(
-                                                                            equipmentId:
-                                                                                equipmentId,
-                                                                            location:
-                                                                                loc,
-                                                                            allowSelectLocation:
-                                                                                true);
+                                                                          CustomDialog.showCustomDialog(
+                                                                            barrierDismissible: true,
+                                                                            context: context,
+                                                                            child: EditItem(
+                                                                                location: loc,
+                                                                                equipmentId: equipmentId,
+                                                                                packingPlan: packingPlan),
+                                                                          );
                                                                       },
                                                                     ),
                                                                   ],

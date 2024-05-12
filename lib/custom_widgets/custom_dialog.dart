@@ -56,11 +56,11 @@ class CustomDialog {
   }
 
   static Future<T> showCustomDialog<T>(
-      {required BuildContext context, required Widget child}) async {
+      {required BuildContext context, required Widget child, bool barrierDismissible = false}) async {
     return await showDialog(
         context: context,
         useRootNavigator: true,
-        barrierDismissible: false,
+        barrierDismissible: barrierDismissible,
         builder: (context) => Align(
             alignment: MediaQuery.of(context).size.width > Design.breakpoint1
                 ? Alignment.center

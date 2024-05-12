@@ -48,11 +48,13 @@ class EquipmentCard extends ConsumerWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       children: [
-                        Expanded(child: Padding(
+                        Expanded(
+                            child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Image.asset('assets/items/map.png'),
                         )),
-                        Text('${equipment.brand!} ${equipment.name}',
+                        Text(
+                          '${equipment.brand!} ${equipment.name}',
                           style: const TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
@@ -79,14 +81,14 @@ class EquipmentCard extends ConsumerWidget {
                                     alignment: Alignment.center,
                                     children: [
                                       Container(
-                                        decoration: const ShapeDecoration(shape: CircleBorder(),
-                                        color: Colors.white,
+                                        decoration: const ShapeDecoration(
+                                          shape: CircleBorder(),
+                                          color: Colors.white,
                                         ),
                                         height: 60.0,
                                         width: 60.0,
                                       ),
                                       const Icon(
-                                        //Icons.check_circle_outline_rounded,
                                         Icons.check_circle_rounded,
                                         color: Colors.green,
                                         size: 80.0,
@@ -95,7 +97,29 @@ class EquipmentCard extends ConsumerWidget {
                                     ],
                                   ));
                             }
-                            return Container();
+                            return Positioned(
+                              right: 0.0,
+                              top: 0.0,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    decoration: const ShapeDecoration(
+                                      shape: CircleBorder(),
+                                      color: Colors.white,
+                                    ),
+                                    height: 20.0,
+                                    width: 20.0,
+                                  ),
+                                  const Icon(
+                                    Icons.add_circle_rounded,
+                                    color: Colors.orange,
+                                    size: 30.0,
+                                    weight: 400,
+                                  ),
+                                ],
+                              ),
+                            );
                           },
                           error: (Object error, StackTrace stackTrace) =>
                               Text(error.toString()),
