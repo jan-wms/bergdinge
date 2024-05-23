@@ -30,15 +30,12 @@ class _EditItemState extends ConsumerState<EditItem> {
   late final StateProviderFamily<PackingPlanItem?, List<PackingPlanItem>>
       itemProviderFamily;
 
-  final countProviderFamily = StateProvider.family<int, PackingPlanItem?>(
-      (ref, p) => p?.equipmentCount ?? 1);
-
   late final StateProvider<int> dropdownIndexProvider;
 
   @override
   void initState() {
     super.initState();
-    dropdownIndexProvider = StateProvider<int>((ref) => widget.location ?? 1);
+    dropdownIndexProvider = StateProvider<int>((ref) => widget.location ?? 2);
 
     itemProviderFamily =
         StateProvider.family<PackingPlanItem?, List<PackingPlanItem>>(
@@ -62,8 +59,6 @@ class _EditItemState extends ConsumerState<EditItem> {
                     itemProviderFamily(items);
                 PackingPlanItem? packingPlanItem =
                     ref.watch(packingPlanProvider);
-                StateProvider<int> count =
-                    countProviderFamily(ref.watch(packingPlanProvider));
 
                 DocumentReference docRef = FirebaseFirestore.instance
                     .collection('users')
@@ -76,140 +71,232 @@ class _EditItemState extends ConsumerState<EditItem> {
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TooltipVisibility(
-                      visible: false,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashFactory: NoSplash.splashFactory,
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                        ),
-                        child: PopupMenuButton(
-                          color: Colors.white,
-                          splashRadius: 100,
-                          surfaceTintColor: Colors.white,
-                          itemBuilder: (context) => [
-                            for (String location
-                                in widget.packingPlan.locations)
-                              CustomPopupMenuItem(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5.0, right: 5.0, top: 10.0),
-                                  child: TextButton(
-                                    style: TextButton.styleFrom(
-                                        foregroundColor: Design.colors[0],
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0))),
-                                    onPressed: () {
-                                      context.pop();
-                                      ref
-                                          .read(dropdownIndexProvider.notifier)
-                                          .state = widget.packingPlan.locations
-                                              .indexWhere((element) =>
-                                                  element == location) +
-                                          1;
-                                    },
-                                    child: Text(
-                                      location,
-                                      style: const TextStyle(fontSize: 17),
+                    Container(
+                      constraints: const BoxConstraints(
+                        maxWidth: 150,
+                      ),
+                      child: TooltipVisibility(
+                        visible: false,
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            splashFactory: NoSplash.splashFactory,
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                          ),
+                          child: PopupMenuButton(
+                            color: Colors.white,
+                            splashRadius: 100,
+                            surfaceTintColor: Colors.white,
+                            itemBuilder: (context) => [
+                              for (String location
+                                  in widget.packingPlan.locations)
+                                CustomPopupMenuItem(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5.0, top: 10.0),
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                          foregroundColor: Design.colors[0],
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0))),
+                                      onPressed: () {
+                                        context.pop();
+                                        ref
+                                            .read(dropdownIndexProvider.notifier)
+                                            .state = widget.packingPlan.locations
+                                                .indexWhere((element) =>
+                                                    element == location) +
+                                            1;
+                                      },
+                                      child: Text(
+                                        location,
+                                        style: const TextStyle(fontSize: 17),
+                                      ),
                                     ),
                                   ),
                                 ),
+                            ],
+                            child: Container(
+                              padding: const EdgeInsets.all(7.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5.0),
+                                border: Border.all(color: Colors.black38),
                               ),
-                          ],
-                          child: Container(
-                            padding: const EdgeInsets.all(7.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.0),
-                              border: Border.all(color: Colors.black38),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  widget.packingPlan.locations[
-                                      ref.watch(dropdownIndexProvider) - 1],
-                                  style: TextStyle(
-                                      fontSize: 17, color: Design.colors[0]),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 8.0),
-                                  child: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: Colors.black38,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    widget.packingPlan.locations[
+                                        ref.watch(dropdownIndexProvider) - 1],
+                                    style: TextStyle(
+                                        fontSize: 17, color: Design.colors[0]),
                                   ),
-                                )
-                              ],
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8.0),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: Colors.black38,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            int currentCount = ref.read(count);
-                            if (currentCount > 1) {
-                              ref.read(count.notifier).state = currentCount - 1;
-                            }
-                          },
-                          child: const Icon(Icons.chevron_left),
-                        ),
-                        Text('${ref.watch(count)}'),
-                        ElevatedButton(
-                            onPressed: () => ref.read(count.notifier).state =
-                                ref.read(count) + 1,
-                            child: const Icon(Icons.chevron_right)),
-                      ],
+                    if (packingPlanItem != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                              style: TextButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0))),
+                              onPressed: () {
+                                if ((ref
+                                            .watch(packingPlanItemStreamProvider(
+                                                widget.packingPlan.id))
+                                            .value
+                                            ?.singleWhere((element) =>
+                                                element.equipmentId ==
+                                                    widget.equipmentId &&
+                                                element.location ==
+                                                    ref.read(
+                                                        dropdownIndexProvider))
+                                            .equipmentCount ??
+                                        0) >
+                                    1) {
+                                  int newValue = (ref
+                                              .watch(
+                                                  packingPlanItemStreamProvider(
+                                                      widget.packingPlan.id))
+                                              .value
+                                              ?.singleWhere((element) =>
+                                                  element.equipmentId ==
+                                                      widget.equipmentId &&
+                                                  element.location ==
+                                                      ref.read(
+                                                          dropdownIndexProvider))
+                                              .equipmentCount ??
+                                          0) -
+                                      1;
+
+                                  docRef.update({'equipmentCount': (newValue)});
+                                }
+                              },
+                              child: const Icon(Icons.chevron_left_rounded)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                              ref
+                                      .watch(packingPlanItemStreamProvider(
+                                          widget.packingPlan.id))
+                                      .value
+                                      ?.singleWhereOrNull((element) =>
+                                          element.equipmentId ==
+                                              widget.equipmentId &&
+                                          element.location ==
+                                              ref.read(dropdownIndexProvider))
+                                      ?.equipmentCount
+                                      .toString() ??
+                                  '',
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          TextButton(
+                              style: TextButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0))),
+                              onPressed: () {
+                                int newValue = (ref
+                                            .watch(packingPlanItemStreamProvider(
+                                                widget.packingPlan.id))
+                                            .value
+                                            ?.singleWhere((element) =>
+                                                element.equipmentId ==
+                                                    widget.equipmentId &&
+                                                element.location ==
+                                                    ref.read(
+                                                        dropdownIndexProvider))
+                                            .equipmentCount ??
+                                        0) +
+                                    1;
+
+                                docRef.update({'equipmentCount': (newValue)});
+                              },
+                              child: const Icon(Icons.chevron_right_rounded)),
+                        ],
+                      ),
                     ),
                     if (packingPlanItem != null)
-                      TextButton(
-                        onPressed: () =>
-                            docRef.delete().then((value) => context.pop()),
-                        style: TextButton.styleFrom(
-                            foregroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0))),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.delete_rounded),
-                            Padding(
-                              padding: EdgeInsets.only(left: 8.0),
-                              child: Text('Löschen'),
-                            ),
-                          ],
+                      Container(
+                        margin: const EdgeInsets.only(top: 10.0),
+                        constraints: const BoxConstraints(
+                          maxWidth: 150.0,
+                        ),
+                        child: TextButton(
+                          onPressed: () =>
+                              docRef.delete().then((value) => context.pop()),
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0))),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.delete_rounded),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                                child: Text('Löschen'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     if (packingPlanItem == null)
-                      ElevatedButton(
+                      Container(
+                        margin: const EdgeInsets.only(top: 20.0),
+                        constraints: const BoxConstraints(
+                          maxWidth: 150.0,
+                        ),
+                        child: ElevatedButton(
                           onPressed: () {
                             PackingPlanItem p = PackingPlanItem(
-                                equipmentCount: ref.read(count),
+                                equipmentCount: 1,
                                 equipmentId: widget.equipmentId,
                                 isChecked: packingPlanItem?.isChecked ?? false,
                                 location: ref.read(dropdownIndexProvider));
 
                             docRef
-                                .set(p.toMap())
-                                .then((value) => context.pop());
+                                .set(p.toMap());
                           },
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Design.colors[1],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0))),
                           child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [Text('add to plan'), Icon(Icons.add)],
-                          )),
-                    if (packingPlanItem != null)
-                      ElevatedButton(
-                          onPressed: () => docRef
-                              .update({'equipmentCount': ref.read(count)}).then(
-                                  (value) => context.pop()),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [Text('Fertig'), Icon(Icons.check)],
-                          )),
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_rounded),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                                child: Text('Hinzufügen'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 );
               }),

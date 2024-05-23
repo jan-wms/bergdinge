@@ -78,28 +78,36 @@ class EquipmentCard extends ConsumerWidget {
                                   height: double.infinity,
                                   alignment: Alignment.center,
                                   child: Stack(
-                                    alignment: Alignment.center,
                                     children: [
-                                      Container(
-                                        decoration: const ShapeDecoration(
-                                          shape: CircleBorder(),
-                                          color: Colors.white,
+                                      Positioned(
+                                        right: 5.0,
+                                        top: 5.0,
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Container(
+                                              decoration: const ShapeDecoration(
+                                                shape: CircleBorder(),
+                                                color: Colors.white,
+                                              ),
+                                              height: 25.0,
+                                              width: 25.0,
+                                            ),
+                                            const Icon(
+                                              Icons.check_circle_rounded,
+                                              color: Colors.green,
+                                              size: 35.0,
+                                              weight: 400,
+                                            ),
+                                          ],
                                         ),
-                                        height: 60.0,
-                                        width: 60.0,
-                                      ),
-                                      const Icon(
-                                        Icons.check_circle_rounded,
-                                        color: Colors.green,
-                                        size: 80.0,
-                                        weight: 400,
                                       ),
                                     ],
                                   ));
                             }
                             return Positioned(
-                              right: 0.0,
-                              top: 0.0,
+                              right: 5.0,
+                              top: 5.0,
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
@@ -108,13 +116,13 @@ class EquipmentCard extends ConsumerWidget {
                                       shape: CircleBorder(),
                                       color: Colors.white,
                                     ),
-                                    height: 20.0,
-                                    width: 20.0,
+                                    height: 25.0,
+                                    width: 25.0,
                                   ),
                                   const Icon(
                                     Icons.add_circle_rounded,
                                     color: Colors.orange,
-                                    size: 30.0,
+                                    size: 35.0,
                                     weight: 400,
                                   ),
                                 ],

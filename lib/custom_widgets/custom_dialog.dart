@@ -67,7 +67,7 @@ class CustomDialog {
                 : Alignment.bottomCenter,
             child: Container(
               constraints: BoxConstraints(
-                minHeight: 250,
+                minHeight: 200,
                 maxHeight: MediaQuery.of(context).size.height * 0.7,
                 minWidth: min(300, MediaQuery.of(context).size.width - 40.0),
               ),

@@ -355,7 +355,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                           .chevron_left_rounded)),
                                                               Consumer(builder: (BuildContext context,WidgetRef ref, child) {
                                                                 return Text(
-                                                                  ref.watch(packingPlanItemStreamProvider(packingPlan.id)).value?.singleWhere((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider)).equipmentCount.toString() ?? '',
+                                                                  ref.watch(packingPlanItemStreamProvider(packingPlan.id)).value?.singleWhereOrNull((element) => element.equipmentId == item.equipmentId && element.location == ref.read(dropdownIndexProvider))?.equipmentCount.toString() ?? '',
                                                                   style:
                                                                   const TextStyle(
                                                                       fontSize:
