@@ -69,6 +69,15 @@ class _EditItemState extends ConsumerState<EditItem> {
                     .doc(
                         '${widget.equipmentId}${ref.watch(dropdownIndexProvider)}');
 
+                bool isLiquid = (ref.read(equipmentStreamProvider).value
+                    ?.singleWhere(
+                        (element) =>
+                    element
+                        .id ==
+                        widget.equipmentId)
+                    .category ==
+                    '3.0');
+
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,8 +114,10 @@ class _EditItemState extends ConsumerState<EditItem> {
                                       onPressed: () {
                                         context.pop();
                                         ref
-                                            .read(dropdownIndexProvider.notifier)
-                                            .state = widget.packingPlan.locations
+                                            .read(
+                                                dropdownIndexProvider.notifier)
+                                            .state = widget
+                                                .packingPlan.locations
                                                 .indexWhere((element) =>
                                                     element == location) +
                                             1;
@@ -126,7 +137,8 @@ class _EditItemState extends ConsumerState<EditItem> {
                                 border: Border.all(color: Colors.black38),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     widget.packingPlan.locations[
@@ -149,30 +161,77 @@ class _EditItemState extends ConsumerState<EditItem> {
                       ),
                     ),
                     if (packingPlanItem != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                              style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0))),
-                              onPressed: () {
-                                if ((ref
-                                            .watch(packingPlanItemStreamProvider(
-                                                widget.packingPlan.id))
-                                            .value
-                                            ?.singleWhere((element) =>
-                                                element.equipmentId ==
-                                                    widget.equipmentId &&
-                                                element.location ==
-                                                    ref.read(
-                                                        dropdownIndexProvider))
-                                            .equipmentCount ??
-                                        0) >
-                                    1) {
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0))),
+                                onPressed: () {
+                                  if ((ref
+                                              .watch(
+                                                  packingPlanItemStreamProvider(
+                                                      widget.packingPlan.id))
+                                              .value
+                                              ?.singleWhere((element) =>
+                                                  element.equipmentId ==
+                                                      widget.equipmentId &&
+                                                  element.location ==
+                                                      ref.read(
+                                                          dropdownIndexProvider))
+                                              .equipmentCount ??
+                                          0) >
+                                      (isLiquid ? 50 : 1)) {
+                                    int newValue = (ref
+                                                .watch(
+                                                    packingPlanItemStreamProvider(
+                                                        widget.packingPlan.id))
+                                                .value
+                                                ?.singleWhere((element) =>
+                                                    element.equipmentId ==
+                                                        widget.equipmentId &&
+                                                    element.location ==
+                                                        ref.read(
+                                                            dropdownIndexProvider))
+                                                .equipmentCount ??
+                                            0) -
+                                        (isLiquid ? 50 : 1);
+
+                                    docRef
+                                        .update({'equipmentCount': (newValue)});
+                                  }
+                                },
+                                child: const Icon(Icons.chevron_left_rounded)),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Text(
+                                '${ref
+                                        .watch(packingPlanItemStreamProvider(
+                                            widget.packingPlan.id))
+                                        .value
+                                        ?.singleWhereOrNull((element) =>
+                                            element.equipmentId ==
+                                                widget.equipmentId &&
+                                            element.location ==
+                                                ref.read(dropdownIndexProvider))
+                                        ?.equipmentCount
+                                        .toString() ??
+                                    ''}${isLiquid ? ' ml' : ''}',
+                                style: const TextStyle(fontSize: 17),
+                              ),
+                            ),
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0))),
+                                onPressed: () {
                                   int newValue = (ref
                                               .watch(
                                                   packingPlanItemStreamProvider(
@@ -185,56 +244,15 @@ class _EditItemState extends ConsumerState<EditItem> {
                                                       ref.read(
                                                           dropdownIndexProvider))
                                               .equipmentCount ??
-                                          0) -
-                                      1;
+                                          0) +
+                                      (isLiquid ? 50 : 1);
 
                                   docRef.update({'equipmentCount': (newValue)});
-                                }
-                              },
-                              child: const Icon(Icons.chevron_left_rounded)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Text(
-                              ref
-                                      .watch(packingPlanItemStreamProvider(
-                                          widget.packingPlan.id))
-                                      .value
-                                      ?.singleWhereOrNull((element) =>
-                                          element.equipmentId ==
-                                              widget.equipmentId &&
-                                          element.location ==
-                                              ref.read(dropdownIndexProvider))
-                                      ?.equipmentCount
-                                      .toString() ??
-                                  '',
-                              style: const TextStyle(fontSize: 17),
-                            ),
-                          ),
-                          TextButton(
-                              style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0))),
-                              onPressed: () {
-                                int newValue = (ref
-                                            .watch(packingPlanItemStreamProvider(
-                                                widget.packingPlan.id))
-                                            .value
-                                            ?.singleWhere((element) =>
-                                                element.equipmentId ==
-                                                    widget.equipmentId &&
-                                                element.location ==
-                                                    ref.read(
-                                                        dropdownIndexProvider))
-                                            .equipmentCount ??
-                                        0) +
-                                    1;
-
-                                docRef.update({'equipmentCount': (newValue)});
-                              },
-                              child: const Icon(Icons.chevron_right_rounded)),
-                        ],
+                                },
+                                child: const Icon(Icons.chevron_right_rounded)),
+                          ],
+                        ),
                       ),
-                    ),
                     if (packingPlanItem != null)
                       Container(
                         margin: const EdgeInsets.only(top: 10.0),
@@ -269,17 +287,19 @@ class _EditItemState extends ConsumerState<EditItem> {
                         child: ElevatedButton(
                           onPressed: () {
                             PackingPlanItem p = PackingPlanItem(
-                                equipmentCount: 1,
+                                equipmentCount: (isLiquid ? 1000 : 1),
                                 equipmentId: widget.equipmentId,
                                 isChecked: packingPlanItem?.isChecked ?? false,
                                 location: ref.read(dropdownIndexProvider));
 
-                            docRef
-                                .set(p.toMap());
+                            docRef.set(p.toMap());
                           },
                           style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.only(
-                                  left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                                  left: 20.0,
+                                  right: 20.0,
+                                  top: 10.0,
+                                  bottom: 10.0),
                               foregroundColor: Colors.white,
                               backgroundColor: Design.colors[1],
                               shape: RoundedRectangleBorder(

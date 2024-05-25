@@ -29,16 +29,6 @@ class _HomePageState extends State<HomePage> {
       subTitle: 'Ratgeber',
       imageProvider: const AssetImage('assets/items/landscape2.jpg'),
     ),
-    Article(
-      title: 'Ausrüstungsverleih1',
-      subTitle: 'Ratgeber',
-      imageProvider: const AssetImage('assets/items/landscape2.jpg'),
-    ),
-    Article(
-      title: 'Ausrüstungsverleih2',
-      subTitle: 'Ratgeber',
-      imageProvider: const AssetImage('assets/items/landscape.jpg'),
-    ),
   ];
 
   @override

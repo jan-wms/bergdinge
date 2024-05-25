@@ -37,7 +37,7 @@ class Data {
     Tip(title: 'Klettergurt', subTitle: 'Du hast noch keinen Klettergurt eingepackt.', relevantSports: sports.where((element) => element.toLowerCase().contains('kletter')).toList() + ['Hochtour'], condition: (items, equipmentList) {
       return items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.1.1') != -1;
     }),
-    Tip(title: 'Hüttenschlafsack', subTitle: 'Ein Hüttenschlafsack ist auf den meisten Hütten pflicht.', relevantSports: ['Hüttentour'], condition: (items, equipmentList) {
+    Tip(title: 'Hüttenschlafsack', subTitle: 'Ein Hüttenschlafsack ist auf den meisten Hütten Pflicht.', relevantSports: ['Hüttentour'], condition: (items, equipmentList) {
       return items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.7.6') != -1;
     }),
     Tip(title: 'Gewicht', subTitle: 'Nimm nur das Nötigste mit, doch spare nicht bei der Sicherheitsausstattung!', relevantSports: sports, condition: (items, equipmentList) => false),
