@@ -53,7 +53,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    //TODO
+    //bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -75,13 +76,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                 locations: [],
                                 createdAt: DateTime(0),
                                 updatedAt: DateTime(0));
-
                     return ref
                         .watch(packingPlanItemStreamProvider(packingPlan.id))
                         .when(
                           error: (error, stackTrace) => Text(error.toString()),
                           loading: () => _loading,
                           data: (items) {
+
                             final TextEditingController controllerNotes =
                                 TextEditingController(
                                     text: packingPlan.notes ?? '');
@@ -148,7 +149,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             for (MapEntry<String, List<PackingPlanItem>> entry
                                 in statistics.first.categoryPackingPlanItemsMap
                                     .entries) {
-                              statistics.add(statisticFromItems(entry));
+                              //TODO
+                              try {
+                                statistics.add(statisticFromItems(entry));
+                              } catch (e) {}
                             }
 
                             List<Widget> getRightSection(Statistic statistic) {
@@ -689,15 +693,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             ],
                                           ),
                                           child: Flex(
-                                            direction: isDesktop
-                                                ? Axis.horizontal
-                                                : Axis.vertical,
+                                            direction: Axis.vertical,
                                             children: [
                                               Padding(
-                                                padding: EdgeInsets.only(
-                                                  right: isDesktop ? 15.0 : 0.0,
-                                                  bottom:
-                                                      isDesktop ? 0.0 : 15.0,
+                                                padding: const EdgeInsets.only(
+                                                  right: 0.0,
+                                                  bottom: 15.0,
                                                 ),
                                                 child: Wrap(
                                                   runSpacing: 13.0,
@@ -1248,9 +1249,13 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           ),
                                         if (items.isNotEmpty)
                                           Flex(
+                                            //TODO
+                                            direction: Axis.vertical,
+                                            /*
                                             direction: isDesktop
                                                 ? Axis.horizontal
                                                 : Axis.vertical,
+                                                */
                                             children: [
                                               Container(
                                                 padding:
@@ -1364,11 +1369,16 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   ],
                                                 ),
                                               ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: getRightSection(
-                                                    getCurrentStatistic()),
+                                              Container(
+                                                constraints: const BoxConstraints(
+                                                  maxWidth: 600.0,
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: getRightSection(
+                                                      getCurrentStatistic()),
+                                                ),
                                               ),
                                             ],
                                           ),

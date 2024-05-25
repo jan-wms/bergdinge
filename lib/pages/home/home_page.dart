@@ -17,17 +17,17 @@ class _HomePageState extends State<HomePage> {
     Article(
       title: 'Rucksack richtig packen',
       subTitle: 'Ratgeber',
-      imageProvider: const AssetImage('assets/items/backpack.jpg'),
+      imageProvider: const AssetImage('assets/backpack.jpg'),
     ),
     Article(
       title: 'Alpenacademy',
       subTitle: 'Ratgeber',
-      imageProvider: const AssetImage('assets/items/landscape.jpg'),
+      imageProvider: const AssetImage('assets/landscape.jpg'),
     ),
     Article(
       title: 'Ausrüstungsverleih',
       subTitle: 'Ratgeber',
-      imageProvider: const AssetImage('assets/items/landscape2.jpg'),
+      imageProvider: const AssetImage('assets/landscape2.jpg'),
     ),
   ];
 

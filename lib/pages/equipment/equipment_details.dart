@@ -150,7 +150,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                               )
                                                   : null,
                                               child: Image.asset(
-                                                  'assets/items/map.png')),
+                                                  'assets/items/2.png')),
                                         ),
                                       ),
                                     ),
