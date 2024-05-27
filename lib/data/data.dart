@@ -56,7 +56,7 @@ class Data {
           return lvs && shovel && pole;
         }),
     Tip(
-        imagePath: 'items/1.3.png',
+        imagePath: 'items/1.3.0.png',
         title: 'Erste Hilfe',
         subTitle:
             'Du solltest auf jeder Tour ein kleines Erste Hilfe Set dabei haben.',
