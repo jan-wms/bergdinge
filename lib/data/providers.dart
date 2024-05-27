@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equipment_app/data_models/packing_plan.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data_models/equipment.dart';
 import '../data_models/packing_plan_item.dart';
 import '../firebase/firebase_auth.dart';
+import 'data.dart';
 
 final authProvider = Provider<String>((ref) => ref.watch(authStateChangesProvider).value?.providerData.firstOrNull?.providerId ?? 'null');
 
@@ -70,3 +72,8 @@ StreamProvider.autoDispose.family<List<PackingPlanItem>, String>((ref, packingPl
   return stream.map((snapshot) =>
       snapshot.docs.map((doc) => doc.data()).toList());
 });
+
+Image getImagefromCategory ({required String category}) {
+  String imageName = Data.getCategoryImageName(category);
+  return Image.asset('assets/items/$imageName', errorBuilder: (context, object, stacktrace) => Image.asset('assets/items/0.0.4.4.png',));
+}

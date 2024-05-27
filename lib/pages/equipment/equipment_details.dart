@@ -149,8 +149,8 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                                 maxWidth: 200.0,
                                               )
                                                   : null,
-                                              child: Image.asset(
-                                                  'assets/items/2.png')),
+                                              child: getImagefromCategory(category: equipment.category),//Image.asset('assets/items/2.png'),
+                                          ),
                                         ),
                                       ),
                                     ),

@@ -51,7 +51,7 @@ class EquipmentCard extends ConsumerWidget {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset('assets/items/2.png'),
+                          child: getImagefromCategory(category: equipment.category),//Image.asset('assets/items/2.png'),
                         )),
                         Text(
                           '${equipment.brand!} ${equipment.name}',
