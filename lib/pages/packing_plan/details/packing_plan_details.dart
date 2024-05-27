@@ -59,11 +59,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: ref.watch(equipmentStreamProvider).when(
-          error: (error, stackTrace) => Text(error.toString()),
+          error: (error, stackTrace) => Center(child: Text(error.toString())),
           loading: () => _loading,
           data: (equipmentList) {
             return ref.watch(packingPlanStreamProvider).when(
-                  error: (error, stackTrace) => Text(error.toString()),
+                  error: (error, stackTrace) =>
+                      Center(child: Text(error.toString())),
                   loading: () => _loading,
                   data: (packingPlanList) {
                     final PackingPlan packingPlan =
@@ -79,10 +80,10 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                     return ref
                         .watch(packingPlanItemStreamProvider(packingPlan.id))
                         .when(
-                          error: (error, stackTrace) => Text(error.toString()),
+                          error: (error, stackTrace) =>
+                              Center(child: Text(error.toString())),
                           loading: () => _loading,
                           data: (items) {
-
                             final TextEditingController controllerNotes =
                                 TextEditingController(
                                     text: packingPlan.notes ?? '');
@@ -522,13 +523,21 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                             Statistic getCurrentStatistic() {
                               return (ref.watch(pageIndexProvider).last != -1 &&
-                                      statistics[ref
-                                                  .watch(pageIndexProvider)
-                                                  .first]
+                                      statistics[ref.watch(pageIndexProvider).first]
                                               .categoryPackingPlanItemsMap
                                               .entries
                                               .length >
-                                          1)
+                                          1 &&
+                                      statistics[ref
+                                                  .watch(pageIndexProvider)
+                                                  .first]
+                                              .topCategory !=
+                                          '3' &&
+                                      statistics[ref
+                                                  .watch(pageIndexProvider)
+                                                  .first]
+                                              .topCategory !=
+                                          '2')
                                   ? statisticFromItems(MapEntry(
                                       statistics[
                                               ref.read(pageIndexProvider).first]
@@ -544,8 +553,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                           .elementAt(
                                               ref.watch(pageIndexProvider).last)
                                           .value))
-                                  : statistics[
-                                      ref.read(pageIndexProvider).first];
+                                  : statistics[ref.read(pageIndexProvider).first];
                             }
 
                             return CustomScrollView(
@@ -1034,7 +1042,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 TooltipVisibility(
                                                   visible: false,
@@ -1179,70 +1187,46 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     ),
                                                   ),
                                                 ),
-                                                Wrap(
-                                                  spacing: 0.0,
-                                                  runSpacing: 0.0,
-                                                  children: [
-                                                    if (getCurrentStatistic()
-                                                        .title
-                                                        .isNotEmpty)
-                                                      SizedBox(
-                                                        height: 40,
-                                                        child: Row(
-                                                          children: [
-                                                            const Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          5.0),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .chevron_right_rounded,
-                                                                color: Colors
-                                                                    .black38,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              getCurrentStatistic()
-                                                                  .title,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black54,
-                                                                  fontSize: 17),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    SizedBox(
-                                                      height: 40,
-                                                      child: Row(
-                                                        children: [
-                                                          const Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        5.0),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .chevron_right_rounded,
-                                                              color: Colors
-                                                                  .black38,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            '${getCurrentStatistic().weight} g',
-                                                            style: TextStyle(
-                                                                fontSize: 17,
-                                                                color: Design
-                                                                    .colors[0],
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                if (getCurrentStatistic()
+                                                    .title
+                                                    .isNotEmpty)
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5.0),
+                                                    child: Icon(
+                                                      Icons
+                                                          .chevron_right_rounded,
+                                                      color: Colors.black38,
                                                     ),
-                                                  ],
+                                                  ),
+                                                if (getCurrentStatistic()
+                                                    .title
+                                                    .isNotEmpty)
+                                                Flexible(
+                                                  child: Text(
+                                                    getCurrentStatistic().title,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 17),
+                                                  ),
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 5.0),
+                                                  child: Icon(
+                                                    Icons.chevron_right_rounded,
+                                                    color: Colors.black38,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${getCurrentStatistic().weight} g',
+                                                  style: TextStyle(
+                                                      fontSize: 17,
+                                                      color: Design.colors[0],
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
                                               ],
                                             ),
@@ -1370,7 +1354,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 ),
                                               ),
                                               Container(
-                                                constraints: const BoxConstraints(
+                                                constraints:
+                                                    const BoxConstraints(
                                                   maxWidth: 600.0,
                                                 ),
                                                 child: Column(
