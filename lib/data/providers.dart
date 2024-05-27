@@ -73,7 +73,12 @@ StreamProvider.autoDispose.family<List<PackingPlanItem>, String>((ref, packingPl
       snapshot.docs.map((doc) => doc.data()).toList());
 });
 
-Image getImagefromCategory ({required String category}) {
+Widget getImagefromCategory ({required String category}) {
   String imageName = Data.getCategoryImageName(category);
-  return Image.asset('assets/items/$imageName', errorBuilder: (context, object, stacktrace) => Image.asset('assets/items/0.0.4.4.png',));
+  return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minWidth: 1,
+        minHeight: 1,
+      ),
+      child: Image.asset('assets/items/$imageName', errorBuilder: (context, object, stacktrace) => Image.asset('assets/items/0.0.4.4.png',)));
 }

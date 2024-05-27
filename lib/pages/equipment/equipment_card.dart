@@ -51,7 +51,7 @@ class EquipmentCard extends ConsumerWidget {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: getImagefromCategory(category: equipment.category),//Image.asset('assets/items/2.png'),
+                          child: getImagefromCategory(category: equipment.category),
                         )),
                         Text(
                           '${equipment.brand!} ${equipment.name}',
@@ -71,7 +71,7 @@ class EquipmentCard extends ConsumerWidget {
                                 -1) {
                               return Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
+                                    //color: Colors.black.withOpacity(0.3),
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
                                   width: double.infinity,
