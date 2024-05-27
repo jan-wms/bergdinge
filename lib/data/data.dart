@@ -25,22 +25,22 @@ class Data {
   static String supportMail = 'app@bergdinge.de';
 
   static List<Tip> tips = [
-    Tip(title: 'LVS Ausrüstung', subTitle: 'Denke auf Skitour immer an deine LVS Ausrüstung. Das heißt LVS-Gerät, Sonde und Schaufel.', relevantSports: ['Skitour'], condition: (items, equipmentList) {
+    Tip(imagePath: 'items/1.9.1.png', title: 'LVS Ausrüstung', subTitle: 'Denke auf Skitour immer an deine LVS Ausrüstung: LVS-Gerät, Sonde und Schaufel.', relevantSports: ['Skitour'], condition: (items, equipmentList) {
       bool lvs = items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.3.1.0') != -1;
       bool shovel = items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.3.1.1') != -1;
       bool pole = items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.3.1.2') != -1;
       return lvs && shovel && pole;
     }),
-    Tip(title: 'Erste Hilfe', subTitle: 'Du solltest auf jeder Tour ein kleines Erste Hilfe Set dabei haben.', relevantSports: sports, condition: (items, equipmentList) {
+    Tip(imagePath: 'items/1.3.png', title: 'Erste Hilfe', subTitle: 'Du solltest auf jeder Tour ein kleines Erste Hilfe Set dabei haben.', relevantSports: sports, condition: (items, equipmentList) {
       return items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.3.0') != -1;
   }),
-    Tip(title: 'Klettergurt', subTitle: 'Du hast noch keinen Klettergurt eingepackt.', relevantSports: sports.where((element) => element.toLowerCase().contains('kletter')).toList() + ['Hochtour'], condition: (items, equipmentList) {
+    Tip(imagePath: 'items/1.1.1.png', title: 'Klettergurt', subTitle: 'Packe einen Klettergurt ein.', relevantSports: sports.where((element) => element.toLowerCase().contains('kletter')).toList() + ['Hochtour'], condition: (items, equipmentList) {
       return items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.1.1') != -1;
     }),
-    Tip(title: 'Hüttenschlafsack', subTitle: 'Ein Hüttenschlafsack ist auf den meisten Hütten Pflicht.', relevantSports: ['Hüttentour'], condition: (items, equipmentList) {
+    Tip(imagePath: 'items/1.0.0.png', title: 'Hüttenschlafsack', subTitle: 'Ein Hüttenschlafsack ist auf den meisten Hütten Pflicht.', relevantSports: ['Hüttentour'], condition: (items, equipmentList) {
       return items?.indexWhere((element1) => equipmentList.singleWhere((element2) => element1.equipmentId == element2.id).category == '1.7.6') != -1;
     }),
-    Tip(title: 'Gewicht', subTitle: 'Nimm nur das Nötigste mit, doch spare nicht bei der Sicherheitsausstattung!', relevantSports: sports, condition: (items, equipmentList) => false),
+    Tip(imagePath: 'items/0.0.4.4.png', title: 'Gewicht', subTitle: 'Nimm nur das Nötigste mit, doch spare nicht bei der Sicherheitsausstattung!', relevantSports: sports, condition: (items, equipmentList) => false),
   ];
   
   static List<String> sports = [

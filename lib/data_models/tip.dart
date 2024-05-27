@@ -9,7 +9,8 @@ class Tip {
   final String title;
   final String subTitle;
   final List<String> relevantSports;
-  Tip({required this.title, required this.subTitle, required this.relevantSports, required this.condition, }) : assert(relevantSports.every((element) => Data.sports.contains(element)));
+  final String imagePath;
+  Tip({required this.title, required this.imagePath, required this.subTitle, required this.relevantSports, required this.condition, }) : assert(relevantSports.every((element) => Data.sports.contains(element)));
 
   bool isRelevant (PackingPlan packingPlan) {
     for(var sport in packingPlan.sports) {

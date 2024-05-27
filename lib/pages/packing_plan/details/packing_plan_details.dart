@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:equipment_app/custom_widgets/custom_small_appbar.dart';
@@ -1203,15 +1202,17 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 if (getCurrentStatistic()
                                                     .title
                                                     .isNotEmpty)
-                                                Flexible(
-                                                  child: Text(
-                                                    getCurrentStatistic().title,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 17),
+                                                  Flexible(
+                                                    child: Text(
+                                                      getCurrentStatistic()
+                                                          .title,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                          color: Colors.black54,
+                                                          fontSize: 17),
+                                                    ),
                                                   ),
-                                                ),
                                                 const Padding(
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 5.0),
@@ -1232,14 +1233,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             ),
                                           ),
                                         if (items.isNotEmpty)
-                                          Flex(
-                                            //TODO
-                                            direction: Axis.vertical,
-                                            /*
-                                            direction: isDesktop
-                                                ? Axis.horizontal
-                                                : Axis.vertical,
-                                                */
+                                          Column(
                                             children: [
                                               Container(
                                                 padding:
@@ -1484,11 +1478,11 @@ class _TipCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.0)),
       child: Row(
         children: [
-          Icon(
-            isConditionMet ? Icons.check_circle_rounded : Icons.warning_rounded,
-            size: 50.0,
-            color: Colors.white,
-          ),
+          Container(
+              padding: const EdgeInsets.only(right: 15.0),
+              width: 70,
+              height: 70,
+              child: Image.asset('assets/${tip.imagePath}')),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(10.0),
