@@ -129,12 +129,12 @@ class Data {
   static List<Category> categories = [
     Category(name: 'Bekleidung', id: '0', subCategories: [
       Category(name: 'Accessories', id: '0.0', subCategories: [
-        Category(name: 'Brillen', id: '0.0.0', subCategories: [
+        Category(name: 'Brillen', id: '0.0.0', imageName: '0.0.0.2.png', subCategories: [
           Category(name: 'Gletscherbrillen', id: '0.0.0.0'),
           Category(name: 'Sicherungsbrillen', id: '0.0.0.1'),
           Category(name: 'Skibrillen', id: '0.0.0.2'),
           Category(name: 'Sonnenbrillen', id: '0.0.0.3'),
-          Category(name: 'Sonstige', id: '0.0.0.4'),
+          Category(name: 'Sonstige', id: '0.0.0.4', imageName: '0.0.0.2.png'),
         ]),
         Category(name: 'Gamaschen', id: '0.0.1'),
         Category(name: 'Gürtel & Hosenträger', id: '0.0.2'),
@@ -142,13 +142,14 @@ class Data {
         Category(
           name: 'Kopfbedeckungen',
           id: '0.0.4',
+          imageName: '0.0.4.4.png',
           subCategories: [
             Category(name: 'Mützen', id: '0.0.4.0'),
             Category(name: 'Stirnbänder', id: '0.0.4.1'),
             Category(name: 'Sturmhauben', id: '0.0.4.2'),
             Category(name: 'Hüte', id: '0.0.4.3'),
             Category(name: 'Caps', id: '0.0.4.4'),
-            Category(name: 'Sonstige', id: '0.0.4.5'),
+            Category(name: 'Sonstige', id: '0.0.4.5', imageName: '0.0.4.4.png'),
           ],
         ),
         Category(name: 'Multifunktionstücher & Schals', id: '0.0.5'),
@@ -157,6 +158,7 @@ class Data {
       Category(
         name: 'Baselayer',
         id: '0.1',
+        imageName: '0.1.4.png',
         subCategories: [
           Category(name: 'BHs', id: '0.1.0'),
           Category(name: 'Hemden', id: '0.1.1'),
@@ -166,7 +168,7 @@ class Data {
           Category(name: 'Unterhemden', id: '0.1.5'),
           Category(name: 'Unterhosen', id: '0.1.6'),
           Category(name: 'Lange Unterhosen', id: '0.1.7'),
-          Category(name: 'Sonstige', id: '0.1.8'),
+          Category(name: 'Sonstige', id: '0.1.8', imageName: '0.1.4.png'),
         ],
       ),
       Category(
@@ -290,11 +292,12 @@ class Data {
         Category(
           name: 'Messer & Werkzeuge',
           id: '1.2',
+          imageName: '1.2.2.png',
           subCategories: [
             Category(name: 'Äxte & Beile', id: '1.2.0'),
             Category(name: 'Feststehende Messer', id: '1.2.1'),
             Category(name: 'Taschenmesser und Multitools', id: '1.2.2'),
-            Category(name: 'Sonstige', id: '1.2.3'),
+            Category(name: 'Sonstige', id: '1.2.3', imageName: '1.2.2.png'),
           ],
         ),
         Category(
@@ -410,6 +413,7 @@ class Data {
             Category(
               name: 'Ski',
               id: '1.9.3',
+              imageName: '1.9.3.2.png',
               subCategories: [
                 Category(name: 'Bindungen', id: '1.9.3.0'),
                 Category(name: 'Harscheisen', id: '1.9.3.1'),
@@ -426,6 +430,7 @@ class Data {
     Category(
       name: 'Schuhe',
       id: '2',
+      imageName: '2.1.png',
       subCategories: [
         Category(name: 'Barfussschuhe', id: '2.0'),
         Category(name: 'Berg- & Wanderschuhe', id: '2.1'),
@@ -436,7 +441,7 @@ class Data {
         Category(name: 'Winterschuhe', id: '2.6'),
         Category(name: 'Zustiegsschuhe', id: '2.7'),
         Category(name: 'Skischuhe', id: '2.8'),
-        Category(name: 'Sonstige', id: '2.9'),
+        Category(name: 'Sonstige', id: '2.9', imageName: '2.1.png'),
       ],
     ),
     Category(
