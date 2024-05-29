@@ -66,7 +66,13 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
             loading: () => const CircularProgressIndicator(),
             data: (data) {
               Equipment equipment = data.singleWhereOrNull(
-                      (element) => element.id == widget.equipmentID) ?? Equipment(name: '', weight: 0, status: EquipmentStatus.disabled, category: '', count: 0, id: '');
+                      (element) => element.id == widget.equipmentID) ??
+                  Equipment(name: '',
+                      weight: 0,
+                      status: EquipmentStatus.disabled,
+                      category: '',
+                      count: 0,
+                      id: '');
               return Stack(
                 children: [
                   CustomScrollView(
@@ -135,12 +141,16 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                         child: FittedBox(
                                           fit: BoxFit.scaleDown,
                                           child: Container(
-                                              constraints: (isDesktop)
-                                                  ? const BoxConstraints(
-                                                maxWidth: 200.0,
-                                              )
-                                                  : null,
-                                              child: equipment.category.isNotEmpty ? getImagefromCategory(category: equipment.category) : const SizedBox(width: 1.0, height: 1.0,),
+                                            constraints: (isDesktop)
+                                                ? const BoxConstraints(
+                                              maxWidth: 200.0,
+                                            )
+                                                : null,
+                                            child: equipment.category.isNotEmpty
+                                                ? getImagefromCategory(
+                                                category: equipment.category)
+                                                : const SizedBox(
+                                              width: 1.0, height: 1.0,),
                                           ),
                                         ),
                                       ),
@@ -190,7 +200,10 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                         CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${(equipment.brand?.isNotEmpty ?? false) ? '${equipment.brand} ' : ''}${equipment
+                                            '${(equipment.brand?.isNotEmpty ??
+                                                false)
+                                                ? '${equipment.brand} '
+                                                : ''}${equipment
                                                 .name}',
                                             style: const TextStyle(
                                                 fontSize: 25,
@@ -244,29 +257,32 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                           ),
                                         ),
                                         if(equipment.size != null)
-                                        _CustomBox(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 10.0),
-                                                child: Icon(
-                                                  Icons.open_in_full_rounded,
-                                                  color: Design.colors[0],
-                                                ),
-                                              ),
-                                              Text(
-                                                equipment.size!,
-                                                style: TextStyle(
+                                          _CustomBox(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .only(
+                                                      right: 10.0),
+                                                  child: Icon(
+                                                    Icons.open_in_full_rounded,
                                                     color: Design.colors[0],
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
+                                                  ),
+                                                ),
+                                                Text(
+                                                  equipment.size!,
+                                                  style: TextStyle(
+                                                      color: Design.colors[0],
+                                                      fontSize: 25,
+                                                      fontWeight: FontWeight
+                                                          .bold),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
                                         _CustomBox(
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -453,52 +469,75 @@ class _Actions extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.red,
-            backgroundColor: const Color.fromRGBO(255, 230, 230, 1.0),
-          ),
-          onPressed: () async {
-            bool? confirmDelete =
-            await CustomDialog.showCustomConfirmationDialog(
-                type: ConfirmType.confirmDelete,
-                context: context,
-                description:
-                'Dieser Gegenstand wird aus allen Packlisten gelöscht.');
-            if (confirmDelete ?? false) {
-              //TODO delete from packing plan
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(Auth().user?.uid)
-                  .collection('equipment')
-                  .doc(equipment.id)
-                  .delete()
-                  .then((_) => context.pop());
+    IconButton(
+    style: TextButton.styleFrom(
+    foregroundColor: Colors.red,
+      backgroundColor: const Color.fromRGBO(255, 230, 230, 1.0),
+    ),
+    onPressed: () async {
+    bool? confirmDelete =
+    await CustomDialog.showCustomConfirmationDialog(
+    type: ConfirmType.confirmDelete,
+    context: context,
+    description:
+    'Dieser Gegenstand wird aus allen Packlisten gelöscht.');
+    if (confirmDelete ?? false) {
+    DocumentReference userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(Auth().user?.uid);
+
+    ///delete from packing plans
+    await userDoc.collection('packing_plan').get().then((snapshot) async {
+        for (var doc in snapshot.docs) {
+          await doc.reference.collection('items').where('equipmentId', isEqualTo: equipment.id).get().then((snapshot) async {
+            for (var itemDoc in snapshot.docs) {
+              await itemDoc.reference.delete();
             }
-          },
-          icon: const Icon(
-            Icons.delete_rounded,
-            size: 35,
-          ),
-        ),
-        const SizedBox(
-          width: 20.0,
-          height: 20.0,
-        ),
-        IconButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Design.colors[0],
-            backgroundColor: const Color.fromRGBO(220, 245, 220, 1.0),
-          ),
-          onPressed: () =>
-              CustomDialog.showCustomModal(
-                  context: context, child: EquipmentEdit(equipment: equipment)),
-          icon: const Icon(
-            Icons.edit_rounded,
-            size: 35,
-          ),
-        ),
-      ],
-    );
+          });
+        }
+    });
+
+    ///delete equipment
+    await userDoc
+        .collection('equipment')
+        .doc(equipment.id)
+        .delete()
+        .then((_) => context.pop());
+    }
   }
-}
+
+  ,
+
+  icon
+
+      :
+
+  const Icon
+
+  (
+
+  Icons.delete_rounded,
+  size: 35,
+  ),
+  ),
+  const SizedBox(
+  width: 20.0,
+  height: 20.0,
+  ),
+  IconButton(
+  style: TextButton.styleFrom(
+  foregroundColor: Design.colors[0],
+  backgroundColor: const Color.fromRGBO(220, 245, 220, 1.0),
+  ),
+  onPressed: () =>
+  CustomDialog.showCustomModal(
+  context: context, child: EquipmentEdit(equipment: equipment)),
+  icon: const Icon(
+  Icons.edit_rounded,
+  size: 35,
+  ),
+  ),
+  ],
+
+  );
+}}
