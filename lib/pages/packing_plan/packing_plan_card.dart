@@ -13,7 +13,7 @@ class PackingPlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        context.push('/packing_plan/details', extra: packingPlan.id);
+        context.pushNamed('packingplanDetails', pathParameters: {'packingPlanId': packingPlan.id});
       },
       title: Text(
         packingPlan.name,

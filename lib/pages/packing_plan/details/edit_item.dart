@@ -292,7 +292,7 @@ class _EditItemState extends ConsumerState<EditItem> {
                                 isChecked: packingPlanItem?.isChecked ?? false,
                                 location: ref.read(dropdownIndexProvider));
 
-                            docRef.set(p.toMap());
+                            docRef.set(p.toMap()).then((_) => context.pop());
                           },
                           style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.only(

@@ -25,9 +25,9 @@ import '../../../validators/packing_plan_validator.dart';
 import 'custom_pie_chart.dart';
 
 class PackingPlanDetails extends ConsumerStatefulWidget {
-  final String packingPlanID;
+  final String packingPlanId;
 
-  const PackingPlanDetails({super.key, required this.packingPlanID});
+  const PackingPlanDetails({super.key, required this.packingPlanId});
 
   @override
   ConsumerState<PackingPlanDetails> createState() => _PackingPlanDetailsState();
@@ -68,7 +68,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                   data: (packingPlanList) {
                     final PackingPlan packingPlan =
                         packingPlanList.singleWhereOrNull((element) =>
-                                element.id == widget.packingPlanID) ??
+                                element.id == widget.packingPlanId) ??
                             PackingPlan(
                                 name: '',
                                 sports: [],
@@ -199,9 +199,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       for (PackingPlanItem item
                                           in entry.value) ...[
                                         ListTile(
-                                          onTap: () => context.push(
-                                              '/equipment/details',
-                                              extra: item.equipmentId),
+                                          onTap: () => context.pushNamed(
+                                              'equipmentDetails',
+                                              pathParameters: {
+                                                'equipmentId': item.equipmentId,
+                                                'transitionDelay': '0'
+                                              }),
                                           leading: CustomCheckBox(
                                             disabled: (ref.read(
                                                         dropdownIndexProvider) ==
@@ -1458,7 +1461,8 @@ class Statistic {
   List<ChartData> get chartData => categoryPackingPlanItemsMap.entries
       .map((entry) => ChartData(
           x: Data.getCategoryNames(entry.key).last,
-          y: max(((getWeight(entry.value) / weight) * 100).roundToDouble(), 0.1)))
+          y: max(
+              ((getWeight(entry.value) / weight) * 100).roundToDouble(), 0.1)))
       .toList();
 }
 

@@ -17,8 +17,9 @@ import 'equipment_edit.dart';
 
 class EquipmentDetails extends ConsumerStatefulWidget {
   final String equipmentID;
+  final int transitionDelay;
 
-  const EquipmentDetails({super.key, required this.equipmentID});
+  const EquipmentDetails({super.key, required this.transitionDelay, required this.equipmentID});
 
   @override
   ConsumerState<EquipmentDetails> createState() => _EquipmentDetailsState();
@@ -31,7 +32,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(Duration(milliseconds: widget.transitionDelay), () {
       ref
           .read(_closeButtonVisibilityProvider.notifier)
           .state = true;

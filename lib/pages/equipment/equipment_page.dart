@@ -29,7 +29,7 @@ class EquipmentPage extends ConsumerWidget {
           ),
           EquipmentList(
             onItemClick: (equipmentId) =>
-                context.push('/equipment/details', extra: equipmentId),
+                context.pushNamed('equipmentDetails', pathParameters: {'equipmentId': equipmentId, 'transitionDelay': '300'}),
           ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 20.0)),
         ],

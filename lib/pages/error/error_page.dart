@@ -1,13 +1,12 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../data/design.dart';
 
+//TODO
 class ErrorPage extends StatelessWidget {
   const ErrorPage({super.key});
 
@@ -61,16 +60,14 @@ class ErrorPage extends StatelessWidget {
                   width: (isDesktop)
                       ? MediaQuery.of(context).size.width * 0.5
                       : null,
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Flexible(child: Lottie.asset('assets/error.json')),
-                      const _Button(),
+                      _Button(),
                     ],
                   ),
                 ),
               if (!isDesktop)
-                Flexible(child: Lottie.asset('assets/error.json')),
               if (!isDesktop) const _Button(),
             ],
           ),

@@ -118,10 +118,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                       //TODO
                       //parentNavigatorKey: _shellNavigatorKey,
                       parentNavigatorKey: _rootNavigatorKey,
-                      path: 'details',
+                      path: 'details/:packingPlanId',
+                      name: 'packingplanDetails',
                       builder: (context, state) {
-                        String packingPlanID = state.extra as String;
-                        return PackingPlanDetails(packingPlanID: packingPlanID);
+                        String packingPlanId = state.pathParameters['packingPlanId']!;
+                        return PackingPlanDetails(packingPlanId: packingPlanId);
                       }),
                 ]),
             GoRoute(
@@ -136,17 +137,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                 },
                 routes: [
                   GoRoute(
-                    path: 'details',
+                    name: 'equipmentDetails',
+                    path: 'details/:equipmentId/:transitionDelay',
                     parentNavigatorKey: _rootNavigatorKey,
                     pageBuilder: (context, state) {
-                      String equipmentID = state.extra as String;
+                      String equipmentId = state.pathParameters['equipmentId']!;
+                      int transitionDelay = int.parse(state.pathParameters['transitionDelay']!);
                       return CustomTransitionPage(
                         fullscreenDialog: true,
                         opaque: false,
                         barrierDismissible: true,
                         key: state.pageKey,
-                        child: EquipmentDetails(equipmentID: equipmentID),
-                        transitionDuration: const Duration(milliseconds: 300),
+                        child: EquipmentDetails(equipmentID: equipmentId, transitionDelay: transitionDelay),
+                        transitionDuration: Duration(milliseconds: transitionDelay),
                         transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) =>
                             FadeTransition(opacity: animation, child: child),
