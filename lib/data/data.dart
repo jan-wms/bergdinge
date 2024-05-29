@@ -268,11 +268,12 @@ class Data {
             Category(
               name: 'Karabiner & Expressen',
               id: '1.1.6',
+              imageName: '1.1.6.0.png',
               subCategories: [
                 Category(name: 'Verschlusskarabiner', id: '1.1.6.0'),
                 Category(name: 'Schnappkarabiner', id: '1.1.6.1'),
                 Category(name: 'Express-Schlingen', id: '1.1.6.2'),
-                Category(name: 'Sonstige', id: '1.1.6.3'),
+                Category(name: 'Sonstige', id: '1.1.6.3', imageName: '1.1.6.0.png'),
               ],
             ),
             Category(

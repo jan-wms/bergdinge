@@ -62,20 +62,11 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: equipmentList.when(
-            error: (error, stackTrace) => Text(error.toString()),
+            error: (error, stackTrace) => Center(child: Text(error.toString())),
             loading: () => const CircularProgressIndicator(),
             data: (data) {
               Equipment equipment = data.singleWhereOrNull(
-                      (element) => element.id == widget.equipmentID) ??
-                  Equipment(
-                    name: '',
-                    weight: 0,
-                    status: EquipmentStatus.disabled,
-                    category: '',
-                    count: 0,
-                    id: '',
-                    brand: '',
-                  );
+                      (element) => element.id == widget.equipmentID) ?? Equipment(name: '', weight: 0, status: EquipmentStatus.disabled, category: '', count: 0, id: '');
               return Stack(
                 children: [
                   CustomScrollView(
@@ -149,7 +140,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                                 maxWidth: 200.0,
                                               )
                                                   : null,
-                                              child: getImagefromCategory(category: equipment.category),
+                                              child: equipment.category.isNotEmpty ? getImagefromCategory(category: equipment.category) : const SizedBox(width: 1.0, height: 1.0,),
                                           ),
                                         ),
                                       ),
@@ -199,7 +190,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                         CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${equipment.brand!} ${equipment
+                                            '${(equipment.brand?.isNotEmpty ?? false) ? '${equipment.brand} ' : ''}${equipment
                                                 .name}',
                                             style: const TextStyle(
                                                 fontSize: 25,
@@ -242,7 +233,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                                 ),
                                               ),
                                               Text(
-                                                '${equipment.weight}g',
+                                                '${equipment.weight} g',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     color: Design.colors[0],
@@ -473,15 +464,16 @@ class _Actions extends StatelessWidget {
                 type: ConfirmType.confirmDelete,
                 context: context,
                 description:
-                'Möchtest du diesen Gegenstand wirklich löschen?');
+                'Dieser Gegenstand wird aus allen Packlisten gelöscht.');
             if (confirmDelete ?? false) {
+              //TODO delete from packing plan
               await FirebaseFirestore.instance
                   .collection('users')
                   .doc(Auth().user?.uid)
                   .collection('equipment')
                   .doc(equipment.id)
                   .delete()
-                  .then((value) => context.pop());
+                  .then((_) => context.pop());
             }
           },
           icon: const Icon(
