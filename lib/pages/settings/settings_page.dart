@@ -6,7 +6,6 @@ import 'package:equipment_app/custom_widgets/custom_dialog.dart';
 import 'package:equipment_app/data/providers.dart';
 import 'package:equipment_app/pages/setup/setup_screen.dart';
 import 'package:equipment_app/pages/login/login_screen.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,22 +38,12 @@ class SettingsPage extends ConsumerWidget {
               ],
             ));
 
-        ///FirebaseStorage (e.g. profile picture)
-        await FirebaseStorage.instance
-            .ref("users/${Auth().user!.uid}")
-            .listAll()
-            .then((value) {
-          for (var element in value.items) {
-            FirebaseStorage.instance.ref(element.fullPath).delete();
-          }
-        });
-
         ///Firestore
         DocumentReference userDoc = FirebaseFirestore.instance
             .collection('users')
             .doc(Auth().user?.uid);
 
-        //user collections ==> timeout??
+        //TODO delete packing plan items
         List<CollectionReference> collectionsToDelete = [
           userDoc.collection('packing_plan'),
           userDoc.collection('equipment'),
@@ -63,6 +52,11 @@ class SettingsPage extends ConsumerWidget {
         for (var collection in collectionsToDelete) {
           collection.get().then((snapshot) {
             for (var doc in snapshot.docs) {
+              doc.reference.collection('items').get().then((snapshot) {
+                for (var itemDoc in snapshot.docs) {
+                  itemDoc.reference.delete();
+                }
+              });
               doc.reference.delete();
             }
           });
