@@ -246,7 +246,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               15.0),
                                                     ),
                                                     content: const Text(
-                                                        "Wähle zum Bearbeiten oben den Ort aus, zum Beispiel Rucksack oder Anzug."),
+                                                        "Wähle zum Bearbeiten oben Rucksack oder Anzug aus."),
                                                   ),
                                                 );
                                               } else {
@@ -863,73 +863,80 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                 onPressed: () {
                                                   CustomDialog.showCustomModal(
                                                       context: context,
-                                                      child: Column(
-                                                        children: [
-                                                          const Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 20.0,
-                                                                    bottom:
-                                                                        10.0),
-                                                            child: Stack(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  'Tipps',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          21,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600),
-                                                                ),
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerRight,
-                                                                  child:
-                                                                      CustomCloseButton(),
-                                                                ),
-                                                              ],
+                                                      child: ConstrainedBox(
+                                                        constraints: const BoxConstraints(
+                                                          maxWidth: 600.0,
+                                                        ),
+                                                        child: Column(
+                                                          children: [
+                                                            const Padding(
+                                                              padding:
+                                                                  EdgeInsets.only(
+                                                                      top: 20.0,
+                                                                      bottom:
+                                                                          10.0),
+                                                              child: Stack(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    'Tipps',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            21,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600),
+                                                                  ),
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .centerRight,
+                                                                    child:
+                                                                        CustomCloseButton(),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                          const Divider(
-                                                            indent: 15,
-                                                            endIndent: 15,
-                                                            height: 1,
-                                                            color: Colors.grey,
-                                                          ),
-                                                          Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                              itemCount: Data
-                                                                  .tips
-                                                                  .where((element) =>
-                                                                      element.isRelevant(
-                                                                          packingPlan))
-                                                                  .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                Tip tip = Data
-                                                                    .tips
-                                                                    .where((element) =>
-                                                                        element.isRelevant(
-                                                                            packingPlan))
-                                                                    .toList()[index];
-                                                                return _TipCard(
-                                                                  tip: tip,
-                                                                  isConditionMet:
-                                                                      tip.isConditionMet(
-                                                                          items,
-                                                                          equipmentList),
-                                                                );
-                                                              },
+                                                            const Divider(
+                                                              indent: 15,
+                                                              endIndent: 15,
+                                                              height: 1,
+                                                              color: Colors.grey,
                                                             ),
-                                                          ),
-                                                        ],
+                                                            Expanded(
+                                                              child: ListView
+                                                                    .builder(
+                                                                  itemCount: Data
+                                                                      .tips
+                                                                      .where((element) =>
+                                                                          element.isRelevant(
+                                                                              packingPlan))
+                                                                      .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    Tip tip = Data
+                                                                        .tips
+                                                                        .where((element) =>
+                                                                            element.isRelevant(
+                                                                                packingPlan))
+                                                                        .toList()[index];
+                                                                    return Padding(
+                                                                        padding: index == 0 ? const EdgeInsets.only(top: 10.0) : EdgeInsets.zero,
+                                                                        child: _TipCard(
+                                                                      tip: tip,
+                                                                      isConditionMet:
+                                                                          tip.isConditionMet(
+                                                                              items,
+                                                                              equipmentList),
+                                                                    ),);
+                                                                  },
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
                                                       ));
                                                 },
                                               ),
@@ -962,76 +969,81 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     CustomDialog
                                                         .showCustomModal(
                                                             context: context,
-                                                            child: Column(
-                                                              children: [
-                                                                const Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                      top: 20.0,
-                                                                      bottom:
-                                                                          10.0),
-                                                                  child: Stack(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        'Ausrüstung hinzufügen',
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                21,
-                                                                            fontWeight:
-                                                                                FontWeight.w600),
-                                                                      ),
-                                                                      Align(
-                                                                        alignment:
-                                                                            Alignment.centerRight,
-                                                                        child:
-                                                                            CustomCloseButton(),
+                                                            child: ConstrainedBox(
+                                                              constraints: const BoxConstraints(
+                                                                maxWidth: 700.0,
+                                                              ),
+                                                              child: Column(
+                                                                children: [
+                                                                  const Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        top: 20.0,
+                                                                        bottom:
+                                                                            10.0),
+                                                                    child: Stack(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          'Ausrüstung hinzufügen',
+                                                                          style: TextStyle(
+                                                                              fontSize:
+                                                                                  21,
+                                                                              fontWeight:
+                                                                                  FontWeight.w600),
+                                                                        ),
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.centerRight,
+                                                                          child:
+                                                                              CustomCloseButton(),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  const Divider(
+                                                                    indent: 15,
+                                                                    endIndent: 15,
+                                                                    height: 1,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                  ),
+                                                                  Expanded(
+                                                                      child:
+                                                                          CustomScrollView(
+                                                                    slivers: [
+                                                                      EquipmentList(
+                                                                        packingPlanId:
+                                                                            packingPlan
+                                                                                .id,
+                                                                        onItemClick:
+                                                                            (equipmentId) {
+                                                                          int? loc = items
+                                                                              .where((element) =>
+                                                                                  element.equipmentId ==
+                                                                                  equipmentId)
+                                                                              .sorted((a, b) =>
+                                                                                  a.location.compareTo(b.location))
+                                                                              .firstOrNull
+                                                                              ?.location;
+                                                                          CustomDialog
+                                                                              .showCustomDialog(
+                                                                            barrierDismissible:
+                                                                                true,
+                                                                            context:
+                                                                                context,
+                                                                            child: EditItem(
+                                                                                location: loc,
+                                                                                equipmentId: equipmentId,
+                                                                                packingPlan: packingPlan),
+                                                                          );
+                                                                        },
                                                                       ),
                                                                     ],
-                                                                  ),
-                                                                ),
-                                                                const Divider(
-                                                                  indent: 15,
-                                                                  endIndent: 15,
-                                                                  height: 1,
-                                                                  color: Colors
-                                                                      .grey,
-                                                                ),
-                                                                Expanded(
-                                                                    child:
-                                                                        CustomScrollView(
-                                                                  slivers: [
-                                                                    EquipmentList(
-                                                                      packingPlanId:
-                                                                          packingPlan
-                                                                              .id,
-                                                                      onItemClick:
-                                                                          (equipmentId) {
-                                                                        int? loc = items
-                                                                            .where((element) =>
-                                                                                element.equipmentId ==
-                                                                                equipmentId)
-                                                                            .sorted((a, b) =>
-                                                                                a.location.compareTo(b.location))
-                                                                            .firstOrNull
-                                                                            ?.location;
-                                                                        CustomDialog
-                                                                            .showCustomDialog(
-                                                                          barrierDismissible:
-                                                                              true,
-                                                                          context:
-                                                                              context,
-                                                                          child: EditItem(
-                                                                              location: loc,
-                                                                              equipmentId: equipmentId,
-                                                                              packingPlan: packingPlan),
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                )),
-                                                              ],
+                                                                  )),
+                                                                ],
+                                                              ),
                                                             )),
                                               ),
                                             ],
@@ -1476,7 +1488,7 @@ class _TipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(15.0),
-      margin: Design.pagePadding.copyWith(top: 10.0),
+      margin: Design.pagePadding.copyWith(bottom: 10.0),
       decoration: BoxDecoration(
           color: isConditionMet ? Design.colors[1] : Design.colors[6],
           borderRadius: BorderRadius.circular(20.0)),

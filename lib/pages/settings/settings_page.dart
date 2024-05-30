@@ -43,7 +43,6 @@ class SettingsPage extends ConsumerWidget {
             .collection('users')
             .doc(Auth().user?.uid);
 
-        //TODO delete packing plan items
         List<CollectionReference> collectionsToDelete = [
           userDoc.collection('packing_plan'),
           userDoc.collection('equipment'),

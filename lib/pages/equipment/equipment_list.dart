@@ -39,10 +39,12 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
         ),
         data: (data) {
           if (data.isEmpty) {
-            return const SliverFillRemaining(
+            return SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                child: Text('Füge Ausrüstung hinzu.'),
+                child: Text(widget.packingPlanId != null
+                    ? 'Es ist noch keine Ausrüstung vorhanden.'
+                    : 'Füge Ausrüstung hinzu.'),
               ),
             );
           }
@@ -66,6 +68,24 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                 ),
               );
             }
+            return SliverToBoxAdapter(
+              child: Align(
+                alignment: Alignment.center,
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  spacing: Design.pagePadding.left,
+                  runSpacing: Design.pagePadding.left,
+                  children: [
+                    for (var item in items)
+                      EquipmentCard(
+                        equipment: item,
+                        onClick: (equipmentId) => widget.onItemClick(equipmentId),
+                        packingPlanId: widget.packingPlanId,
+                      ),
+                  ],
+                ),
+              ),
+            );
             return SliverList.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
