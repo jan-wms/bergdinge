@@ -86,16 +86,6 @@ class _EquipmentListState extends ConsumerState<EquipmentList> {
                 ),
               ),
             );
-            return SliverList.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return EquipmentCard(
-                  equipment: items[index],
-                  onClick: (equipmentId) => widget.onItemClick(equipmentId),
-                  packingPlanId: widget.packingPlanId,
-                );
-              },
-            );
           }
 
           return SliverList(
