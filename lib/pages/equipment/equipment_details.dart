@@ -19,7 +19,8 @@ class EquipmentDetails extends ConsumerStatefulWidget {
   final String equipmentID;
   final int transitionDelay;
 
-  const EquipmentDetails({super.key, required this.transitionDelay, required this.equipmentID});
+  const EquipmentDetails(
+      {super.key, required this.transitionDelay, required this.equipmentID});
 
   @override
   ConsumerState<EquipmentDetails> createState() => _EquipmentDetailsState();
@@ -27,34 +28,25 @@ class EquipmentDetails extends ConsumerStatefulWidget {
 
 class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
   final _closeButtonVisibilityProvider =
-  StateProvider.autoDispose<bool>((ref) => false);
+      StateProvider.autoDispose<bool>((ref) => false);
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: widget.transitionDelay), () {
-      ref
-          .read(_closeButtonVisibilityProvider.notifier)
-          .state = true;
+      ref.read(_closeButtonVisibilityProvider.notifier).state = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final safeareaPadding = MediaQuery
-        .of(context)
-        .padding;
+    final safeareaPadding = MediaQuery.of(context).padding;
     final equipmentList = ref.watch(equipmentStreamProvider);
-    bool isDesktop = MediaQuery
-        .of(context)
-        .size
-        .width > 700;
+    bool isDesktop = MediaQuery.of(context).size.width > 700;
 
     return DismissiblePage(
       onDismissed: () {
-        ref
-            .read(_closeButtonVisibilityProvider.notifier)
-            .state = false;
+        ref.read(_closeButtonVisibilityProvider.notifier).state = false;
         context.pop();
       },
       minRadius: 0.0,
@@ -68,7 +60,8 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
             data: (data) {
               Equipment equipment = data.singleWhereOrNull(
                       (element) => element.id == widget.equipmentID) ??
-                  Equipment(name: '',
+                  Equipment(
+                      name: '',
                       weight: 0,
                       status: EquipmentStatus.disabled,
                       category: '',
@@ -78,7 +71,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                 children: [
                   CustomScrollView(
                       scrollDirection:
-                      (isDesktop) ? Axis.horizontal : Axis.vertical,
+                          (isDesktop) ? Axis.horizontal : Axis.vertical,
                       physics: (isDesktop)
                           ? const NeverScrollableScrollPhysics()
                           : const ClampingScrollPhysics(),
@@ -92,41 +85,30 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                 alignment: Alignment.center,
                                 padding: (isDesktop)
                                     ? EdgeInsets.symmetric(
-                                    horizontal: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width *
-                                        0.05,
-                                    vertical: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height *
-                                        0.05)
-                                    .add(EdgeInsets.only(
-                                    left: safeareaPadding.left))
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                            vertical: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05)
+                                        .add(EdgeInsets.only(
+                                            left: safeareaPadding.left))
                                     : EdgeInsets.zero,
                                 constraints: (isDesktop)
                                     ? BoxConstraints(
-                                  maxHeight:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height,
-                                  maxWidth:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width *
-                                      0.5,
-                                )
+                                        maxHeight:
+                                            MediaQuery.of(context).size.height,
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
+                                      )
                                     : null,
                                 child: AspectRatio(
                                   aspectRatio: (isDesktop)
                                       ? 1
-                                      : MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 300,
+                                      : MediaQuery.of(context).size.width / 300,
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: Design.colors[0],
@@ -144,14 +126,17 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                           child: Container(
                                             constraints: (isDesktop)
                                                 ? const BoxConstraints(
-                                              maxWidth: 200.0,
-                                            )
+                                                    maxWidth: 200.0,
+                                                  )
                                                 : null,
                                             child: equipment.category.isNotEmpty
                                                 ? getImagefromCategory(
-                                                category: equipment.category)
+                                                    category:
+                                                        equipment.category)
                                                 : const SizedBox(
-                                              width: 1.0, height: 1.0,),
+                                                    width: 1.0,
+                                                    height: 1.0,
+                                                  ),
                                           ),
                                         ),
                                       ),
@@ -167,233 +152,207 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                             alignment: Alignment.center,
                             child: SingleChildScrollView(
                                 child: Container(
-                                  width: (isDesktop)
-                                      ? MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.5
-                                      : null,
-                                  padding: Design.pagePadding.copyWith(
-                                      right: (isDesktop)
-                                          ? (MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
-                                          0.05) +
+                              width: (isDesktop)
+                                  ? MediaQuery.of(context).size.width * 0.5
+                                  : null,
+                              padding: Design.pagePadding.copyWith(
+                                  right: (isDesktop)
+                                      ? (MediaQuery.of(context).size.width *
+                                              0.05) +
                                           safeareaPadding.right
-                                          : null,
-                                      top: (isDesktop)
-                                          ? MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height *
+                                      : null,
+                                  top: (isDesktop)
+                                      ? MediaQuery.of(context).size.height *
                                           0.05
-                                          : 15,
-                                      bottom: safeareaPadding.bottom + 30.0),
+                                      : 15,
+                                  bottom: safeareaPadding.bottom + 30.0),
+                              alignment: Alignment.centerLeft,
+                              child: Column(children: [
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      top: 15.0, bottom: 40.0),
                                   alignment: Alignment.centerLeft,
-                                  child: Column(children: [
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 15.0, bottom: 40.0),
-                                      alignment: Alignment.centerLeft,
-                                      child: Column(
-                                        crossAxisAlignment:
+                                  child: Column(
+                                    crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${(equipment.brand?.isNotEmpty ?? false) ? '${equipment.brand} ' : ''}${equipment.name}',
+                                        style: const TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      Text(
+                                        equipment.category.isEmpty
+                                            ? ''
+                                            : Data.getCategoryNames(
+                                                    equipment.category)
+                                                .lastWhere((element) => !element
+                                                    .toLowerCase()
+                                                    .contains('sonstige')),
+                                        style: const TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Wrap(
+                                  spacing: 10.0,
+                                  runSpacing: 10.0,
+                                  alignment: WrapAlignment.center,
+                                  children: [
+                                    _CustomBox(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            '${(equipment.brand?.isNotEmpty ??
-                                                false)
-                                                ? '${equipment.brand} '
-                                                : ''}${equipment
-                                                .name}',
-                                            style: const TextStyle(
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.w600),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10.0),
+                                            child: Icon(
+                                              Icons.scale_rounded,
+                                              color: Design.colors[0],
+                                            ),
                                           ),
                                           Text(
-                                            equipment.category.isEmpty
-                                                ? ''
-                                                : Data.getCategoryNames(
-                                                equipment.category)
-                                                .lastWhere((element) =>
-                                            !element
-                                                .toLowerCase()
-                                                .contains('sonstige')),
-                                            style: const TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.black54,
+                                            '${equipment.weight} g',
+                                            style: TextStyle(
+                                                fontSize: 25,
+                                                color: Design.colors[0],
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    Wrap(
-                                      spacing: 10.0,
-                                      runSpacing: 10.0,
-                                      alignment: WrapAlignment.center,
-                                      children: [
-                                        _CustomBox(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .center,
-                                            children: [
+                                    if (equipment.size != null)
+                                      _CustomBox(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10.0),
+                                              child: Icon(
+                                                Icons.open_in_full_rounded,
+                                                color: Design.colors[0],
+                                              ),
+                                            ),
+                                            Text(
+                                              equipment.size!,
+                                              style: TextStyle(
+                                                  color: Design.colors[0],
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    _CustomBox(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.ideographic,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 3),
+                                            child: Text(
+                                              equipment.count.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Design.colors[0]),
+                                            ),
+                                          ),
+                                          const Text(
+                                            'x',
+                                            style: TextStyle(
+                                                color: Colors.black38,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (equipment.price != null ||
+                                        equipment.uvp != null)
+                                      _CustomBox(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '${parsePrice((equipment.price ?? equipment.uvp)!)}€',
+                                              style: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600,
+                                                color: Design.colors[0],
+                                              ),
+                                            ),
+                                            if (equipment.price !=
+                                                    equipment.uvp &&
+                                                equipment.price != null &&
+                                                equipment.uvp != null)
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                    right: 10.0),
-                                                child: Icon(
-                                                  Icons.scale_rounded,
-                                                  color: Design.colors[0],
-                                                ),
-                                              ),
-                                              Text(
-                                                '${equipment.weight} g',
-                                                style: TextStyle(
-                                                    fontSize: 25,
-                                                    color: Design.colors[0],
-                                                    fontWeight: FontWeight
-                                                        .w600),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        if(equipment.size != null)
-                                          _CustomBox(
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment
-                                                  .center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .only(
-                                                      right: 10.0),
-                                                  child: Icon(
-                                                    Icons.open_in_full_rounded,
-                                                    color: Design.colors[0],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  equipment.size!,
-                                                  style: TextStyle(
-                                                      color: Design.colors[0],
-                                                      fontSize: 25,
-                                                      fontWeight: FontWeight
-                                                          .bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        _CustomBox(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                            textBaseline: TextBaseline
-                                                .ideographic,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(right: 3),
+                                                    left: 10.0),
                                                 child: Text(
-                                                  equipment.count.toString(),
+                                                  '${parsePrice(equipment.uvp!)}€',
                                                   style: TextStyle(
-                                                      fontSize: 25,
-                                                      fontWeight: FontWeight
-                                                          .bold,
-                                                      color: Design.colors[0]),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 19,
+                                                      color: Colors.black
+                                                          .withOpacity(0.6),
+                                                      decoration: TextDecoration
+                                                          .lineThrough),
                                                 ),
                                               ),
-                                              const Text(
-                                                'x',
-                                                style: TextStyle(
-                                                    color: Colors.black38,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight
-                                                        .w600),
-                                              ),
-                                            ],
-                                          ),
+                                          ],
                                         ),
-                                        if (equipment.price != null ||
-                                            equipment.uvp != null)
-                                          _CustomBox(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
+                                      ),
+                                    if (equipment.purchaseDate != null)
+                                      _CustomBox(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  '${parsePrice(
-                                                      (equipment.price ??
-                                                          equipment.uvp)!)}€',
-                                                  style: TextStyle(
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Design.colors[0],
-                                                  ),
-                                                ),
-                                                if (equipment.price !=
-                                                    equipment.uvp &&
-                                                    equipment.price != null &&
-                                                    equipment.uvp != null)
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .only(
-                                                        left: 10.0),
-                                                    child: Text(
-                                                      '${parsePrice(
-                                                          equipment.uvp!)}€',
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight
-                                                              .w600,
-                                                          fontSize: 19,
-                                                          color: Colors.black
-                                                              .withOpacity(0.6),
-                                                          decoration: TextDecoration
-                                                              .lineThrough),
-                                                    ),
-                                                  ),
-                                              ],
+                                          children: [
+                                            const Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10.0),
+                                              child: Icon(
+                                                  Icons.date_range_rounded),
                                             ),
-                                          ),
-                                        if (equipment.purchaseDate != null)
-                                          _CustomBox(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(
-                                                      right: 10.0),
-                                                  child: Icon(
-                                                      Icons.date_range_rounded),
-                                                ),
-                                                Text(
-                                                  parseDate(
-                                                      equipment.purchaseDate!),
-                                                  style: TextStyle(
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Design.colors[0],
-                                                  ),
-                                                ),
-                                              ],
+                                            Text(
+                                              parseDate(
+                                                  equipment.purchaseDate!),
+                                              style: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600,
+                                                color: Design.colors[0],
+                                              ),
                                             ),
-                                          ),
-                                      ],
-                                    ),
-                                    if (isDesktop)
-                                      Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 40.0),
-                                          child: _Actions(
-                                              equipment: equipment)),
-                                  ]),
-                                )),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                if (isDesktop)
+                                  Padding(
+                                      padding: const EdgeInsets.only(top: 40.0),
+                                      child: _Actions(equipment: equipment)),
+                              ]),
+                            )),
                           ),
                         ),
                         if (!isDesktop)
@@ -414,7 +373,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                     top: safeareaPadding.top + 5,
                     child: AnimatedOpacity(
                       opacity:
-                      ref.watch(_closeButtonVisibilityProvider) ? 1.0 : 0.0,
+                          ref.watch(_closeButtonVisibilityProvider) ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 100),
                       child: CustomCloseButton(
                         onPressed: () {
@@ -470,75 +429,71 @@ class _Actions extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-    IconButton(
-    style: TextButton.styleFrom(
-    foregroundColor: Colors.red,
-      backgroundColor: const Color.fromRGBO(255, 230, 230, 1.0),
-    ),
-    onPressed: () async {
-    bool? confirmDelete =
-    await CustomDialog.showCustomConfirmationDialog(
-    type: ConfirmType.confirmDelete,
-    context: context,
-    description:
-    'Dieser Gegenstand wird aus allen Packlisten gelöscht.');
-    if (confirmDelete ?? false) {
-    DocumentReference userDoc = FirebaseFirestore.instance
-        .collection('users')
-        .doc(Auth().user?.uid);
+        IconButton(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.red,
+            backgroundColor: const Color.fromRGBO(255, 230, 230, 1.0),
+          ),
+          onPressed: () async {
+            bool? confirmDelete =
+                await CustomDialog.showCustomConfirmationDialog(
+                    type: ConfirmType.confirmDelete,
+                    context: context,
+                    description:
+                        'Dieser Gegenstand wird aus allen Packlisten gelöscht.');
+            if (confirmDelete ?? false) {
+              DocumentReference userDoc = FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(Auth().user?.uid);
 
-    ///delete from packing plans
-    await userDoc.collection('packing_plan').get().then((snapshot) async {
-        for (var doc in snapshot.docs) {
-          await doc.reference.collection('items').where('equipmentId', isEqualTo: equipment.id).get().then((snapshot) async {
-            for (var itemDoc in snapshot.docs) {
-              await itemDoc.reference.delete();
+              ///delete from packing plans
+              await userDoc
+                  .collection('packing_plan')
+                  .get()
+                  .then((snapshot) async {
+                for (var doc in snapshot.docs) {
+                  await doc.reference
+                      .collection('items')
+                      .where('equipmentId', isEqualTo: equipment.id)
+                      .get()
+                      .then((snapshot) async {
+                    for (var itemDoc in snapshot.docs) {
+                      await itemDoc.reference.delete();
+                    }
+                  });
+                }
+              });
+
+              ///delete equipment
+              await userDoc
+                  .collection('equipment')
+                  .doc(equipment.id)
+                  .delete()
+                  .then((_) => context.pop());
             }
-          });
-        }
-    });
-
-    ///delete equipment
-    await userDoc
-        .collection('equipment')
-        .doc(equipment.id)
-        .delete()
-        .then((_) => context.pop());
-    }
+          },
+          icon: const Icon(
+            Icons.delete_rounded,
+            size: 35,
+          ),
+        ),
+        const SizedBox(
+          width: 20.0,
+          height: 20.0,
+        ),
+        IconButton(
+          style: TextButton.styleFrom(
+            foregroundColor: Design.colors[0],
+            backgroundColor: const Color.fromRGBO(220, 245, 220, 1.0),
+          ),
+          onPressed: () => CustomDialog.showCustomModal(
+              context: context, child: EquipmentEdit(equipment: equipment)),
+          icon: const Icon(
+            Icons.edit_rounded,
+            size: 35,
+          ),
+        ),
+      ],
+    );
   }
-
-  ,
-
-  icon
-
-      :
-
-  const Icon
-
-  (
-
-  Icons.delete_rounded,
-  size: 35,
-  ),
-  ),
-  const SizedBox(
-  width: 20.0,
-  height: 20.0,
-  ),
-  IconButton(
-  style: TextButton.styleFrom(
-  foregroundColor: Design.colors[0],
-  backgroundColor: const Color.fromRGBO(220, 245, 220, 1.0),
-  ),
-  onPressed: () =>
-  CustomDialog.showCustomModal(
-  context: context, child: EquipmentEdit(equipment: equipment)),
-  icon: const Icon(
-  Icons.edit_rounded,
-  size: 35,
-  ),
-  ),
-  ],
-
-  );
-}}
+}

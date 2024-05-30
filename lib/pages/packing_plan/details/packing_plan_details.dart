@@ -51,19 +51,20 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextOfPage) {
     //TODO
     //bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: ref.watch(equipmentStreamProvider).when(
-          error: (error, stackTrace) => Center(child: Text(error.toString())),
+          error: (error, stackTrace) =>
+              Center(child: Text('equipmentStreamProvider: $error')),
           loading: () => _loading,
           data: (equipmentList) {
             return ref.watch(packingPlanStreamProvider).when(
                   error: (error, stackTrace) =>
-                      Center(child: Text(error.toString())),
+                      Center(child: Text('packingPlanStreamProvider: $error')),
                   loading: () => _loading,
                   data: (packingPlanList) {
                     final PackingPlan packingPlan =
@@ -72,15 +73,17 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             PackingPlan(
                                 name: '',
                                 sports: [],
-                                id: '',
+                                id: '-',
                                 locations: [],
                                 createdAt: DateTime(0),
                                 updatedAt: DateTime(0));
+
                     return ref
                         .watch(packingPlanItemStreamProvider(packingPlan.id))
                         .when(
-                          error: (error, stackTrace) =>
-                              Center(child: Text(error.toString())),
+                          error: (error, stackTrace) => Center(
+                              child: Text(
+                                  'packingPlanItemStreamProvider(packingPlanId ${packingPlan.id}): $error')),
                           loading: () => _loading,
                           data: (items) {
                             final TextEditingController controllerNotes =
@@ -646,16 +649,30 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               description:
                                                                   'Möchtest du diese Packliste wirklich löschen?');
                                                   if (confirmDelete ?? false) {
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('users')
-                                                        .doc(Auth().user?.uid)
-                                                        .collection(
-                                                            'packing_plan')
-                                                        .doc(packingPlan.id)
-                                                        .delete()
-                                                        .then((value) =>
-                                                            context.pop());
+                                                    DocumentReference docRef =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection('users')
+                                                            .doc(Auth()
+                                                                .user
+                                                                ?.uid)
+                                                            .collection(
+                                                                'packing_plan')
+                                                            .doc(
+                                                                packingPlan.id);
+
+                                                    docRef
+                                                        .collection('items')
+                                                        .get()
+                                                        .then((snapshot) {
+                                                      for (var doc
+                                                          in snapshot.docs) {
+                                                        doc.reference.delete();
+                                                      }
+                                                    });
+
+                                                    await docRef.delete().then(
+                                                        (_) => contextOfPage.pop());
                                                   }
                                                 },
                                                 child: const Row(
@@ -678,320 +695,228 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                     ),
                                   ],
                                 ),
-                                SliverPadding(
-                                  padding: const EdgeInsets.only(
-                                    top: 20.0,
-                                  ),
-                                  sliver: SliverList(
-                                    delegate: SliverChildListDelegate(
-                                      [
-                                        Container(
-                                          margin: Design.pagePadding,
-                                          padding: const EdgeInsets.all(15.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                                spreadRadius: 4,
-                                                blurRadius: 10,
-                                                offset: const Offset(2, 3),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Flex(
-                                            direction: Axis.vertical,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  right: 0.0,
-                                                  bottom: 15.0,
+                                if (packingPlan.id != '-')
+                                  SliverPadding(
+                                    padding: const EdgeInsets.only(
+                                      top: 20.0,
+                                    ),
+                                    sliver: SliverList(
+                                      delegate: SliverChildListDelegate(
+                                        [
+                                          Container(
+                                            margin: Design.pagePadding,
+                                            padding: const EdgeInsets.all(15.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 4,
+                                                  blurRadius: 10,
+                                                  offset: const Offset(2, 3),
                                                 ),
-                                                child: Wrap(
-                                                  runSpacing: 13.0,
-                                                  spacing: 13.0,
-                                                  alignment:
-                                                      WrapAlignment.center,
-                                                  children: [
-                                                    for (var sport
-                                                        in packingPlan.sports)
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                    13.0,
-                                                                vertical: 9.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: const Color
-                                                              .fromRGBO(
-                                                              218, 231, 208, 1),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
+                                              ],
+                                            ),
+                                            child: Flex(
+                                              direction: Axis.vertical,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    right: 0.0,
+                                                    bottom: 15.0,
+                                                  ),
+                                                  child: Wrap(
+                                                    runSpacing: 13.0,
+                                                    spacing: 13.0,
+                                                    alignment:
+                                                        WrapAlignment.center,
+                                                    children: [
+                                                      for (var sport
+                                                          in packingPlan.sports)
+                                                        Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      13.0,
+                                                                  vertical:
+                                                                      9.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color
+                                                                .fromRGBO(218,
+                                                                231, 208, 1),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
+                                                          child: Text(
+                                                            sport,
+                                                            style: TextStyle(
+                                                              fontSize: 15.0,
+                                                              color: Design
+                                                                  .colors[0],
+                                                            ),
+                                                          ),
                                                         ),
-                                                        child: Text(
-                                                          sport,
-                                                          style: TextStyle(
-                                                            fontSize: 15.0,
+                                                      GestureDetector(
+                                                        onTap: () => CustomDialog
+                                                            .showCustomModal(
+                                                                context:
+                                                                    context,
+                                                                child:
+                                                                    PackingPlanEdit(
+                                                                  packingPlan:
+                                                                      packingPlan,
+                                                                )),
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      15.0,
+                                                                  vertical:
+                                                                      8.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color
+                                                                .fromRGBO(240,
+                                                                240, 240, 1.0),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
+                                                          child: Icon(
+                                                            Icons.add_rounded,
+                                                            size: 22,
                                                             color: Design
                                                                 .colors[0],
                                                           ),
                                                         ),
                                                       ),
-                                                    GestureDetector(
-                                                      onTap: () => CustomDialog
-                                                          .showCustomModal(
-                                                              context: context,
-                                                              child:
-                                                                  PackingPlanEdit(
-                                                                packingPlan:
-                                                                    packingPlan,
-                                                              )),
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                    15.0,
-                                                                vertical: 8.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: const Color
-                                                              .fromRGBO(240,
-                                                              240, 240, 1.0),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.add_rounded,
-                                                          size: 22,
-                                                          color:
-                                                              Design.colors[0],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Form(
-                                                key: _formKey,
-                                                child: TextFormField(
-                                                  autofocus: false,
-                                                  validator: (value) =>
-                                                      PackingPlanValidator
-                                                          .notes(value),
-                                                  controller: controllerNotes,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    labelText: 'Notizen',
-                                                    alignLabelWithHint: true,
+                                                    ],
                                                   ),
-                                                  minLines: 2,
-                                                  maxLines: 6,
-                                                  keyboardType:
-                                                      TextInputType.multiline,
-                                                  onTapOutside: (value) {
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                    if (_formKey.currentState!
-                                                        .validate()) {
-                                                      DocumentReference ref =
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  'users')
-                                                              .doc(Auth()
-                                                                  .user
-                                                                  ?.uid)
-                                                              .collection(
-                                                                  'packing_plan')
-                                                              .doc(packingPlan
-                                                                  .id);
+                                                ),
+                                                Form(
+                                                  key: _formKey,
+                                                  child: TextFormField(
+                                                    autofocus: false,
+                                                    validator: (value) =>
+                                                        PackingPlanValidator
+                                                            .notes(value),
+                                                    controller: controllerNotes,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      labelText: 'Notizen',
+                                                      alignLabelWithHint: true,
+                                                    ),
+                                                    minLines: 2,
+                                                    maxLines: 6,
+                                                    keyboardType:
+                                                        TextInputType.multiline,
+                                                    onTapOutside: (value) {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                      if (_formKey.currentState!
+                                                          .validate()) {
+                                                        DocumentReference ref =
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'users')
+                                                                .doc(Auth()
+                                                                    .user
+                                                                    ?.uid)
+                                                                .collection(
+                                                                    'packing_plan')
+                                                                .doc(packingPlan
+                                                                    .id);
 
-                                                      ref.update({
-                                                        "notes":
-                                                            controllerNotes.text
-                                                      });
-                                                    }
-                                                  },
+                                                        ref.update({
+                                                          "notes":
+                                                              controllerNotes
+                                                                  .text
+                                                        });
+                                                      }
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: Design.pagePadding.copyWith(
-                                              top: 40.0, bottom: 40.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  foregroundColor:
-                                                      Design.colors[0],
-                                                  backgroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
-                                                  ),
-                                                ),
-                                                child: const Row(
-                                                  children: [
-                                                    Icon(Icons
-                                                        .lightbulb_rounded),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10.0),
-                                                      child: Text(
-                                                        'Tipps',
-                                                        style: TextStyle(
-                                                            fontSize: 16),
-                                                      ),
+                                          Padding(
+                                            padding: Design.pagePadding
+                                                .copyWith(
+                                                    top: 40.0, bottom: 40.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        Design.colors[0],
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
                                                     ),
-                                                  ],
-                                                ),
-                                                onPressed: () {
-                                                  CustomDialog.showCustomModal(
-                                                      context: context,
-                                                      child: ConstrainedBox(
-                                                        constraints: const BoxConstraints(
-                                                          maxWidth: 600.0,
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            const Padding(
-                                                              padding:
-                                                                  EdgeInsets.only(
-                                                                      top: 20.0,
-                                                                      bottom:
-                                                                          10.0),
-                                                              child: Stack(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    'Tipps',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            21,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w600),
-                                                                  ),
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerRight,
-                                                                    child:
-                                                                        CustomCloseButton(),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            const Divider(
-                                                              indent: 15,
-                                                              endIndent: 15,
-                                                              height: 1,
-                                                              color: Colors.grey,
-                                                            ),
-                                                            Expanded(
-                                                              child: ListView
-                                                                    .builder(
-                                                                  itemCount: Data
-                                                                      .tips
-                                                                      .where((element) =>
-                                                                          element.isRelevant(
-                                                                              packingPlan))
-                                                                      .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    Tip tip = Data
-                                                                        .tips
-                                                                        .where((element) =>
-                                                                            element.isRelevant(
-                                                                                packingPlan))
-                                                                        .toList()[index];
-                                                                    return Padding(
-                                                                        padding: index == 0 ? const EdgeInsets.only(top: 10.0) : EdgeInsets.zero,
-                                                                        child: _TipCard(
-                                                                      tip: tip,
-                                                                      isConditionMet:
-                                                                          tip.isConditionMet(
-                                                                              items,
-                                                                              equipmentList),
-                                                                    ),);
-                                                                  },
-                                                                ),
-                                                              ),
-                                                          ],
-                                                        ),
-                                                      ));
-                                                },
-                                              ),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  foregroundColor:
-                                                      Design.colors[0],
-                                                  backgroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
                                                   ),
-                                                ),
-                                                child: const Row(
-                                                  children: [
-                                                    Icon(Icons.add),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10.0),
-                                                      child: Text(
-                                                        'Ausrüstung',
-                                                        style: TextStyle(
-                                                            fontSize: 16),
+                                                  child: const Row(
+                                                    children: [
+                                                      Icon(Icons
+                                                          .lightbulb_rounded),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10.0),
+                                                        child: Text(
+                                                          'Tipps',
+                                                          style: TextStyle(
+                                                              fontSize: 16),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                onPressed: () =>
+                                                    ],
+                                                  ),
+                                                  onPressed: () {
                                                     CustomDialog
                                                         .showCustomModal(
                                                             context: context,
-                                                            child: ConstrainedBox(
-                                                              constraints: const BoxConstraints(
-                                                                maxWidth: 700.0,
+                                                            child:
+                                                                ConstrainedBox(
+                                                              constraints:
+                                                                  const BoxConstraints(
+                                                                maxWidth: 600.0,
                                                               ),
                                                               child: Column(
                                                                 children: [
                                                                   const Padding(
                                                                     padding: EdgeInsets.only(
-                                                                        top: 20.0,
+                                                                        top:
+                                                                            20.0,
                                                                         bottom:
                                                                             10.0),
-                                                                    child: Stack(
+                                                                    child:
+                                                                        Stack(
                                                                       alignment:
                                                                           Alignment
                                                                               .center,
                                                                       children: [
                                                                         Text(
-                                                                          'Ausrüstung hinzufügen',
+                                                                          'Tipps',
                                                                           style: TextStyle(
-                                                                              fontSize:
-                                                                                  21,
-                                                                              fontWeight:
-                                                                                  FontWeight.w600),
+                                                                              fontSize: 21,
+                                                                              fontWeight: FontWeight.w600),
                                                                         ),
                                                                         Align(
                                                                           alignment:
@@ -1004,125 +929,197 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                   ),
                                                                   const Divider(
                                                                     indent: 15,
-                                                                    endIndent: 15,
+                                                                    endIndent:
+                                                                        15,
                                                                     height: 1,
                                                                     color: Colors
                                                                         .grey,
                                                                   ),
                                                                   Expanded(
-                                                                      child:
-                                                                          CustomScrollView(
-                                                                    slivers: [
-                                                                      EquipmentList(
-                                                                        packingPlanId:
-                                                                            packingPlan
-                                                                                .id,
-                                                                        onItemClick:
-                                                                            (equipmentId) {
-                                                                          int? loc = items
-                                                                              .where((element) =>
-                                                                                  element.equipmentId ==
-                                                                                  equipmentId)
-                                                                              .sorted((a, b) =>
-                                                                                  a.location.compareTo(b.location))
-                                                                              .firstOrNull
-                                                                              ?.location;
-                                                                          CustomDialog
-                                                                              .showCustomDialog(
-                                                                            barrierDismissible:
-                                                                                true,
-                                                                            context:
-                                                                                context,
-                                                                            child: EditItem(
-                                                                                location: loc,
-                                                                                equipmentId: equipmentId,
-                                                                                packingPlan: packingPlan),
-                                                                          );
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  )),
+                                                                    child: ListView
+                                                                        .builder(
+                                                                      itemCount: Data
+                                                                          .tips
+                                                                          .where((element) =>
+                                                                              element.isRelevant(packingPlan))
+                                                                          .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        Tip tip = Data
+                                                                            .tips
+                                                                            .where((element) =>
+                                                                                element.isRelevant(packingPlan))
+                                                                            .toList()[index];
+                                                                        return Padding(
+                                                                          padding: index == 0
+                                                                              ? const EdgeInsets.only(top: 10.0)
+                                                                              : EdgeInsets.zero,
+                                                                          child:
+                                                                              _TipCard(
+                                                                            tip:
+                                                                                tip,
+                                                                            isConditionMet:
+                                                                                tip.isConditionMet(items, equipmentList),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ),
                                                                 ],
                                                               ),
-                                                            )),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        if (items.isNotEmpty)
-                                          Padding(
-                                            padding: Design.pagePadding,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                TooltipVisibility(
-                                                  visible: false,
-                                                  child: Theme(
-                                                    data: Theme.of(context)
-                                                        .copyWith(
-                                                      splashFactory: NoSplash
-                                                          .splashFactory,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      splashColor:
-                                                          Colors.transparent,
+                                                            ));
+                                                  },
+                                                ),
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        Design.colors[0],
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
                                                     ),
-                                                    child: PopupMenuButton(
-                                                      color: Colors.white,
-                                                      splashRadius: 100,
-                                                      surfaceTintColor:
-                                                          Colors.white,
-                                                      itemBuilder: (context) =>
-                                                          [
-                                                        CustomPopupMenuItem(
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                              left: 5.0,
-                                                              right: 5.0,
-                                                            ),
-                                                            child: TextButton(
-                                                              style: TextButton.styleFrom(
-                                                                  foregroundColor:
-                                                                      Design.colors[
-                                                                          0],
-                                                                  shape: RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10.0))),
-                                                              onPressed: () {
-                                                                context.pop();
-                                                                ref
-                                                                    .read(dropdownIndexProvider
-                                                                        .notifier)
-                                                                    .state = 0;
-                                                              },
-                                                              child: const Text(
-                                                                'Gesamt',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        17),
-                                                              ),
-                                                            ),
-                                                          ),
+                                                  ),
+                                                  child: const Row(
+                                                    children: [
+                                                      Icon(Icons.add),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 10.0),
+                                                        child: Text(
+                                                          'Ausrüstung',
+                                                          style: TextStyle(
+                                                              fontSize: 16),
                                                         ),
-                                                        for (String location
-                                                            in packingPlan
-                                                                .locations)
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  onPressed: () => CustomDialog
+                                                      .showCustomModal(
+                                                          context: context,
+                                                          child: ConstrainedBox(
+                                                            constraints:
+                                                                const BoxConstraints(
+                                                              maxWidth: 700.0,
+                                                            ),
+                                                            child: Column(
+                                                              children: [
+                                                                const Padding(
+                                                                  padding: EdgeInsets.only(
+                                                                      top: 20.0,
+                                                                      bottom:
+                                                                          10.0),
+                                                                  child: Stack(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        'Ausrüstung hinzufügen',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                21,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
+                                                                      ),
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.centerRight,
+                                                                        child:
+                                                                            CustomCloseButton(),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Divider(
+                                                                  indent: 15,
+                                                                  endIndent: 15,
+                                                                  height: 1,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                                Expanded(
+                                                                    child:
+                                                                        CustomScrollView(
+                                                                  slivers: [
+                                                                    EquipmentList(
+                                                                      packingPlanId:
+                                                                          packingPlan
+                                                                              .id,
+                                                                      onItemClick:
+                                                                          (equipmentId) {
+                                                                        int? loc = items
+                                                                            .where((element) =>
+                                                                                element.equipmentId ==
+                                                                                equipmentId)
+                                                                            .sorted((a, b) =>
+                                                                                a.location.compareTo(b.location))
+                                                                            .firstOrNull
+                                                                            ?.location;
+                                                                        CustomDialog
+                                                                            .showCustomDialog(
+                                                                          barrierDismissible:
+                                                                              true,
+                                                                          context:
+                                                                              context,
+                                                                          child: EditItem(
+                                                                              location: loc,
+                                                                              equipmentId: equipmentId,
+                                                                              packingPlan: packingPlan),
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                )),
+                                                              ],
+                                                            ),
+                                                          )),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (items.isNotEmpty)
+                                            Padding(
+                                              padding: Design.pagePadding,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  TooltipVisibility(
+                                                    visible: false,
+                                                    child: Theme(
+                                                      data: Theme.of(context)
+                                                          .copyWith(
+                                                        splashFactory: NoSplash
+                                                            .splashFactory,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                      ),
+                                                      child: PopupMenuButton(
+                                                        color: Colors.white,
+                                                        splashRadius: 100,
+                                                        surfaceTintColor:
+                                                            Colors.white,
+                                                        itemBuilder:
+                                                            (context) => [
                                                           CustomPopupMenuItem(
                                                             child: Padding(
                                                               padding:
                                                                   const EdgeInsets
                                                                       .only(
-                                                                      left: 5.0,
-                                                                      right:
-                                                                          5.0,
-                                                                      top:
-                                                                          10.0),
+                                                                left: 5.0,
+                                                                right: 5.0,
+                                                              ),
                                                               child: TextButton(
                                                                 style: TextButton.styleFrom(
                                                                     foregroundColor:
@@ -1136,74 +1133,139 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                   ref
                                                                       .read(dropdownIndexProvider
                                                                           .notifier)
-                                                                      .state = packingPlan
-                                                                          .locations
-                                                                          .indexWhere((element) =>
-                                                                              element ==
-                                                                              location) +
-                                                                      1;
+                                                                      .state = 0;
                                                                 },
-                                                                child: Text(
-                                                                  location,
-                                                                  style: const TextStyle(
+                                                                child:
+                                                                    const Text(
+                                                                  'Gesamt',
+                                                                  style: TextStyle(
                                                                       fontSize:
                                                                           17),
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
-                                                      ],
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(7.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      5.0),
-                                                          border: Border.all(
-                                                              color: Colors
-                                                                  .black38),
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              ref.watch(dropdownIndexProvider) ==
-                                                                      0
-                                                                  ? 'Gesamt'
-                                                                  : packingPlan
-                                                                          .locations[
-                                                                      ref.watch(
-                                                                              dropdownIndexProvider) -
-                                                                          1],
-                                                              style: TextStyle(
-                                                                  fontSize: 17,
-                                                                  color: Design
-                                                                      .colors[0]),
-                                                            ),
-                                                            const Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      left:
-                                                                          8.0),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .keyboard_arrow_down_rounded,
-                                                                color: Colors
-                                                                    .black38,
+                                                          for (String location
+                                                              in packingPlan
+                                                                  .locations)
+                                                            CustomPopupMenuItem(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        left:
+                                                                            5.0,
+                                                                        right:
+                                                                            5.0,
+                                                                        top:
+                                                                            10.0),
+                                                                child:
+                                                                    TextButton(
+                                                                  style: TextButton.styleFrom(
+                                                                      foregroundColor:
+                                                                          Design.colors[
+                                                                              0],
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10.0))),
+                                                                  onPressed:
+                                                                      () {
+                                                                    context
+                                                                        .pop();
+                                                                    ref
+                                                                        .read(dropdownIndexProvider
+                                                                            .notifier)
+                                                                        .state = packingPlan.locations.indexWhere((element) =>
+                                                                            element ==
+                                                                            location) +
+                                                                        1;
+                                                                  },
+                                                                  child: Text(
+                                                                    location,
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            17),
+                                                                  ),
+                                                                ),
                                                               ),
-                                                            )
-                                                          ],
+                                                            ),
+                                                        ],
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(7.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5.0),
+                                                            border: Border.all(
+                                                                color: Colors
+                                                                    .black38),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Text(
+                                                                ref.watch(dropdownIndexProvider) ==
+                                                                        0
+                                                                    ? 'Gesamt'
+                                                                    : packingPlan
+                                                                            .locations[
+                                                                        ref.watch(dropdownIndexProvider) -
+                                                                            1],
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        17,
+                                                                    color: Design
+                                                                        .colors[0]),
+                                                              ),
+                                                              const Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            8.0),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .keyboard_arrow_down_rounded,
+                                                                  color: Colors
+                                                                      .black38,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                                if (getCurrentStatistic()
-                                                    .title
-                                                    .isNotEmpty)
+                                                  if (getCurrentStatistic()
+                                                      .title
+                                                      .isNotEmpty)
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 5.0),
+                                                      child: Icon(
+                                                        Icons
+                                                            .chevron_right_rounded,
+                                                        color: Colors.black38,
+                                                      ),
+                                                    ),
+                                                  if (getCurrentStatistic()
+                                                      .title
+                                                      .isNotEmpty)
+                                                    Flexible(
+                                                      child: Text(
+                                                        getCurrentStatistic()
+                                                            .title,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                            color:
+                                                                Colors.black54,
+                                                            fontSize: 17),
+                                                      ),
+                                                    ),
                                                   const Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -1214,173 +1276,154 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       color: Colors.black38,
                                                     ),
                                                   ),
-                                                if (getCurrentStatistic()
-                                                    .title
-                                                    .isNotEmpty)
-                                                  Flexible(
-                                                    child: Text(
-                                                      getCurrentStatistic()
-                                                          .title,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: 17),
-                                                    ),
+                                                  Text(
+                                                    '${getCurrentStatistic().weight} g',
+                                                    style: TextStyle(
+                                                        fontSize: 17,
+                                                        color: Design.colors[0],
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                                   ),
-                                                const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 5.0),
-                                                  child: Icon(
-                                                    Icons.chevron_right_rounded,
-                                                    color: Colors.black38,
+                                                ],
+                                              ),
+                                            ),
+                                          if (items.isNotEmpty)
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.all(
+                                                      20.0),
+                                                  height: 400,
+                                                  child: Stack(
+                                                    alignment:
+                                                        Alignment.bottomCenter,
+                                                    children: [
+                                                      PageView.builder(
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          Statistic statistic =
+                                                              statistics[index];
+                                                          return SizedBox(
+                                                            height: 500,
+                                                            width: 500,
+                                                            child:
+                                                                CustomPieChart(
+                                                              chartData:
+                                                                  statistic
+                                                                      .chartData,
+                                                              onTouchedIndexChanged:
+                                                                  (value) {
+                                                                if (index ==
+                                                                    0) {
+                                                                  Future.delayed(const Duration(
+                                                                          milliseconds:
+                                                                              500))
+                                                                      .then(
+                                                                    (result) => pageController.animateToPage(
+                                                                        (value +
+                                                                            1),
+                                                                        duration: const Duration(
+                                                                            milliseconds:
+                                                                                500),
+                                                                        curve: Curves
+                                                                            .ease),
+                                                                  );
+                                                                } else {
+                                                                  ref
+                                                                      .read(pageIndexProvider
+                                                                          .notifier)
+                                                                      .state = [
+                                                                    index,
+                                                                    value
+                                                                  ];
+                                                                }
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                        itemCount:
+                                                            statistics.length,
+                                                        controller:
+                                                            pageController,
+                                                        onPageChanged:
+                                                            (newPage) {
+                                                          ref
+                                                              .read(
+                                                                  pageIndexProvider
+                                                                      .notifier)
+                                                              .state = [
+                                                            newPage,
+                                                            -1
+                                                          ];
+                                                        },
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          for (var i = 0;
+                                                              i <
+                                                                  statistics
+                                                                      .length;
+                                                              i++)
+                                                            Container(
+                                                              width: 15,
+                                                              height: 15,
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 5,
+                                                                      right: 5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: (i ==
+                                                                        ref
+                                                                            .watch(
+                                                                                pageIndexProvider)
+                                                                            .first)
+                                                                    ? Colors
+                                                                        .black54
+                                                                    : Colors
+                                                                        .black12,
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () => pageController.animateToPage(i,
+                                                                    duration: const Duration(
+                                                                        milliseconds:
+                                                                            500),
+                                                                    curve: Curves
+                                                                        .ease),
+                                                              ),
+                                                            )
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                Text(
-                                                  '${getCurrentStatistic().weight} g',
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      color: Design.colors[0],
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                Container(
+                                                  constraints:
+                                                      const BoxConstraints(
+                                                    maxWidth: 600.0,
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: getRightSection(
+                                                        getCurrentStatistic()),
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        if (items.isNotEmpty)
-                                          Column(
-                                            children: [
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.all(20.0),
-                                                height: 400,
-                                                child: Stack(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  children: [
-                                                    PageView.builder(
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        Statistic statistic =
-                                                            statistics[index];
-                                                        return SizedBox(
-                                                          height: 500,
-                                                          width: 500,
-                                                          child: CustomPieChart(
-                                                            chartData: statistic
-                                                                .chartData,
-                                                            onTouchedIndexChanged:
-                                                                (value) {
-                                                              if (index == 0) {
-                                                                Future.delayed(const Duration(
-                                                                        milliseconds:
-                                                                            500))
-                                                                    .then(
-                                                                  (result) => pageController.animateToPage(
-                                                                      (value +
-                                                                          1),
-                                                                      duration: const Duration(
-                                                                          milliseconds:
-                                                                              500),
-                                                                      curve: Curves
-                                                                          .ease),
-                                                                );
-                                                              } else {
-                                                                ref
-                                                                    .read(pageIndexProvider
-                                                                        .notifier)
-                                                                    .state = [
-                                                                  index,
-                                                                  value
-                                                                ];
-                                                              }
-                                                            },
-                                                          ),
-                                                        );
-                                                      },
-                                                      itemCount:
-                                                          statistics.length,
-                                                      controller:
-                                                          pageController,
-                                                      onPageChanged: (newPage) {
-                                                        ref
-                                                            .read(
-                                                                pageIndexProvider
-                                                                    .notifier)
-                                                            .state = [
-                                                          newPage,
-                                                          -1
-                                                        ];
-                                                      },
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        for (var i = 0;
-                                                            i <
-                                                                statistics
-                                                                    .length;
-                                                            i++)
-                                                          Container(
-                                                            width: 15,
-                                                            height: 15,
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 5,
-                                                                    right: 5),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: (i ==
-                                                                      ref
-                                                                          .watch(
-                                                                              pageIndexProvider)
-                                                                          .first)
-                                                                  ? Colors
-                                                                      .black54
-                                                                  : Colors
-                                                                      .black12,
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                            ),
-                                                            child:
-                                                                GestureDetector(
-                                                              onTap: () => pageController.animateToPage(
-                                                                  i,
-                                                                  duration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              500),
-                                                                  curve: Curves
-                                                                      .ease),
-                                                            ),
-                                                          )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                constraints:
-                                                    const BoxConstraints(
-                                                  maxWidth: 600.0,
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: getRightSection(
-                                                      getCurrentStatistic()),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                if (items.isEmpty)
+                                if (packingPlan.id != '-' && items.isEmpty)
                                   const SliverFillRemaining(
                                     hasScrollBody: false,
                                     child: Center(
@@ -1389,38 +1432,39 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                               TextStyle(color: Colors.black54)),
                                     ),
                                   ),
-                                SliverToBoxAdapter(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding: Design.pagePadding
-                                            .copyWith(top: 20.0),
-                                        child: const Divider(),
-                                      ),
-                                      Container(
-                                        margin: Design.pagePadding.copyWith(
-                                            bottom: 15.0 +
-                                                MediaQuery.of(context)
-                                                    .padding
-                                                    .bottom),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text(
-                                              'Erstellt: ${parseDate(packingPlan.createdAt)}',
-                                              style: const TextStyle(
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                if (packingPlan.id != '-')
+                                  SliverToBoxAdapter(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: Design.pagePadding
+                                              .copyWith(top: 20.0),
+                                          child: const Divider(),
                                         ),
-                                      ),
-                                    ],
+                                        Container(
+                                          margin: Design.pagePadding.copyWith(
+                                              bottom: 15.0 +
+                                                  MediaQuery.of(context)
+                                                      .padding
+                                                      .bottom),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Text(
+                                                'Erstellt am ${parseDate(packingPlan.createdAt)}',
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
                               ],
                             );
                           },
