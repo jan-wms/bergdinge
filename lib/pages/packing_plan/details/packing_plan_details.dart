@@ -13,6 +13,7 @@ import 'package:equipment_app/pages/equipment/equipment_list.dart';
 import 'package:equipment_app/pages/packing_plan/details/edit_item.dart';
 import 'package:equipment_app/pages/packing_plan/packing_plan_edit.dart';
 import 'package:equipment_app/parser.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,9 +36,9 @@ class PackingPlanDetails extends ConsumerStatefulWidget {
 
 class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final dropdownIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
+  final expandChartProvider = StateProvider.autoDispose<bool>((ref) => false);
   final _formKey = GlobalKey<FormState>();
-  final pageController = PageController(initialPage: 0);
-  final pageIndexProvider = StateProvider<List<int>>((ref) => [0, -1]);
+  final chartIndexProvider = StateProvider.autoDispose<List<int>>((ref) => [0, -1]);
 
   final Widget _loading = const CustomScrollView(
     slivers: [
@@ -527,38 +528,39 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             }
 
                             Statistic getCurrentStatistic() {
-                              return (ref.watch(pageIndexProvider).last != -1 &&
-                                      statistics[ref.watch(pageIndexProvider).first]
+                              return (ref.watch(chartIndexProvider).last != -1 &&
+                                      statistics[ref
+                                                  .watch(chartIndexProvider)
+                                                  .first]
                                               .categoryPackingPlanItemsMap
                                               .entries
                                               .length >
                                           1 &&
                                       statistics[ref
-                                                  .watch(pageIndexProvider)
+                                                  .watch(chartIndexProvider)
                                                   .first]
                                               .topCategory !=
                                           '3' &&
                                       statistics[ref
-                                                  .watch(pageIndexProvider)
+                                                  .watch(chartIndexProvider)
                                                   .first]
                                               .topCategory !=
                                           '2')
                                   ? statisticFromItems(MapEntry(
-                                      statistics[
-                                              ref.read(pageIndexProvider).first]
+                                      statistics[ref.read(chartIndexProvider).first]
                                           .categoryPackingPlanItemsMap
                                           .entries
-                                          .elementAt(
-                                              ref.watch(pageIndexProvider).last)
+                                          .elementAt(ref
+                                              .watch(chartIndexProvider)
+                                              .last)
                                           .key,
-                                      statistics[
-                                              ref.read(pageIndexProvider).first]
+                                      statistics[ref.read(chartIndexProvider).first]
                                           .categoryPackingPlanItemsMap
                                           .entries
                                           .elementAt(
-                                              ref.watch(pageIndexProvider).last)
+                                              ref.watch(chartIndexProvider).last)
                                           .value))
-                                  : statistics[ref.read(pageIndexProvider).first];
+                                  : statistics[ref.read(chartIndexProvider).first];
                             }
 
                             return CustomScrollView(
@@ -672,7 +674,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     });
 
                                                     await docRef.delete().then(
-                                                        (_) => contextOfPage.pop());
+                                                        (_) => contextOfPage
+                                                            .pop());
                                                   }
                                                 },
                                                 child: const Row(
@@ -1088,10 +1091,7 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                             Padding(
                                               padding: Design.pagePadding,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   TooltipVisibility(
                                                     visible: false,
@@ -1238,52 +1238,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       ),
                                                     ),
                                                   ),
-                                                  if (getCurrentStatistic()
-                                                      .title
-                                                      .isNotEmpty)
-                                                    const Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5.0),
-                                                      child: Icon(
-                                                        Icons
-                                                            .chevron_right_rounded,
-                                                        color: Colors.black38,
-                                                      ),
-                                                    ),
-                                                  if (getCurrentStatistic()
-                                                      .title
-                                                      .isNotEmpty)
-                                                    Flexible(
-                                                      child: Text(
-                                                        getCurrentStatistic()
-                                                            .title,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black54,
-                                                            fontSize: 17),
-                                                      ),
-                                                    ),
-                                                  const Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 5.0),
-                                                    child: Icon(
-                                                      Icons
-                                                          .chevron_right_rounded,
-                                                      color: Colors.black38,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '${getCurrentStatistic().weight} g',
-                                                    style: TextStyle(
-                                                        fontSize: 17,
-                                                        color: Design.colors[0],
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -1295,112 +1249,160 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       20.0),
                                                   height: 400,
                                                   child: Stack(
-                                                    alignment:
-                                                        Alignment.bottomCenter,
+                                                    alignment: Alignment.center,
                                                     children: [
-                                                      PageView.builder(
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          Statistic statistic =
-                                                              statistics[index];
-                                                          return SizedBox(
-                                                            height: 500,
-                                                            width: 500,
-                                                            child:
-                                                                CustomPieChart(
-                                                              chartData:
-                                                                  statistic
-                                                                      .chartData,
-                                                              onTouchedIndexChanged:
-                                                                  (value) {
-                                                                if (index ==
-                                                                    0) {
-                                                                  Future.delayed(const Duration(
-                                                                          milliseconds:
-                                                                              500))
-                                                                      .then(
-                                                                    (result) => pageController.animateToPage(
-                                                                        (value +
-                                                                            1),
-                                                                        duration: const Duration(
-                                                                            milliseconds:
-                                                                                500),
-                                                                        curve: Curves
-                                                                            .ease),
-                                                                  );
-                                                                } else {
-                                                                  ref
-                                                                      .read(pageIndexProvider
-                                                                          .notifier)
-                                                                      .state = [
-                                                                    index,
-                                                                    value
-                                                                  ];
-                                                                }
-                                                              },
-                                                            ),
-                                                          );
-                                                        },
-                                                        itemCount:
-                                                            statistics.length,
-                                                        controller:
-                                                            pageController,
-                                                        onPageChanged:
-                                                            (newPage) {
-                                                          ref
-                                                              .read(
-                                                                  pageIndexProvider
+                                                      SizedBox(
+                                                        height: 500,
+                                                        width: 500,
+                                                        child: CustomPieChart(
+                                                          chartData: statistics[
+                                                                  ref.watch(
+                                                                      chartIndexProvider)[0]]
+                                                              .chartData,
+                                                          onTouchedIndexChanged:
+                                                              (value) {
+                                                            if (ref.watch(
+                                                                        chartIndexProvider)[
+                                                                    0] ==
+                                                                0) {
+                                                              Future.delayed(const Duration(
+                                                                      milliseconds:
+                                                                          500))
+                                                                  .then((_) {
+                                                                ref
+                                                                    .read(chartIndexProvider
+                                                                        .notifier)
+                                                                    .state = [
+                                                                  value + 1,
+                                                                  -1
+                                                                ];
+                                                              });
+                                                            } else {
+                                                              ref
+                                                                  .read(chartIndexProvider
                                                                       .notifier)
-                                                              .state = [
-                                                            newPage,
-                                                            -1
-                                                          ];
+                                                                  .state = [
+                                                                ref.watch(
+                                                                    chartIndexProvider)[0],
+                                                                value
+                                                              ];
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (ref.watch(
+                                                                      chartIndexProvider)[
+                                                                  1] !=
+                                                              -1) {
+                                                            ref
+                                                                .read(chartIndexProvider
+                                                                    .notifier)
+                                                                .state = [
+                                                              ref.read(
+                                                                  chartIndexProvider)[0],
+                                                              -1
+                                                            ];
+                                                          } else {
+                                                            ref
+                                                                .read(chartIndexProvider
+                                                                    .notifier)
+                                                                .state = [
+                                                              0,
+                                                              -1
+                                                            ];
+                                                          }
                                                         },
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          for (var i = 0;
-                                                              i <
-                                                                  statistics
-                                                                      .length;
-                                                              i++)
-                                                            Container(
-                                                              width: 15,
-                                                              height: 15,
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      left: 5,
-                                                                      right: 5),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: (i ==
-                                                                        ref
-                                                                            .watch(
-                                                                                pageIndexProvider)
-                                                                            .first)
-                                                                    ? Colors
-                                                                        .black54
-                                                                    : Colors
-                                                                        .black12,
-                                                                shape: BoxShape
-                                                                    .circle,
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          height: 150.0,
+                                                          width: 150.0,
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                '${getCurrentStatistic().weight} g',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        22,
+                                                                    color: Design
+                                                                            .colors[
+                                                                        0],
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
                                                               ),
-                                                              child:
-                                                                  GestureDetector(
-                                                                onTap: () => pageController.animateToPage(i,
-                                                                    duration: const Duration(
-                                                                        milliseconds:
-                                                                            500),
-                                                                    curve: Curves
-                                                                        .ease),
+                                                              Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    getCurrentStatistic()
+                                                                            .title
+                                                                            .isNotEmpty
+                                                                        ? getCurrentStatistic()
+                                                                            .title
+                                                                        : (ref.watch(dropdownIndexProvider) ==
+                                                                                0)
+                                                                            ? 'Gesamt'
+                                                                            : packingPlan.locations[ref.watch(dropdownIndexProvider) -
+                                                                                1],
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: const TextStyle(
+                                                                        color: Colors
+                                                                            .black54,
+                                                                        fontSize:
+                                                                            17),
+                                                                  ),
+                                                                  if (ref.watch(chartIndexProvider)[
+                                                                              0] !=
+                                                                          0 &&
+                                                                      ref.watch(chartIndexProvider)[
+                                                                              1] ==
+                                                                          -1)
+                                                                    const Icon(
+                                                                        CupertinoIcons
+                                                                            .clear_circled)
+                                                                ],
                                                               ),
-                                                            )
-                                                        ],
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
+                                                      if (ref.watch(
+                                                                  chartIndexProvider)[
+                                                              0] !=
+                                                          0)
+                                                        Positioned(
+                                                          bottom: 0,
+                                                          right: 0,
+                                                          child: Switch(
+                                                            value: ref.watch(
+                                                                expandChartProvider),
+                                                            onChanged:
+                                                                (newValue) {
+                                                              ref
+                                                                  .read(expandChartProvider
+                                                                      .notifier)
+                                                                  .state = newValue;
+                                                            },
+                                                          ),
+                                                        )
                                                     ],
                                                   ),
                                                 ),

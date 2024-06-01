@@ -2,28 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Design {
-  static const List<Color> sectionColors = [
+  /*static const List<Color> sectionColors = [
     Color.fromRGBO(75, 96, 62, 1.0),
     Color.fromRGBO(98, 148, 96, 1.0),
     Color.fromRGBO(150, 190, 140, 1.0),
     Color.fromRGBO(137, 166, 137, 1.0),
     Color.fromRGBO(201, 242, 199, 1.0),
     Color.fromRGBO(239, 255, 224, 1.0),
+  ];*/
+
+  static const List<Color> sectionColors = [
+    Color.fromRGBO(75, 96, 62, 1.0),
+    Color.fromRGBO(225, 116, 38, 1.0),
+    Color.fromRGBO(38, 103, 225, 1.0),
+    Color.fromRGBO(38, 225, 153, 1.0),
   ];
 
   static Color getSectionColor (int i) {
     return sectionColors[i % (sectionColors.length)];
   }
-  static const List<Color> textColor = [
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
+
+  static const List<Color> disabledSectionColors = [
+    Color.fromRGBO(173, 206, 148, 1.0),
+    Color.fromRGBO(213, 160, 122, 1.0),
+    Color.fromRGBO(127, 160, 218, 1.0),
+    Color.fromRGBO(146, 220, 191, 1.0),
   ];
 
-  static Color getTextColor (int i) {
-    return Colors.white;
+  static Color getDisabledSectionColor (int i) {
+    return disabledSectionColors[i % (disabledSectionColors.length)];
   }
 
   static const List<Color> colors = [

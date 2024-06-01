@@ -18,26 +18,24 @@ class CustomPieChart extends StatefulWidget {
 class _CustomPieChartState extends State<CustomPieChart> {
   int touchedPieChartIndex = -1;
 
-
   @override
   Widget build(BuildContext context) {
     final List<PieChartSectionData> sectionData =
         widget.chartData.asMap().entries.map((e) {
       final isTouched = e.key == touchedPieChartIndex;
       return PieChartSectionData(
-        color: Design.getSectionColor(e.key),
+        color: isTouched || touchedPieChartIndex == -1 ? Design.getSectionColor(e.key) : Design.getDisabledSectionColor(e.key),
         value: e.value.y,
-        title: e.value.text,
-        radius: isTouched ? 110.0 : 100.0,
-        titleStyle: TextStyle(color: Design.getTextColor(e.key)),
+        showTitle: false,
+        radius: 30.0,
       );
     }).toList();
 
     return PieChart(
       PieChartData(
         sections: sectionData,
-        centerSpaceRadius: 0,
-        sectionsSpace: 0,
+        centerSpaceRadius: 100,
+        sectionsSpace: 3,
         pieTouchData: PieTouchData(
           longPressDuration: const Duration(seconds: 2),
           touchCallback: (FlTouchEvent event, pieTouchResponse) {
@@ -49,12 +47,10 @@ class _CustomPieChartState extends State<CustomPieChart> {
             }
             final newIndex =
                 pieTouchResponse.touchedSection!.touchedSectionIndex;
-            if(newIndex == -1 && touchedPieChartIndex == -1) return;
+            if (newIndex == -1 && touchedPieChartIndex == -1) return;
             setState(() {
               touchedPieChartIndex =
-              (touchedPieChartIndex == newIndex)
-                  ? -1
-                  : newIndex;
+                  (touchedPieChartIndex == newIndex) ? -1 : newIndex;
             });
             widget.onTouchedIndexChanged(touchedPieChartIndex);
           },
@@ -72,6 +68,6 @@ class ChartData {
   late final String text;
 
   ChartData({required this.x, required this.y}) {
-    text = '$x\n$y%';
+    text = '$x $y%';
   }
 }
