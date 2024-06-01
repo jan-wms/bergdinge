@@ -46,22 +46,28 @@ class _CustomPieChartState extends ConsumerState<CustomPieChart> {
                 event.runtimeType != FlTapDownEvent) {
               return;
             }
-            final newIndex =
+            final touched =
                 pieTouchResponse.touchedSection!.touchedSectionIndex;
 
-            if (newIndex == -1 && ref.watch(chartIndexProvider)[1] == -1) {
+            if (touched == -1 && ref.watch(chartIndexProvider)[1] == -1) {
               return;
             }
 
-            var t =
-                (ref.watch(chartIndexProvider)[1] == newIndex) ? -1 : newIndex;
+            var newIndex =
+                (ref.watch(chartIndexProvider)[1] == touched) ? -1 : touched;
 
             if (ref.watch(chartIndexProvider)[0] == 0) {
-              ref.read(chartIndexProvider.notifier).state = [t + 1, -1];
+              ref.read(chartIndexProvider.notifier).state = [
+                0,
+                newIndex
+              ];
+              Future.delayed(const Duration(milliseconds: 700), () {
+                ref.read(chartIndexProvider.notifier).state = [newIndex + 1, -1];
+              });
             } else {
               ref.read(chartIndexProvider.notifier).state = [
                 ref.watch(chartIndexProvider)[0],
-                t
+                newIndex
               ];
             }
           },

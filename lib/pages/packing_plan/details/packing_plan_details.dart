@@ -195,10 +195,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                       Padding(
                                         padding: Design.pagePadding,
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              Data.getCategoryNames(entry.key).last,
+                                              Data.getCategoryNames(entry.key)
+                                                  .last,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 20.0,
@@ -1126,42 +1128,12 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                             Colors.white,
                                                         itemBuilder:
                                                             (context) => [
-                                                          CustomPopupMenuItem(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                left: 5.0,
-                                                                right: 5.0,
-                                                              ),
-                                                              child: TextButton(
-                                                                style: TextButton.styleFrom(
-                                                                    foregroundColor:
-                                                                        Design.colors[
-                                                                            0],
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(10.0))),
-                                                                onPressed: () {
-                                                                  context.pop();
-                                                                  ref
-                                                                      .read(dropdownIndexProvider
-                                                                          .notifier)
-                                                                      .state = 0;
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                  'Gesamt',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          17),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
                                                           for (String location
-                                                              in packingPlan
-                                                                  .locations)
+                                                              in [
+                                                            'Gesamt',
+                                                            ...packingPlan
+                                                                .locations
+                                                          ])
                                                             CustomPopupMenuItem(
                                                               child: Padding(
                                                                 padding:
@@ -1186,13 +1158,31 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                       () {
                                                                     context
                                                                         .pop();
+                                                                    var oldTitle =
+                                                                        statistics[ref.read(chartIndexProvider)[0]]
+                                                                            .title;
                                                                     ref
                                                                         .read(dropdownIndexProvider
                                                                             .notifier)
-                                                                        .state = packingPlan.locations.indexWhere((element) =>
-                                                                            element ==
-                                                                            location) +
-                                                                        1;
+                                                                        .state = [
+                                                                      'Gesamt',
+                                                                      ...packingPlan
+                                                                          .locations
+                                                                    ].indexOf(location);
+
+                                                                    int newPage = max(
+                                                                        0,
+                                                                        statistics.indexWhere((e) =>
+                                                                            e.title ==
+                                                                            oldTitle));
+
+                                                                    ref
+                                                                        .read(chartIndexProvider
+                                                                            .notifier)
+                                                                        .state = [
+                                                                      newPage,
+                                                                      -1
+                                                                    ];
                                                                   },
                                                                   child: Text(
                                                                     location,
@@ -1349,16 +1339,23 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                         17),
                                                               ),
                                                               if (ref.watch(chartIndexProvider)[
-                                                              0] !=
-                                                                  0 &&
+                                                                          0] !=
+                                                                      0 &&
                                                                   ref.watch(chartIndexProvider)[
-                                                                  1] ==
+                                                                          1] ==
                                                                       -1)
                                                                 const Padding(
-                                                                  padding: EdgeInsets.only(top: 20.0),
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .only(
+                                                                              top: 20.0),
                                                                   child: Icon(
                                                                     CupertinoIcons
-                                                                        .clear_circled, color: Colors.black54, size: 40.0,),
+                                                                        .clear_circled,
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    size: 40.0,
+                                                                  ),
                                                                 ),
                                                             ],
                                                           ),
