@@ -25,6 +25,9 @@ import '../../../firebase/firebase_auth.dart';
 import '../../../validators/packing_plan_validator.dart';
 import 'custom_pie_chart.dart';
 
+final chartIndexProvider =
+    StateProvider.autoDispose<List<int>>((ref) => [0, -1]);
+
 class PackingPlanDetails extends ConsumerStatefulWidget {
   final String packingPlanId;
 
@@ -38,7 +41,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
   final dropdownIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
   final expandChartProvider = StateProvider.autoDispose<bool>((ref) => false);
   final _formKey = GlobalKey<FormState>();
-  final chartIndexProvider = StateProvider.autoDispose<List<int>>((ref) => [0, -1]);
 
   final Widget _loading = const CustomScrollView(
     slivers: [
@@ -192,12 +194,24 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                     children: [
                                       Padding(
                                         padding: Design.pagePadding,
-                                        child: Text(
-                                          Data.getCategoryNames(entry.key).last,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 20.0,
-                                          ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              Data.getCategoryNames(entry.key).last,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 20.0,
+                                              ),
+                                            ),
+                                            const Text(
+                                              '23%',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 20.0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       for (PackingPlanItem item
@@ -1259,35 +1273,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                   ref.watch(
                                                                       chartIndexProvider)[0]]
                                                               .chartData,
-                                                          onTouchedIndexChanged:
-                                                              (value) {
-                                                            if (ref.watch(
-                                                                        chartIndexProvider)[
-                                                                    0] ==
-                                                                0) {
-                                                              Future.delayed(const Duration(
-                                                                      milliseconds:
-                                                                          500))
-                                                                  .then((_) {
-                                                                ref
-                                                                    .read(chartIndexProvider
-                                                                        .notifier)
-                                                                    .state = [
-                                                                  value + 1,
-                                                                  -1
-                                                                ];
-                                                              });
-                                                            } else {
-                                                              ref
-                                                                  .read(chartIndexProvider
-                                                                      .notifier)
-                                                                  .state = [
-                                                                ref.watch(
-                                                                    chartIndexProvider)[0],
-                                                                value
-                                                              ];
-                                                            }
-                                                          },
                                                         ),
                                                       ),
                                                       GestureDetector(
@@ -1341,45 +1326,40 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                         FontWeight
                                                                             .bold),
                                                               ),
-                                                              Row(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    getCurrentStatistic()
-                                                                            .title
-                                                                            .isNotEmpty
-                                                                        ? getCurrentStatistic()
-                                                                            .title
-                                                                        : (ref.watch(dropdownIndexProvider) ==
-                                                                                0)
-                                                                            ? 'Gesamt'
-                                                                            : packingPlan.locations[ref.watch(dropdownIndexProvider) -
-                                                                                1],
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black54,
-                                                                        fontSize:
-                                                                            17),
-                                                                  ),
-                                                                  if (ref.watch(chartIndexProvider)[
-                                                                              0] !=
-                                                                          0 &&
-                                                                      ref.watch(chartIndexProvider)[
-                                                                              1] ==
-                                                                          -1)
-                                                                    const Icon(
-                                                                        CupertinoIcons
-                                                                            .clear_circled)
-                                                                ],
+                                                              Text(
+                                                                getCurrentStatistic()
+                                                                        .title
+                                                                        .isNotEmpty
+                                                                    ? getCurrentStatistic()
+                                                                        .title
+                                                                    : (ref.watch(dropdownIndexProvider) ==
+                                                                            0)
+                                                                        ? 'Gesamt'
+                                                                        : packingPlan
+                                                                            .locations[ref
+                                                                                .watch(dropdownIndexProvider) -
+                                                                            1],
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black54,
+                                                                    fontSize:
+                                                                        17),
                                                               ),
+                                                              if (ref.watch(chartIndexProvider)[
+                                                              0] !=
+                                                                  0 &&
+                                                                  ref.watch(chartIndexProvider)[
+                                                                  1] ==
+                                                                      -1)
+                                                                const Padding(
+                                                                  padding: EdgeInsets.only(top: 20.0),
+                                                                  child: Icon(
+                                                                    CupertinoIcons
+                                                                        .clear_circled, color: Colors.black54, size: 40.0,),
+                                                                ),
                                                             ],
                                                           ),
                                                         ),
