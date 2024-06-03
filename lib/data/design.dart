@@ -2,35 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Design {
-  /*static const List<Color> sectionColors = [
+  static const List<Color> section0 = [
     Color.fromRGBO(75, 96, 62, 1.0),
-    Color.fromRGBO(98, 148, 96, 1.0),
-    Color.fromRGBO(150, 190, 140, 1.0),
-    Color.fromRGBO(137, 166, 137, 1.0),
-    Color.fromRGBO(201, 242, 199, 1.0),
-    Color.fromRGBO(239, 255, 224, 1.0),
-  ];*/
-
-  static const List<Color> sectionColors = [
-    Color.fromRGBO(75, 96, 62, 1.0),
-    Color.fromRGBO(225, 116, 38, 1.0),
-    Color.fromRGBO(38, 103, 225, 1.0),
-    Color.fromRGBO(38, 225, 153, 1.0),
+    Color.fromRGBO(27, 92, 34, 1.0),
+    Color.fromRGBO(56, 142, 60, 1.0),
+    Color.fromRGBO(76, 175, 80, 1.0),
+    Color.fromRGBO(129, 199, 132, 1.0),
   ];
 
-  static Color getSectionColor (int i) {
-    return sectionColors[i % (sectionColors.length)];
-  }
-
-  static const List<Color> disabledSectionColors = [
-    Color.fromRGBO(173, 206, 148, 1.0),
-    Color.fromRGBO(213, 160, 122, 1.0),
-    Color.fromRGBO(127, 160, 218, 1.0),
-    Color.fromRGBO(146, 220, 191, 1.0),
+  static const List<Color> section1 = [
+    Color.fromRGBO(255, 111, 0, 1.0),
+    Color.fromRGBO(255, 160, 0, 1.0),
+    Color.fromRGBO(255, 193, 7, 1.0),
+    Color.fromRGBO(255, 213, 79, 1.0),
   ];
 
-  static Color getDisabledSectionColor (int i) {
-    return disabledSectionColors[i % (disabledSectionColors.length)];
+  static const List<Color> section2 = [
+    Color.fromRGBO(13, 71, 161, 1.0),
+    Color.fromRGBO(30, 136, 229, 1.0),
+    Color.fromRGBO(100, 181, 246, 1.0),
+  ];
+
+  static const List<Color> section3 = [
+    Color.fromRGBO(136, 14, 79, 1.0),
+    Color.fromRGBO(216, 27, 96, 1.0),
+    Color.fromRGBO(142, 36, 170, 1.0),
+  ];
+
+  static Color getSectionColor({required int category, required int index}) {
+    late List<Color> colors;
+    switch (category) {
+      case 1:
+        colors = section1;
+        break;
+      case 2:
+        colors = section2;
+        break;
+      case 3:
+        colors = section3;
+        break;
+      case 0:
+        colors = section0;
+        break;
+      case -1:
+      default:
+        colors = [
+          section0[0],
+          section1[0],
+          section2[0],
+          section3[0],
+        ];
+        break;
+    }
+    return colors[index % (colors.length)];
   }
 
   static const List<Color> colors = [
@@ -70,7 +94,8 @@ class Design {
       ),
       border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
-    ), colorScheme: ColorScheme.fromSeed(
+    ),
+    colorScheme: ColorScheme.fromSeed(
       seedColor: colors.elementAt(2),
       error: Colors.red,
     ),
@@ -81,6 +106,6 @@ class Design {
   );
 
   ThemeData get lightTheme => _lightTheme.copyWith(
-  textTheme: GoogleFonts.rubikTextTheme(_lightTheme.textTheme),
-  );
+        textTheme: GoogleFonts.rubikTextTheme(_lightTheme.textTheme),
+      );
 }

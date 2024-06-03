@@ -23,9 +23,11 @@ class _CustomPieChartState extends ConsumerState<CustomPieChart> {
         widget.chartData.asMap().entries.map((e) {
       final isTouched = e.key == ref.watch(chartIndexProvider)[1];
       return PieChartSectionData(
-        color: isTouched || ref.watch(chartIndexProvider)[1] == -1
-            ? Design.getSectionColor(e.key)
-            : Design.getDisabledSectionColor(e.key),
+        color: Design.getSectionColor(
+                category: ref.watch(chartIndexProvider)[0] - 1, index: e.key)
+            .withOpacity(isTouched || ref.watch(chartIndexProvider)[1] == -1
+                ? 1.0
+                : 0.2),
         value: e.value.y,
         showTitle: false,
         radius: 30.0,
@@ -57,12 +59,12 @@ class _CustomPieChartState extends ConsumerState<CustomPieChart> {
                 (ref.watch(chartIndexProvider)[1] == touched) ? -1 : touched;
 
             if (ref.watch(chartIndexProvider)[0] == 0) {
-              ref.read(chartIndexProvider.notifier).state = [
-                0,
-                newIndex
-              ];
+              ref.read(chartIndexProvider.notifier).state = [0, newIndex];
               Future.delayed(const Duration(milliseconds: 700), () {
-                ref.read(chartIndexProvider.notifier).state = [newIndex + 1, -1];
+                ref.read(chartIndexProvider.notifier).state = [
+                  newIndex + 1,
+                  -1
+                ];
               });
             } else {
               ref.read(chartIndexProvider.notifier).state = [
