@@ -61,5 +61,6 @@ flutter:
   assets:
     - pubspec.yaml
     - assets/items/
+    - assets/articles/
     - assets/
     - google_fonts/

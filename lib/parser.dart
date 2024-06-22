@@ -15,7 +15,7 @@ String parseDate (DateTime input) {
   ];
 
   String result = '${input.day}.';
-  result = '$result ${months[input.month]}';
+  result = '$result ${months[input.month - 1]}';
   result = '$result ${input.year}';
 
   return result;

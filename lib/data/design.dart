@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Design {
+  static const articleTextStyle = TextStyle(fontSize: 15.0);
+
   static const List<Color> section0 = [
     Color.fromRGBO(75, 96, 62, 1.0),
     Color.fromRGBO(27, 92, 34, 1.0),

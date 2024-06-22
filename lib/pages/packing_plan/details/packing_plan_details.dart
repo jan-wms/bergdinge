@@ -580,211 +580,189 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
 
                             final List<Widget> actions = [
                               SizedBox(
-                                  width: 100,
-                                  height: 100,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton
-                                        .styleFrom(
-                                      foregroundColor:
-                                      Colors.white,
-                                      backgroundColor:
-                                      Design.colors[6],
-                                      shape:
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                            10.0),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      CustomDialog
-                                          .showCustomModal(
-                                          context:
-                                          context,
-                                          child:
-                                          ConstrainedBox(
-                                            constraints:
-                                            const BoxConstraints(
-                                              maxWidth:
-                                              600.0,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                const Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top:
-                                                      20.0,
-                                                      bottom:
-                                                      10.0),
-                                                  child:
-                                                  Stack(
-                                                    alignment:
-                                                    Alignment.center,
-                                                    children: [
-                                                      Text(
-                                                        'Tipps',
-                                                        style: TextStyle(fontSize: 21, fontWeight: FontWeight.w600),
-                                                      ),
-                                                      Align(
-                                                        alignment: Alignment.centerRight,
-                                                        child: CustomCloseButton(),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const Divider(
-                                                  indent:
-                                                  15,
-                                                  endIndent:
-                                                  15,
-                                                  height:
-                                                  1,
-                                                  color: Colors
-                                                      .grey,
-                                                ),
-                                                Expanded(
-                                                  child: ListView
-                                                      .builder(
-                                                    itemCount: Data
-                                                        .tips
-                                                        .where((element) => element.isRelevant(packingPlan))
-                                                        .length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      Tip tip =
-                                                      Data.tips.where((element) => element.isRelevant(packingPlan)).toList()[index];
-                                                      return Padding(
-                                                        padding: index == 0 ? const EdgeInsets.only(top: 10.0) : EdgeInsets.zero,
-                                                        child: _TipCard(
-                                                          tip: tip,
-                                                          isConditionMet: tip.isConditionMet(items, equipmentList),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ));
-                                    },
-                                    child: const Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons
-                                            .lightbulb_rounded, size: 30),
-                                        Text(
-                                            'Tipps',
-                                            style: TextStyle(
-                                                fontSize: 13),
-                                        ),
-                                      ],
+                                width: 100,
+                                height: 100,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Design.colors[6],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton
-                                      .styleFrom(
-                                    foregroundColor:
-                                    Design.colors[0],
-                                    backgroundColor:
-                                    Colors.white,
-                                    shape:
-                                    RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                          10.0),
-                                    ),
-                                  ),
-                                  child: const Row(
+                                  onPressed: () {
+                                    CustomDialog.showCustomModal(
+                                        context: context,
+                                        child: ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxWidth: 600.0,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 20.0, bottom: 10.0),
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'Tipps',
+                                                      style: TextStyle(
+                                                          fontSize: 21,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerRight,
+                                                      child:
+                                                          CustomCloseButton(),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const Divider(
+                                                indent: 15,
+                                                endIndent: 15,
+                                                height: 1,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  itemCount: Data.tips
+                                                      .where((element) =>
+                                                          element.isRelevant(
+                                                              packingPlan))
+                                                      .length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    Tip tip = Data.tips
+                                                        .where((element) =>
+                                                            element.isRelevant(
+                                                                packingPlan))
+                                                        .toList()[index];
+                                                    return Padding(
+                                                      padding: index == 0
+                                                          ? const EdgeInsets
+                                                              .only(top: 10.0)
+                                                          : EdgeInsets.zero,
+                                                      child: _TipCard(
+                                                        tip: tip,
+                                                        isConditionMet:
+                                                            tip.isConditionMet(
+                                                                items,
+                                                                equipmentList),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ));
+                                  },
+                                  child: const Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.add),
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.only(
-                                            left: 10.0),
-                                        child: Text(
-                                          'Ausrüstung',
-                                          style: TextStyle(
-                                              fontSize: 16),
-                                        ),
+                                      Icon(Icons.lightbulb_rounded, size: 30),
+                                      Text(
+                                        'Tipps',
+                                        style: TextStyle(fontSize: 13),
                                       ),
                                     ],
                                   ),
-                                  onPressed: () => CustomDialog
-                                      .showCustomModal(
-                                      context: context,
-                                      child:
-                                      ConstrainedBox(
-                                        constraints:
-                                        const BoxConstraints(
-                                          maxWidth:
-                                          700.0,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.only(
-                                                  top:
-                                                  20.0,
-                                                  bottom:
-                                                  10.0),
-                                              child:
-                                              Stack(
-                                                alignment:
-                                                Alignment.center,
-                                                children: [
-                                                  Text(
-                                                    'Ausrüstung hinzufügen',
-                                                    style:
-                                                    TextStyle(fontSize: 21, fontWeight: FontWeight.w600),
-                                                  ),
-                                                  Align(
-                                                    alignment:
-                                                    Alignment.centerRight,
-                                                    child:
-                                                    CustomCloseButton(),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Divider(
-                                              indent:
-                                              15,
-                                              endIndent:
-                                              15,
-                                              height: 1,
-                                              color: Colors
-                                                  .grey,
-                                            ),
-                                            Expanded(
-                                                child:
-                                                CustomScrollView(
-                                                  slivers: [
-                                                    EquipmentList(
-                                                      packingPlanId:
-                                                      packingPlan.id,
-                                                      onItemClick:
-                                                          (equipmentId) {
-                                                        int?
-                                                        loc =
-                                                            items.where((element) => element.equipmentId == equipmentId).sorted((a, b) => a.location.compareTo(b.location)).firstOrNull?.location;
-                                                        CustomDialog.showCustomDialog(
-                                                          barrierDismissible: true,
-                                                          context: context,
-                                                          child: EditItem(location: loc, equipmentId: equipmentId, packingPlan: packingPlan),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ],
-                                                )),
-                                          ],
-                                        ),
-                                      )),
                                 ),
-                              ];
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Design.colors[0],
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.add),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 10.0),
+                                      child: Text(
+                                        'Ausrüstung',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () => CustomDialog.showCustomModal(
+                                    context: context,
+                                    child: ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 700.0,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 20.0, bottom: 10.0),
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Text(
+                                                  'Ausrüstung hinzufügen',
+                                                  style: TextStyle(
+                                                      fontSize: 21,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: CustomCloseButton(),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(
+                                            indent: 15,
+                                            endIndent: 15,
+                                            height: 1,
+                                            color: Colors.grey,
+                                          ),
+                                          Expanded(
+                                              child: CustomScrollView(
+                                            slivers: [
+                                              EquipmentList(
+                                                packingPlanId: packingPlan.id,
+                                                onItemClick: (equipmentId) {
+                                                  int? loc = items
+                                                      .where((element) =>
+                                                          element.equipmentId ==
+                                                          equipmentId)
+                                                      .sorted((a, b) =>
+                                                          a.location.compareTo(
+                                                              b.location))
+                                                      .firstOrNull
+                                                      ?.location;
+                                                  CustomDialog.showCustomDialog(
+                                                    barrierDismissible: true,
+                                                    context: context,
+                                                    child: EditItem(
+                                                        location: loc,
+                                                        equipmentId:
+                                                            equipmentId,
+                                                        packingPlan:
+                                                            packingPlan),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          )),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                            ];
 
                             return CustomScrollView(
                               slivers: [
@@ -936,48 +914,54 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                   Expanded(
                                                     child: Container(
                                                       padding:
-                                                          const EdgeInsets.all(15.0),
+                                                          const EdgeInsets.all(
+                                                              15.0),
                                                       decoration: BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
-                                                            BorderRadius.circular(20),
+                                                            BorderRadius
+                                                                .circular(20),
                                                         boxShadow: [
                                                           BoxShadow(
                                                             color: Colors.grey
-                                                                .withOpacity(0.2),
+                                                                .withOpacity(
+                                                                    0.2),
                                                             spreadRadius: 4,
                                                             blurRadius: 10,
                                                             offset:
-                                                                const Offset(2, 3),
+                                                                const Offset(
+                                                                    2, 3),
                                                           ),
                                                         ],
                                                       ),
                                                       child: Column(
-                                                        mainAxisSize: MainAxisSize.min,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
                                                         children: [
                                                           Padding(
                                                             padding:
-                                                                const EdgeInsets.only(
+                                                                const EdgeInsets
+                                                                    .only(
                                                               right: 0.0,
                                                               bottom: 15.0,
                                                             ),
                                                             child: Wrap(
                                                               runSpacing: 13.0,
                                                               spacing: 13.0,
-                                                              alignment: WrapAlignment
-                                                                  .center,
+                                                              alignment:
+                                                                  WrapAlignment
+                                                                      .center,
                                                               children: [
                                                                 for (var sport
                                                                     in packingPlan
                                                                         .sports)
                                                                   Container(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal:
-                                                                                13.0,
-                                                                            vertical:
-                                                                                9.0),
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            13.0,
+                                                                        vertical:
+                                                                            9.0),
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       color: const Color
@@ -987,9 +971,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                           208,
                                                                           1),
                                                                       borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0),
+                                                                          BorderRadius.circular(
+                                                                              10.0),
                                                                     ),
                                                                     child: Text(
                                                                       sport,
@@ -1012,14 +995,14 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                             packingPlan:
                                                                                 packingPlan,
                                                                           )),
-                                                                  child: Container(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal:
-                                                                                15.0,
-                                                                            vertical:
-                                                                                8.0),
+                                                                  child:
+                                                                      Container(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            15.0,
+                                                                        vertical:
+                                                                            8.0),
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       color: const Color
@@ -1029,9 +1012,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                           240,
                                                                           1.0),
                                                                       borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0),
+                                                                          BorderRadius.circular(
+                                                                              10.0),
                                                                     ),
                                                                     child: Icon(
                                                                       Icons
@@ -1047,16 +1029,19 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                           ),
                                                           Form(
                                                             key: _formKey,
-                                                            child: TextFormField(
+                                                            child:
+                                                                TextFormField(
                                                               autofocus: false,
                                                               validator: (value) =>
                                                                   PackingPlanValidator
-                                                                      .notes(value),
+                                                                      .notes(
+                                                                          value),
                                                               controller:
                                                                   controllerNotes,
                                                               decoration:
                                                                   const InputDecoration(
-                                                                labelText: 'Notizen',
+                                                                labelText:
+                                                                    'Notizen',
                                                                 alignLabelWithHint:
                                                                     true,
                                                               ),
@@ -1065,24 +1050,25 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                               keyboardType:
                                                                   TextInputType
                                                                       .multiline,
-                                                              onTapOutside: (value) {
-                                                                FocusScope.of(context)
+                                                              onTapOutside:
+                                                                  (value) {
+                                                                FocusScope.of(
+                                                                        context)
                                                                     .unfocus();
                                                                 if (_formKey
                                                                     .currentState!
                                                                     .validate()) {
-                                                                  DocumentReference ref =
-                                                                      FirebaseFirestore
-                                                                          .instance
-                                                                          .collection(
-                                                                              'users')
-                                                                          .doc(Auth()
-                                                                              .user
-                                                                              ?.uid)
-                                                                          .collection(
-                                                                              'packing_plan')
-                                                                          .doc(packingPlan
-                                                                              .id);
+                                                                  DocumentReference ref = FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          'users')
+                                                                      .doc(Auth()
+                                                                          .user
+                                                                          ?.uid)
+                                                                      .collection(
+                                                                          'packing_plan')
+                                                                      .doc(packingPlan
+                                                                          .id);
 
                                                                   ref.update({
                                                                     "notes":
@@ -1097,17 +1083,18 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                       ),
                                                     ),
                                                   ),
-                                                  if(isDesktop)
-                                                  Column(
-                                                    children: actions,
-                                                  )
+                                                  if (isDesktop)
+                                                    Column(
+                                                      children: actions,
+                                                    )
                                                 ],
                                               ),
-                                              if(!isDesktop)
-                                              Row(
-                                                children: actions,
-                                              )
-                                      ],),
+                                              if (!isDesktop)
+                                                Row(
+                                                  children: actions,
+                                                )
+                                            ],
+                                          ),
                                           if (items.isNotEmpty)
                                             Padding(
                                               padding: Design.pagePadding,
@@ -1282,12 +1269,6 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                 chartIndexProvider)[0],
                                                             -1
                                                           ];
-                                                        } else {
-                                                          ref
-                                                              .read(
-                                                                  chartIndexProvider
-                                                                      .notifier)
-                                                              .state = [0, -1];
                                                         }
                                                       },
                                                       child: Container(
@@ -1337,29 +1318,48 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                       .black54,
                                                                   fontSize: 17),
                                                             ),
-                                                            if (ref.watch(chartIndexProvider)[
-                                                                        0] !=
-                                                                    0 &&
-                                                                ref.watch(chartIndexProvider)[
-                                                                        1] ==
-                                                                    -1)
-                                                              const Padding(
-                                                                padding: EdgeInsets
-                                                                    .only(
-                                                                        top:
-                                                                            20.0),
-                                                                child: Icon(
-                                                                  CupertinoIcons
-                                                                      .clear_circled,
-                                                                  color: Colors
-                                                                      .black54,
-                                                                  size: 40.0,
-                                                                ),
-                                                              ),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
+                                                    if (ref.watch(
+                                                                chartIndexProvider)[
+                                                            0] !=
+                                                        0)
+                                                      Positioned(
+                                                          bottom: 0,
+                                                          child: IconButton(
+                                                            onPressed: () {
+                                                              if (ref.watch(
+                                                                          chartIndexProvider)[
+                                                                      1] !=
+                                                                  -1) {
+                                                                ref
+                                                                    .read(chartIndexProvider
+                                                                        .notifier)
+                                                                    .state = [
+                                                                  ref.read(
+                                                                      chartIndexProvider)[0],
+                                                                  -1
+                                                                ];
+                                                              } else {
+                                                                ref
+                                                                    .read(chartIndexProvider
+                                                                        .notifier)
+                                                                    .state = [
+                                                                  0,
+                                                                  -1
+                                                                ];
+                                                              }
+                                                            },
+                                                            icon: const Icon(
+                                                              CupertinoIcons
+                                                                  .clear_circled,
+                                                              color: Colors
+                                                                  .black54,
+                                                              size: 40.0,
+                                                            ),
+                                                          )),
                                                     if (ref.watch(
                                                                 chartIndexProvider)[
                                                             0] !=
