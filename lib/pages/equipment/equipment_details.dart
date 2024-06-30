@@ -167,7 +167,9 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                       : 15,
                                   bottom: safeareaPadding.bottom + 30.0),
                               alignment: Alignment.centerLeft,
-                              child: Column(children: [
+                              child: Column(
+
+                                  children: [
                                 Container(
                                   padding: const EdgeInsets.only(
                                       top: 15.0, bottom: 40.0),
@@ -198,6 +200,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                     ],
                                   ),
                                 ),
+                                if(equipment.category != '3.0')
                                 Wrap(
                                   spacing: 10.0,
                                   runSpacing: 10.0,
@@ -227,7 +230,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                         ],
                                       ),
                                     ),
-                                    if (equipment.size != null)
+                                    if (equipment.size != null && equipment.size!.isNotEmpty)
                                       _CustomBox(
                                         child: Row(
                                           mainAxisAlignment:
@@ -252,6 +255,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                           ],
                                         ),
                                       ),
+                                    if(equipment.count > 1)
                                     _CustomBox(
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -349,7 +353,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                 ),
                                 if (isDesktop)
                                   Padding(
-                                      padding: const EdgeInsets.only(top: 40.0),
+                                      padding: const EdgeInsets.only(top: 60.0),
                                       child: _Actions(equipment: equipment)),
                               ]),
                             )),

@@ -464,7 +464,6 @@ class _Links extends StatelessWidget {
                 context: context,
                 description: 'Diese Funktion ist momentan nicht verfügbar.'),
           ),
-          Padding(padding: EdgeInsets.only(top: spacing)),
           _CustomListTile(
             title: 'UID kopieren',
             onTap: () {
@@ -473,6 +472,19 @@ class _Links extends StatelessWidget {
                   value: Auth().user?.uid ?? 'uid not provided');
             },
             icon: Icons.copy_rounded,
+          ),
+          Padding(padding: EdgeInsets.only(top: spacing)),
+          _CustomListTile(
+              title: 'Images designed by Freepik',
+              icon: Icons.launch_rounded,
+              onTap: () async {
+                final Uri url = Uri.parse('https://freepik.com/');
+                launchUrl(url).then((didLaunch) {
+                  if (didLaunch == false) {
+                    copyToClipboard(context: context, value: 'https://freepik.com/');
+                  }
+                });
+              }
           ),
           _CustomListTile(
             title: 'Lizenzen',
