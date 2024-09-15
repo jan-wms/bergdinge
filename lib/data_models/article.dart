@@ -5,6 +5,7 @@ class Article {
   final String subTitle;
   final ImageProvider<Object> imageProvider;
   final List<Widget> content;
-  Article({required this.title, required this.subTitle, required this.imageProvider, required this.content});
+  final Color color;
+  Article({required this.title, required this.subTitle, required this.imageProvider, required this.content, required this.color});
 
 }

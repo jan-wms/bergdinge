@@ -444,7 +444,7 @@ class _Actions extends StatelessWidget {
                     type: ConfirmType.confirmDelete,
                     context: context,
                     description:
-                        'Dieser Gegenstand wird aus allen Packlisten gelöscht.');
+                        'Dieser Gegenstand wird auch aus allen Packlisten gelöscht.');
             if (confirmDelete ?? false) {
               DocumentReference userDoc = FirebaseFirestore.instance
                   .collection('users')
