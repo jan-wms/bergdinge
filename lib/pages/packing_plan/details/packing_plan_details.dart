@@ -1508,23 +1508,26 @@ class _TipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(5.0),
       margin: Design.pagePadding.copyWith(bottom: 10.0),
       decoration: BoxDecoration(
           color: isConditionMet ? Design.colors[1] : Design.colors[6],
-          borderRadius: BorderRadius.circular(20.0)),
+          borderRadius: BorderRadius.circular(15.0)),
       child: Row(
         children: [
           Container(
-              padding: const EdgeInsets.only(right: 15.0),
+              margin: const EdgeInsets.all(15.0).copyWith(right: 25.0),
               width: 70,
               height: 70,
               child: Image.asset('assets/${tip.imagePath}')),
           Expanded(
             child: Container(
+              constraints: const BoxConstraints(
+                minHeight: 100.0,
+              ),
               padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7.0),
+                borderRadius: BorderRadius.circular(10.0),
                 color: Colors.white,
               ),
               child: Column(

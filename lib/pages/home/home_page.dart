@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   final articles = <Article>[
     Article(
       title: 'Rucksack richtig packen',
-      subTitle: 'Ratgeber',
+      subTitle: 'Tipps',
       imageProvider: const AssetImage('assets/articles/backpack.jpg'),
       color: const Color.fromRGBO(52, 94, 50, 1.0),
       content: [
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
       title: 'Rucksack richtig einstellen',
       subTitle: 'Ratgeber',
       imageProvider: const AssetImage('assets/articles/landscape2.jpg'),
-      color: const Color.fromRGBO(52, 94, 50, 1.0),
+      color: const Color.fromRGBO(35, 63, 33, 1.0),
       content: [
         const Text(
           'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergrenluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo  et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor ins et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
@@ -101,7 +101,7 @@ class _ArticleCard extends StatelessWidget {
             color: Colors.transparent,
             child: Container(
               constraints: const BoxConstraints(
-                maxWidth: 490.0,
+                maxWidth: 400.0,
               ),
               child: AspectRatio(
                 aspectRatio: 5 / 4,
