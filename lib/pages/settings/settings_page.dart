@@ -265,7 +265,11 @@ class SettingsPage extends ConsumerWidget {
                                                     BorderRadius.circular(
                                                         10.0))),
                                         onPressed: () {
-                                          Auth().signOut();
+                                          CustomDialog.showCustomConfirmationDialog(context: context, description: 'Möchtest du dich abmelden?', type: ConfirmType.confirmDefault).then((value) {
+                                            if(value) {
+                                              Auth().signOut();
+                                            }
+                                          });
                                         },
                                         child: Container(
                                             alignment: Alignment.center,

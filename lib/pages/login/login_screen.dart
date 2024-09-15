@@ -126,14 +126,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 15.0),
-                        child:  SvgPicture.asset('assets/icon.svg', semanticsLabel: 'Bergdinge Icon', height: 50.0, ),
+                        child:  SvgPicture.asset('assets/icon.svg', semanticsLabel: 'Bergdinge Icon', height: 30.0, ),
                       ),
                       const Text(
                         'Bergdinge',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 70.0),
+                            fontSize: 40.0),
                       ),
                     ],
                   ),
