@@ -176,7 +176,7 @@ class _ArticleCard extends StatelessWidget {
                       child: Text(
                         article.subTitle,
                         style: TextStyle(
-                            color: Colors.white.withOpacity(0.8), fontSize: 16),
+                            color: Colors.white.withOpacity(0.9), fontSize: 16),
                       ),
                     ),
                   ],

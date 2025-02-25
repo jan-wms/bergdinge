@@ -17,7 +17,9 @@ class LoginScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
   const LoginScreen(
-      {super.key, required this.authenticationAction, required this.onComplete});
+      {super.key,
+      required this.authenticationAction,
+      required this.onComplete});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -99,48 +101,61 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     bool isDesktop = MediaQuery.of(context).size.width > 900;
 
     return Container(
-      constraints: (screenSize.width > Design.breakpoint1 && widget.authenticationAction != AuthenticationAction.signIn) ? BoxConstraints(
-        maxWidth: min(1200, screenSize.width * 0.7,),
-        maxHeight: min(700, screenSize.width * 0.7,),
-      ) : null,
+      constraints: (screenSize.width > Design.breakpoint1 &&
+              widget.authenticationAction != AuthenticationAction.signIn)
+          ? BoxConstraints(
+              maxWidth: min(
+                1200,
+                screenSize.width * 0.7,
+              ),
+              maxHeight: min(
+                700,
+                screenSize.width * 0.7,
+              ),
+            )
+          : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if(isDesktop)
-          Expanded(
-            child: Hero(
-              tag: 'onboarding',
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: Image.asset('assets/mountain.jpg').image,
-                      alignment: Alignment.bottomCenter,
-                      fit: BoxFit.cover),
-                ),
-                alignment: Alignment.bottomLeft,
-                padding: const EdgeInsets.all(50.0),
-                width: double.infinity,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15.0),
-                        child:  SvgPicture.asset('assets/icon.svg', semanticsLabel: 'Bergdinge Icon', height: 30.0, ),
-                      ),
-                      const Text(
-                        'Bergdinge',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 40.0),
-                      ),
-                    ],
+          if (isDesktop)
+            Expanded(
+              child: Hero(
+                tag: 'onboarding',
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: Image.asset('assets/mountain.jpg').image,
+                        alignment: Alignment.bottomCenter,
+                        fit: BoxFit.cover),
+                  ),
+                  alignment: Alignment.bottomLeft,
+                  padding: const EdgeInsets.all(50.0),
+                  width: double.infinity,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: SvgPicture.asset(
+                            'assets/icon.svg',
+                            semanticsLabel: 'Bergdinge Icon',
+                            height: 30.0,
+                          ),
+                        ),
+                        const Text(
+                          'Bergdinge',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40.0),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           Expanded(
             child: Container(
               color: Design.colors[1],
@@ -152,7 +167,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 spacing: 30.0,
                 children: [
                   const Text(
-                'Anmelden',
+                    'Anmelden',
                     softWrap: true,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
@@ -165,7 +180,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     padding: EdgeInsets.only(
-                        bottom: 30.0, left: 30.0, right: 30.0, top: (widget.authenticationAction == AuthenticationAction.signIn) ? 50.0 : 30.0),
+                        bottom: 30.0,
+                        left: 30.0,
+                        right: 30.0,
+                        top: (widget.authenticationAction ==
+                                AuthenticationAction.signIn)
+                            ? 50.0
+                            : 30.0),
                     child: Wrap(
                       spacing: 20.0,
                       direction: Axis.vertical,
@@ -184,7 +205,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             (widget.authenticationAction ==
                                     AuthenticationAction.reauthenticate &&
                                 ref.read(authProvider) == 'apple.com'))
-                          _SignInWithAppleButton(
+                          SignInButton(
+                            signInType: SignInType.apple,
                             onPressed: () => (!ref.watch(isLoadingProvider))
                                 ? CustomDialog.showCustomInformationDialog(
                                     context: context,
@@ -204,11 +226,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     child: const CircularProgressIndicator())
                                 : TextButton(
                                     onPressed: () async {
-                                      ref.read(isLoadingProvider.notifier).state =
-                                          true;
+                                      ref
+                                          .read(isLoadingProvider.notifier)
+                                          .state = true;
                                       await signInAnonymously(context);
-                                      ref.read(isLoadingProvider.notifier).state =
-                                          false;
+                                      ref
+                                          .read(isLoadingProvider.notifier)
+                                          .state = false;
                                     },
                                     child: const Text('Überspringen')),
                           ),
@@ -232,39 +256,74 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 }
 
-class _SignInWithAppleButton extends StatelessWidget {
-  final VoidCallback onPressed;
+enum SignInType {
+  apple,
+  google;
+}
 
-  const _SignInWithAppleButton({required this.onPressed});
+class SignInButton extends StatelessWidget {
+  final SignInType signInType;
+  final VoidCallback? onPressed;
+
+  const SignInButton(
+      {super.key, required this.signInType, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: 240,
       height: 50,
+      decoration: signInType == SignInType.google
+          ? BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            )
+          : null,
       child: FilledButton(
         style: FilledButton.styleFrom(
-            backgroundColor: Colors.black,
-            foregroundColor: Colors.white,
-            textStyle: const TextStyle(fontSize: 16),
+            backgroundColor:
+                signInType == SignInType.google ? Colors.white : Colors.black,
+            foregroundColor:
+                signInType == SignInType.google ? Colors.black54 : Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
+            padding: const EdgeInsets.all(15),
+            //padding: EdgeInsets.zero,
+            textStyle: const TextStyle(fontSize: 16),
             splashFactory: NoSplash.splashFactory),
-        onPressed: () => onPressed(),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
+        onPressed: onPressed,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              IconData(0xf02d8, fontFamily: 'MaterialIcons'),
-              size: 30,
+            Container(
+              width: 25,
+              height: 25,
+              padding: EdgeInsets.zero,
+              alignment: Alignment.center,
+              child: signInType == SignInType.google
+                  ? Image.asset('assets/google.png')
+                  : Transform.translate(
+                      offset: const Offset(-3, -6),
+                      child: const Icon(
+                        Icons.apple,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                    ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text(
-                'Mit Apple anmelden',
-              ),
+            Container(
+              padding: const EdgeInsets.only(left: 11),
+              child: Text(signInType == SignInType.google
+                  ? 'Über Google anmelden'
+                  : 'Mit Apple anmelden'),
             ),
           ],
         ),
