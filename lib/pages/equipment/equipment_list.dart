@@ -1,7 +1,7 @@
-import 'package:equipment_app/data/design.dart';
-import 'package:equipment_app/pages/equipment/equipment_page.dart';
+import 'package:bergdinge/data/design.dart';
+import 'package:bergdinge/pages/equipment/equipment_page.dart';
 import 'package:flutter/material.dart';
-import 'package:equipment_app/data/providers.dart';
+import 'package:bergdinge/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/data.dart';

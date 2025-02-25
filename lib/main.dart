@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:equipment_app/custom_widgets/dismiss_keyboard.dart';
-import 'package:equipment_app/data/design.dart';
-import 'package:equipment_app/router.dart';
+import 'package:bergdinge/custom_widgets/dismiss_keyboard.dart';
+import 'package:bergdinge/data/design.dart';
+import 'package:bergdinge/router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

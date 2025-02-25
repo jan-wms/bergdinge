@@ -1,5 +1,5 @@
-import 'package:equipment_app/custom_widgets/custom_appbar.dart';
-import 'package:equipment_app/data_models/article.dart';
+import 'package:bergdinge/custom_widgets/custom_appbar.dart';
+import 'package:bergdinge/data_models/article.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';

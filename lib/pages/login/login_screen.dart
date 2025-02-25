@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:equipment_app/data/design.dart';
-import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/firebase/firebase_auth.dart';
+import 'package:bergdinge/data/design.dart';
+import 'package:bergdinge/data/providers.dart';
+import 'package:bergdinge/firebase/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

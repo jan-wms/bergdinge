@@ -1,5 +1,5 @@
-import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/data_models/equipment.dart';
+import 'package:bergdinge/data/providers.dart';
+import 'package:bergdinge/data_models/equipment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

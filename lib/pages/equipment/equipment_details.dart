@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dismissible_page/dismissible_page.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
-import 'package:equipment_app/data_models/equipment.dart';
-import 'package:equipment_app/parser.dart';
+import 'package:bergdinge/custom_widgets/custom_dialog.dart';
+import 'package:bergdinge/data_models/equipment.dart';
+import 'package:bergdinge/parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +11,7 @@ import '../../custom_widgets/custom_close_button.dart';
 import '../../data/data.dart';
 import '../../data/design.dart';
 import '../../firebase/firebase_auth.dart';
-import 'package:equipment_app/data/providers.dart';
+import 'package:bergdinge/data/providers.dart';
 
 import 'equipment_edit.dart';
 

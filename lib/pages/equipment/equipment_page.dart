@@ -1,6 +1,6 @@
-import 'package:equipment_app/custom_widgets/custom_appbar.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
-import 'package:equipment_app/pages/equipment/equipment_list.dart';
+import 'package:bergdinge/custom_widgets/custom_appbar.dart';
+import 'package:bergdinge/custom_widgets/custom_dialog.dart';
+import 'package:bergdinge/pages/equipment/equipment_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

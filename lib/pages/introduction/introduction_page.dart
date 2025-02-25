@@ -1,6 +1,6 @@
-import 'package:equipment_app/data/design.dart';
-import 'package:equipment_app/firebase/firebase_auth.dart';
-import 'package:equipment_app/pages/login/login_screen.dart';
+import 'package:bergdinge/data/design.dart';
+import 'package:bergdinge/firebase/firebase_auth.dart';
+import 'package:bergdinge/pages/login/login_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

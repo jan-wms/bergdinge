@@ -1,7 +1,7 @@
 /*https://stackoverflow.com/questions/63596715/flutter-custom-sliver-app-bar-with-search-bar*/
 import 'dart:ui';
 import 'dart:math';
-import 'package:equipment_app/data/design.dart';
+import 'package:bergdinge/data/design.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {

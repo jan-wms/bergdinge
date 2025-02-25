@@ -1,5 +1,5 @@
-import 'package:equipment_app/data_models/packing_plan.dart';
-import 'package:equipment_app/validators/packing_plan_validator.dart';
+import 'package:bergdinge/data_models/packing_plan.dart';
+import 'package:bergdinge/validators/packing_plan_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

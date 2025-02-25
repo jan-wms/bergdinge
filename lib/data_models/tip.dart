@@ -1,6 +1,6 @@
-import 'package:equipment_app/data_models/equipment.dart';
-import 'package:equipment_app/data_models/packing_plan.dart';
-import 'package:equipment_app/data_models/packing_plan_item.dart';
+import 'package:bergdinge/data_models/equipment.dart';
+import 'package:bergdinge/data_models/packing_plan.dart';
+import 'package:bergdinge/data_models/packing_plan_item.dart';
 
 import '../data/data.dart';
 

@@ -1,5 +1,5 @@
-import 'package:equipment_app/data_models/category.dart';
-import 'package:equipment_app/data_models/tip.dart';
+import 'package:bergdinge/data_models/category.dart';
+import 'package:bergdinge/data_models/tip.dart';
 
 enum EquipmentStatus {
   active,

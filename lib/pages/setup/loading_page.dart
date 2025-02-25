@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:equipment_app/pages/setup/setup_screen.dart';
+import 'package:bergdinge/pages/setup/setup_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatefulWidget {

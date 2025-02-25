@@ -1,11 +1,11 @@
-import 'package:equipment_app/custom_widgets/custom_appbar.dart';
-import 'package:equipment_app/data/design.dart';
+import 'package:bergdinge/custom_widgets/custom_appbar.dart';
+import 'package:bergdinge/data/design.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
-import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/pages/setup/setup_screen.dart';
-import 'package:equipment_app/pages/login/login_screen.dart';
+import 'package:bergdinge/custom_widgets/custom_dialog.dart';
+import 'package:bergdinge/data/providers.dart';
+import 'package:bergdinge/pages/setup/setup_screen.dart';
+import 'package:bergdinge/pages/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -279,7 +279,7 @@ class SettingsPage extends ConsumerWidget {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.logout_rounded),
+                                                Icon(Icons.logout_rounded, color: Colors.white, size: 25,),
                                                 Padding(
                                                   padding: EdgeInsets.only(
                                                       left: 10.0),

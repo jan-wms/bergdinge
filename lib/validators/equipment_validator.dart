@@ -1,4 +1,4 @@
-import 'package:equipment_app/data/data.dart';
+import 'package:bergdinge/data/data.dart';
 
 class EquipmentValidator {
   static String? priceOrUvp(value) {

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/data_models/packing_plan.dart';
+import 'package:bergdinge/data_models/packing_plan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data_models/equipment.dart';

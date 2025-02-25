@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:equipment_app/split_view.dart';
+import 'package:bergdinge/split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'data/design.dart';

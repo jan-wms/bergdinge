@@ -1,4 +1,4 @@
-import 'package:equipment_app/data/design.dart';
+import 'package:bergdinge/data/design.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

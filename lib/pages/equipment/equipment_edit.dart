@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equipment_app/custom_widgets/custom_dialog.dart';
-import 'package:equipment_app/data/data.dart';
-import 'package:equipment_app/data/providers.dart';
-import 'package:equipment_app/data_models/equipment.dart';
-import 'package:equipment_app/validators/equipment_validator.dart';
+import 'package:bergdinge/custom_widgets/custom_dialog.dart';
+import 'package:bergdinge/data/data.dart';
+import 'package:bergdinge/data/providers.dart';
+import 'package:bergdinge/data_models/equipment.dart';
+import 'package:bergdinge/validators/equipment_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
