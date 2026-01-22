@@ -64,7 +64,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
         shape: BoxShape.circle,
         color:  fillColor,
         border: Border.all(
-          color: widget.disabled ? Colors.black45 : (!widget.value ? (Design.colors[1].withOpacity(0.6)) : Colors.transparent),
+          color: widget.disabled ? Colors.black45 : (!widget.value ? (Design.colors[1].withValues(alpha: 0.6)) : Colors.transparent),
           width: 2.0,
         ),
       ),

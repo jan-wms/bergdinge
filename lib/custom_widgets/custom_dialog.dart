@@ -97,7 +97,6 @@ class CustomDialog {
         buttonText = 'Weiter';
         break;
       case ConfirmType.confirmDefault:
-      default:
         buttonColor = Design.colors[0];
         buttonText = 'OK';
         break;

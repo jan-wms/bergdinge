@@ -140,7 +140,7 @@ class _ArticleCard extends StatelessWidget {
                             width: 4.0),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
+                            color: Colors.grey.withValues(alpha: 0.2),
                             spreadRadius: 4,
                             blurRadius: 10,
                             offset: const Offset(2, 3),
@@ -176,7 +176,7 @@ class _ArticleCard extends StatelessWidget {
                       child: Text(
                         article.subTitle,
                         style: TextStyle(
-                            color: Colors.white.withOpacity(0.9), fontSize: 16),
+                            color: Colors.white.withValues(alpha: 0.9), fontSize: 16),
                       ),
                     ),
                   ],

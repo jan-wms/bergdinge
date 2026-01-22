@@ -31,7 +31,7 @@ class Menu extends ConsumerWidget {
             BoxShadow(
               blurRadius: 10,
               spreadRadius: 5,
-              color: Design.colors[1].withOpacity(0.2),
+              color: Design.colors[1].withValues(alpha: 0.2),
             )
           ]),
       child: Column(

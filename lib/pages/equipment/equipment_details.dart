@@ -6,6 +6,7 @@ import 'package:bergdinge/data_models/equipment.dart';
 import 'package:bergdinge/parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_close_button.dart';
 import '../../data/data.dart';
@@ -316,7 +317,7 @@ class _EquipmentDetailsState extends ConsumerState<EquipmentDetails> {
                                                           FontWeight.w600,
                                                       fontSize: 19,
                                                       color: Colors.black
-                                                          .withOpacity(0.6),
+                                                          .withValues(alpha: 0.6),
                                                       decoration: TextDecoration
                                                           .lineThrough),
                                                 ),
@@ -415,7 +416,7 @@ class _CustomBox extends StatelessWidget {
             BoxShadow(
               offset: const Offset(0, 7),
               blurRadius: 10,
-              color: Design.colors[1].withOpacity(0.4),
+              color: Design.colors[1].withValues(alpha: 0.4),
             )
           ],
         ),

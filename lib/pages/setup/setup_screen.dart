@@ -5,6 +5,7 @@ import 'package:bergdinge/pages/setup/set_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/design.dart';
 import '../../firebase/firebase_auth.dart';

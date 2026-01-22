@@ -1,14 +1,14 @@
 import '../data/data.dart';
 
 class PackingPlanValidator {
-  static String? name(value) {
+  static String? name(String? value) {
     if (value?.isEmpty ?? true) {
       return 'Erforderlich';
     }
     return null;
   }
 
-  static String? notes(value) {
+  static String? notes(dynamic value) {
     return null;
   }
 

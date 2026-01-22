@@ -165,7 +165,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) async {
       if (authState.isLoading || authState.hasError) return '/launch_screen';
 
-      final isAuthorized = authState.valueOrNull != null;
+      final isAuthorized = authState.value != null;
       late final bool? isSetupCompleted;
       if (isAuthorized) {
         isSetupCompleted = await FirebaseFirestore.instance

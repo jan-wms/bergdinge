@@ -96,7 +96,7 @@ class _SearchState extends State<Search> {
               decoration: InputDecoration(
                 hintText: 'Suchen',
                 hintStyle: TextStyle(
-                    color: Theme.of(context).primaryColor.withOpacity(0.7)),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.7)),
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
               ),
@@ -107,14 +107,14 @@ class _SearchState extends State<Search> {
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   icon: Icon(Icons.search,
-                      color: Theme.of(context).primaryColor.withOpacity(0.7)),
+                      color: Theme.of(context).primaryColor.withValues(alpha: 0.7)),
                   onPressed: () => _focusNode.requestFocus(),
                 )
               : IconButton(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   icon: Icon(Icons.clear,
-                      color: Theme.of(context).primaryColor.withOpacity(0.7)),
+                      color: Theme.of(context).primaryColor.withValues(alpha: 0.7)),
                   onPressed: () => setState(
                     () {
                       _editingController.clear();
@@ -233,7 +233,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                             BoxShadow(
                               offset: const Offset(0, 7),
                               blurRadius: 10,
-                              color: Design.colors[1].withOpacity(0.23),
+                              color: Design.colors[1].withValues(alpha: 0.23),
                             )
                           ]),
                       child: search ??
@@ -244,7 +244,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                                 fontWeight: FontWeight.w500,
                                 color: Theme.of(context)
                                     .primaryColor
-                                    .withOpacity(0.7)),
+                                    .withValues(alpha: 0.7)),
                           ),
                     ),
                   if (onButtonPressed != null)
@@ -259,7 +259,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                             BoxShadow(
                               offset: const Offset(0, 7),
                               blurRadius: 10,
-                              color: Design.colors[1].withOpacity(0.23),
+                              color: Design.colors[1].withValues(alpha: 0.23),
                             )
                           ]),
                       child: IconButton(
@@ -268,7 +268,7 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
                         icon: Icon(buttonIcon,
                             color: Theme.of(context)
                                 .primaryColor
-                                .withOpacity(0.7)),
+                                .withValues(alpha: 0.7)),
                       ),
                     ),
                 ],

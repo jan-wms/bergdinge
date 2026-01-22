@@ -25,7 +25,7 @@ class _CustomPieChartState extends ConsumerState<CustomPieChart> {
       return PieChartSectionData(
         color: Design.getSectionColor(
                 category: ref.watch(chartIndexProvider)[0] - 1, index: e.key)
-            .withOpacity(isTouched || ref.watch(chartIndexProvider)[1] == -1
+            .withValues(alpha: isTouched || ref.watch(chartIndexProvider)[1] == -1
                 ? 1.0
                 : 0.2),
         value: e.value.y,
@@ -75,8 +75,8 @@ class _CustomPieChartState extends ConsumerState<CustomPieChart> {
           },
         ),
       ),
-      swapAnimationDuration: const Duration(milliseconds: 150),
-      swapAnimationCurve: Curves.linear,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.linear,
     );
   }
 }

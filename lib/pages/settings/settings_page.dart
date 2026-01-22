@@ -124,7 +124,7 @@ class SettingsPage extends ConsumerWidget {
                                 boxShadow: [
                                   if (!(firebaseUser?.isAnonymous ?? true))
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
+                                      color: Colors.grey.withValues(alpha: 0.2),
                                       spreadRadius: 4,
                                       blurRadius: 10,
                                       offset: const Offset(2, 3),
@@ -414,7 +414,7 @@ class _Links extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.2),
             spreadRadius: 4,
             blurRadius: 10,
             offset: const Offset(2, 3),
@@ -546,7 +546,7 @@ class _DisplayAuthProvider extends StatelessWidget {
             ? null
             : [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.15),
+                  color: Colors.grey.withValues(alpha: 0.15),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: const Offset(0, 3),

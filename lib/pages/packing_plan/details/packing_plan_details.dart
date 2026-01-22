@@ -16,6 +16,7 @@ import 'package:bergdinge/parser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import '../../../custom_widgets/custom_checkbox.dart';
 import '../../../custom_widgets/custom_dialog.dart';
@@ -154,10 +155,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                             for (MapEntry<String, List<PackingPlanItem>> entry
                                 in statistics.first.categoryPackingPlanItemsMap
                                     .entries) {
-                              //TODO
                               try {
                                 statistics.add(statisticFromItems(entry));
-                              } catch (e) {}
+                              } catch (e) {
+                                // TODO
+                              }
                             }
 
                             List<Widget> getRightSection(Statistic statistic) {
@@ -924,8 +926,8 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                         boxShadow: [
                                                           BoxShadow(
                                                             color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.2),
+                                                                .withValues(
+                                                                    alpha: 0.2),
                                                             spreadRadius: 4,
                                                             blurRadius: 10,
                                                             offset:

@@ -77,7 +77,7 @@ class Design {
   final ThemeData _lightTheme = ThemeData(
     brightness: Brightness.light,
     appBarTheme: AppBarTheme(
-      color: Design.colors[1],
+      backgroundColor: Design.colors[1],
       surfaceTintColor: Colors.white,
       foregroundColor: Colors.white,
     ),
