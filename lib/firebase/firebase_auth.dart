@@ -20,67 +20,49 @@ enum AuthenticationAction {
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: <String>[
-      'email',
-    ],
-  );
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   User? get user => _firebaseAuth.currentUser;
 
-  Future<void> signInAnonymously() async {
-    await _firebaseAuth.signInAnonymously();
+  Future<UserCredential> signInAnonymously() async {
+    return await _firebaseAuth.signInAnonymously();
   }
 
-  Future<GoogleSignInAccount?> googleSignInSilently() async {
-    return await _googleSignIn.signInSilently();
-  }
-
-  StreamSubscription gsiOnCurrentUserChanged({
-    required AuthenticationAction authenticationAction,
-  }) {
-    late final StreamSubscription<GoogleSignInAccount?> gsiUserChanged;
-    final StreamController streamController = StreamController(onCancel: () {
-      gsiUserChanged.cancel();
-    });
-
-    gsiUserChanged = _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount? account) async {
-      if (account != null) {
-        try {
-          final GoogleSignInAuthentication gAuth = await account.authentication;
-          final credential = GoogleAuthProvider.credential(
-            accessToken: gAuth.accessToken,
-            idToken: gAuth.idToken,
-          );
-
-          if (authenticationAction == AuthenticationAction.linkAccounts) {
-            await _firebaseAuth.currentUser?.linkWithCredential(credential);
-          } else if (authenticationAction == AuthenticationAction.reauthenticate) {
-            await _firebaseAuth.currentUser?.reauthenticateWithCredential(credential);
-          } else {
-            await _firebaseAuth.signInWithCredential(credential);
-          }
-          streamController.add(credential);
-        } on FirebaseAuthException catch (error) {
-          debugPrint(error.toString());
-          streamController.addError(error);
-        }
+  Future<UserCredential?> signInWithGoogle(
+      {required AuthenticationAction authenticationAction}) async {
+    // On Web
+    if(kIsWeb) {
+      final provider = GoogleAuthProvider();
+      switch (authenticationAction) {
+        case AuthenticationAction.signIn:
+          return await _firebaseAuth.signInWithPopup(provider);
+        case AuthenticationAction.linkAccounts:
+          return await _firebaseAuth.currentUser?.linkWithPopup(provider);
+        case AuthenticationAction.reauthenticate:
+          return await _firebaseAuth.currentUser
+              ?.reauthenticateWithPopup(provider);
       }
-    });
+    }
 
-    return streamController.stream.listen((event) {});
-  }
+    // On iOS or Android
+    final GoogleSignInAccount account = await _googleSignIn.authenticate();
+    final GoogleSignInAuthentication auth = account.authentication;
+    final OAuthCredential credential =
+        GoogleAuthProvider.credential(idToken: auth.idToken);
 
-  Future<void> signInWithGoogle() async {
-    try {
-      await _googleSignIn.signIn();
-    } catch (e) {
-      debugPrint(e.toString());
+    switch (authenticationAction) {
+      case AuthenticationAction.signIn:
+        return await _firebaseAuth.signInWithCredential(credential);
+      case AuthenticationAction.linkAccounts:
+        return await _firebaseAuth.currentUser?.linkWithCredential(credential);
+      case AuthenticationAction.reauthenticate:
+        return await _firebaseAuth.currentUser
+            ?.reauthenticateWithCredential(credential);
     }
   }
 
   Future<void> signOut() async {
+    await _googleSignIn.signOut();
     await _firebaseAuth.signOut();
   }
 }

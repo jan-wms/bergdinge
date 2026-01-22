@@ -4,13 +4,12 @@ import 'package:bergdinge/data/design.dart';
 import 'package:bergdinge/data/providers.dart';
 import 'package:bergdinge/firebase/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../custom_widgets/custom_dialog.dart';
-import './sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   final AuthenticationAction authenticationAction;
@@ -27,8 +26,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _auth = Auth();
-  late final StreamSubscription gsiOnUserChanged;
-
   final isLoadingProvider = StateProvider.autoDispose<bool>((ref) => false);
 
   Future<void> handleError(
@@ -69,30 +66,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         debugPrint('not mounted');
       }
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    gsiOnUserChanged = _auth.gsiOnCurrentUserChanged(
-        authenticationAction: widget.authenticationAction);
-    gsiOnUserChanged.onError((e) {
-      handleError(e, context);
-    });
-
-    gsiOnUserChanged.onData((data) {
-      widget.onComplete();
-    });
-
-    if (kIsWeb) {
-      _auth.googleSignInSilently();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    gsiOnUserChanged.cancel();
   }
 
   @override
@@ -197,8 +170,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             (widget.authenticationAction ==
                                     AuthenticationAction.reauthenticate &&
                                 ref.read(authProvider) == 'google.com'))
-                          buildSignInButton(
-                            onPressed: () => _auth.signInWithGoogle(),
+                          SignInButton(
+                            signInType: SignInType.google,
+                            onPressed: () => _auth.signInWithGoogle(
+                                    authenticationAction: widget
+                                        .authenticationAction).then((
+                                    userCredential) {
+                                  if (userCredential != null) {
+                                    widget.onComplete();
+                                  }
+                                }).catchError((e, stack) {
+                                  debugPrint("Error on Google SignIn: $e");
+                                }),
                           ),
                         if (widget.authenticationAction !=
                                 AuthenticationAction.reauthenticate ||
@@ -277,7 +260,7 @@ class SignInButton extends StatelessWidget {
           ? BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.15),
+                  color: Colors.grey.withValues(alpha: 0.15),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: const Offset(0, 3),
