@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       color: const Color.fromRGBO(50, 71, 94, 1.0),
       content: [
         const Text(
-          'Bei der AlpenAcademy lernst du alles rund ums Thema Bergsport. Meine Kurse sollen dir alles vermitteln, was man so braucht, um sicher, erfolgreich und bequem den schönsten Sport der Welt genießen zu können. Im Detail geht es um die Themen Klettern, Bergsteigen, Skitouren, Technik, Tourenguides und Ausrüstung! Du wirst auf meinem Kanal bestimmt fündig.',
+          'Bei der AlpenAcademy lernst du alles rund ums Thema Bergsport. Die Kurse sollen dir alles vermitteln, was man so braucht, um sicher, erfolgreich und bequem den schönsten Sport der Welt genießen zu können. Im Detail geht es um die Themen Klettern, Bergsteigen, Skitouren, Technik, Tourenguides und Ausrüstung! Du wirst auf dem Kanal bestimmt fündig.',
           style: Design.articleTextStyle,
         ),
         Padding(
