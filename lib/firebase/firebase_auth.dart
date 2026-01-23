@@ -45,6 +45,8 @@ class Auth {
     }
 
     // On iOS or Android
+    _googleSignIn.initialize(serverClientId: "431093041285-d6cjl21t18fg1dvih1tkgeauhtlcif53.apps.googleusercontent.com");
+
     final GoogleSignInAccount account = await _googleSignIn.authenticate();
     final GoogleSignInAuthentication auth = account.authentication;
     final OAuthCredential credential =
