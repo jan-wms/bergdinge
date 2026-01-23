@@ -2,9 +2,12 @@
 
 A Flutter project.
 
-### Setup
-lib/firebase/firebase_options.dart
+Images designed by Freepik (https://freepik.com/)
 
-ios/Runner/GoogleService-Info.plist
-
-android/app/google-services.json
+## Setup
+To set up Firebase and GoogleSignIn, add these files:
+>lib/firebase/firebase_options.dart
+> 
+>ios/Runner/GoogleService-Info.plist
+> 
+>android/app/google-services.json
