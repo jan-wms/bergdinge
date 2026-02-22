@@ -33,6 +33,8 @@ dependencies:
   shimmer: ^3.0.0
   google_fonts: ^7.0.2
   flutter_svg: ^2.0.9
+  http: ^1.6.0
+  flutter_html: ^3.0.0
 
 dev_dependencies:
   flutter_test:

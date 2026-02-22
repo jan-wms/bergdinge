@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Design {
   static const articleTextStyle = TextStyle(fontSize: 15.0);
+  static const articleSubtitleTextStyle = TextStyle(
+      fontSize: 17, color: Colors.black54, fontWeight: FontWeight.w600);
+  static const articleTitleTextStyle =
+      TextStyle(fontSize: 25, fontWeight: FontWeight.w600);
 
   static const List<Color> section0 = [
     Color.fromRGBO(75, 96, 62, 1.0),
