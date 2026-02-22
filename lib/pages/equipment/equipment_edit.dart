@@ -77,23 +77,25 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
         element.name.toLowerCase() == e.name.toLowerCase() &&
         element.id != e.id);
     if (duplicate != null && duplicate != -1) {
-      await CustomDialog.showCustomConfirmationDialog(
+      final value = await CustomDialog.showCustomConfirmationDialog(
               type: ConfirmType.confirmContinue,
               context: context,
               description:
-                  'Es existiert bereits ein Gegenstand mit dem Namen "${equipmentList!.elementAt(duplicate).name}". Trotzdem fortfahren?')
-          .then((value) {
-        if (!value) {
+                  'Es existiert bereits ein Gegenstand mit dem Namen "${equipmentList!.elementAt(duplicate).name}". Trotzdem fortfahren?');
+
+        if (!(value ?? false)) {
           continueEdit = false;
           setState(() {
             isLoading = false;
           });
         }
-      });
     }
 
     if (continueEdit) {
-      await ref.set(e.toMap()).then((value) => context.pop());
+      await ref.set(e.toMap());
+
+      if (!mounted) return;
+        context.pop();
     }
   }
 
@@ -112,7 +114,8 @@ class _EquipmentEditState extends ConsumerState<EquipmentEdit> {
                   'Ausrüstung',
                   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w600),
                 ),
-              ),              TextFormField(
+              ),
+              TextFormField(
                 controller: _controllerBrand,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: const InputDecoration(labelText: 'Hersteller'),

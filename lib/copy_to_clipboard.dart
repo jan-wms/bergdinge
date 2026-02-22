@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 void copyToClipboard(
     {required BuildContext context, required String value}) async {
   Clipboard.setData(ClipboardData(text: value)).then((_) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    if(context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         width: min(MediaQuery.of(context).size.width * 0.9, 500),
         behavior: SnackBarBehavior.floating,
         showCloseIcon: true,
@@ -16,5 +17,6 @@ void copyToClipboard(
         content: const Text("In die Zwischenablage kopiert."),
       ),
     );
+    }
   });
 }

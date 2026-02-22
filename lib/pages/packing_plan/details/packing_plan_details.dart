@@ -497,9 +497,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                                           '${item.equipmentId}${ref.read(dropdownIndexProvider)}');
                                                                   docRef
                                                                       .delete()
-                                                                      .then((value) =>
-                                                                          context
-                                                                              .pop());
+                                                                      .then((value) {
+                                                                        if(context.mounted) {
+                                                                          context.pop();
+                                                                        }
+                                                                      });
                                                                 },
                                                                 child:
                                                                     const Row(
@@ -877,8 +879,11 @@ class _PackingPlanDetailsState extends ConsumerState<PackingPlanDetails> {
                                                     });
 
                                                     await docRef.delete().then(
-                                                        (_) => contextOfPage
-                                                            .pop());
+                                                        (_) {
+                                                          if(contextOfPage.mounted) {
+                                                            contextOfPage.pop();
+                                                          }
+                                                        });
                                                   }
                                                 },
                                                 child: const Row(

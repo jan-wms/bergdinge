@@ -59,7 +59,7 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
               description:
                   'Es existiert bereits eine Packliste mit dem Namen "${packingPlanList!.elementAt(duplicate).name}". Trotzdem fortfahren?')
           .then((value) {
-        if (!value) {
+        if (!(value ?? false)) {
           continueEdit = false;
           setState(() {
             isLoading = false;
@@ -69,7 +69,11 @@ class _PackingPlanEditState extends ConsumerState<PackingPlanEdit> {
     }
 
     if (continueEdit) {
-      await ref.set(p.toMap()).then((value) => context.pop());
+      await ref.set(p.toMap()).then((value) {
+        if(mounted) {
+          context.pop();
+        }
+      });
     }
   }
 

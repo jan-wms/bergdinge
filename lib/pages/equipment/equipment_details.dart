@@ -474,7 +474,11 @@ class _Actions extends StatelessWidget {
                   .collection('equipment')
                   .doc(equipment.id)
                   .delete()
-                  .then((_) => context.pop());
+                  .then((_) {
+                    if(context.mounted) {
+                      context.pop();
+                    }
+                  });
             }
           },
           icon: const Icon(

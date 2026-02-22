@@ -262,7 +262,11 @@ class _EditItemState extends ConsumerState<EditItem> {
                         ),
                         child: TextButton(
                           onPressed: () =>
-                              docRef.delete().then((value) => context.pop()),
+                              docRef.delete().then((value) {
+                                if(context.mounted) {
+                                  context.pop();
+                                }
+                              }),
                           style: TextButton.styleFrom(
                               foregroundColor: Colors.red,
                               shape: RoundedRectangleBorder(
@@ -293,7 +297,11 @@ class _EditItemState extends ConsumerState<EditItem> {
                                 isChecked: packingPlanItem?.isChecked ?? false,
                                 location: ref.read(dropdownIndexProvider));
 
-                            docRef.set(p.toMap()).then((_) => context.pop());
+                            docRef.set(p.toMap()).then((_) {
+                              if(context.mounted) {
+                                context.pop();
+                              }
+                            });
                           },
                           style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.only(

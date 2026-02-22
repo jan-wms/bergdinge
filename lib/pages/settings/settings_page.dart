@@ -25,7 +25,7 @@ class SettingsPage extends ConsumerWidget {
             context: context,
             description: 'Möchtest du deinen Account wirklich löschen?')
         .then((result) async {
-      if (result) {
+      if ((result ?? false) && context.mounted) {
         CustomDialog.showCustomDialog(
             context: context,
             child: const Stack(
@@ -258,7 +258,7 @@ class SettingsPage extends ConsumerWidget {
                                                   type: ConfirmType
                                                       .confirmDefault)
                                               .then((value) {
-                                            if (value) {
+                                            if (value ?? false) {
                                               Auth().signOut();
                                             }
                                           });
@@ -426,7 +426,7 @@ class _Links extends StatelessWidget {
             onTap: () async {
               final Uri url = Uri.parse(Data.websiteUrl);
               launchUrl(url).then((didLaunch) {
-                if (didLaunch == false) {
+                if (didLaunch == false && context.mounted) {
                   copyToClipboard(context: context, value: Data.websiteUrl);
                 }
               });
@@ -452,7 +452,7 @@ class _Links extends StatelessWidget {
               );
 
               launchUrl(uri).then((didLaunch) {
-                if (didLaunch == false) {
+                if (didLaunch == false && context.mounted) {
                   copyToClipboard(context: context, value: Data.supportMail);
                 }
               });
@@ -474,7 +474,7 @@ class _Links extends StatelessWidget {
               onTap: () async {
                 final Uri url = Uri.parse('https://freepik.com/');
                 launchUrl(url).then((didLaunch) {
-                  if (didLaunch == false) {
+                  if (didLaunch == false && context.mounted) {
                     copyToClipboard(
                         context: context, value: 'https://freepik.com/');
                   }

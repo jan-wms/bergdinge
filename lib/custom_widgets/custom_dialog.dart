@@ -82,7 +82,7 @@ class CustomDialog {
             )));
   }
 
-  static Future<bool?> showCustomConfirmationDialog<bool>(
+  static Future<bool?> showCustomConfirmationDialog(
       {required BuildContext context,
       required String description,
       required ConfirmType type}) async {

@@ -7,7 +7,7 @@ class CustomPopupMenuItem extends PopupMenuItem {
   });
 
   @override
-  _CustomCustomPopupMenuItem createState() => _CustomCustomPopupMenuItem();
+  PopupMenuItemState createState() => _CustomCustomPopupMenuItem();
 }
 
 class _CustomCustomPopupMenuItem extends PopupMenuItemState {
