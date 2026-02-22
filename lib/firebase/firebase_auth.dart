@@ -64,7 +64,9 @@ class Auth {
   }
 
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    if(!kIsWeb) {
+      await _googleSignIn.signOut();
+    }
     await _firebaseAuth.signOut();
   }
 }

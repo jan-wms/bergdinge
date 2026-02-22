@@ -147,67 +147,79 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         fontSize: 40.0,
                         color: Colors.white),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    padding: EdgeInsets.only(
-                        bottom: 30.0,
-                        left: 30.0,
-                        right: 30.0,
-                        top: (widget.authenticationAction ==
-                                AuthenticationAction.signIn)
-                            ? 50.0
-                            : 30.0),
-                    child: Wrap(
-                      spacing: 20.0,
-                      direction: Axis.vertical,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        if (widget.authenticationAction !=
-                                AuthenticationAction.reauthenticate ||
-                            (widget.authenticationAction ==
-                                    AuthenticationAction.reauthenticate &&
-                                ref.read(authProvider) == 'google.com'))
-                          SignInButton(
-                            signInType: SignInType.google,
-                            onPressed: () => _auth.signInWithGoogle(
-                                    authenticationAction: widget
-                                        .authenticationAction).then((
-                                    userCredential) {
-                                  if (userCredential != null) {
-                                    widget.onComplete();
+                  Stack(
+                    alignment: AlignmentGeometry.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        padding: EdgeInsets.only(
+                            bottom: 30.0,
+                            left: 30.0,
+                            right: 30.0,
+                            top: (widget.authenticationAction ==
+                                    AuthenticationAction.signIn)
+                                ? 50.0
+                                : 30.0),
+                        child: Wrap(
+                          spacing: 20.0,
+                          direction: Axis.vertical,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            if (widget.authenticationAction !=
+                                    AuthenticationAction.reauthenticate ||
+                                (widget.authenticationAction ==
+                                        AuthenticationAction.reauthenticate &&
+                                    ref.read(authProvider) == 'google.com'))
+                              SignInButton(
+                                signInType: SignInType.google,
+                                onPressed: () async {
+                                  final currentContext = context;
+                                  ref.read(isLoadingProvider.notifier).state =
+                                      true;
+
+                                  try{
+                                    final userCredential = await _auth
+                                        .signInWithGoogle(
+                                        authenticationAction:
+                                        widget.authenticationAction);
+
+                                      if(!currentContext.mounted) return;
+                                      if (userCredential != null) {
+                                        widget.onComplete();
+                                      }
+                                  } on FirebaseAuthException catch (e) {
+                                    if(!currentContext.mounted) return;
+                                    handleError(e, context);
+                                  } catch (e) {
+                                    debugPrint("Unknown error on Google SignIn: $e");
+                                  } finally {
+                                    if(currentContext.mounted) {
+                                    ref.read(isLoadingProvider.notifier).state =
+                                    false;}
                                   }
-                                }).catchError((e, stack) {
-                                  debugPrint("Error on Google SignIn: $e");
-                                }),
-                          ),
-                        if (widget.authenticationAction !=
-                                AuthenticationAction.reauthenticate ||
-                            (widget.authenticationAction ==
-                                    AuthenticationAction.reauthenticate &&
-                                ref.read(authProvider) == 'apple.com'))
-                          SignInButton(
-                            signInType: SignInType.apple,
-                            onPressed: () => (!ref.watch(isLoadingProvider))
-                                ? CustomDialog.showCustomInformationDialog(
-                                    context: context,
-                                    description:
-                                        'Diese Funktion ist momentan nicht verfügbar.')
-                                : null,
-                          ),
-                        if (widget.authenticationAction ==
-                            AuthenticationAction.signIn)
-                          SizedBox(
-                            height: 60.0,
-                            child: (ref.watch(isLoadingProvider))
-                                ? Container(
-                                    margin: const EdgeInsets.all(15.0),
-                                    height: 30.0,
-                                    width: 30.0,
-                                    child: const CircularProgressIndicator())
-                                : TextButton(
+                                },
+                              ),
+                            if (widget.authenticationAction !=
+                                    AuthenticationAction.reauthenticate ||
+                                (widget.authenticationAction ==
+                                        AuthenticationAction.reauthenticate &&
+                                    ref.read(authProvider) == 'apple.com'))
+                              SignInButton(
+                                signInType: SignInType.apple,
+                                onPressed: () =>
+                                    CustomDialog.showCustomInformationDialog(
+                                        context: context,
+                                        description:
+                                            'Diese Funktion ist momentan nicht verfügbar.'),
+                              ),
+                            if (widget.authenticationAction ==
+                                AuthenticationAction.signIn)
+                              SizedBox(
+                                height: 60.0,
+                                child: TextButton(
                                     onPressed: () async {
                                       ref
                                           .read(isLoadingProvider.notifier)
@@ -218,9 +230,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           .state = false;
                                     },
                                     child: const Text('Überspringen')),
+                              ),
+                          ],
+                        ),
+                      ),
+                      if (ref.watch(isLoadingProvider))
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Colors.white.withValues(alpha: 0.7),
+                            ),
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                                height: 30.0,
+                                width: 30.0,
+                                child: const CircularProgressIndicator()),
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
                   if (context.canPop())
                     TextButton(
