@@ -139,9 +139,9 @@ class SettingsPage extends ConsumerWidget {
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       (firebaseUser?.isAnonymous ?? false)
                                           ? Icon(
@@ -159,28 +159,14 @@ class SettingsPage extends ConsumerWidget {
                                         child: Padding(
                                           padding:
                                               const EdgeInsets.only(left: 10.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Synchronisierung',
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 25,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                              Text(
-                                                (firebaseUser?.isAnonymous ??
-                                                        false)
-                                                    ? 'Melde dich an, um Bergdinge auf mehreren Geräten zu benutzen.'
-                                                    : 'Cloud-Synchronisierung ist aktiviert.',
-                                                style: const TextStyle(
-                                                  color: Colors.black87,
-                                                ),
-                                              ),
-                                            ],
+                                          child: Text(
+                                            (firebaseUser?.isAnonymous ?? false)
+                                                ? 'Melde dich an, um Bergdinge auf mehreren Geräten zu benutzen.'
+                                                : 'Cloud-Synchronisierung ist aktiviert.',
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 16.0
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -265,8 +251,14 @@ class SettingsPage extends ConsumerWidget {
                                                     BorderRadius.circular(
                                                         10.0))),
                                         onPressed: () {
-                                          CustomDialog.showCustomConfirmationDialog(context: context, description: 'Möchtest du dich abmelden?', type: ConfirmType.confirmDefault).then((value) {
-                                            if(value) {
+                                          CustomDialog.showCustomConfirmationDialog(
+                                                  context: context,
+                                                  description:
+                                                      'Möchtest du dich abmelden?',
+                                                  type: ConfirmType
+                                                      .confirmDefault)
+                                              .then((value) {
+                                            if (value) {
                                               Auth().signOut();
                                             }
                                           });
@@ -279,7 +271,11 @@ class SettingsPage extends ConsumerWidget {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.logout_rounded, color: Colors.white, size: 25,),
+                                                Icon(
+                                                  Icons.logout_rounded,
+                                                  color: Colors.white,
+                                                  size: 25,
+                                                ),
                                                 Padding(
                                                   padding: EdgeInsets.only(
                                                       left: 10.0),
@@ -377,7 +373,8 @@ class SettingsPage extends ConsumerWidget {
                       child: const Divider(),
                     ),
                     Container(
-                      margin: Design.pagePadding.copyWith(bottom: 15.0 + MediaQuery.of(context).padding.bottom),
+                      margin: Design.pagePadding.copyWith(
+                          bottom: 15.0 + MediaQuery.of(context).padding.bottom),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -462,13 +459,6 @@ class _Links extends StatelessWidget {
             },
           ),
           _CustomListTile(
-            title: 'Unterstützen',
-            icon: Icons.favorite_outline_rounded,
-            onTap: () => CustomDialog.showCustomInformationDialog(
-                context: context,
-                description: 'Diese Funktion ist momentan nicht verfügbar.'),
-          ),
-          _CustomListTile(
             title: 'UID kopieren',
             onTap: () {
               copyToClipboard(
@@ -485,11 +475,11 @@ class _Links extends StatelessWidget {
                 final Uri url = Uri.parse('https://freepik.com/');
                 launchUrl(url).then((didLaunch) {
                   if (didLaunch == false) {
-                    copyToClipboard(context: context, value: 'https://freepik.com/');
+                    copyToClipboard(
+                        context: context, value: 'https://freepik.com/');
                   }
                 });
-              }
-          ),
+              }),
           _CustomListTile(
             title: 'Lizenzen',
             icon: Icons.arrow_forward_rounded,
