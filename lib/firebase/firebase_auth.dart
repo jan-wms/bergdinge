@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,13 +26,13 @@ class Auth {
   User? get user => _firebaseAuth.currentUser;
 
   Future<UserCredential> signInAnonymously() async {
-    return await _firebaseAuth.signInAnonymously();
+    return _firebaseAuth.signInAnonymously();
   }
 
   Future<UserCredential?> signInWithGoogle(
       {required AuthenticationAction authenticationAction}) async {
     // On Web
-    if(kIsWeb) {
+    if (kIsWeb) {
       final provider = GoogleAuthProvider();
       switch (authenticationAction) {
         case AuthenticationAction.signIn:
@@ -45,7 +46,9 @@ class Auth {
     }
 
     // On iOS or Android
-    _googleSignIn.initialize(serverClientId: "431093041285-d6cjl21t18fg1dvih1tkgeauhtlcif53.apps.googleusercontent.com");
+    _googleSignIn.initialize(
+        serverClientId:
+            "431093041285-d6cjl21t18fg1dvih1tkgeauhtlcif53.apps.googleusercontent.com");
 
     final GoogleSignInAccount account = await _googleSignIn.authenticate();
     final GoogleSignInAuthentication auth = account.authentication;
@@ -64,9 +67,34 @@ class Auth {
   }
 
   Future<void> signOut() async {
-    if(!kIsWeb) {
+    if (!kIsWeb) {
       await _googleSignIn.signOut();
     }
     await _firebaseAuth.signOut();
+  }
+
+  Future<void> deleteAccount() async {
+    DocumentReference userDoc =
+        FirebaseFirestore.instance.collection('users').doc(user?.uid);
+
+    List<CollectionReference> collectionsToDelete = [
+      userDoc.collection('packing_plan'),
+      userDoc.collection('equipment'),
+    ];
+
+    for (final collection in collectionsToDelete) {
+      final snapshot = await collection.get();
+
+      for (final doc in snapshot.docs) {
+        final itemSnapshot = await doc.reference.collection('items').get();
+        for (final itemDoc in itemSnapshot.docs) {
+          await itemDoc.reference.delete();
+        }
+        await doc.reference.delete();
+      }
+    }
+
+    await userDoc.delete();
+    await user?.delete();
   }
 }

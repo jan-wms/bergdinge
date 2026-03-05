@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:bergdinge/custom_widgets/dismiss_keyboard.dart';
+import 'package:bergdinge/widgets/dismiss_keyboard.dart';
 import 'package:bergdinge/data/design.dart';
-import 'package:bergdinge/router.dart';
+import 'package:bergdinge/router/router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,7 +37,7 @@ class MyApp extends ConsumerWidget {
         routerDelegate: router.routerDelegate,
         routeInformationProvider: router.routeInformationProvider,
         title: 'Bergdinge',
-        theme: Design().lightTheme,
+        theme: Design.lightTheme,
         themeMode: ThemeMode.light,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
