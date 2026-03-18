@@ -1,24 +1,28 @@
-# Bergdinge
+# 🏔️ Bergdinge
 
-Bergdinge is an app for managing your outdoor equipment.
+Bergdinge is a cross-platform app for managing your outdoor equipment.
 Keep track of your gear, view detailed weight information, and get tips for your packing plans.
-<br>
-<br>
-Bergdinge uses Firebase for cloud synchronization and authentication.
-Developed with Flutter for iOS, Android, and Web.
 
-### Demo
-Try it out on [bergdinge.de](https://bergdinge.de/)
+🚀 Live demo: [https://bergdinge.de/](https://bergdinge.de/)
 
-### Setup
 
-To set up Firebase and Google Sign-In properly, make sure to add the following files:
+## 🛠️ Tech Stack
+- **Flutter (Dart)** - single codebase for iOS, Android, and web
+- **Firebase**
+  - Authentication: Google Sign-In & Anonymous Sign-In
+  - Cloud Firestore: real-time synchronization across devices
+
+
+## ⚙️ Setup
+
+To run locally, configure Firebase and Google Sign-In:
 > lib/firebase/firebase_options.dart
 >
 >ios/Runner/GoogleService-Info.plist
 >
 >android/app/google-services.json
 
-### Credits
 
-Images designed by [Freepik](https://freepik.com/).
+## 🙏 Credits
+
+Images designed by [Freepik](https://freepik.com/)
